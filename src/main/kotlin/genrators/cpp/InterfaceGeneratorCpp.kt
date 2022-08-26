@@ -1,24 +1,14 @@
 package genrators.cpp
 
+import genrators.cpp.ClassHeader
 import genrators.obj.DataType
 import genrators.obj.InterfaceDescription
-import javax.xml.crypto.Data
 
 class InterfaceGeneratorCpp  {
 
-    fun typeTo(file: ClassHeaderFile,
-               type: DataType) : String =
-        when (type) {
-            DataType.VOID -> "void"
-            DataType.uint16 -> "uint16_t"
-            DataType.string -> {
-                file.addInclude("<string>")
-                "std::string"
-            }
-            else -> "QQQQ"
-        }
 
-    fun prepareHeader(desc: InterfaceDescription) = ClassHeaderFile().apply {
+
+    fun prepareHeader(desc: InterfaceDescription) = ClassHeader().apply {
         headers.append("#pragma once\n")
 
         if (desc.namespace.isNotEmpty()) {
@@ -29,9 +19,9 @@ class InterfaceGeneratorCpp  {
         classDefinition.append("public:\n");
         desc.publicMethods.forEach {
             classDefinition.append("    virtual ");
-            classDefinition.append("${typeTo(this, it.result)} ${it.name}(")
+            classDefinition.append("${Types.typeTo(this, it.result)} ${it.name}(")
             it.arguments.forEach {
-                classDefinition.append("${typeTo(this, it.datatype)} ${it.name}, ")
+                classDefinition.append("${Types.typeTo(this, it.datatype)} ${it.name}, ")
             }
             classDefinition.append(")")
             classDefinition.append("\n")

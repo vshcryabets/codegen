@@ -1,4 +1,6 @@
 import genrators.cpp.InterfaceGeneratorCpp
+import genrators.kotlin.ClassGeneratorKotlin
+import genrators.kotlin.ConstantsObjectGenrator
 import genrators.kotlin.InterfaceGeneratorKotlin
 import genrators.obj.*
 
@@ -12,8 +14,17 @@ fun main(args: Array<String>) {
         )
     )
 
+    val constans = ConstantsEnum(
+        name = "errors",
+        namespace = "space",
+        constants = listOf(
+            ClassField("ok", DataType.uint16, value = 0),
+            ClassField("a", DataType.uint16, value = 1),
+            ClassField("b", DataType.uint16, value = 2),
+            ClassField("c", DataType.uint16, value = 3)
+        )
+    )
 
-
-    val genrator = InterfaceGeneratorCpp()
-    genrator.build(il5client)
+    val generator = ConstantsObjectGenrator()
+    println(generator.build(constans).toString())
 }
