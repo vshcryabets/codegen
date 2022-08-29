@@ -15,4 +15,14 @@ object Types {
             }
             else -> "QQQQ"
         }
+
+    fun toValue(classData: ClassData, type: DataType, value: Any?) : String =
+        when (type) {
+            DataType.VOID -> "void"
+            DataType.uint16 -> value.toString()
+            DataType.string -> {
+                "\"${value}\""
+            }
+            else -> "QQQQ"
+        }
 }

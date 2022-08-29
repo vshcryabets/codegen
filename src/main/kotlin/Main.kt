@@ -1,30 +1,41 @@
-import genrators.cpp.InterfaceGeneratorCpp
-import genrators.kotlin.ClassGeneratorKotlin
+import ce.settings.Project
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import genrators.kotlin.ConstantsObjectGenrator
-import genrators.kotlin.InterfaceGeneratorKotlin
 import genrators.obj.*
+import okio.Okio
+import okio.buffer
+import okio.source
+import java.io.FileInputStream
+
 
 fun main(args: Array<String>) {
-    val description = ClassDescription(
-        name = "Vec2",
-        namespace = "com.test",
-        fields = listOf(
-            ClassField("x", DataType.uint32),
-            ClassField("y", DataType.uint32)
-        )
-    )
 
-    val constans = ConstantsEnum(
-        name = "errors",
-        namespace = "space",
-        constants = listOf(
-            ClassField("ok", DataType.uint16, value = 0),
-            ClassField("a", DataType.uint16, value = 1),
-            ClassField("b", DataType.uint16, value = 2),
-            ClassField("c", DataType.uint16, value = 3)
-        )
-    )
+    if (args.size < 1) {
+        error("Specify project file!")
+        System.exit(255)
+    }
+
+    val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+    val adapter: JsonAdapter<Project> = moshi.adapter(Project::class.java)
+    val enumAdapter: JsonAdapter<ConstantsEnum> = moshi.adapter(ConstantsEnum::class.java)
+
+    // load project file
+    val projectJson = FileInputStream(args[0])
+    val project = adapter.fromJson(projectJson.source().buffer())!!
+    projectJson.close()
+    println(project)
 
     val generator = ConstantsObjectGenrator()
-    println(generator.build(constans).toString())
+    project.enumFiles.forEach {
+        println("Processing $it")
+        val enumJson = FileInputStream(it)
+        val enumData = enumAdapter.fromJson(enumJson.source().buffer())!!
+        enumJson.close()
+        println(generator.build(enumData).toString())
+    }
 }

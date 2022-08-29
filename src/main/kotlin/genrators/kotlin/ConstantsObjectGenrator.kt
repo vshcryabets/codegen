@@ -14,7 +14,7 @@ class ConstantsObjectGenrator {
                 classDefinition.append("    ");
                 classDefinition.append("const val ");
                 classDefinition.append(it.name);
-                classDefinition.append(" : ${Types.typeTo(this, it.type)} = ")
+                classDefinition.append(" : ${Types.typeTo(this, it.type)} = ${Types.toValue(this, it.type, it.value)}")
                 classDefinition.append('\n')
             }
             classDefinition.append("}\n");
