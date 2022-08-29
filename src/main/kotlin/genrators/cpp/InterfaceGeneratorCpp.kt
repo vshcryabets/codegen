@@ -1,7 +1,5 @@
 package genrators.cpp
 
-import genrators.cpp.ClassHeader
-import genrators.obj.DataType
 import genrators.obj.InterfaceDescription
 
 class InterfaceGeneratorCpp  {

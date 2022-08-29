@@ -1,6 +1,6 @@
 package genrators.kotlin
 
-import genrators.obj.DataType
+import ce.defs.DataType
 
 object Types {
     fun typeTo(file: genrators.obj.file.ClassData,

@@ -1,4 +1,4 @@
-package genrators.obj
+package ce.defs
 
 enum class DataType {
     VOID,

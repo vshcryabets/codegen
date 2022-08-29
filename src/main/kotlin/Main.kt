@@ -3,12 +3,12 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import genrators.kotlin.ConstantsObjectGenrator
-import genrators.obj.*
-import okio.Okio
+import genrators.obj.ConstantsEnum
 import okio.buffer
 import okio.source
 import java.io.FileInputStream
-
+import java.io.InputStreamReader
+import javax.script.ScriptEngineManager
 
 fun main(args: Array<String>) {
 
@@ -17,13 +17,14 @@ fun main(args: Array<String>) {
         System.exit(255)
     }
 
+    val engine = ScriptEngineManager().getEngineByExtension("kts")
     val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
 
     val adapter: JsonAdapter<Project> = moshi.adapter(Project::class.java)
-    val enumAdapter: JsonAdapter<ConstantsEnum> = moshi.adapter(ConstantsEnum::class.java)
-
+//    val enumAdapter: JsonAdapter<ConstantsEnum> = moshi.adapter(ConstantsEnum::class.java)
+//
     // load project file
     val projectJson = FileInputStream(args[0])
     val project = adapter.fromJson(projectJson.source().buffer())!!
@@ -33,9 +34,12 @@ fun main(args: Array<String>) {
     val generator = ConstantsObjectGenrator()
     project.enumFiles.forEach {
         println("Processing $it")
-        val enumJson = FileInputStream(it)
-        val enumData = enumAdapter.fromJson(enumJson.source().buffer())!!
-        enumJson.close()
-        println(generator.build(enumData).toString())
+        val reader = InputStreamReader(FileInputStream(it))
+        val obj = engine.eval(reader)
+        reader.close()
+//        println(obj)
+        if (obj is ConstantsEnum) {
+            generator.build(obj)
+        }
     }
 }

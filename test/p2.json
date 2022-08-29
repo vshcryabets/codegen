@@ -1,0 +1,6 @@
+{
+  "enumFiles": [
+    "test.kts"
+  ],
+  "outputFolder" : "./generated/"
+}

@@ -1,6 +1,6 @@
 package genrators.cpp
 
-import genrators.obj.DataType
+import ce.defs.DataType
 import genrators.obj.file.ClassHeader
 
 object Types {
