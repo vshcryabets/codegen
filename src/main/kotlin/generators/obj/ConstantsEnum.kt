@@ -1,6 +1,7 @@
-package genrators.obj
+package generators.obj
 
 import ce.defs.DataType
+import generators.obj.file.ClassData
 
 data class ConstantsEnum(
     val name: String,

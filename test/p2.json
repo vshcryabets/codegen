@@ -2,5 +2,8 @@
   "enumFiles": [
     "test.kts"
   ],
-  "outputFolder" : "./generated/"
+  "codeStyle" : {
+    "newLinesBeforeClass" : 1
+  },
+  "outputFolder" : "../generated/"
 }

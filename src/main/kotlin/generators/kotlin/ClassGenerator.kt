@@ -1,6 +1,6 @@
-package genrators.kotlin
+package generators.kotlin
 
-import genrators.obj.ClassDescription
+import generators.obj.ClassDescription
 
 interface ClassGenerator {
     fun build(description: ClassDescription)

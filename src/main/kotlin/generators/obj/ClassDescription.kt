@@ -1,4 +1,4 @@
-package genrators.obj
+package generators.obj
 
 data class ClassDescription(
     val name: String,

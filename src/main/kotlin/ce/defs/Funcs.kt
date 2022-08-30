@@ -1,7 +1,6 @@
 package ce.defs
 
-import genrators.obj.ClassField
-import genrators.obj.ConstantsEnum
+import generators.obj.ConstantsEnum
 
 var namescpaceDef = StringBuffer()
 

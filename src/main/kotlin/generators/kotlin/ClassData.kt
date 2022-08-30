@@ -1,6 +1,6 @@
-package genrators.kotlin
+package generators.kotlin
 
-class ClassData : genrators.obj.file.ClassData() {
+class ClassData : generators.obj.file.ClassData() {
     override fun getIncludes() = StringBuilder().apply {
         includes.forEach {
             this.append("import $it\n")

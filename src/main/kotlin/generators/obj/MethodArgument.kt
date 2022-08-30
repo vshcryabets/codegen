@@ -1,4 +1,4 @@
-package genrators.obj
+package generators.obj
 
 import ce.defs.DataType
 

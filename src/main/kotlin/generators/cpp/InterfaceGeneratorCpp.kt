@@ -1,6 +1,6 @@
-package genrators.cpp
+package generators.cpp
 
-import genrators.obj.InterfaceDescription
+import generators.obj.InterfaceDescription
 
 class InterfaceGeneratorCpp  {
 

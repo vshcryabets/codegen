@@ -1,13 +1,14 @@
-package genrators.kotlin
+package generators.kotlin
 
 import ce.defs.DataType
 
 object Types {
-    fun typeTo(file: genrators.obj.file.ClassData,
+    fun typeTo(file: generators.obj.file.ClassData,
                type: DataType
     ) : String =
         when (type) {
             DataType.VOID -> "void"
+            DataType.int16,
             DataType.uint16 -> "Int"
             DataType.string -> {
                 file.addInclude("<string>")
@@ -19,7 +20,7 @@ object Types {
     fun toValue(classData: ClassData, type: DataType, value: Any?) : String =
         when (type) {
             DataType.VOID -> "void"
-            DataType.uint16 -> value.toString()
+            DataType.int16, DataType.uint16 -> value.toString()
             DataType.string -> {
                 "\"${value}\""
             }

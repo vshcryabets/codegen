@@ -1,9 +1,10 @@
-package genrators.obj.file
+package generators.obj.file
 
 abstract class ClassData {
     var headers = StringBuilder()
     var classDefinition = StringBuilder()
     var end = StringBuilder()
+    var fileName : String = ""
 
     protected val includes = HashSet<String>()
 
