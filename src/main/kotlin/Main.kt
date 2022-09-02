@@ -6,27 +6,20 @@ import generators.kotlin.ConstantsObjectGenerator
 import generators.kotlin.KotlinWritter
 import generators.obj.MetaGenerator
 import ce.defs.Target
-import ce.defs.constantsBlock
+import ce.defs.customBaseFolderPath
+import ce.defs.namescpaceDef
+import generators.cpp.CppClassData
+import generators.cpp.CppConstantsBlockGenerator
+import generators.cpp.CppEnumGenerator
+import generators.cpp.CppWritter
 import generators.kotlin.ConstantsBlockGenerator
+import generators.kotlin.KotlinClassData
 import generators.obj.input.ClassDescription
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.ConstantsEnum
 import okio.buffer
 import okio.source
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import javax.script.ScriptEngineManager
-
-fun writeItem(metagen: MetaGenerator, item: ClassDescription) {
-    if (item is ConstantsEnum) {
-        val classData = metagen.enum.build(item)
-        metagen.writter.write(classData)
-    }
-    if (item is ConstantsBlock) {
-        val classData = metagen.constantsBlock.build(item)
-        metagen.writter.write(classData)
-    }
-}
 
 fun main(args: Array<String>) {
 
@@ -47,15 +40,23 @@ fun main(args: Array<String>) {
     projectJson.close()
     println(project)
 
-    val kotlinMeta = MetaGenerator(
+    val kotlinMeta = MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
         enum = ConstantsObjectGenerator(project.codeStyle, project),
         constantsBlock = ConstantsBlockGenerator(project.codeStyle, project),
         writter = KotlinWritter(project.codeStyle, project.outputFolder)
     )
 
+    val cppMeta = MetaGenerator<CppClassData>(
+        target = Target.Cxx,
+        enum = CppEnumGenerator(project.codeStyle, project),
+        constantsBlock = CppConstantsBlockGenerator(project.codeStyle, project),
+        writter = CppWritter(project.codeStyle, project.outputFolder)
+    )
+
     val supportedMeta = mapOf(
-        Target.Kotlin to kotlinMeta
+        Target.Kotlin to kotlinMeta,
+        Target.Cxx to cppMeta
     )
 
     project.enumFiles.forEach { fileName ->
@@ -65,19 +66,22 @@ fun main(args: Array<String>) {
                 val meta = supportedMeta[target]!!
                 println("Target $target")
                 val reader = InputStreamReader(FileInputStream(fileName))
+                // clean global defines for each file
+                namescpaceDef.setLength(0)
+                customBaseFolderPath = project.outputFolder
                 val obj = engine.eval(reader)
                 reader.close()
                 ce.defs.currentTarget = target
                 if (obj is Array<*>) {
                     obj.forEach {
-                        writeItem(meta, it as ClassDescription)
+                        meta.writeItem(it as ClassDescription, customBaseFolderPath)
                     }
                 } else if (obj is List<*>) {
                     obj.forEach {
-                        writeItem(meta, it as ClassDescription)
+                        meta.writeItem(it as ClassDescription, customBaseFolderPath)
                     }
                 } else {
-                    writeItem(meta, obj as ClassDescription)
+                    meta.writeItem(obj as ClassDescription, customBaseFolderPath)
                 }
             } else {
                 println("Not supported $target")

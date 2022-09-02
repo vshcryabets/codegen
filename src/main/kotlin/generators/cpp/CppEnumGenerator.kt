@@ -1,4 +1,4 @@
-package generators.kotlin
+package generators.cpp
 
 import ce.settings.CodeStyle
 import ce.settings.Project
@@ -6,12 +6,12 @@ import generators.obj.Generator
 import generators.obj.input.ClassDescription
 import generators.obj.input.ConstantsEnum
 
-class ConstantsObjectGenerator(
+class CppEnumGenerator(
     style: CodeStyle,
     private val project: Project
-) : Generator<KotlinClassData>(style) {
+) : Generator<CppClassData>(style) {
 
-    override fun build(desc: ClassDescription): KotlinClassData {
+    override fun build(desc: ClassDescription): CppClassData {
         if (!(desc is ConstantsEnum))
             throw java.lang.IllegalArgumentException("Only ConstantsEnum supported")
         val result = super.build(desc)
@@ -53,5 +53,5 @@ class ConstantsObjectGenerator(
         return result
     }
 
-    override fun createClassData(): KotlinClassData = KotlinClassData()
+    override fun createClassData(): CppClassData = CppClassData()
 }

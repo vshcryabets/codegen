@@ -1,12 +1,13 @@
 package generators.cpp
 
+import ce.settings.CodeStyle
+import generators.obj.Generator
 import generators.obj.InterfaceDescription
+import generators.obj.out.ClassData
 
-class InterfaceGeneratorCpp  {
+class InterfaceGeneratorCpp(style: CodeStyle,) : Generator<CppClassData>(style) {
 
-
-
-    fun prepareHeader(desc: InterfaceDescription) = ClassHeader().apply {
+    fun prepareHeader(desc: InterfaceDescription) = CppClassData().apply {
         headers.append("#pragma once\n")
 
         if (desc.namespace.isNotEmpty()) {
@@ -38,4 +39,6 @@ class InterfaceGeneratorCpp  {
         println(result.classDefinition)
         println(result.end)
     }
+
+    override fun createClassData(): CppClassData = CppClassData()
 }

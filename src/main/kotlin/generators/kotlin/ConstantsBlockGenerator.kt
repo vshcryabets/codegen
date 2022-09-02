@@ -5,18 +5,17 @@ import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.ClassDescription
 import generators.obj.input.ConstantsBlock
-import generators.obj.input.ConstantsEnum
 
 class ConstantsBlockGenerator(
     style: CodeStyle,
     private val project: Project
-) : Generator(style) {
+) : Generator<KotlinClassData>(style) {
 
-    override fun build(desc: ClassDescription): ClassData {
+    override fun build(desc: ClassDescription): KotlinClassData {
         if (!(desc is ConstantsBlock))
             throw java.lang.IllegalArgumentException("Only ConstantsEnum supported")
-        val result = ClassData().apply {
-            namespace = desc.namespace
+        val result = super.build(desc)
+        result.apply {
             fileName = "${desc.name}.kt"
             headers.append("package $namespace\n");
 
@@ -53,4 +52,6 @@ class ConstantsBlockGenerator(
         }
         return result
     }
+
+    override fun createClassData(): KotlinClassData = KotlinClassData()
 }

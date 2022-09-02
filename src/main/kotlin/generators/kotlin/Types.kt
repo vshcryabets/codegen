@@ -19,7 +19,7 @@ object Types {
             else -> "QQQQ"
         }
 
-    fun toValue(classData: ClassData, type: DataType, value: Any?) : String =
+    fun toValue(classData: KotlinClassData, type: DataType, value: Any?) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int16, DataType.uint16 -> value.toString()

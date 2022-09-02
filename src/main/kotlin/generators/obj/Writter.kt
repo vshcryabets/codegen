@@ -1,17 +1,18 @@
 package generators.obj
 
 import ce.settings.CodeStyle
-import generators.kotlin.ClassData
+import generators.kotlin.KotlinClassData
+import generators.obj.out.ClassData
 import java.io.File
 
-abstract class Writter(val codeStyle: CodeStyle, outputFolder: String) {
-    val outFolderFile : File
+abstract class Writter<T : ClassData>(val codeStyle: CodeStyle, outputFolderPath: String) {
+    val outFolder : File
 
     init {
-        outFolderFile = File(outputFolder)
-        outFolderFile.mkdirs()
+        outFolder = File(outputFolderPath)
+        outFolder.mkdirs()
     }
 
-    abstract fun write(data: ClassData)
+    abstract fun write(data: T)
 
 }

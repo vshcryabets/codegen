@@ -1,13 +1,19 @@
 package generators.obj
 
 import ce.settings.CodeStyle
-import generators.kotlin.ClassData
 import generators.obj.input.ClassDescription
+import generators.obj.out.ClassData
 
-abstract class Generator(style : CodeStyle) {
+abstract class Generator<T : ClassData >(style : CodeStyle) {
     val tabSpace : String
 
-    abstract fun build(desc: ClassDescription) : ClassData
+    abstract fun createClassData() : T
+
+    open fun build(desc: ClassDescription) : T =
+        createClassData().apply {
+            namespace = desc.namespace
+            customBaseFolder = desc.objectBaseFolder
+        }
 
     init {
         val builder = StringBuilder()

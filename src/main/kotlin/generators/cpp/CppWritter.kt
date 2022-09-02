@@ -1,20 +1,17 @@
-package generators.kotlin
+package generators.cpp
 
 import ce.settings.CodeStyle
 import generators.obj.Writter
 import java.io.File
 
-class KotlinWritter(codeStyle: CodeStyle, outputFolder: String) : Writter<KotlinClassData> (codeStyle, outputFolder) {
+class CppWritter(codeStyle: CodeStyle, outputFolder: String) : Writter<CppClassData>(codeStyle, outputFolder) {
 
-    override fun write(data: KotlinClassData) {
-        val namespace = data.namespace.replace('.', File.separatorChar)
-        val filename = namespace + File.separatorChar + data.fileName
+    override fun write(data: CppClassData) {
+        val filename = data.fileName
         var customFolder = outFolder
         if (data.customBaseFolder.isNotEmpty()) {
             customFolder = File(data.customBaseFolder)
         }
-        val outFolder = File(customFolder, namespace)
-        outFolder.mkdirs()
         println("Writing $customFolder / $filename")
         File(customFolder, filename).bufferedWriter().use { out ->
             if (data.headers.isNotEmpty()) {

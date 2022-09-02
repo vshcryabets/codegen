@@ -6,6 +6,7 @@ abstract class ClassData {
     var classDefinition = StringBuilder()
     var end = StringBuilder()
     var fileName : String = ""
+    var customBaseFolder : String = ""
 
     protected val includes = HashSet<String>()
 
