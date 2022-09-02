@@ -1,6 +1,6 @@
 package generators.kotlin
 
-import generators.obj.ClassDescription
+import generators.obj.input.ClassDescription
 
 class ClassGeneratorKotlin : ClassGenerator {
     override fun build(desc: ClassDescription) {

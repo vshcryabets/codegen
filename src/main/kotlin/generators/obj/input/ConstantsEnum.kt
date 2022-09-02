@@ -1,14 +1,15 @@
-package generators.obj
+package generators.obj.input
 
 import ce.defs.DataType
-import generators.obj.file.ClassData
 
-data class ConstantsEnum(
-    val name: String,
-    val namespace: String,
+
+open class ConstantsEnum(
+    name: String,
+    namespace: String,
     val constants: ArrayList<ClassField> = ArrayList(),
     var defaultDataType: DataType = DataType.VOID
-) {
+) : ClassDescription(name, namespace, emptyList()) {
+
     fun defaultType(name: DataType) {
         defaultDataType = name
     }

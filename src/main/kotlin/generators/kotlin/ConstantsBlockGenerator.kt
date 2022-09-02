@@ -7,13 +7,13 @@ import generators.obj.input.ClassDescription
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.ConstantsEnum
 
-class ConstantsObjectGenerator(
+class ConstantsBlockGenerator(
     style: CodeStyle,
     private val project: Project
 ) : Generator(style) {
 
     override fun build(desc: ClassDescription): ClassData {
-        if (!(desc is ConstantsEnum))
+        if (!(desc is ConstantsBlock))
             throw java.lang.IllegalArgumentException("Only ConstantsEnum supported")
         val result = ClassData().apply {
             namespace = desc.namespace

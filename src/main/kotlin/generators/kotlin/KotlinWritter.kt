@@ -1,19 +1,18 @@
 package generators.kotlin
 
 import ce.settings.CodeStyle
+import generators.obj.Writter
 import java.io.File
 
-class KotlinWritter(val codeStyle: CodeStyle, outputFolder: String) {
-    val outFolderFile : File
+class KotlinWritter(codeStyle: CodeStyle, outputFolder: String) : Writter(codeStyle, outputFolder) {
 
-    init {
-        outFolderFile = File(outputFolder)
-        outFolderFile.mkdirs()
-    }
-
-    fun write(data: ClassData) {
-        println("Writting ${data.fileName}")
-        File(outFolderFile, data.fileName).bufferedWriter().use { out ->
+    override fun write(data: ClassData) {
+        val namespace = data.namespace.replace('.', File.separatorChar)
+        val filename = namespace + File.separatorChar + data.fileName
+        println("Writing $filename")
+        val outFolder = File(outFolderFile, namespace)
+        outFolder.mkdirs()
+        File(outFolderFile, filename).bufferedWriter().use { out ->
             if (data.headers.isNotEmpty()) {
                 out.write(data.headers.toString())
             }

@@ -1,7 +1,7 @@
 package generators.cpp
 
 import ce.defs.DataType
-import generators.obj.file.ClassHeader
+import generators.obj.out.ClassHeader
 
 object Types {
     fun typeTo(file: ClassHeader,

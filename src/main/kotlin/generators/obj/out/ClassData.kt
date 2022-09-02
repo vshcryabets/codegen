@@ -1,6 +1,7 @@
-package generators.obj.file
+package generators.obj.out
 
 abstract class ClassData {
+    var namespace : String = ""
     var headers = StringBuilder()
     var classDefinition = StringBuilder()
     var end = StringBuilder()

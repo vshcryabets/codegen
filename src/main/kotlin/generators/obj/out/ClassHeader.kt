@@ -1,4 +1,4 @@
-package generators.obj.file
+package generators.obj.out
 
 abstract class ClassHeader : ClassData() {
 
