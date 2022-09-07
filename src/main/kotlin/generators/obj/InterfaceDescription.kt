@@ -1,7 +1,9 @@
 package generators.obj
 
-data class InterfaceDescription(
-    val name: String,
-    val namespace: String,
+import generators.obj.input.Block
+
+class InterfaceDescription(
+    name: String,
+    namespace: String,
     val publicMethods: List<MethodDescription>
-)
+) : Block(name, namespace, emptyList())

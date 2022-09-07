@@ -1,12 +1,10 @@
 package generators.cpp
 
 import ce.defs.DataType
-import generators.kotlin.KotlinClassData
-import generators.obj.out.ClassData
-import generators.obj.out.ClassHeader
+import generators.obj.out.FileData
 
 object Types {
-    fun typeTo(file: CppClassData,
+    fun typeTo(file: FileData,
                type: DataType
     ) : String =
         when (type) {

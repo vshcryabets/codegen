@@ -6,5 +6,8 @@ enum class Target(val strName: String) {
     C("c"),
     Cxx("cxx"),
     Swift("swift"),
-    Java("java")
+    Java("java"),
+    Rust("rust"),
+    Go("go"),
+    Python("python"),
 }

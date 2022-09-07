@@ -8,7 +8,7 @@ open class ConstantsBlock(
     namespace: String,
     val constants: ArrayList<ClassField> = ArrayList(),
     var defaultDataType: DataType = DataType.VOID
-) : ClassDescription(name, namespace, emptyList()) {
+) : Block(name, namespace, emptyList()) {
 
     fun defaultType(name: DataType) {
         defaultDataType = name

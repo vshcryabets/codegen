@@ -1,5 +1,5 @@
 {
-  "enumFiles": [
+  "files": [
     "test.kts"
   ],
   "targets" : ["Cxx", "Kotlin"],

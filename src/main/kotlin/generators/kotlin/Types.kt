@@ -1,9 +1,10 @@
 package generators.kotlin
 
 import ce.defs.DataType
+import generators.obj.out.FileData
 
 object Types {
-    fun typeTo(file: generators.obj.out.ClassData,
+    fun typeTo(file: FileData,
                type: DataType
     ) : String =
         when (type) {
