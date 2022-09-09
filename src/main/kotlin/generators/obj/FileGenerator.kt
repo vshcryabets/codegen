@@ -1,0 +1,29 @@
+package generators.obj
+
+import ce.settings.CodeStyle
+import generators.obj.out.FileData
+
+abstract class FileGenerator(val style : CodeStyle) {
+    val tabSpace : String
+
+    init {
+        val builder = StringBuilder()
+        for (a in 0..style.tabSize - 1) {
+            builder.append(" ");
+        }
+        tabSpace = builder.toString()
+    }
+
+    abstract fun createFile(namespace: String, outputFile: String): FileData
+    abstract fun multilineCommentStart() : String
+    abstract fun multilineCommentEnd() : String
+    abstract fun commentStart() : String
+    abstract fun commentEnd() : String
+    abstract fun newLine() : String
+
+    open fun appendInitalComment(s: FileData, s1: String) {
+        s.initialComments.append(s1)
+        s.initialComments.append('\n')
+    }
+
+}

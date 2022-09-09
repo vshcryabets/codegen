@@ -1,5 +1,9 @@
 package generators.obj.out
 
-abstract class ClassData {
+open class ClassData {
+    companion object {
+        val emptyClassData = ClassData()
+    }
     var classDefinition = StringBuilder()
 }
+

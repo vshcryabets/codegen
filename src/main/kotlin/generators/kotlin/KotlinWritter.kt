@@ -6,24 +6,8 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class KotlinWritter(codeStyle: CodeStyle, outputFolder: String) : Writter<KotlinClassData> (codeStyle, outputFolder) {
-
-//    override fun write(data: KotlinClassData) {
-//        File(customFolder, filename).bufferedWriter().use { out ->
-//            if (data.headers.isNotEmpty()) {
-//                out.write(data.headers.toString())
-//            }
-//
-//            if (data.classDefinition.isNotEmpty()) {
-//                for ( i in 0 .. codeStyle.newLinesBeforeClass - 1) out.write("\n")
-//                out.write(data.classDefinition.toString())
-//            }
-//
-//            if (data.end.isNotEmpty()) {
-//                out.write(data.end.toString())
-//            }
-//        }
-//    }
+class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String)
+    : Writter<KotlinClassData>(fileGenerator.style, outputFolder) {
 
     override fun write(data: ProjectOutput) {
         data.files.forEach {
@@ -32,15 +16,33 @@ class KotlinWritter(codeStyle: CodeStyle, outputFolder: String) : Writter<Kotlin
     }
 
     override fun writeFile(fileData: FileData) {
-        val namespace = fileData.namespace.replace('.', File.separatorChar)
-        val filename = namespace + File.separatorChar + fileData.fileName
-        var customFolder = outFolder
-        if (fileData.fileFolder.isNotEmpty()) {
-            customFolder = File(fileData.fileFolder)
+        var outputFile = File(fileData.fullOutputFileName)
+        outputFile.parentFile.mkdirs()
+        println("Writing $outputFile")
+        outputFile.bufferedWriter().use { out ->
+            val initialComments = fileData.getInitialComments()
+            if (initialComments.isNotEmpty()) {
+                out.write(fileGenerator.multilineCommentStart())
+                out.write(initialComments)
+                out.write(fileGenerator.multilineCommentEnd())
+            }
+
+            val headers = fileData.getHeaders()
+            if (headers.isNotEmpty()) {
+                out.write(headers)
+            }
+
+            fileData.outputBlocks.forEach {
+                if (it.value.classDefinition.isNotEmpty()) {
+                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
+                    out.write(it.value.classDefinition.toString())
+                }
+            }
+
+            if (fileData.end.isNotEmpty()) {
+                out.write(fileData.end.toString())
+            }
         }
-        val outFolder = File(customFolder, namespace)
-        outFolder.mkdirs()
-        println("Writing $customFolder / $filename")
     }
 
     override fun getIncludes(data: FileData): StringBuilder = StringBuilder().apply {

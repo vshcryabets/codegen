@@ -31,16 +31,13 @@ class CppWritter(codeStyle: CodeStyle, outputFolder: String) : Writter<CppClassD
 //    }
 
     override fun writeFile(fileData: FileData) {
-        val filename = fileData.fileName
-        var customFolder = outFolder
-        if (fileData.fileFolder.isNotEmpty()) {
-            customFolder = File(fileData.fileFolder)
-        }
+        var customFolder = File(fileData.fullOutputFileName)
+        customFolder.parentFile.mkdirs()
 //        if (data.headers.isEmpty() && data.classDefinition.isEmpty() && data.end.isEmpty()) {
 //            println("Writing $customFolder / $filename is empty")
 //            return;
 //        }
-        println("Writing $customFolder / $filename")
+        println("Writing $customFolder")
     }
 
     override fun write(data: ProjectOutput) {

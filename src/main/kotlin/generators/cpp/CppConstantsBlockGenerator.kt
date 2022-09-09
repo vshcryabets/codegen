@@ -2,15 +2,15 @@ package generators.cpp
 
 import ce.settings.CodeStyle
 import ce.settings.Project
+import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
 import generators.obj.out.FileData
 
 class CppConstantsBlockGenerator(
-    style: CodeStyle,
+    fileGenerator: FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, CppClassData>(style) {
+) : Generator<ConstantsBlock, CppClassData>(fileGenerator) {
 
     override fun buildBlock(file: FileData, desc: ConstantsBlock): CppClassData {
         val result = super.buildBlock(file, desc)

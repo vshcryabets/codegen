@@ -2,16 +2,15 @@ package generators.cpp
 
 import ce.settings.CodeStyle
 import ce.settings.Project
-import generators.kotlin.KotlinClassData
+import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.Block
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
 class CppEnumGenerator(
-    style: CodeStyle,
+    fileGenerator: FileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, CppClassData>(style) {
+) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
 
     override fun buildBlock(file: FileData, desc: ConstantsEnum): CppClassData {
         val result = super.buildBlock(file, desc)

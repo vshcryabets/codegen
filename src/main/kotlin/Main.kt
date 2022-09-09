@@ -37,12 +37,14 @@ fun main(args: Array<String>) {
     projectJson.close()
     println(project)
 
+    val kotlinFileGenerator = KotlinFileGenerator(project.codeStyle)
     val kotlinMeta = object : MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
-        enum = ConstantsObjectGenerator(project.codeStyle, project),
-        constantsBlock = ConstantsBlockGenerator(project.codeStyle, project),
-        writter = KotlinWritter(project.codeStyle, project.outputFolder),
-        project = project
+        enum = ConstantsObjectGenerator(kotlinFileGenerator, project),
+        constantsBlock = ConstantsBlockGenerator(kotlinFileGenerator, project),
+        writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
+        project = project,
+        fileGenerator = KotlinFileGenerator(project.codeStyle)
     ) {
         override fun getBlockFilePath(block: Block): String {
             var fileName = "${block.name}.kt"
@@ -54,26 +56,26 @@ fun main(args: Array<String>) {
         }
     }
 
-    val cppMeta = object : MetaGenerator<CppClassData>(
-        target = Target.Cxx,
-        enum = CppEnumGenerator(project.codeStyle, project),
-        constantsBlock = CppConstantsBlockGenerator(project.codeStyle, project),
-        writter = CppWritter(project.codeStyle, project.outputFolder),
-        project = project
-    ) {
-        override fun getBlockFilePath(block: Block): String {
-            var fileName = "${block.name}.cpp"
-            if (block.outputFile.isNotEmpty()) {
-                fileName = "${block.outputFile}.cpp"
-            }
-            val namespace = block.namespace.replace('.', File.separatorChar)
-            return block.objectBaseFolder + File.separatorChar + fileName
-        }
-    }
+//    val cppMeta = object : MetaGenerator<CppClassData>(
+//        target = Target.Cxx,
+//        enum = CppEnumGenerator(project.codeStyle, project),
+//        constantsBlock = CppConstantsBlockGenerator(project.codeStyle, project),
+//        writter = CppWritter(project.codeStyle, project.outputFolder),
+//        project = project
+//    ) {
+//        override fun getBlockFilePath(block: Block): String {
+//            var fileName = "${block.name}.cpp"
+//            if (block.outputFile.isNotEmpty()) {
+//                fileName = "${block.outputFile}.cpp"
+//            }
+//            val namespace = block.namespace.replace('.', File.separatorChar)
+//            return block.objectBaseFolder + File.separatorChar + fileName
+//        }
+//    }
 
     val supportedMeta = mapOf(
         Target.Kotlin to kotlinMeta,
-        Target.Cxx to cppMeta
+        //Target.Cxx to cppMeta
     )
 
     project.targets.forEach { target ->
