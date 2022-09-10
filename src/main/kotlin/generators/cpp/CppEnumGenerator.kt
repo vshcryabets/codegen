@@ -13,18 +13,13 @@ class CppEnumGenerator(
 ) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
 
     override fun buildBlock(file: FileData, desc: ConstantsEnum): CppClassData {
+        val cppFile = file as CppFileData
         val result = super.buildBlock(file, desc)
         result.apply {
-
-//            headerData.fileName = "${desc.name}.h"
-//            fileName = "${desc.name}.cpp"
-//
-//            if (namespace.isNotEmpty()) {
-//                headerData.headers.append("namespace $namespace {\n");
-//                headerData.currentTabLevel++
-//
-////                headers.append("using $namespace;\n")
-//            }
+            if (desc.namespace.isNotEmpty()) {
+                headerData.classDefinition.append("namespace $namespace {${fileGenerator.newLine()}");
+//                headers.append("using $namespace;\n")
+            }
 //
 //            if (desc.classComment.isNotEmpty()) {
 //                appendClassDefinition(headerData, "/**")
@@ -52,9 +47,8 @@ class CppEnumGenerator(
 //            headerData.currentTabLevel--;
 //            appendClassDefinition(headerData, "};");
 //
-//            if (namespace.isNotEmpty()) {
-//                headerData.end.append("} // $namespace\n");
-//                headerData.currentTabLevel--
+            if (namespace.isNotEmpty()) {
+                headerData.classDefinition.append("} // $namespace${fileGenerator.newLine()}");
             }
             return result
         }
