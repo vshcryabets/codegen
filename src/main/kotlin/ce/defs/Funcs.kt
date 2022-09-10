@@ -4,6 +4,8 @@ import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.ConstantsEnum
 
+val definedBloks = mutableListOf<Block>()
+
 var namescpaceDef = StringBuffer()
 var currentTarget : Target = Target.Other
 var customBaseFolderPath = ""
@@ -19,19 +21,20 @@ fun putDefaults(block: Block) {
     block.objectBaseFolder = customBaseFolderPath
     block.sourceFile = sourceFile
     block.outputFile = if (outputFile.isEmpty()) block.name else outputFile
+    println("Block ${block.name} = ${block.outputFile}");
 }
-
 
 fun enum(name : String ) : ConstantsEnum {
     return ConstantsEnum(name, namescpaceDef.toString()).apply {
         putDefaults(this)
-
+        definedBloks.add(this)
     }
 }
 
 fun constantsBlock(name : String ) : ConstantsBlock {
     return ConstantsBlock(name, namescpaceDef.toString()).apply {
         putDefaults(this)
+        definedBloks.add(this)
     }
 }
 

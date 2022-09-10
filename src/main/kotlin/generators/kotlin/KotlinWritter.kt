@@ -7,7 +7,7 @@ import generators.obj.out.ProjectOutput
 import java.io.File
 
 class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String)
-    : Writter<KotlinClassData>(fileGenerator.style, outputFolder) {
+    : Writter(fileGenerator.style, outputFolder) {
 
     override fun write(data: ProjectOutput) {
         data.files.forEach {
@@ -16,15 +16,13 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
     }
 
     override fun writeFile(fileData: FileData) {
-        var outputFile = File(fileData.fullOutputFileName)
+        var outputFile = File(fileData.fullOutputFileName + ".kt")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val initialComments = fileData.getInitialComments()
             if (initialComments.isNotEmpty()) {
-                out.write(fileGenerator.multilineCommentStart())
                 out.write(initialComments)
-                out.write(fileGenerator.multilineCommentEnd())
             }
 
             val headers = fileData.getHeaders()

@@ -1,12 +1,10 @@
+import ce.defs.*
+import ce.defs.Target
 import ce.settings.Project
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import generators.obj.MetaGenerator
-import ce.defs.Target
-import ce.defs.customBaseFolderPath
-import ce.defs.namescpaceDef
-import ce.defs.sourceFile
 import generators.cpp.*
 import generators.kotlin.*
 import generators.obj.input.Block
@@ -47,35 +45,37 @@ fun main(args: Array<String>) {
         fileGenerator = KotlinFileGenerator(project.codeStyle)
     ) {
         override fun getBlockFilePath(block: Block): String {
-            var fileName = "${block.name}.kt"
+            var fileName = "${block.name}"
             if (block.outputFile.isNotEmpty()) {
-                fileName = "${block.outputFile}.kt"
+                fileName = "${block.outputFile}"
             }
             val namespace = block.namespace.replace('.', File.separatorChar)
             return block.objectBaseFolder + File.separatorChar + namespace + File.separatorChar + fileName
         }
     }
 
-//    val cppMeta = object : MetaGenerator<CppClassData>(
-//        target = Target.Cxx,
-//        enum = CppEnumGenerator(project.codeStyle, project),
-//        constantsBlock = CppConstantsBlockGenerator(project.codeStyle, project),
-//        writter = CppWritter(project.codeStyle, project.outputFolder),
-//        project = project
-//    ) {
-//        override fun getBlockFilePath(block: Block): String {
-//            var fileName = "${block.name}.cpp"
-//            if (block.outputFile.isNotEmpty()) {
-//                fileName = "${block.outputFile}.cpp"
-//            }
-//            val namespace = block.namespace.replace('.', File.separatorChar)
-//            return block.objectBaseFolder + File.separatorChar + fileName
-//        }
-//    }
+    val cppFileGenerator = CppFileGenerator(project.codeStyle)
+    val cppMeta = object : MetaGenerator<CppClassData>(
+        target = Target.Cxx,
+        enum = CppEnumGenerator(cppFileGenerator, project),
+        constantsBlock = CppConstantsBlockGenerator(cppFileGenerator, project),
+        writter = CppWritter(cppFileGenerator, project.outputFolder),
+        project = project,
+        fileGenerator = cppFileGenerator
+    ) {
+        override fun getBlockFilePath(block: Block): String {
+            var fileName = "${block.name}"
+            if (block.outputFile.isNotEmpty()) {
+                fileName = "${block.outputFile}"
+            }
+            val namespace = block.namespace.replace('.', File.separatorChar)
+            return block.objectBaseFolder + File.separatorChar + fileName
+        }
+    }
 
     val supportedMeta = mapOf(
         Target.Kotlin to kotlinMeta,
-        //Target.Cxx to cppMeta
+        Target.Cxx to cppMeta
     )
 
     project.targets.forEach { target ->
@@ -90,27 +90,14 @@ fun main(args: Array<String>) {
                 val fileObjects = mutableListOf<Block>()
                 val reader = InputStreamReader(FileInputStream(fileName))
                 // clean global defines for each file
+                definedBloks.clear()
                 namescpaceDef.setLength(0)
                 customBaseFolderPath = project.outputFolder
                 sourceFile = fileName
-                val obj = engine.eval(reader)
+                outputFile = ""
+                engine.eval(reader)
                 reader.close()
-                if (obj is Array<*>) {
-                    obj.forEach {
-                        if (it is Block) {
-                            fileObjects.add(it)
-                        }
-                    }
-                } else if (obj is List<*>) {
-                    obj.forEach {
-                        if (it is Block) {
-                            fileObjects.add(it)
-                        }
-                    }
-                } else {
-                    fileObjects.add(obj as Block)
-                }
-                objects.addAll(fileObjects)
+                objects.addAll(definedBloks)
             }
             meta.write(objects)
         } else {

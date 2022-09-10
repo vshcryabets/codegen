@@ -14,7 +14,7 @@ abstract class MetaGenerator<T : ClassData>(
     val enum: Generator<ConstantsEnum, T>,
     val constantsBlock: Generator<ConstantsBlock, T>,
     val fileGenerator : FileGenerator,
-    private val writter: Writter<T>,
+    private val writter: Writter,
     private val project: Project
 ) {
 

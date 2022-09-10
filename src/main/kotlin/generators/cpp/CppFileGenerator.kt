@@ -1,15 +1,16 @@
-package generators.kotlin
+package generators.cpp
 
 import ce.settings.CodeStyle
 import generators.obj.FileGenerator
 import generators.obj.out.FileData
 
-class KotlinFileGenerator(style: CodeStyle) : FileGenerator(style) {
+class CppFileGenerator(style: CodeStyle) : FileGenerator(style) {
     override fun createFile(namespace: String, outputFile: String): FileData {
-        return FileData().apply {
+        return CppFileData().apply {
             this.namespace = namespace
             this.fullOutputFileName= outputFile
-            appendHeaderLine("package $namespace\n")
+            this.headerFile.namespace = namespace
+            this.headerFile.fullOutputFileName = outputFile
         }
     }
 

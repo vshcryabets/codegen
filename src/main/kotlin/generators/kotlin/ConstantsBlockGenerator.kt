@@ -15,10 +15,6 @@ class ConstantsBlockGenerator(
     override fun buildBlock(file: FileData, desc: ConstantsBlock): KotlinClassData {
         val result = super.buildBlock(file, desc)
         result.apply {
-//            fileName = "${desc.name}.kt"
-//            headers.append("package $namespace\n");
-
-
             if (desc.classComment.isNotEmpty()) {
                 classDefinition.append(fileGenerator.multilineCommentStart())
                 desc.classComment.lines().forEach { line ->
@@ -27,7 +23,8 @@ class ConstantsBlockGenerator(
                 }
                 classDefinition.append(fileGenerator.multilineCommentEnd())
             }
-            classDefinition.append("object ${desc.name} {\n");
+            classDefinition.append("object ${desc.name}")
+            classDefinition.append(fileGenerator.newLine())
             var previous: Any? = null
             desc.constants.forEach {
                 if (it.value == null && previous != null) {
