@@ -6,9 +6,9 @@ import generators.obj.out.FileData
 
 abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenerator) {
 
-    abstract fun createClassData() : T
+    abstract fun createClassData(namespace : String) : T
 
-    open fun buildBlock(file: FileData, desc: I) : T =  createClassData()
+    open fun processBlock(file: FileData, desc: I) : T =  createClassData(desc.namespace)
 
     fun putTabs(builder: StringBuilder, count : Int) {
         for (i in 0 .. count - 1) {
@@ -16,11 +16,10 @@ abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenera
         }
     }
 
-    fun appendClassDefinition(file: FileData, outputClassData: ClassData, s: String) {
+    fun appendClassDefinition(outputClassData: ClassData, s: String) {
         outputClassData.apply {
-            putTabs(classDefinition, file.currentTabLevel)
             classDefinition.append(s)
-            classDefinition.append('\n')
+            classDefinition.append(fileGenerator.newLine())
         }
     }
 

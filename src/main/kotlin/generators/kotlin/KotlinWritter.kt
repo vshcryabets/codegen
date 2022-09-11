@@ -30,12 +30,12 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
                 out.write(headers)
             }
 
-            fileData.outputBlocks.forEach {
-                if (it.value.classDefinition.isNotEmpty()) {
-                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
-                    out.write(it.value.classDefinition.toString())
-                }
-            }
+//            fileData.outputBlocks.forEach {
+//                if (it.value.classDefinition.isNotEmpty()) {
+//                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
+//                    out.write(it.value.classDefinition.toString())
+//                }
+//            }
 
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())

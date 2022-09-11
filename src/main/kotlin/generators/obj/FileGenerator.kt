@@ -14,12 +14,10 @@ abstract class FileGenerator(val style : CodeStyle) {
         tabSpace = builder.toString()
     }
 
-    abstract fun createFile(namespace: String, outputFile: String): FileData
+    abstract fun createFile(outputFile: String): FileData
     abstract fun multilineCommentStart() : String
     abstract fun multilineCommentEnd() : String
     abstract fun singleComment() : String
-    abstract fun commentStart() : String
-    abstract fun commentEnd() : String
     abstract fun newLine() : String
 
     open fun appendInitalComment(s: FileData, s1: String) {

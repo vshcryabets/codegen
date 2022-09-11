@@ -1,7 +1,8 @@
 package generators.cpp
 
 import generators.obj.out.ClassData
+import javax.xml.stream.events.Namespace
 
-class CppClassData : CppHeaderData() {
-    val headerData = CppHeaderData()
+class CppClassData(namespace: String) : CppHeaderData(namespace) {
+    val headerData = CppHeaderData(namespace)
 }

@@ -1,29 +1,29 @@
 package generators.kotlin
 
-import ce.settings.CodeStyle
 import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
+import javax.xml.stream.events.Namespace
 
 class ConstantsObjectGenerator(
     fileGenerator: KotlinFileGenerator,
     private val project: Project
 ) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {
 
-    override fun buildBlock(file: FileData, desc: ConstantsEnum): KotlinClassData {
-        val result = super.buildBlock(file, desc)
+    override fun processBlock(file: FileData, desc: ConstantsEnum): KotlinClassData {
+        val result = super.processBlock(file, desc)
         result.apply {
 //            headers.append("package $namespace\n");
 
             if (desc.classComment.isNotEmpty()) {
-                appendClassDefinition(file, result, "/**")
+                appendClassDefinition(result, "/**")
                 desc.classComment.lines().forEach { line ->
-                    appendClassDefinition(file, result, "* $line")
+                    appendClassDefinition(result, "* $line")
                 }
-                appendClassDefinition(file, result, "*/")
+                appendClassDefinition(result, "*/")
             }
-            appendClassDefinition(file, result, "object ${desc.name} {");
+            appendClassDefinition(result, "object ${desc.name} {");
             file.currentTabLevel++
             var previous: Any? = null
             desc.constants.forEach {
@@ -43,10 +43,10 @@ class ConstantsObjectGenerator(
                 classDefinition.append('\n')
             }
             file.currentTabLevel--
-            appendClassDefinition(file, result, "}");
+            appendClassDefinition(result, "}");
         }
         return result
     }
 
-    override fun createClassData(): KotlinClassData = KotlinClassData()
+    override fun createClassData(namespace: String): KotlinClassData = KotlinClassData(namespace)
 }

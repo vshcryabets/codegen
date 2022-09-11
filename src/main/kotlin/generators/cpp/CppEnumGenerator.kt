@@ -1,6 +1,5 @@
 package generators.cpp
 
-import ce.settings.CodeStyle
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
@@ -12,47 +11,35 @@ class CppEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
 
-    override fun buildBlock(file: FileData, desc: ConstantsEnum): CppClassData {
-        val cppFile = file as CppFileData
-        val result = super.buildBlock(file, desc)
-        result.apply {
-            if (desc.namespace.isNotEmpty()) {
-                headerData.classDefinition.append("namespace $namespace {${fileGenerator.newLine()}");
-//                headers.append("using $namespace;\n")
+    override fun processBlock(file: FileData, desc: ConstantsEnum): CppClassData {
+        val result = super.processBlock(file, desc)
+        result.headerData.apply {
+            if (desc.classComment.isNotEmpty()) {
+                desc.classComment.lines().forEach { line ->
+                    classComment.append("* ").append(line).append(fileGenerator.newLine())
+                }
             }
-//
-//            if (desc.classComment.isNotEmpty()) {
-//                appendClassDefinition(headerData, "/**")
-//                desc.classComment.lines().forEach { line ->
-//                    appendClassDefinition(headerData, "* $line")
-//                }
-//                appendClassDefinition(headerData, "*/")
-//            }
-//            appendClassDefinition(headerData, "enum ${desc.name} {");
-//            headerData.currentTabLevel++;
-//            var previous: Any? = null
-//            desc.constants.forEach {
-//                if (it.value == null && previous != null) {
-//                    it.value = previous!! as Int + 1;
-//                }
-//
-//                if (it.value != null) {
-//                    previous = it.value
-//                }
+            classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
+            var previous: Any? = null
+            desc.constants.forEach {
+                if (it.value == null && previous != null) {
+                    it.value = previous!! as Int + 1;
+                }
+
+                if (it.value != null) {
+                    previous = it.value
+                }
 //                putTabs(headerData.classDefinition, headerData.currentTabLevel)
-//                headerData.classDefinition.append(it.name);
-//                headerData.classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
-//                headerData.classDefinition.append('\n')
-//            }
-//            headerData.currentTabLevel--;
-//            appendClassDefinition(headerData, "};");
-//
-            if (namespace.isNotEmpty()) {
-                headerData.classDefinition.append("} // $namespace${fileGenerator.newLine()}");
+                classDefinition.append(it.name);
+                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
+                classDefinition.append('\n')
             }
-            return result
+//            headerData.currentTabLevel--;
+            appendClassDefinition(this, "};");
+
         }
+        return result
+    }
 
-
-    override fun createClassData(): CppClassData = CppClassData()
+    override fun createClassData(namespace : String): CppClassData = CppClassData(namespace)
 }

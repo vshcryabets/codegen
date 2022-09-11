@@ -1,10 +1,10 @@
 package generators.cpp
 
-import ce.settings.CodeStyle
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.InterfaceDescription
 import generators.obj.out.FileData
+import javax.xml.stream.events.Namespace
 
 class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
     : Generator<InterfaceDescription, CppClassData>(fileGenerator) {
@@ -34,8 +34,8 @@ class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
 //        }
 //    }
 
-    override fun buildBlock(file: FileData, desc: InterfaceDescription): CppClassData {
-        val result = super.buildBlock(file, desc)
+    override fun processBlock(file: FileData, desc: InterfaceDescription): CppClassData {
+        val result = super.processBlock(file, desc)
             //prepareHeader(desc)
 //        println(result.headers)
 //        println(result.getIncludes())
@@ -44,5 +44,5 @@ class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
         return result
     }
 
-    override fun createClassData(): CppClassData = CppClassData()
+    override fun createClassData(namespace: String): CppClassData = CppClassData(namespace)
 }

@@ -1,6 +1,5 @@
 package generators.cpp
 
-import ce.settings.CodeStyle
 import generators.obj.FileGenerator
 import generators.obj.Writter
 import generators.obj.out.FileData
@@ -25,12 +24,34 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
                 out.write(headers)
             }
 
-            fileData.outputBlocks.forEach {
-                if (it.value.classDefinition.isNotEmpty()) {
+            fileData.namespaces.forEach { ns ->
+                if (ns.key.isNotEmpty())
+                 out.write("namespace ${ns.key} {${fileGenerator.newLine()}");
+
+                ns.value.outputBlocks.forEach {
+                    val classDecl = (it.value as CppClassData).headerData
+                    writeNotEmpty(out, classDecl.classStart)
+
                     for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
-                    out.write(it.value.classDefinition.toString())
+
+                    if (classDecl.classComment.isNotEmpty()) {
+                        out.write(fileGenerator.multilineCommentStart())
+                        out.write(classDecl.classComment.toString())
+                        out.write(fileGenerator.multilineCommentEnd())
+                    }
+
+                    if (classDecl.classDefinition.isNotEmpty()) {
+                        out.write(classDecl.classDefinition.toString())
+                    }
+
+                    writeNotEmpty(out, classDecl.classEnd)
                 }
+
+                if (ns.key.isNotEmpty())
+                    out.write("} // ${ns.key}${fileGenerator.newLine()}")
             }
+
+
 
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())
@@ -39,8 +60,7 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
     }
 
     override fun writeFile(fileData: FileData) {
-        val cppFileData= fileData as CppFileData
-        writeHeaderFile(cppFileData.headerFile)
+        writeHeaderFile(fileData)
         var outputFile = File(fileData.fullOutputFileName + ".cpp")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
@@ -55,12 +75,12 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
                 out.write(headers)
             }
 
-            fileData.outputBlocks.forEach {
-                if (it.value.classDefinition.isNotEmpty()) {
-                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
-                    out.write(it.value.classDefinition.toString())
-                }
-            }
+//            fileData.outputBlocks.forEach {
+//                if (it.value.classDefinition.isNotEmpty()) {
+//                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
+//                    out.write(it.value.classDefinition.toString())
+//                }
+//            }
 
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())

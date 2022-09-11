@@ -1,13 +1,12 @@
 package generators.obj.out
 
 open class FileData {
-    var namespace : String = ""
     val initialComments = StringBuilder()
     var headers = StringBuilder()
     var fullOutputFileName : String = ""
     var currentTabLevel : Int = 0
     var end = StringBuilder()
-    val outputBlocks = mutableMapOf<String, ClassData>()
+    val namespaces = mutableMapOf<String, Namespace>()
     val includes = HashSet<String>()
 
     fun addInclude(name: String) {

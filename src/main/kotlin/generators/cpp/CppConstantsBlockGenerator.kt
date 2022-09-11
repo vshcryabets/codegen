@@ -1,19 +1,19 @@
 package generators.cpp
 
-import ce.settings.CodeStyle
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ConstantsBlock
 import generators.obj.out.FileData
+import javax.xml.stream.events.Namespace
 
 class CppConstantsBlockGenerator(
     fileGenerator: FileGenerator,
     private val project: Project
 ) : Generator<ConstantsBlock, CppClassData>(fileGenerator) {
 
-    override fun buildBlock(file: FileData, desc: ConstantsBlock): CppClassData {
-        val result = super.buildBlock(file, desc)
+    override fun processBlock(file: FileData, desc: ConstantsBlock): CppClassData {
+        val result = super.processBlock(file, desc)
         result.apply {
 //            if (desc.classComment.isNotEmpty()) {
 //                classDefinition.append("/**\n")
@@ -45,5 +45,5 @@ class CppConstantsBlockGenerator(
         return result
     }
 
-    override fun createClassData(): CppClassData = CppClassData()
+    override fun createClassData(namespace: String): CppClassData = CppClassData(namespace)
 }

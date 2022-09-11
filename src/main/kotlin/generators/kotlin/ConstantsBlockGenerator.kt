@@ -1,19 +1,19 @@
 package generators.kotlin
 
-import ce.settings.CodeStyle
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ConstantsBlock
 import generators.obj.out.FileData
+import javax.xml.stream.events.Namespace
 
 class ConstantsBlockGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
 ) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
 
-    override fun buildBlock(file: FileData, desc: ConstantsBlock): KotlinClassData {
-        val result = super.buildBlock(file, desc)
+    override fun processBlock(file: FileData, desc: ConstantsBlock): KotlinClassData {
+        val result = super.processBlock(file, desc)
         result.apply {
             if (desc.classComment.isNotEmpty()) {
                 classDefinition.append(fileGenerator.multilineCommentStart())
@@ -47,5 +47,5 @@ class ConstantsBlockGenerator(
         return result
     }
 
-    override fun createClassData(): KotlinClassData = KotlinClassData()
+    override fun createClassData(namespace: String): KotlinClassData = KotlinClassData(namespace)
 }

@@ -5,12 +5,9 @@ import generators.obj.FileGenerator
 import generators.obj.out.FileData
 
 class CppFileGenerator(style: CodeStyle) : FileGenerator(style) {
-    override fun createFile(namespace: String, outputFile: String): FileData {
-        return CppFileData().apply {
-            this.namespace = namespace
+    override fun createFile(outputFile: String): FileData {
+        return FileData().apply {
             this.fullOutputFileName= outputFile
-            this.headerFile.namespace = namespace
-            this.headerFile.fullOutputFileName = outputFile
         }
     }
 
@@ -18,6 +15,4 @@ class CppFileGenerator(style: CodeStyle) : FileGenerator(style) {
     override fun multilineCommentStart(): String = "/**${newLine()}"
     override fun multilineCommentEnd(): String = "*/${newLine()}"
     override fun singleComment(): String = "//"
-    override fun commentStart(): String = "/*${newLine()}"
-    override fun commentEnd(): String = "*/${newLine()}"
 }
