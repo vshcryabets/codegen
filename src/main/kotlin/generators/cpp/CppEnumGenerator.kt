@@ -29,12 +29,11 @@ class CppEnumGenerator(
                 if (it.value != null) {
                     previous = it.value
                 }
-//                putTabs(headerData.classDefinition, headerData.currentTabLevel)
+                putTabs(classDefinition, 1)
                 classDefinition.append(it.name);
                 classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
                 classDefinition.append('\n')
             }
-//            headerData.currentTabLevel--;
             appendClassDefinition(this, "};");
 
         }

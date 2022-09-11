@@ -4,9 +4,6 @@ import generators.obj.InterfaceDescription
 
 class InterfaceGeneratorKotlin  {
     fun build(desc: InterfaceDescription) {
-        if (desc.namespace.isNotEmpty()) {
-            println("package ${desc.namespace}");
-        }
         println("");
         println("interface ${desc.name} {");
         desc.publicMethods.forEach {

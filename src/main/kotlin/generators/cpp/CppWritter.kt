@@ -14,10 +14,7 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
         outputFile.parentFile.mkdirs()
         println("Writing headers $outputFile")
         outputFile.bufferedWriter().use { out ->
-            val initialComments = fileData.getInitialComments()
-            if (initialComments.isNotEmpty()) {
-                out.write(initialComments)
-            }
+            writeNotEmpty(out, fileData.initialComments)
 
             val headers = fileData.getHeaders()
             if (headers.isNotEmpty()) {
