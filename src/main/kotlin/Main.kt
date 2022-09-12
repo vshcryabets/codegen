@@ -8,8 +8,6 @@ import generators.obj.MetaGenerator
 import generators.cpp.*
 import generators.kotlin.*
 import generators.obj.input.Block
-import generators.obj.input.ConstantsEnum
-import generators.obj.out.FileData
 import okio.buffer
 import okio.source
 import java.io.File
@@ -38,7 +36,7 @@ fun main(args: Array<String>) {
     val kotlinFileGenerator = KotlinFileGenerator(project.codeStyle)
     val kotlinMeta = object : MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
-        enum = ConstantsObjectGenerator(kotlinFileGenerator, project),
+        enum = KotlinEnumGenerator(kotlinFileGenerator, project),
         constantsBlock = ConstantsBlockGenerator(kotlinFileGenerator, project),
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,

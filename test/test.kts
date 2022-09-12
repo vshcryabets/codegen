@@ -1,14 +1,11 @@
 import ce.defs.*
 
-namespace("goldman")
-
 namespace(
     when (target()) {
         ce.defs.Target.Kotlin, ce.defs.Target.Java -> {
             "com.goldman"
         }
         else -> {
-            setOutputFileName("test")
             "goldman"
         }
     })
@@ -24,6 +21,7 @@ enum("GoldErrors2").apply {
     add("OK", 0)
     add("BUSY")
 }
+
 enum("GoldErrors").apply {
     defaultType(DataType.int16)
     add("OK", 0)
@@ -34,6 +32,7 @@ enum("GoldErrors").apply {
 }
 
 setOutputFileName("GoldObjects")
+
 enum("GoldErrors3").apply {
     addBlockComment(
         """
@@ -45,6 +44,7 @@ enum("GoldErrors3").apply {
     add("OK", 0)
     add("BUSY")
 }
+
 enum("GoldErrors4").apply {
     defaultType(DataType.int16)
     add("OK", 0)
@@ -53,3 +53,5 @@ enum("GoldErrors4").apply {
     add("PASSLEN")
     add("PASSWRONG", 4)
 }
+
+

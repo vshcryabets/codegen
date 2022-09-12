@@ -23,7 +23,7 @@ class ConstantsBlockGenerator(
                 }
                 classDefinition.append(fileGenerator.multilineCommentEnd())
             }
-            classDefinition.append("object ${desc.name}")
+            classDefinition.append("object ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
             var previous: Any? = null
             desc.constants.forEach {

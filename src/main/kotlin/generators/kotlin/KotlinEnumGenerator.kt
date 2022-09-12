@@ -4,9 +4,8 @@ import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
-import javax.xml.stream.events.Namespace
 
-class ConstantsObjectGenerator(
+class KotlinEnumGenerator(
     fileGenerator: KotlinFileGenerator,
     private val project: Project
 ) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {

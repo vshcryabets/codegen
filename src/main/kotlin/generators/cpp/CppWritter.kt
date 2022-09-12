@@ -9,17 +9,13 @@ import java.io.File
 class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
     : Writter(fileGenerator.style, outputFolder) {
 
-    fun writeHeaderFile(fileData: FileData) {
+    fun writeHeaderFile(fileData: CppFileData) {
         var outputFile = File(fileData.fullOutputFileName + ".h")
         outputFile.parentFile.mkdirs()
         println("Writing headers $outputFile")
         outputFile.bufferedWriter().use { out ->
-            writeNotEmpty(out, fileData.initialComments)
-
-            val headers = fileData.getHeaders()
-            if (headers.isNotEmpty()) {
-                out.write(headers)
-            }
+            writeNotEmpty(out, fileData.headerInitialComments)
+            writeNotEmpty(out, fileData.headerBegin)
 
             fileData.namespaces.forEach { ns ->
                 if (ns.key.isNotEmpty())
@@ -57,7 +53,7 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
     }
 
     override fun writeFile(fileData: FileData) {
-        writeHeaderFile(fileData)
+        writeHeaderFile(fileData as CppFileData)
         var outputFile = File(fileData.fullOutputFileName + ".cpp")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")

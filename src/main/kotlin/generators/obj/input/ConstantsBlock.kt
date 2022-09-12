@@ -17,4 +17,8 @@ open class ConstantsBlock(
     fun add(name: String, value: Any? = null) {
         constants.add(ClassField(name, defaultDataType, value))
     }
+
+    fun add(name: String, type : DataType, value: Any? = null) {
+        constants.add(ClassField(name, type, value))
+    }
 }

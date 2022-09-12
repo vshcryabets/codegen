@@ -14,33 +14,20 @@ class CppConstantsBlockGenerator(
 
     override fun processBlock(file: FileData, desc: ConstantsBlock): CppClassData {
         val result = super.processBlock(file, desc)
-        result.apply {
-//            if (desc.classComment.isNotEmpty()) {
-//                classDefinition.append("/**\n")
-//                desc.classComment.lines().forEach { line ->
-//                    classDefinition.append("* $line\n")
-//                }
-//                classDefinition.append("*/\n")
-//            }
-//            classDefinition.append("object ${desc.name} {\n");
-//            var previous: Any? = null
-//            desc.constants.forEach {
-//                if (it.value == null && previous != null) {
-//                    it.value = previous!! as Int + 1;
-//                }
-//
-//                if (it.value != null) {
-//                    previous = it.value
-//                }
-//
-//                classDefinition.append(tabSpace);
-//                classDefinition.append("const val ");
-//                classDefinition.append(it.name);
-//                classDefinition.append(" : ${Types.typeTo(this, it.type)}")
-//                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-//                classDefinition.append('\n')
-//            }
-//            classDefinition.append("}\n");
+        result.headerData.apply {
+            if (desc.classComment.isNotEmpty()) {
+                desc.classComment.lines().forEach { line ->
+                    classComment.append("* ").append(line).append(fileGenerator.newLine())
+                }
+            }
+            desc.constants.forEach {
+                classDefinition.append("const ")
+                    .append(Types.typeTo(file, it.type))
+                    .append(" ")
+                    .append(it.name)
+                    .append(" = ${Types.toValue(this, it.type, it.value)};")
+                    .append(fileGenerator.newLine())
+            }
         }
         return result
     }

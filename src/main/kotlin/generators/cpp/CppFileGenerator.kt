@@ -6,9 +6,16 @@ import generators.obj.out.FileData
 
 class CppFileGenerator(style: CodeStyle) : FileGenerator(style) {
     override fun createFile(outputFile: String): FileData {
-        return FileData().apply {
+        return CppFileData().apply {
             this.fullOutputFileName= outputFile
+            this.headerBegin.append("#pragma once")
+                .append(newLine())
         }
+    }
+
+    override fun appendInitalComment(s: FileData, s1: String) {
+        super.appendInitalComment(s, s1)
+//        (s as CppFileData)
     }
 
     override fun newLine(): String = "\n"
