@@ -11,7 +11,6 @@ open class Block(
     var objectBaseFolder = ""
 
     fun addBlockComment(value : String) {
-        classComment.append('\n')
         classComment.append(value)
     }
 }

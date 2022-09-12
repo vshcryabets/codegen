@@ -15,11 +15,7 @@ class CppConstantsBlockGenerator(
     override fun processBlock(file: FileData, desc: ConstantsBlock): CppClassData {
         val result = super.processBlock(file, desc)
         result.headerData.apply {
-            if (desc.classComment.isNotEmpty()) {
-                desc.classComment.lines().forEach { line ->
-                    classComment.append(line).append(fileGenerator.newLine())
-                }
-            }
+            classComment.append(desc.classComment).append(fileGenerator.newLine())
 
             classComment
                 .append("Constants ${desc.name}")

@@ -6,8 +6,13 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import generators.obj.MetaGenerator
 import generators.cpp.*
-import generators.kotlin.*
+import generators.kotlin.KotlinClassData
+import generators.kotlin.KotlinEnumGenerator
+import generators.kotlin.KotlinFileGenerator
+import generators.kotlin.KotlinWritter
 import generators.obj.input.Block
+import generators.swift.*
+import generators.swift.ConstantsBlockGenerator
 import okio.buffer
 import okio.source
 import java.io.File
@@ -37,10 +42,10 @@ fun main(args: Array<String>) {
     val kotlinMeta = object : MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
         enum = KotlinEnumGenerator(kotlinFileGenerator, project),
-        constantsBlock = ConstantsBlockGenerator(kotlinFileGenerator, project),
+        constantsBlock = generators.kotlin.ConstantsBlockGenerator(kotlinFileGenerator, project),
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,
-        fileGenerator = KotlinFileGenerator(project.codeStyle)
+        fileGenerator = SwiftFileGenerator(project.codeStyle)
     ) {
         override fun getBlockFilePath(block: Block): String {
             var fileName = "${block.name}"
@@ -71,9 +76,29 @@ fun main(args: Array<String>) {
         }
     }
 
+    val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
+    val swiftMeta = object : MetaGenerator<SwiftClassData>(
+        target = Target.Swift,
+        enum = SwiftEnumGenerator(swiftFileGenerator, project),
+        constantsBlock = ConstantsBlockGenerator(swiftFileGenerator, project),
+        writter = SwiftWritter(swiftFileGenerator, project.outputFolder),
+        project = project,
+        fileGenerator = swiftFileGenerator
+    ) {
+        override fun getBlockFilePath(block: Block): String {
+            var fileName = "${block.name}"
+            if (block.outputFile.isNotEmpty()) {
+                fileName = "${block.outputFile}"
+            }
+            val namespace = block.namespace.replace('.', File.separatorChar)
+            return block.objectBaseFolder + File.separatorChar + fileName
+        }
+    }
+
     val supportedMeta = mapOf(
         Target.Kotlin to kotlinMeta,
-        Target.Cxx to cppMeta
+        Target.Cxx to cppMeta,
+        Target.Swift to swiftMeta
     )
 
     project.targets.forEach { target ->

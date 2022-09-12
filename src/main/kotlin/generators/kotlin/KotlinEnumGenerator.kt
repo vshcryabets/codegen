@@ -13,17 +13,9 @@ class KotlinEnumGenerator(
     override fun processBlock(file: FileData, desc: ConstantsEnum): KotlinClassData {
         val result = super.processBlock(file, desc)
         result.apply {
-//            headers.append("package $namespace\n");
+            classComment.append(desc.classComment).append(fileGenerator.newLine())
 
-            if (desc.classComment.isNotEmpty()) {
-                appendClassDefinition(result, "/**")
-                desc.classComment.lines().forEach { line ->
-                    appendClassDefinition(result, "* $line")
-                }
-                appendClassDefinition(result, "*/")
-            }
             appendClassDefinition(result, "object ${desc.name} {");
-            file.currentTabLevel++
             var previous: Any? = null
             desc.constants.forEach {
                 if (it.value == null && previous != null) {
@@ -34,14 +26,13 @@ class KotlinEnumGenerator(
                     previous = it.value
                 }
 
-                putTabs(classDefinition, file.currentTabLevel)
-                classDefinition.append("const val ");
-                classDefinition.append(it.name);
-                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-                classDefinition.append('\n')
+                putTabs(classDefinition, 1)
+                classDefinition.append("const val ")
+                    .append(it.name)
+                    .append(" : ${Types.typeTo(file, it.type)}")
+                    .append(" = ${Types.toValue(this, it.type, it.value)}")
+                    .append(fileGenerator.newLine())
             }
-            file.currentTabLevel--
             appendClassDefinition(result, "}");
         }
         return result

@@ -1,11 +1,11 @@
-package generators.kotlin
+package generators.swift
 
 import generators.obj.Writter
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String)
+class SwiftWritter(val fileGenerator: SwiftFileGenerator, outputFolder: String)
     : Writter(fileGenerator.style, outputFolder) {
 
     override fun write(data: ProjectOutput) {
@@ -16,16 +16,16 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
 
     override fun writeFile(fileData: FileData) {
         if (fileData.namespaces.size != 1) {
-            throw IllegalStateException("Kotlin file can contain only one namespace")
+            throw IllegalStateException("Swift file can contain only one namespace")
         }
-        var outputFile = File(fileData.fullOutputFileName + ".kt")
+        var outputFile = File(fileData.fullOutputFileName + ".swift")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
             writeNotEmpty(out, fileData.initialComments)
 
-            out.write("package ${namespace.name}${fileGenerator.newLine()}");
+            //out.write("package ${namespace.name}${fileGenerator.newLine()}");
 
             val headers = fileData.getHeaders()
             if (headers.isNotEmpty()) {

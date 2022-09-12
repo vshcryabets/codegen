@@ -1,10 +1,11 @@
 package generators.cpp
 
 import ce.settings.CodeStyle
+import generators.obj.CLikeFileGenerator
 import generators.obj.FileGenerator
 import generators.obj.out.FileData
 
-class CppFileGenerator(style: CodeStyle) : FileGenerator(style) {
+class CppFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(outputFile: String): FileData {
         return CppFileData().apply {
             this.fullOutputFileName= outputFile
@@ -17,10 +18,4 @@ class CppFileGenerator(style: CodeStyle) : FileGenerator(style) {
         super.appendInitalComment(s, s1)
 //        (s as CppFileData)
     }
-
-    override fun newLine(): String = "\n"
-    override fun multilineCommentStart(): String = "/**${newLine()}"
-    override fun multilineCommentMid(): String = "*"
-    override fun multilineCommentEnd(): String = "*/${newLine()}"
-    override fun singleComment(): String = "//"
 }
