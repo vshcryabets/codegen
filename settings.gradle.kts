@@ -1,3 +1,3 @@
 
-rootProject.name = "test3"
+rootProject.name = "cgen"
 
