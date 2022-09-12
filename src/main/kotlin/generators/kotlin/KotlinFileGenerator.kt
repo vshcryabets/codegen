@@ -13,6 +13,7 @@ class KotlinFileGenerator(style: CodeStyle) : FileGenerator(style) {
 
     override fun newLine(): String = "\n"
     override fun multilineCommentStart(): String = "/**${newLine()}"
+    override fun multilineCommentMid(): String = "*"
     override fun multilineCommentEnd(): String = "*/${newLine()}"
     override fun singleComment(): String = "//"
 }

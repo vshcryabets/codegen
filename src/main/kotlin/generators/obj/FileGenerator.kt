@@ -16,6 +16,7 @@ abstract class FileGenerator(val style : CodeStyle) {
 
     abstract fun createFile(outputFile: String): FileData
     abstract fun multilineCommentStart() : String
+    abstract fun multilineCommentMid() : String
     abstract fun multilineCommentEnd() : String
     abstract fun singleComment() : String
     abstract fun newLine() : String

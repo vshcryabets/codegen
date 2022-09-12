@@ -58,6 +58,10 @@ abstract class MetaGenerator<T : ClassData>(
                     is ConstantsBlock -> constantsBlock.processBlock(fileData, block)
                     else -> ClassData.emptyClassData
                 }
+                if (namespace.outputBlocks.contains(block.name)) {
+                    throw java.lang.IllegalStateException(
+                        "Duplicate block error! ${namespace.name} already contains block with name ${block.name}");
+                }
                 namespace.outputBlocks[block.name] = classData
             }
         }

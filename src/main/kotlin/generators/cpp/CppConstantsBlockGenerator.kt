@@ -17,9 +17,14 @@ class CppConstantsBlockGenerator(
         result.headerData.apply {
             if (desc.classComment.isNotEmpty()) {
                 desc.classComment.lines().forEach { line ->
-                    classComment.append("* ").append(line).append(fileGenerator.newLine())
+                    classComment.append(line).append(fileGenerator.newLine())
                 }
             }
+
+            classComment
+                .append("Constants ${desc.name}")
+                .append(fileGenerator.newLine())
+
             desc.constants.forEach {
                 classDefinition.append("const ")
                     .append(Types.typeTo(file, it.type))

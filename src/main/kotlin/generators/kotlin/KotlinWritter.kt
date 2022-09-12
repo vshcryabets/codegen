@@ -40,7 +40,10 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
 
                 if (classDef.classComment.isNotEmpty()) {
                     out.write(fileGenerator.multilineCommentStart())
-                    out.write(classDef.classComment.toString())
+                    classDef.classComment.lines().forEach { line ->
+                        out.write(fileGenerator.multilineCommentMid())
+                        out.write(" $line${fileGenerator.newLine()}")
+                    }
                     out.write(fileGenerator.multilineCommentEnd())
                 }
 

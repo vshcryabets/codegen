@@ -29,7 +29,10 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
 
                     if (classDecl.classComment.isNotEmpty()) {
                         out.write(fileGenerator.multilineCommentStart())
-                        out.write(classDecl.classComment.toString())
+                        classDecl.classComment.lines().forEach { line ->
+                            out.write(fileGenerator.multilineCommentMid())
+                            out.write(" $line${fileGenerator.newLine()}")
+                        }
                         out.write(fileGenerator.multilineCommentEnd())
                     }
 
