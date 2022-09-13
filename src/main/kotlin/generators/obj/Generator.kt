@@ -16,6 +16,12 @@ abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenera
         }
     }
 
+    fun appendNotEmptyWithNewLine(str: String, builder: StringBuilder) {
+        if (str.isNotEmpty()) {
+            builder.append(str).append(fileGenerator.newLine())
+        }
+    }
+
     fun appendClassDefinition(outputClassData: ClassData, s: String) {
         outputClassData.apply {
             classDefinition.append(s)

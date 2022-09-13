@@ -11,6 +11,10 @@ import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
 import generators.kotlin.KotlinWritter
 import generators.obj.input.Block
+import generators.rust.RustClassData
+import generators.rust.RustEnumGenerator
+import generators.rust.RustFileGenerator
+import generators.rust.RustWritter
 import generators.swift.*
 import generators.swift.ConstantsBlockGenerator
 import okio.buffer
@@ -46,16 +50,7 @@ fun main(args: Array<String>) {
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = SwiftFileGenerator(project.codeStyle)
-    ) {
-        override fun getBlockFilePath(block: Block): String {
-            var fileName = "${block.name}"
-            if (block.outputFile.isNotEmpty()) {
-                fileName = "${block.outputFile}"
-            }
-            val namespace = block.namespace.replace('.', File.separatorChar)
-            return block.objectBaseFolder + File.separatorChar + namespace + File.separatorChar + fileName
-        }
-    }
+    ){}
 
     val cppFileGenerator = CppFileGenerator(project.codeStyle)
     val cppMeta = object : MetaGenerator<CppClassData>(
@@ -65,16 +60,7 @@ fun main(args: Array<String>) {
         writter = CppWritter(cppFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = cppFileGenerator
-    ) {
-        override fun getBlockFilePath(block: Block): String {
-            var fileName = "${block.name}"
-            if (block.outputFile.isNotEmpty()) {
-                fileName = "${block.outputFile}"
-            }
-            val namespace = block.namespace.replace('.', File.separatorChar)
-            return block.objectBaseFolder + File.separatorChar + fileName
-        }
-    }
+    ){}
 
     val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
     val swiftMeta = object : MetaGenerator<SwiftClassData>(
@@ -85,20 +71,25 @@ fun main(args: Array<String>) {
         project = project,
         fileGenerator = swiftFileGenerator
     ) {
-        override fun getBlockFilePath(block: Block): String {
-            var fileName = "${block.name}"
-            if (block.outputFile.isNotEmpty()) {
-                fileName = "${block.outputFile}"
-            }
-            val namespace = block.namespace.replace('.', File.separatorChar)
-            return block.objectBaseFolder + File.separatorChar + fileName
-        }
+    }
+
+    val rustFileGenerator = RustFileGenerator(project.codeStyle)
+    val rustMeta = object : MetaGenerator<RustClassData>(
+        target = Target.Rust,
+        enum = RustEnumGenerator(rustFileGenerator, project),
+        constantsBlock = generators.rust.ConstantsBlockGenerator(rustFileGenerator, project),
+        writter = RustWritter(rustFileGenerator, project.outputFolder),
+        project = project,
+        fileGenerator = rustFileGenerator
+    ) {
+
     }
 
     val supportedMeta = mapOf(
         Target.Kotlin to kotlinMeta,
         Target.Cxx to cppMeta,
-        Target.Swift to swiftMeta
+        Target.Swift to swiftMeta,
+        Target.Rust to rustMeta
     )
 
     project.targets.forEach { target ->

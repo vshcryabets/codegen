@@ -19,8 +19,6 @@ abstract class MetaGenerator<T : ClassData>(
     private val project: Project
 ) {
 
-    abstract fun getBlockFilePath(block: Block) : String
-
     open fun processProject(blocks: List<Block>): ProjectOutput {
         val result = ProjectOutput()
         val files = result.files
@@ -28,7 +26,7 @@ abstract class MetaGenerator<T : ClassData>(
 
         // prepare output files
         blocks.forEach {
-            val outputFile = getBlockFilePath(it)
+            val outputFile = fileGenerator.getBlockFilePath(it)
             val fileData = if (files.contains(outputFile)) {
                 files[outputFile]!!
             } else {

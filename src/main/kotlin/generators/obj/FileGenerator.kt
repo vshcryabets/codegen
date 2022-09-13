@@ -1,6 +1,7 @@
 package generators.obj
 
 import ce.settings.CodeStyle
+import generators.obj.input.Block
 import generators.obj.out.FileData
 
 abstract class FileGenerator(val style : CodeStyle) {
@@ -20,6 +21,8 @@ abstract class FileGenerator(val style : CodeStyle) {
     abstract fun multilineCommentEnd() : String
     abstract fun singleComment() : String
     abstract fun newLine() : String
+
+    abstract fun getBlockFilePath(block: Block): String
 
     open fun appendInitalComment(s: FileData, s1: String) {
         if (s1.trimIndent().isNotEmpty()) {

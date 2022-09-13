@@ -1,4 +1,4 @@
-package generators.swift
+package generators.rust
 
 import ce.defs.DataType
 import ce.settings.Project
@@ -6,18 +6,18 @@ import generators.obj.Generator
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
-class SwiftEnumGenerator(
-    fileGenerator: SwiftFileGenerator,
+class RustEnumGenerator(
+    fileGenerator: RustFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, SwiftClassData>(fileGenerator) {
+) : Generator<ConstantsEnum, RustClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsEnum): SwiftClassData {
+    override fun processBlock(file: FileData, desc: ConstantsEnum): RustClassData {
         val result = super.processBlock(file, desc)
         result.apply {
             classComment.append(desc.classComment).append(fileGenerator.newLine())
             val withRawValues = desc.defaultDataType != DataType.VOID
             if (withRawValues) {
-                appendClassDefinition(result, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
+                appendClassDefinition(result, "enum ${desc.name}  : ${Types.typeTo(file, desc.defaultDataType)} {")
             } else {
                 appendClassDefinition(result, "enum ${desc.name} {");
                 putTabs(classDefinition, 1)
@@ -56,5 +56,5 @@ class SwiftEnumGenerator(
         return result
     }
 
-    override fun createClassData(namespace: String): SwiftClassData = SwiftClassData(namespace)
+    override fun createClassData(namespace: String): RustClassData = RustClassData(namespace)
 }

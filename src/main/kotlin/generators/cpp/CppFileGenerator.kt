@@ -3,7 +3,9 @@ package generators.cpp
 import ce.settings.CodeStyle
 import generators.obj.CLikeFileGenerator
 import generators.obj.FileGenerator
+import generators.obj.input.Block
 import generators.obj.out.FileData
+import java.io.File
 
 class CppFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(outputFile: String): FileData {
