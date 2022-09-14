@@ -15,7 +15,7 @@ class ConstantsBlockGenerator(
     override fun processBlock(file: FileData, desc: ConstantsBlock): KotlinClassData {
         val result = super.processBlock(file, desc)
         result.apply {
-            classComment.append(desc.classComment).append(fileGenerator.newLine())
+            appendNotEmptyWithNewLine(desc.classComment, classComment)
 
             classDefinition.append("object ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
