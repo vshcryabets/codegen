@@ -2,7 +2,7 @@ package generators.kotlin
 
 import generators.obj.InterfaceDescription
 
-class InterfaceGeneratorKotlin  {
+class KotlinInterfaceGenerator  {
     fun build(desc: InterfaceDescription) {
         println("");
         println("interface ${desc.name} {");
