@@ -14,15 +14,21 @@ class KotlinEnumGenerator(
     override fun processBlock(file: FileData, desc: ConstantsEnum): KotlinClassData {
         val result = super.processBlock(file, desc)
         result.apply {
-            classComment.append(desc.classComment).append(fileGenerator.newLine())
+            appendNotEmptyWithNewLine(classComment, desc.classComment)
             val withRawValues = desc.defaultDataType != DataType.VOID
 
-            appendClassDefinition(result, "enum ${desc.name} {");
+            classDefinition.append("enum class ${desc.name}")
+            if (!withRawValues) {
+                classDefinition.append(" {")
+                    .append(fileGenerator.newLine())
+                putTabs(classDefinition, 1)
+            } else {
+                classDefinition.append("(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {")
+                    .append(fileGenerator.newLine())
+            }
+
             var previous: Any? = null
             var needToAddComa = false
-            if (!withRawValues) {
-                putTabs(classDefinition, 1)
-            }
             desc.constants.forEach {
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;
@@ -48,6 +54,7 @@ class KotlinEnumGenerator(
             }
             if (!withRawValues) {
                 classDefinition.append(fileGenerator.newLine())
+                    .append(fileGenerator.newLine())
             }
             appendClassDefinition(result, "}");
         }

@@ -16,10 +16,7 @@ object Types {
             DataType.uint32 -> "Long"
             DataType.float32 -> "Float"
             DataType.float64 -> "Double"
-            DataType.string -> {
-                file.addInclude("<string>")
-                "std::string"
-            }
+            DataType.string -> "String"
             else -> "QQTP_$type"
         }
 

@@ -49,8 +49,8 @@ fun main(args: Array<String>) {
         constantsBlock = generators.kotlin.ConstantsBlockGenerator(kotlinFileGenerator, project),
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,
-        fileGenerator = SwiftFileGenerator(project.codeStyle)
-    ){}
+        fileGenerator = kotlinFileGenerator
+    ) {}
 
     val cppFileGenerator = CppFileGenerator(project.codeStyle)
     val cppMeta = object : MetaGenerator<CppClassData>(
@@ -60,7 +60,7 @@ fun main(args: Array<String>) {
         writter = CppWritter(cppFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = cppFileGenerator
-    ){}
+    ) {}
 
     val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
     val swiftMeta = object : MetaGenerator<SwiftClassData>(
@@ -101,13 +101,13 @@ fun main(args: Array<String>) {
 
             project.files.forEach { fileName ->
                 println("Processing $fileName")
-                val fileObjects = mutableListOf<Block>()
-                val reader = InputStreamReader(FileInputStream(fileName))
+                val fileObject = File(fileName)
+                val reader = InputStreamReader(FileInputStream(fileObject))
                 // clean global defines for each file
                 definedBloks.clear()
                 namescpaceDef.setLength(0)
                 customBaseFolderPath = project.outputFolder
-                sourceFile = fileName
+                sourceFile = fileObject.absolutePath
                 outputFile = ""
                 engine.eval(reader)
                 reader.close()
