@@ -2,8 +2,10 @@ package generators.obj.input
 
 import ce.defs.DataType
 
-data class ClassField (
-    val name: String,
+object NotDefined;
+
+open class ClassField(
+    name: String,
     val type: DataType,
-    var value : Any? = null
-)
+    var value : Any? = NotDefined
+)  : Leaf(name)

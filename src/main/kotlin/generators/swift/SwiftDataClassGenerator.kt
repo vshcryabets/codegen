@@ -3,15 +3,17 @@ package generators.swift
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
+import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.DataClass
 import generators.obj.out.FileData
 
-class ConstantsBlockGenerator(
+class SwiftDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, SwiftClassData>(fileGenerator) {
+) : Generator<DataClass, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsBlock): SwiftClassData {
+    override fun processBlock(file: FileData, desc: DataClass): SwiftClassData {
         val result = super.processBlock(file, desc)
         result.apply {
             classComment.append(desc.classComment).append(fileGenerator.newLine())
@@ -19,7 +21,8 @@ class ConstantsBlockGenerator(
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
             var previous: Any? = null
-            desc.constants.forEach {
+            desc.leafs.forEach { leaf ->
+                val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;
                 }

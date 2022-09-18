@@ -5,6 +5,7 @@ import ce.settings.Project
 import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.DataClass
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.Namespace
@@ -17,6 +18,7 @@ abstract class MetaGenerator<T : ClassData>(
     val target: Target = Target.Other,
     val enum: Generator<ConstantsEnum, T>,
     val constantsBlock: Generator<ConstantsBlock, T>,
+    val dataClass: Generator<DataClass, T>,
     val fileGenerator : FileGenerator,
     private val writter: Writter,
     private val project: Project
@@ -62,6 +64,7 @@ abstract class MetaGenerator<T : ClassData>(
                 val classData = when (block) {
                     is ConstantsEnum -> enum.processBlock(fileData, block)
                     is ConstantsBlock -> constantsBlock.processBlock(fileData, block)
+                    is DataClass -> dataClass.processBlock(fileData, block)
                     else -> ClassData.emptyClassData
                 }
                 if (namespace.outputBlocks.contains(block.name)) {

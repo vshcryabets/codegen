@@ -3,6 +3,7 @@ package generators.rust
 import ce.defs.DataType
 import ce.settings.Project
 import generators.obj.Generator
+import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
@@ -25,7 +26,8 @@ class RustEnumGenerator(
             }
             var previous: Any? = null
             var needToAddComa = false
-            desc.constants.forEach {
+            desc.leafs.forEach { leaf ->
+                val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;
                 }

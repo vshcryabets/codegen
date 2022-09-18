@@ -3,6 +3,7 @@ package generators.cpp
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
+import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
@@ -21,7 +22,8 @@ class CppEnumGenerator(
             }
             classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
             var previous: Any? = null
-            desc.constants.forEach {
+            desc.leafs.forEach { leaf ->
+                val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;
                 }

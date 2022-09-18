@@ -11,12 +11,9 @@ import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
 import generators.kotlin.KotlinWritter
 import generators.obj.input.Block
-import generators.rust.RustClassData
-import generators.rust.RustEnumGenerator
-import generators.rust.RustFileGenerator
-import generators.rust.RustWritter
+import generators.rust.*
 import generators.swift.*
-import generators.swift.ConstantsBlockGenerator
+import generators.swift.SwiftConstantsBlockGenerator
 import okio.buffer
 import okio.source
 import java.io.File
@@ -46,7 +43,8 @@ fun main(args: Array<String>) {
     val kotlinMeta = object : MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
         enum = KotlinEnumGenerator(kotlinFileGenerator, project),
-        constantsBlock = generators.kotlin.ConstantsBlockGenerator(kotlinFileGenerator, project),
+        constantsBlock = generators.kotlin.KtConstantsGenerator(kotlinFileGenerator, project),
+        dataClass = generators.kotlin.KtDataClassGenerator(kotlinFileGenerator, project),
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = kotlinFileGenerator
@@ -58,6 +56,7 @@ fun main(args: Array<String>) {
         enum = CppEnumGenerator(cppFileGenerator, project),
         constantsBlock = CppConstantsBlockGenerator(cppFileGenerator, project),
         writter = CppWritter(cppFileGenerator, project.outputFolder),
+        dataClass = CppDataClassGenerator(cppFileGenerator, project),
         project = project,
         fileGenerator = cppFileGenerator
     ) {}
@@ -66,7 +65,8 @@ fun main(args: Array<String>) {
     val swiftMeta = object : MetaGenerator<SwiftClassData>(
         target = Target.Swift,
         enum = SwiftEnumGenerator(swiftFileGenerator, project),
-        constantsBlock = ConstantsBlockGenerator(swiftFileGenerator, project),
+        constantsBlock = SwiftConstantsBlockGenerator(swiftFileGenerator, project),
+        dataClass = SwiftDataClassGenerator(cppFileGenerator, project),
         writter = SwiftWritter(swiftFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = swiftFileGenerator
@@ -77,7 +77,8 @@ fun main(args: Array<String>) {
     val rustMeta = object : MetaGenerator<RustClassData>(
         target = Target.Rust,
         enum = RustEnumGenerator(rustFileGenerator, project),
-        constantsBlock = generators.rust.ConstantsBlockGenerator(rustFileGenerator, project),
+        constantsBlock = generators.rust.RsConstantsBlockGenerator(rustFileGenerator, project),
+        dataClass = RsDataClassGenerator(cppFileGenerator, project),
         writter = RustWritter(rustFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = rustFileGenerator

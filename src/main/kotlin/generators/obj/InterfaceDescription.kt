@@ -6,4 +6,4 @@ class InterfaceDescription(
     name: String,
     namespace: String,
     val publicMethods: List<MethodDescription>
-) : Block(name, namespace, emptyList())
+) : Block(name, namespace)
