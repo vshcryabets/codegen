@@ -1,16 +1,15 @@
 package generators.obj.out
 
-open class FileData {
-    val initialComments = StringBuilder()
+import generators.obj.out.nodes.FileInitialCommentsBlock
+
+open class FileData : OutNode() {
     var headers = StringBuilder()
     var fullOutputFileName : String = ""
-    var currentTabLevel : Int = 0
     var end = StringBuilder()
     val namespaces = mutableMapOf<String, Namespace>()
-    val includes = HashSet<String>()
 
-    fun addInclude(name: String) {
-        includes.add(name)
+    init {
+        leafs.add(FileInitialCommentsBlock())
     }
 
     fun appendHeaderLine(s: String) {
@@ -18,6 +17,5 @@ open class FileData {
         headers.append('\n')
     }
 
-    open fun getInitialComments() : String = initialComments.toString()
     open fun getHeaders(): String = headers.toString()
 }

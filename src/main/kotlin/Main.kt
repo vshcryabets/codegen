@@ -40,7 +40,11 @@ fun main(args: Array<String>) {
     println(project)
 
     val kotlinFileGenerator = KotlinFileGenerator(project.codeStyle)
-    val kotlinMeta = object : MetaGenerator<KotlinClassData>(
+    val cppFileGenerator = CppFileGenerator(project.codeStyle)
+    val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
+    val rustFileGenerator = RustFileGenerator(project.codeStyle)
+
+    val kotlinMeta = MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
         enum = KotlinEnumGenerator(kotlinFileGenerator, project),
         constantsBlock = generators.kotlin.KtConstantsGenerator(kotlinFileGenerator, project),
@@ -48,10 +52,9 @@ fun main(args: Array<String>) {
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = kotlinFileGenerator
-    ) {}
+    )
 
-    val cppFileGenerator = CppFileGenerator(project.codeStyle)
-    val cppMeta = object : MetaGenerator<CppClassData>(
+    val cppMeta = MetaGenerator<CppClassData>(
         target = Target.Cxx,
         enum = CppEnumGenerator(cppFileGenerator, project),
         constantsBlock = CppConstantsBlockGenerator(cppFileGenerator, project),
@@ -59,10 +62,9 @@ fun main(args: Array<String>) {
         dataClass = CppDataClassGenerator(cppFileGenerator, project),
         project = project,
         fileGenerator = cppFileGenerator
-    ) {}
+    )
 
-    val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
-    val swiftMeta = object : MetaGenerator<SwiftClassData>(
+    val swiftMeta = MetaGenerator<SwiftClassData>(
         target = Target.Swift,
         enum = SwiftEnumGenerator(swiftFileGenerator, project),
         constantsBlock = SwiftConstantsBlockGenerator(swiftFileGenerator, project),
@@ -70,11 +72,9 @@ fun main(args: Array<String>) {
         writter = SwiftWritter(swiftFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = swiftFileGenerator
-    ) {
-    }
+    )
 
-    val rustFileGenerator = RustFileGenerator(project.codeStyle)
-    val rustMeta = object : MetaGenerator<RustClassData>(
+    val rustMeta = MetaGenerator<RustClassData>(
         target = Target.Rust,
         enum = RustEnumGenerator(rustFileGenerator, project),
         constantsBlock = generators.rust.RsConstantsBlockGenerator(rustFileGenerator, project),
@@ -82,9 +82,7 @@ fun main(args: Array<String>) {
         writter = RustWritter(rustFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = rustFileGenerator
-    ) {
-
-    }
+    )
 
     val supportedMeta = mapOf(
         Target.Kotlin to kotlinMeta,

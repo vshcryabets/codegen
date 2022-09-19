@@ -5,6 +5,7 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.NotDefined
 import generators.obj.out.FileData
 
 class KtConstantsGenerator(
@@ -16,13 +17,11 @@ class KtConstantsGenerator(
         val result = super.processBlock(file, desc)
         result.apply {
             appendNotEmptyWithNewLine(desc.classComment, classComment)
-
-            classDefinition.append("object ${desc.name} (")
-            classDefinition.append(fileGenerator.newLine())
+            appendNotEmptyWithNewLine("object ${desc.name} {", classDefinition)
             var previous: Any? = null
             desc.leafs.forEach { leaf ->
                 val it = leaf as ClassField
-                if (it.value == null && previous != null) {
+                if ((it.value == null || it.value == NotDefined) && previous != null) {
                     it.value = previous!! as Int + 1;
                 }
 
@@ -37,7 +36,7 @@ class KtConstantsGenerator(
                 classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
                 classDefinition.append(fileGenerator.newLine())
             }
-            classDefinition.append("}\n");
+            appendNotEmptyWithNewLine("}", classDefinition)
         }
         return result
     }

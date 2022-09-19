@@ -1,10 +1,10 @@
 package generators.obj.input
 
 open class Block(
-    val name: String,
+    name: String,
     val namespace: String
-) {
-    val leafs: MutableList<Leaf> = mutableListOf()
+) : InLeaf(name) {
+    val leafs: MutableList<InLeaf> = mutableListOf()
     val nodes: MutableList<Block> = mutableListOf()
     val classComment = StringBuilder()
     var sourceFile = ""

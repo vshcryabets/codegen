@@ -3,6 +3,8 @@ package generators.rust
 import generators.obj.Writter
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
+import generators.obj.out.leafs.CommentLeaf
+import generators.obj.out.nodes.FileInitialCommentsBlock
 import java.io.File
 
 class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
@@ -23,7 +25,7 @@ class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
         println("Writing $outputFile")
         val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
-            writeNotEmpty(out, fileData.initialComments)
+            writeNode(fileData, out)
 
             //out.write("package ${namespace.name}${fileGenerator.newLine()}");
 
@@ -57,12 +59,6 @@ class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())
             }
-        }
-    }
-
-    override fun getIncludes(data: FileData): StringBuilder = StringBuilder().apply {
-        data.includes.forEach {
-            this.append("import $it${fileGenerator.newLine()}")
         }
     }
 }

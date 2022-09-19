@@ -11,6 +11,7 @@ class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(outputFile: String): FileData {
         return FileData().apply {
             this.fullOutputFileName= outputFile
+            addLeaf()
         }
     }
 

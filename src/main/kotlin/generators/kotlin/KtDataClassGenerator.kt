@@ -17,9 +17,7 @@ class KtDataClassGenerator(
         val result = super.processBlock(file, desc)
         result.apply {
             appendNotEmptyWithNewLine(desc.classComment, classComment)
-
-            classDefinition.append("data class ${desc.name} (")
-            classDefinition.append(fileGenerator.newLine())
+            appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
 
             desc.leafs.forEach { leaf ->
                 val it = leaf as ClassField
@@ -32,12 +30,9 @@ class KtDataClassGenerator(
                     classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
                 }
 
-                classDefinition
-                    .append(',')
-                    .append(fileGenerator.newLine())
+                appendNotEmptyWithNewLine(",", classDefinition)
             }
-            classDefinition.append(")")
-                .append(fileGenerator.newLine())
+            appendNotEmptyWithNewLine(")", classDefinition)
         }
         return result
     }

@@ -8,4 +8,4 @@ open class ClassField(
     name: String,
     val type: DataType,
     var value : Any? = NotDefined
-)  : Leaf(name)
+)  : InLeaf(name)

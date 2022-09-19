@@ -4,6 +4,8 @@ import generators.obj.FileGenerator
 import generators.obj.Writter
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
+import generators.obj.out.leafs.CommentLeaf
+import generators.obj.out.nodes.FileInitialCommentsBlock
 import java.io.File
 
 class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
@@ -47,8 +49,6 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
                     out.write("} // ${ns.key}${fileGenerator.newLine()}")
             }
 
-
-
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())
             }
@@ -61,10 +61,7 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
-            val initialComments = fileData.getInitialComments()
-            if (initialComments.isNotEmpty()) {
-                out.write(initialComments)
-            }
+            writeNode(fileData, out)
 
             val headers = fileData.getHeaders()
             if (headers.isNotEmpty()) {
@@ -89,11 +86,4 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
             writeFile(it.value)
         }
     }
-
-    override fun getIncludes(data: FileData): StringBuilder = StringBuilder().apply {
-        data.includes.forEach {
-            this.append("#include $it\n")
-        }
-    }
-
 }

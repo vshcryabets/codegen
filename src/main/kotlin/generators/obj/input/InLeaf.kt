@@ -1,5 +1,5 @@
 package generators.obj.input
 
-open class Leaf(
+open class InLeaf(
     val name : String
 )

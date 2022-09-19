@@ -2,7 +2,12 @@ package generators.kotlin
 
 import generators.obj.Writter
 import generators.obj.out.FileData
+import generators.obj.out.OutLeaf
 import generators.obj.out.ProjectOutput
+import generators.obj.out.leafs.CommentLeaf
+import generators.obj.out.leafs.ImportLeaf
+import generators.obj.out.nodes.FileInitialCommentsBlock
+import java.io.BufferedWriter
 import java.io.File
 
 class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String)
@@ -23,8 +28,7 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
         println("Writing $outputFile")
         val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
-            writeNotEmpty(out, fileData.initialComments)
-
+            writeNode(fileData, out)
             out.write("package ${namespace.name}${fileGenerator.newLine()}");
 
             val headers = fileData.getHeaders()
@@ -60,9 +64,11 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
         }
     }
 
-    override fun getIncludes(data: FileData): StringBuilder = StringBuilder().apply {
-        data.includes.forEach {
-            this.append("import $it${fileGenerator.newLine()}")
+    override fun writeLeaf(leaf: OutLeaf, out: BufferedWriter) {
+        if (leaf is ImportLeaf) {
+            out.write("import ${leaf.line}")
+        } else {
+            super.writeLeaf(leaf, out)
         }
     }
 }

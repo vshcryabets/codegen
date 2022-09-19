@@ -14,7 +14,7 @@ import java.io.File
 import java.nio.file.Paths
 
 
-abstract class MetaGenerator<T : ClassData>(
+open class MetaGenerator<T : ClassData>(
     val target: Target = Target.Other,
     val enum: Generator<ConstantsEnum, T>,
     val constantsBlock: Generator<ConstantsBlock, T>,
