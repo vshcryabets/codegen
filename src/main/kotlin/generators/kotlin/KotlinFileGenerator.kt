@@ -5,13 +5,16 @@ import generators.obj.CLikeFileGenerator
 import generators.obj.FileGenerator
 import generators.obj.input.Block
 import generators.obj.out.FileData
+import generators.obj.out.NamespaceDeclaration
+import generators.obj.out.nodes.FileInitialCommentsBlock
 import java.io.File
 
 class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(outputFile: String): FileData {
         return FileData().apply {
             this.fullOutputFileName= outputFile
-            addLeaf()
+            addLeaf(FileInitialCommentsBlock())
+            addLeaf(NamespaceDeclaration("MISSED"))
         }
     }
 

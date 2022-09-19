@@ -2,7 +2,7 @@ package generators.cpp
 
 import ce.defs.DataType
 import generators.obj.out.FileData
-import generators.obj.out.leafs.ImportLeaf
+import generators.obj.out.ImportLeaf
 import generators.obj.out.nodes.ImportsBlock
 
 object Types {

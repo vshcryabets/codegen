@@ -1,12 +1,7 @@
 package generators.kotlin
 
 import generators.obj.Writter
-import generators.obj.out.FileData
-import generators.obj.out.OutLeaf
-import generators.obj.out.ProjectOutput
-import generators.obj.out.leafs.CommentLeaf
-import generators.obj.out.leafs.ImportLeaf
-import generators.obj.out.nodes.FileInitialCommentsBlock
+import generators.obj.out.*
 import java.io.BufferedWriter
 import java.io.File
 
@@ -27,9 +22,10 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         val namespace = fileData.namespaces.entries.first().value
+        // change file namespace according to the 1st block
+        fileData.findSub(NamespaceDeclaration::class.java).name = namespace.name
         outputFile.bufferedWriter().use { out ->
             writeNode(fileData, out)
-            out.write("package ${namespace.name}${fileGenerator.newLine()}");
 
             val headers = fileData.getHeaders()
             if (headers.isNotEmpty()) {
@@ -65,10 +61,10 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
     }
 
     override fun writeLeaf(leaf: OutLeaf, out: BufferedWriter) {
-        if (leaf is ImportLeaf) {
-            out.write("import ${leaf.line}")
-        } else {
-            super.writeLeaf(leaf, out)
+        when (leaf) {
+            is ImportLeaf -> out.write("import ${leaf.line}${fileGenerator.newLine()}")
+            is NamespaceDeclaration -> out.write("package ${leaf.name}${fileGenerator.newLine()}")
+            else -> super.writeLeaf(leaf, out)
         }
     }
 }

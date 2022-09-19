@@ -2,8 +2,8 @@ package generators.obj
 
 import ce.settings.CodeStyle
 import generators.obj.input.Block
+import generators.obj.out.CommentLeaf
 import generators.obj.out.FileData
-import generators.obj.out.leafs.CommentLeaf
 import generators.obj.out.nodes.FileInitialCommentsBlock
 
 abstract class FileGenerator(val style : CodeStyle) {

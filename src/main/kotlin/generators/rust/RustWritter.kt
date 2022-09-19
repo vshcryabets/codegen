@@ -3,8 +3,6 @@ package generators.rust
 import generators.obj.Writter
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
-import generators.obj.out.leafs.CommentLeaf
-import generators.obj.out.nodes.FileInitialCommentsBlock
 import java.io.File
 
 class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
