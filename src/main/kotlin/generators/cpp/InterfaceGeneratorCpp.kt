@@ -2,9 +2,8 @@ package generators.cpp
 
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.InterfaceDescription
+import generators.obj.input.InterfaceDescription
 import generators.obj.out.FileData
-import javax.xml.stream.events.Namespace
 
 class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
     : Generator<InterfaceDescription, CppClassData>(fileGenerator) {

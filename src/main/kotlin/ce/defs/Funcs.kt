@@ -2,17 +2,19 @@ package ce.defs
 
 import generators.obj.input.*
 
-val definedBloks = mutableListOf<Block>()
+//val globDefinedBlocks = mutableListOf<Block>()
+val globRootNamespace = Namespace("", TreeRoot)
+var globCurrentNamespace = globRootNamespace
 val namespaceMap = NamespaceMap()
-var namescpaceDef = StringBuffer()
 var currentTarget: Target = Target.Other
 var customBaseFolderPath = ""
 var sourceFile = ""
 var outputFile = ""
 
-fun namespace(name: String) {
-    namescpaceDef.setLength(0)
-    namescpaceDef.append(name)
+fun namespace(name: String) : Namespace {
+    globCurrentNamespace = Namespace(name, globRootNamespace)
+    globRootNamespace.subs.add(globCurrentNamespace)
+    return globCurrentNamespace
 }
 
 fun putDefaults(block: Block) {
@@ -23,16 +25,14 @@ fun putDefaults(block: Block) {
 }
 
 fun enum(name: String): ConstantsEnum {
-    return ConstantsEnum(name, namescpaceDef.toString()).apply {
+    return ConstantsEnum(name, globCurrentNamespace).apply {
         putDefaults(this)
-        definedBloks.add(this)
     }
 }
 
 fun constantsBlock(name: String): ConstantsBlock {
-    return ConstantsBlock(name, namescpaceDef.toString()).apply {
+    return ConstantsBlock(name, globCurrentNamespace).apply {
         putDefaults(this)
-        definedBloks.add(this)
     }
 }
 
@@ -41,10 +41,9 @@ fun namespaceMap(): NamespaceMap {
 }
 
 fun dataClass(name: String): DataClass {
-    return DataClass(name, namescpaceDef.toString())
+    return DataClass(name, globCurrentNamespace)
         .apply {
             putDefaults(this)
-            definedBloks.add(this)
         }
 }
 

@@ -20,7 +20,7 @@ class SwiftConstantsBlockGenerator(
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
             var previous: Any? = null
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;

@@ -26,7 +26,7 @@ class SwiftEnumGenerator(
             }
             var previous: Any? = null
             var needToAddComa = false
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;

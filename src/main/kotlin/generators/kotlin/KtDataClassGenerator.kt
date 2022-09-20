@@ -19,7 +19,7 @@ class KtDataClassGenerator(
             appendNotEmptyWithNewLine(desc.classComment, classComment)
             appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
 
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
 
                 classDefinition.append(fileGenerator.tabSpace)

@@ -23,7 +23,7 @@ class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
         if (block.outputFile.isNotEmpty()) {
             fileName = "${block.outputFile}"
         }
-        val namespace = block.namespace.replace('.', File.separatorChar)
+        val namespace = block.getParentPath().replace('.', File.separatorChar)
         return block.objectBaseFolder + File.separatorChar + namespace + File.separatorChar + fileName
     }
 }

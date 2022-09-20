@@ -5,19 +5,19 @@ import ce.defs.DataType
 
 open class ConstantsBlock(
     name: String,
-    namespace: String,
+    parent: InNode,
     var defaultDataType: DataType = DataType.VOID
-) : Block(name, namespace) {
+) : Block(name, parent) {
 
     fun defaultType(name: DataType) {
         defaultDataType = name
     }
 
     fun add(name: String, value: Any = NotDefined) {
-        leafs.add(ClassField(name, defaultDataType, value))
+        subs.add(ClassField(name, this, defaultDataType, value))
     }
 
     fun add(name: String, type : DataType, value: Any = NotDefined) {
-        leafs.add(ClassField(name, type, value))
+        subs.add(ClassField(name, this, type, value))
     }
 }

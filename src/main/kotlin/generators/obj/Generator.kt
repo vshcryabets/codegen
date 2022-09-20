@@ -8,7 +8,7 @@ abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenera
 
     abstract fun createClassData(namespace : String) : T
 
-    open fun processBlock(file: FileData, desc: I) : T =  createClassData(desc.namespace)
+    open fun processBlock(file: FileData, desc: I) : T =  createClassData(desc.getParentPath())
 
     fun putTabs(builder: StringBuilder, count : Int) {
         for (i in 0 .. count - 1) {

@@ -1,11 +1,11 @@
 package generators.obj.input
 
+import ce.defs.DataType
+
 open class Block(
     name: String,
-    val namespace: String
-) : InLeaf(name) {
-    val leafs: MutableList<InLeaf> = mutableListOf()
-    val nodes: MutableList<Block> = mutableListOf()
+    parent: InNode
+) : InNode(name, parent) {
     val classComment = StringBuilder()
     var sourceFile = ""
     var outputFile = ""
@@ -14,4 +14,10 @@ open class Block(
     fun addBlockComment(value : String) {
         classComment.append(value)
     }
+
+    fun addClassField(name: String, type : DataType, value: Any? = NotDefined) {
+        subs.add(ClassField(name, this, type, value))
+    }
 }
+
+class InterfaceDescription(name: String, parent: InNode) : Block(name, parent)

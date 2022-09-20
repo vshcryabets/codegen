@@ -19,7 +19,7 @@ class RsConstantsBlockGenerator(
             classComment
                 .append("Constants ${desc.name}")
 
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 classDefinition.append("const ")
                     .append(it.name)

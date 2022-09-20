@@ -97,23 +97,21 @@ fun main(args: Array<String>) {
             println("Target $target")
             namespaceMap.clear()
             currentTarget = target
-            val objects = mutableListOf<Block>()
+            globRootNamespace.subs.clear()
 
             project.files.forEach { fileName ->
                 println("Processing $fileName")
                 val fileObject = File(fileName)
                 val reader = InputStreamReader(FileInputStream(fileObject))
                 // clean global defines for each file
-                definedBloks.clear()
-                namescpaceDef.setLength(0)
+                globCurrentNamespace = globRootNamespace
                 customBaseFolderPath = project.outputFolder
                 sourceFile = fileObject.absolutePath
                 outputFile = ""
                 engine.eval(reader)
                 reader.close()
-                objects.addAll(definedBloks)
             }
-            meta.write(objects, namespaceMap)
+            meta.write(globRootNamespace, namespaceMap)
         } else {
             println("Not supported $target")
         }

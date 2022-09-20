@@ -19,7 +19,7 @@ class KtConstantsGenerator(
             appendNotEmptyWithNewLine(desc.classComment, classComment)
             appendNotEmptyWithNewLine("object ${desc.name} {", classDefinition)
             var previous: Any? = null
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 if ((it.value == null || it.value == NotDefined) && previous != null) {
                     it.value = previous!! as Int + 1;

@@ -20,7 +20,7 @@ class CppDataClassGenerator(
                 .append("Constants ${desc.name}")
                 .append(fileGenerator.newLine())
 
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 classDefinition.append("const ")
                     .append(Types.typeTo(file, it.type))
