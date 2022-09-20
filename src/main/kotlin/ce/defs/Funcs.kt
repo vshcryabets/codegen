@@ -1,12 +1,9 @@
 package ce.defs
 
-import generators.obj.input.Block
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.DataClass
+import generators.obj.input.*
 
 val definedBloks = mutableListOf<Block>()
-
+val namespaceMap = NamespaceMap()
 var namescpaceDef = StringBuffer()
 var currentTarget: Target = Target.Other
 var customBaseFolderPath = ""
@@ -37,6 +34,10 @@ fun constantsBlock(name: String): ConstantsBlock {
         putDefaults(this)
         definedBloks.add(this)
     }
+}
+
+fun namespaceMap(): NamespaceMap {
+    return namespaceMap
 }
 
 fun dataClass(name: String): DataClass {

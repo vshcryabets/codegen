@@ -2,10 +2,7 @@ package generators.obj
 
 import ce.defs.Target
 import ce.settings.Project
-import generators.obj.input.Block
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.DataClass
+import generators.obj.input.*
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.Namespace
@@ -19,13 +16,13 @@ open class MetaGenerator<T : ClassData>(
     val enum: Generator<ConstantsEnum, T>,
     val constantsBlock: Generator<ConstantsBlock, T>,
     val dataClass: Generator<DataClass, T>,
-    val fileGenerator : FileGenerator,
+    val fileGenerator: FileGenerator,
     private val writter: Writter,
     private val project: Project
 ) {
 
-    open fun processProject(blocks: List<Block>): ProjectOutput {
-        val result = ProjectOutput()
+    open fun processProject(blocks: List<Block>, namespaceMap: NamespaceMap): ProjectOutput {
+        val result = ProjectOutput(namespaceMap)
         val files = result.files
         val fileBlockMap = mutableMapOf<FileData, MutableList<Block>>()
 
@@ -69,7 +66,8 @@ open class MetaGenerator<T : ClassData>(
                 }
                 if (namespace.outputBlocks.contains(block.name)) {
                     throw java.lang.IllegalStateException(
-                        "Duplicate block error! ${namespace.name} already contains block with name ${block.name}");
+                        "Duplicate block error! ${namespace.name} already contains block with name ${block.name}"
+                    );
                 }
                 namespace.outputBlocks[block.name] = classData
             }
@@ -83,8 +81,8 @@ open class MetaGenerator<T : ClassData>(
     }
 
 
-    fun write(objects: List<Block>) {
-        val projectOutput = processProject(objects)
+    fun write(objects: List<Block>, namespaceMap: NamespaceMap) {
+        val projectOutput = processProject(objects, namespaceMap)
         writter.write(projectOutput)
     }
 }

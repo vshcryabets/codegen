@@ -95,7 +95,8 @@ fun main(args: Array<String>) {
         if (target in supportedMeta) {
             val meta = supportedMeta[target]!!
             println("Target $target")
-            ce.defs.currentTarget = target
+            namespaceMap.clear()
+            currentTarget = target
             val objects = mutableListOf<Block>()
 
             project.files.forEach { fileName ->
@@ -112,7 +113,7 @@ fun main(args: Array<String>) {
                 reader.close()
                 objects.addAll(definedBloks)
             }
-            meta.write(objects)
+            meta.write(objects, namespaceMap)
         } else {
             println("Not supported $target")
         }

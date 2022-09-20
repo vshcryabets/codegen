@@ -1,5 +1,9 @@
 package generators.obj.out
 
-class ProjectOutput {
+import generators.obj.input.NamespaceMap
+
+class ProjectOutput(
+    val namespaceMap : NamespaceMap
+) {
     val files = mutableMapOf<String, FileData>()
 }
