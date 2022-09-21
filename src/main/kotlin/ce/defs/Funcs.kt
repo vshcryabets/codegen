@@ -12,12 +12,12 @@ var sourceFile = ""
 var outputFile = ""
 
 fun namespace(name: String) : Namespace {
-    globCurrentNamespace = Namespace(name, globRootNamespace)
-    globRootNamespace.subs.add(globCurrentNamespace)
+    globCurrentNamespace = globRootNamespace.getNamespace(name)
     return globCurrentNamespace
 }
 
 fun putDefaults(block: Block) {
+    globCurrentNamespace.subs.add(block)
     block.objectBaseFolder = customBaseFolderPath
     block.sourceFile = sourceFile
     block.outputFile = if (outputFile.isEmpty()) block.name else outputFile
