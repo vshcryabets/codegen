@@ -5,6 +5,7 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.NotDefined
 import generators.obj.out.FileData
 import javax.xml.stream.events.Namespace
 
@@ -21,8 +22,17 @@ class CppConstantsBlockGenerator(
                 .append("Constants ${desc.name}")
                 .append(fileGenerator.newLine())
 
+            var previous: Any? = null
             desc.leafs.forEach { leaf ->
                 val it = leaf as ClassField
+                if ((it.value == null || it.value == NotDefined) && previous != null) {
+                    it.value = previous!! as Int + 1;
+                }
+
+                if (it.value != null) {
+                    previous = it.value
+                }
+
                 classDefinition.append("const ")
                     .append(Types.typeTo(file, it.type))
                     .append(" ")

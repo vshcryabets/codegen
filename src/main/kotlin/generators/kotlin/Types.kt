@@ -24,7 +24,7 @@ object Types {
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16 -> value.toString()
+            DataType.uint16, DataType.uint32 -> value.toString()
             DataType.float32 -> value.toString() + "f"
             DataType.float64 -> value.toString()
             DataType.string -> {

@@ -13,6 +13,7 @@ object Types {
             DataType.VOID -> "void"
             DataType.int8 -> "int8_t"
             DataType.int16 -> "int16_t"
+            DataType.int32 -> "int32_t"
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
             DataType.string -> {
