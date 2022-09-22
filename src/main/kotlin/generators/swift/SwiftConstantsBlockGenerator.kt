@@ -6,6 +6,7 @@ import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
 import generators.obj.out.FileData
+import generators.rust.RustClassData
 
 class SwiftConstantsBlockGenerator(
     fileGenerator : FileGenerator,
@@ -13,7 +14,7 @@ class SwiftConstantsBlockGenerator(
 ) : Generator<ConstantsBlock, SwiftClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsBlock): SwiftClassData {
-        val result = super.processBlock(file, desc)
+        val result = SwiftClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             classComment.append(desc.classComment).append(fileGenerator.newLine())
 
@@ -41,6 +42,4 @@ class SwiftConstantsBlockGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): SwiftClassData = SwiftClassData(namespace)
 }

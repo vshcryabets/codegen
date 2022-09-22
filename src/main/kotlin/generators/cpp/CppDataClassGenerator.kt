@@ -13,8 +13,10 @@ class CppDataClassGenerator(
 ) : Generator<DataClass, CppClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: DataClass): CppClassData {
-        val result = super.processBlock(file, desc)
-        result.headerData.apply {
+        val result = CppClassData(desc.getParentPath(), desc.name, file)
+        val headerData = CppHeaderData(desc.getParentPath(), desc.name, result)
+        result.subs.add(headerData)
+        headerData.apply {
             appendNotEmptyWithNewLine(desc.classComment.toString(), classComment)
             classComment
                 .append("Constants ${desc.name}")
@@ -32,6 +34,4 @@ class CppDataClassGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): CppClassData = CppClassData(namespace)
 }

@@ -34,14 +34,16 @@ class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
 //    }
 
     override fun processBlock(file: FileData, desc: InterfaceDescription): CppClassData {
-        val result = super.processBlock(file, desc)
-            //prepareHeader(desc)
+        val result = CppClassData(desc.getParentPath(), desc.name, file)
+        val headerData = CppHeaderData(desc.getParentPath(), desc.name, result)
+        result.subs.add(headerData)
+        headerData.apply {
+        }
+        //prepareHeader(desc)
 //        println(result.headers)
 //        println(result.getIncludes())
 //        println(result.classDefinition)
 //        println(result.end)
         return result
     }
-
-    override fun createClassData(namespace: String): CppClassData = CppClassData(namespace)
 }

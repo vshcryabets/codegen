@@ -13,8 +13,10 @@ class CppEnumGenerator(
 ) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsEnum): CppClassData {
-        val result = super.processBlock(file, desc)
-        result.headerData.apply {
+        val result = CppClassData(desc.getParentPath(), desc.name, file)
+        val headerData = CppHeaderData(desc.getParentPath(), desc.name, result)
+        result.subs.add(headerData)
+        headerData.apply {
             if (desc.classComment.isNotEmpty()) {
                 desc.classComment.lines().forEach { line ->
                     classComment.append("* ").append(line).append(fileGenerator.newLine())
@@ -42,5 +44,4 @@ class CppEnumGenerator(
         return result
     }
 
-    override fun createClassData(namespace : String): CppClassData = CppClassData(namespace)
 }

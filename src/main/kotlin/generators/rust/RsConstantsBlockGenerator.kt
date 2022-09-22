@@ -1,6 +1,7 @@
 package generators.rust
 
 import ce.settings.Project
+import generators.kotlin.KotlinClassData
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
@@ -13,7 +14,7 @@ class RsConstantsBlockGenerator(
 ) : Generator<ConstantsBlock, RustClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsBlock): RustClassData {
-        val result = super.processBlock(file, desc)
+        val result = RustClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             appendNotEmptyWithNewLine(desc.classComment.toString(), classComment)
             classComment
@@ -31,6 +32,4 @@ class RsConstantsBlockGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): RustClassData = RustClassData(namespace)
 }

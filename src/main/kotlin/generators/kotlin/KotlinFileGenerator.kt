@@ -10,9 +10,9 @@ import generators.obj.out.ProjectOutput
 import java.io.File
 
 class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
-    override fun createFile(project: ProjectOutput, outputFile: String): FileData {
+    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData {
         return FileData(outputFile, project).apply {
-            subs.add(NamespaceDeclaration("MISSED", this))
+            subs.add(NamespaceDeclaration(block.getParentPath(), this))
         }
     }
 

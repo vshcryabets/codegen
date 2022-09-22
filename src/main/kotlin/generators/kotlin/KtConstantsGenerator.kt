@@ -14,7 +14,7 @@ class KtConstantsGenerator(
 ) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsBlock): KotlinClassData {
-        val result = super.processBlock(file, desc)
+        val result = KotlinClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             appendNotEmptyWithNewLine(desc.classComment, classComment)
             appendNotEmptyWithNewLine("object ${desc.name} {", classDefinition)
@@ -40,6 +40,4 @@ class KtConstantsGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): KotlinClassData = KotlinClassData(namespace)
 }

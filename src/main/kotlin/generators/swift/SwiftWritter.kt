@@ -8,8 +8,6 @@ import java.io.File
 class SwiftWritter(val fileGenerator: SwiftFileGenerator, outputFolder: String)
     : Writter(fileGenerator.style, outputFolder) {
 
-
-
     override fun writeFile(fileData: FileData) {
         if (fileData.namespaces.size != 1) {
             throw IllegalStateException("Swift file can contain only one namespace")
@@ -48,7 +46,7 @@ class SwiftWritter(val fileGenerator: SwiftFileGenerator, outputFolder: String)
 //                }
 //
 //                writeNotEmpty(out, classDef.classEnd)
-            }
+//            }
 
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())

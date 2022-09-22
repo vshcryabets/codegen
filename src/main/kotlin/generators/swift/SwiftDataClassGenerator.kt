@@ -14,7 +14,7 @@ class SwiftDataClassGenerator(
 ) : Generator<DataClass, SwiftClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: DataClass): SwiftClassData {
-        val result = super.processBlock(file, desc)
+        val result = SwiftClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             classComment.append(desc.classComment).append(fileGenerator.newLine())
 
@@ -42,6 +42,4 @@ class SwiftDataClassGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): SwiftClassData = SwiftClassData(namespace)
 }

@@ -13,7 +13,7 @@ class SwiftEnumGenerator(
 ) : Generator<ConstantsEnum, SwiftClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsEnum): SwiftClassData {
-        val result = super.processBlock(file, desc)
+        val result = SwiftClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             classComment.append(desc.classComment).append(fileGenerator.newLine())
             val withRawValues = desc.defaultDataType != DataType.VOID
@@ -57,6 +57,4 @@ class SwiftEnumGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): SwiftClassData = SwiftClassData(namespace)
 }

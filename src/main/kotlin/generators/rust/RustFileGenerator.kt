@@ -9,7 +9,7 @@ import generators.obj.out.ProjectOutput
 import java.io.File
 
 class RustFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
-    override fun createFile(project: ProjectOutput, outputFile: String): FileData {
+    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData {
         return FileData(outputFile, project)
     }
 

@@ -10,7 +10,7 @@ import generators.obj.out.ProjectOutput
 import java.io.File
 
 class CppFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
-    override fun createFile(project: ProjectOutput, outputFile: String): FileData {
+    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData {
         return CppFileData(outputFile, project).apply {
             this.headerBegin.append("#pragma once")
                 .append(newLine())

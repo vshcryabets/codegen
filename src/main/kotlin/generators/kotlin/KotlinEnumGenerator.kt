@@ -13,7 +13,7 @@ class KotlinEnumGenerator(
 ) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsEnum): KotlinClassData {
-        val result = super.processBlock(file, desc)
+        val result = KotlinClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             appendNotEmptyWithNewLine(classComment, desc.classComment)
             val withRawValues = desc.defaultDataType != DataType.VOID
@@ -62,6 +62,4 @@ class KotlinEnumGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): KotlinClassData = KotlinClassData(namespace)
 }

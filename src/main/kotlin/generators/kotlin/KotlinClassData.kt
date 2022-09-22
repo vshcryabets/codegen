@@ -1,7 +1,6 @@
 package generators.kotlin
 
-import javax.xml.stream.events.Namespace
+import generators.obj.out.OutNode
 
-class KotlinClassData(namespace: String) : generators.obj.out.ClassData(namespace) {
-
-}
+class KotlinClassData(namespace: String, name: String, parent: OutNode) :
+    generators.obj.out.ClassData(namespace, name, parent)

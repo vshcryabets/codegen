@@ -13,7 +13,7 @@ class RustEnumGenerator(
 ) : Generator<ConstantsEnum, RustClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: ConstantsEnum): RustClassData {
-        val result = super.processBlock(file, desc)
+        val result = RustClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             classComment.append(desc.classComment).append(fileGenerator.newLine())
             val withRawValues = desc.defaultDataType != DataType.VOID
@@ -57,6 +57,4 @@ class RustEnumGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): RustClassData = RustClassData(namespace)
 }

@@ -26,27 +26,27 @@ class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
                 out.write(headers)
             }
 
-            namespace.subs.forEach {
-                val classDef = it.value
-                writeNotEmpty(out, classDef.classStart)
-
-                for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
-
-                if (classDef.classComment.isNotEmpty()) {
-                    out.write(fileGenerator.multilineCommentStart())
-                    classDef.classComment.lines().forEach { line ->
-                        out.write(fileGenerator.multilineCommentMid())
-                        out.write(" $line${fileGenerator.newLine()}")
-                    }
-                    out.write(fileGenerator.multilineCommentEnd())
-                }
-
-                if (classDef.classDefinition.isNotEmpty()) {
-                    out.write(classDef.classDefinition.toString())
-                }
-
-                writeNotEmpty(out, classDef.classEnd)
-            }
+//            namespace.subs.forEach {
+//                val classDef = it.value
+//                writeNotEmpty(out, classDef.classStart)
+//
+//                for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
+//
+//                if (classDef.classComment.isNotEmpty()) {
+//                    out.write(fileGenerator.multilineCommentStart())
+//                    classDef.classComment.lines().forEach { line ->
+//                        out.write(fileGenerator.multilineCommentMid())
+//                        out.write(" $line${fileGenerator.newLine()}")
+//                    }
+//                    out.write(fileGenerator.multilineCommentEnd())
+//                }
+//
+//                if (classDef.classDefinition.isNotEmpty()) {
+//                    out.write(classDef.classDefinition.toString())
+//                }
+//
+//                writeNotEmpty(out, classDef.classEnd)
+//            }
 
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())

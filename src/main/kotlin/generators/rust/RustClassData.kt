@@ -1,5 +1,6 @@
 package generators.rust
 
-class RustClassData(namespace: String) : generators.obj.out.ClassData(namespace) {
+import generators.obj.out.OutNode
 
-}
+class RustClassData(namespace: String, name: String, parent: OutNode) :
+    generators.obj.out.ClassData(namespace, name, parent)

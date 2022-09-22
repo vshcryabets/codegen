@@ -14,7 +14,7 @@ class RsDataClassGenerator(
 ) : Generator<DataClass, RustClassData>(fileGenerator) {
 
     override fun processBlock(file: FileData, desc: DataClass): RustClassData {
-        val result = super.processBlock(file, desc)
+        val result = RustClassData(desc.getParentPath(), desc.name, file)
         result.apply {
             appendNotEmptyWithNewLine(desc.classComment.toString(), classComment)
             classComment
@@ -32,6 +32,4 @@ class RsDataClassGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): RustClassData = RustClassData(namespace)
 }
