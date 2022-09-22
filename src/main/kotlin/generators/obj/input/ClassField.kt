@@ -6,7 +6,7 @@ object NotDefined
 
 open class ClassField(
     name: String,
-    parent: InNode,
+    parent: Node,
     val type: DataType,
     var value : Any? = NotDefined
-)  : InLeaf(name, parent)
+)  : Leaf(name, parent)

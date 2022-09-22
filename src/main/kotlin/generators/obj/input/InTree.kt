@@ -1,7 +1,8 @@
 package generators.obj.input
 
-object TreeRoot : InNode("ROOT", null)
-open class InLeaf(val name : String, val parent: InNode?) {
+object TreeRoot : Node("ROOT", null)
+
+open class Leaf(val name: String, val parent: Node?) {
     fun getParentPath(): String = parent?.getPath() ?: ""
     fun getPath(): String {
         if (parent == null) {
@@ -16,21 +17,32 @@ open class InLeaf(val name : String, val parent: InNode?) {
     }
 }
 
-open class InNode(name: String, parent: InNode?, val subs: MutableList<InLeaf> = mutableListOf()) : InLeaf(name, parent)
+open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutableListOf()) :
+    Leaf(name, parent) {
+    fun <T : Node> findSub(clazz: Class<T>): T {
+        subs.forEach {
+            if (it.javaClass == clazz) {
+                return it as T
+            }
+        }
+        val newNode = clazz.getDeclaredConstructor().newInstance("", this)
+        subs.add(newNode)
+        return newNode
+    }
+}
 
-class Namespace(name: String, parent: InNode) : InNode(name, parent) {
+class Namespace(name: String, parent: Node) : Node(name, parent) {
     fun getNamespace(name: String): Namespace {
         if (name.isEmpty()) {
             return this
         }
         val pointPos = name.indexOf('.')
-        val searchName : String
-        val endPath : String
+        val searchName: String
+        val endPath: String
         if (pointPos < 0) {
             searchName = name
             endPath = ""
-        }
-        else  {
+        } else {
             searchName = name.substring(0, pointPos)
             endPath = name.substring(pointPos + 1)
         }

@@ -1,15 +1,12 @@
 package generators.obj.out
 
-import generators.obj.out.nodes.FileInitialCommentsBlock
-
-open class FileData : OutNode() {
+open class FileData(name: String, parent: OutNode) : OutNode(name, parent) {
     var headers = StringBuilder()
-    var fullOutputFileName : String = ""
     var end = StringBuilder()
-    val namespaces = mutableMapOf<String, Namespace>()
+    val namespaces = mutableMapOf<String, OutNamespace>()
 
     init {
-        leafs.add(FileInitialCommentsBlock())
+        subs.add(FileInitialCommentsBlock(this))
     }
 
     fun appendHeaderLine(s: String) {

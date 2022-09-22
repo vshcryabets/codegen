@@ -8,17 +8,11 @@ import java.io.File
 class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
     : Writter(fileGenerator.style, outputFolder) {
 
-    override fun write(data: ProjectOutput) {
-        data.files.forEach {
-            writeFile(it.value)
-        }
-    }
-
     override fun writeFile(fileData: FileData) {
         if (fileData.namespaces.size != 1) {
             throw IllegalStateException("Rust file can contain only one namespace")
         }
-        var outputFile = File(fileData.fullOutputFileName + ".rs")
+        var outputFile = File(fileData.name + ".rs")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         val namespace = fileData.namespaces.entries.first().value
@@ -32,7 +26,7 @@ class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
                 out.write(headers)
             }
 
-            namespace.outputBlocks.forEach {
+            namespace.subs.forEach {
                 val classDef = it.value
                 writeNotEmpty(out, classDef.classStart)
 

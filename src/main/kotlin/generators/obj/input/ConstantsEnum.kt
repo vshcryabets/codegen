@@ -5,7 +5,7 @@ import ce.defs.DataType
 
 open class ConstantsEnum(
     name: String,
-    parent: InNode,
+    parent: Node,
     var defaultDataType: DataType = DataType.VOID
 ) : Block(name, parent) {
 

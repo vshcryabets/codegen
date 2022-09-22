@@ -4,7 +4,8 @@ import ce.settings.CodeStyle
 import generators.obj.input.Block
 import generators.obj.out.CommentLeaf
 import generators.obj.out.FileData
-import generators.obj.out.nodes.FileInitialCommentsBlock
+import generators.obj.out.FileInitialCommentsBlock
+import generators.obj.out.ProjectOutput
 
 abstract class FileGenerator(val style : CodeStyle) {
     val tabSpace : String
@@ -17,7 +18,7 @@ abstract class FileGenerator(val style : CodeStyle) {
         tabSpace = builder.toString()
     }
 
-    abstract fun createFile(outputFile: String): FileData
+    abstract fun createFile(project: ProjectOutput, outputFile: String): FileData
     abstract fun multilineCommentStart() : String
     abstract fun multilineCommentMid() : String
     abstract fun multilineCommentEnd() : String
@@ -30,7 +31,7 @@ abstract class FileGenerator(val style : CodeStyle) {
         val commentsNode = s.findSub(FileInitialCommentsBlock::class.java)
         if (s1.trimIndent().isNotEmpty()) {
             s1.lines().forEach { line ->
-                commentsNode.addLeaf(CommentLeaf("${singleComment()} $line${newLine()}"))
+                commentsNode.subs.add(CommentLeaf("${singleComment()} $line${newLine()}", commentsNode))
             }
         }
     }

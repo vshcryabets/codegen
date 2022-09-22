@@ -1,8 +1,7 @@
 package generators.obj.out
 
-open class OutLeaf {
-}
+import generators.obj.input.Leaf
 
-class NamespaceDeclaration(var name : String) : OutLeaf()
-class ImportLeaf(val line : String) : OutLeaf()
-class CommentLeaf(val line : String) : OutLeaf()
+class NamespaceDeclaration(name : String, parent: OutNode) : Leaf(name, parent)
+class ImportLeaf(name : String, parent: OutNode) : Leaf(name, parent)
+class CommentLeaf(name : String, parent: OutNode) : Leaf(name, parent)

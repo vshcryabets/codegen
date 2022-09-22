@@ -4,8 +4,8 @@ import ce.defs.DataType
 
 open class Block(
     name: String,
-    parent: InNode
-) : InNode(name, parent) {
+    parent: Node
+) : Node(name, parent) {
     val classComment = StringBuilder()
     var sourceFile = ""
     var outputFile = ""
@@ -20,4 +20,4 @@ open class Block(
     }
 }
 
-class InterfaceDescription(name: String, parent: InNode) : Block(name, parent)
+class InterfaceDescription(name: String, parent: Node) : Block(name, parent)

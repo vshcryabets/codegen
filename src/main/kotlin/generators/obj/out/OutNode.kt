@@ -1,20 +1,15 @@
 package generators.obj.out
 
-open class OutNode : OutLeaf() {
-    val leafs = mutableListOf<OutLeaf>()
+import generators.obj.input.Node
 
-    fun <T : OutLeaf> findSub(clazz : Class<T>) : T {
-        leafs.forEach {
-            if (it.javaClass == clazz) {
-                return it as T
-            }
-        }
-        val newNode = clazz.getDeclaredConstructor().newInstance()
-        leafs.add(newNode)
-        return newNode
-    }
+typealias OutNode = Node
 
-    fun addLeaf(leaf: OutLeaf) {
-        leafs.add(leaf)
+class FileInitialCommentsBlock(parent : OutNode) : OutNode("", parent)
+open class OutNamespace(name: String, parent: OutNode) : OutNode(name, parent)
+
+class ImportsBlock(parent : OutNode) : OutNode("", parent) {
+
+    fun addInclude(name: String) {
+        subs.add(ImportLeaf(name, this))
     }
 }

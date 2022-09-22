@@ -10,7 +10,7 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
     : Writter(fileGenerator.style, outputFolder) {
 
     fun writeHeaderFile(fileData: CppFileData) {
-        var outputFile = File(fileData.fullOutputFileName + ".h")
+        var outputFile = File(fileData.name + ".h")
         outputFile.parentFile.mkdirs()
         println("Writing headers $outputFile")
         outputFile.bufferedWriter().use { out ->
@@ -21,26 +21,26 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
                 if (ns.key.isNotEmpty())
                  out.write("namespace ${ns.key} {${fileGenerator.newLine()}");
 
-                ns.value.outputBlocks.forEach {
-                    val classDecl = (it.value as CppClassData).headerData
-                    writeNotEmpty(out, classDecl.classStart)
-
-                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
-
-                    if (classDecl.classComment.isNotEmpty()) {
-                        out.write(fileGenerator.multilineCommentStart())
-                        classDecl.classComment.lines().forEach { line ->
-                            out.write(fileGenerator.multilineCommentMid())
-                            out.write(" $line${fileGenerator.newLine()}")
-                        }
-                        out.write(fileGenerator.multilineCommentEnd())
-                    }
-
-                    if (classDecl.classDefinition.isNotEmpty()) {
-                        out.write(classDecl.classDefinition.toString())
-                    }
-
-                    writeNotEmpty(out, classDecl.classEnd)
+                ns.value.subs.forEach {
+//                    val classDecl = (it.value as CppClassData).headerData
+//                    writeNotEmpty(out, classDecl.classStart)
+//
+//                    for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
+//
+//                    if (classDecl.classComment.isNotEmpty()) {
+//                        out.write(fileGenerator.multilineCommentStart())
+//                        classDecl.classComment.lines().forEach { line ->
+//                            out.write(fileGenerator.multilineCommentMid())
+//                            out.write(" $line${fileGenerator.newLine()}")
+//                        }
+//                        out.write(fileGenerator.multilineCommentEnd())
+//                    }
+//
+//                    if (classDecl.classDefinition.isNotEmpty()) {
+//                        out.write(classDecl.classDefinition.toString())
+//                    }
+//
+//                    writeNotEmpty(out, classDecl.classEnd)
                 }
 
                 if (ns.key.isNotEmpty())
@@ -55,7 +55,7 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
 
     override fun writeFile(fileData: FileData) {
         writeHeaderFile(fileData as CppFileData)
-        var outputFile = File(fileData.fullOutputFileName + ".cpp")
+        var outputFile = File(fileData.name + ".cpp")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
@@ -80,8 +80,10 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
     }
 
     override fun write(data: ProjectOutput) {
-        data.files.forEach {
-            writeFile(it.value)
+        data.subs.forEach {
+            if (it is FileData) {
+                writeFile(it)
+            }
         }
     }
 }

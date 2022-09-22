@@ -9,8 +9,10 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
     : Writter(fileGenerator.style, outputFolder) {
 
     override fun write(data: ProjectOutput) {
-        data.files.forEach {
-            writeFile(it.value)
+        data.subs.forEach {
+            if (it is FileData) {
+                writeFile(it)
+            }
         }
     }
 
@@ -18,7 +20,7 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
         if (fileData.namespaces.size != 1) {
             throw IllegalStateException("Kotlin file can contain only one namespace")
         }
-        var outputFile = File(fileData.fullOutputFileName + ".kt")
+        var outputFile = File(fileData.name + ".kt")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         val namespace = fileData.namespaces.entries.first().value
@@ -32,7 +34,7 @@ class KotlinWritter(val fileGenerator: KotlinFileGenerator, outputFolder: String
                 out.write(headers)
             }
 
-            namespace.outputBlocks.forEach {
+            namespace.subs.forEach {
                 val classDef = it.value
                 writeNotEmpty(out, classDef.classStart)
 
