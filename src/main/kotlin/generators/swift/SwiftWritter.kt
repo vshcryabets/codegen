@@ -5,13 +5,13 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class SwiftWritter(val fileGenerator: SwiftFileGenerator, outputFolder: String)
-    : Writter(fileGenerator.style, outputFolder) {
+class SwiftWritter(fileGenerator: SwiftFileGenerator, outputFolder: String)
+    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
-        if (fileData.namespaces.size != 1) {
-            throw IllegalStateException("Swift file can contain only one namespace")
-        }
+//        if (fileData.namespaces.size != 1) {
+//            throw IllegalStateException("Swift file can contain only one namespace")
+//        }
         var outputFile = File(fileData.name + ".swift")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")

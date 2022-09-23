@@ -6,8 +6,8 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
-    : Writter(fileGenerator.style, outputFolder) {
+class CppWritter(fileGenerator: FileGenerator, outputFolder: String)
+    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
 
     fun writeHeaderFile(fileData: CppFileData) {
         var outputFile = File(fileData.name + ".h")
@@ -17,11 +17,11 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
             writeNotEmpty(out, fileData.headerInitialComments)
             writeNotEmpty(out, fileData.headerBegin)
 
-            fileData.namespaces.forEach { ns ->
-                if (ns.key.isNotEmpty())
-                 out.write("namespace ${ns.key} {${fileGenerator.newLine()}");
-
-                ns.value.subs.forEach {
+            fileData.subs.forEach { ns ->
+//                if (ns.key.isNotEmpty())
+//                 out.write("namespace ${ns.key} {${fileGenerator.newLine()}");
+//
+//                ns.value.subs.forEach {
 //                    val classDecl = (it.value as CppClassData).headerData
 //                    writeNotEmpty(out, classDecl.classStart)
 //
@@ -41,10 +41,10 @@ class CppWritter(val fileGenerator: FileGenerator, outputFolder: String)
 //                    }
 //
 //                    writeNotEmpty(out, classDecl.classEnd)
-                }
-
-                if (ns.key.isNotEmpty())
-                    out.write("} // ${ns.key}${fileGenerator.newLine()}")
+//                }
+//
+//                if (ns.key.isNotEmpty())
+//                    out.write("} // ${ns.key}${fileGenerator.newLine()}")
             }
 
             if (fileData.end.isNotEmpty()) {

@@ -31,7 +31,7 @@ open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutab
     }
 }
 
-class Namespace(name: String, parent: Node) : Node(name, parent) {
+open class Namespace(name: String, parent: Node) : Node(name, parent) {
     fun getNamespace(name: String): Namespace {
         if (name.isEmpty()) {
             return this

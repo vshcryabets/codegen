@@ -5,7 +5,9 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.Node
 import generators.obj.input.NotDefined
+import generators.obj.out.BlockStart
 import generators.obj.out.FileData
 
 class KtConstantsGenerator(
@@ -13,11 +15,11 @@ class KtConstantsGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsBlock): KotlinClassData {
-        val result = KotlinClassData(desc.getParentPath(), desc.name, file)
+    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): KotlinClassData {
+        val result = KotlinClassData(desc.name, parent)
         result.apply {
-            appendNotEmptyWithNewLine(desc.classComment, classComment)
-            appendNotEmptyWithNewLine("object ${desc.name} {", classDefinition)
+            addBlockDefaults(desc, this)
+            subs.add(BlockStart("object ${desc.name} {", this))
             var previous: Any? = null
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField

@@ -4,8 +4,8 @@ import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
-import generators.obj.input.ConstantsBlock
 import generators.obj.input.DataClass
+import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class SwiftDataClassGenerator(
@@ -13,10 +13,10 @@ class SwiftDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: DataClass): SwiftClassData {
-        val result = SwiftClassData(desc.getParentPath(), desc.name, file)
+    override fun processBlock(file: FileData, parent: Node, desc: DataClass): SwiftClassData {
+        val result = SwiftClassData(desc.name, parent)
         result.apply {
-            classComment.append(desc.classComment).append(fileGenerator.newLine())
+            addMultilineCommentsBlock(desc.classComment.toString(), result)
 
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())

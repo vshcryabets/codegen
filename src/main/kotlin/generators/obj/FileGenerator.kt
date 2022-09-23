@@ -4,7 +4,7 @@ import ce.settings.CodeStyle
 import generators.obj.input.Block
 import generators.obj.out.CommentLeaf
 import generators.obj.out.FileData
-import generators.obj.out.FileInitialCommentsBlock
+import generators.obj.out.CommentsBlock
 import generators.obj.out.ProjectOutput
 
 abstract class FileGenerator(val style : CodeStyle) {
@@ -27,11 +27,11 @@ abstract class FileGenerator(val style : CodeStyle) {
 
     abstract fun getBlockFilePath(block: Block): String
 
-    open fun appendInitalComment(s: FileData, s1: String) {
-        val commentsNode = s.findSub(FileInitialCommentsBlock::class.java)
+    open fun appendInitialComment(s: FileData, s1: String) {
+        val commentsNode = s.findSub(CommentsBlock::class.java)
         if (s1.trimIndent().isNotEmpty()) {
             s1.lines().forEach { line ->
-                commentsNode.subs.add(CommentLeaf("${singleComment()} $line${newLine()}", commentsNode))
+                commentsNode.subs.add(CommentLeaf("${singleComment()} $line$", commentsNode))
             }
         }
     }

@@ -5,6 +5,7 @@ import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class RustEnumGenerator(
@@ -12,10 +13,10 @@ class RustEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, RustClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsEnum): RustClassData {
-        val result = RustClassData(desc.getParentPath(), desc.name, file)
+    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): RustClassData {
+        val result = RustClassData(desc.name, parent)
         result.apply {
-            classComment.append(desc.classComment).append(fileGenerator.newLine())
+            addMultilineCommentsBlock(desc.classComment.toString(), result)
             val withRawValues = desc.defaultDataType != DataType.VOID
             if (withRawValues) {
                 appendClassDefinition(result, "enum ${desc.name}  : ${Types.typeTo(file, desc.defaultDataType)} {")

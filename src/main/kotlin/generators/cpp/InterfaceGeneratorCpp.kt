@@ -3,6 +3,7 @@ package generators.cpp
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.InterfaceDescription
+import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
@@ -33,9 +34,9 @@ class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
 //        }
 //    }
 
-    override fun processBlock(file: FileData, desc: InterfaceDescription): CppClassData {
-        val result = CppClassData(desc.getParentPath(), desc.name, file)
-        val headerData = CppHeaderData(desc.getParentPath(), desc.name, result)
+    override fun processBlock(file: FileData, parent: Node, desc: InterfaceDescription): CppClassData {
+        val result = CppClassData(desc.name, parent)
+        val headerData = CppHeaderData(desc.name, result)
         result.subs.add(headerData)
         headerData.apply {
         }

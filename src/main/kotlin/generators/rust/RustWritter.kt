@@ -5,17 +5,17 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class RustWritter(val fileGenerator: RustFileGenerator, outputFolder: String)
-    : Writter(fileGenerator.style, outputFolder) {
+class RustWritter(fileGenerator: RustFileGenerator, outputFolder: String)
+    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
-        if (fileData.namespaces.size != 1) {
-            throw IllegalStateException("Rust file can contain only one namespace")
-        }
+//        if (fileData.namespaces.size != 1) {
+//            throw IllegalStateException("Rust file can contain only one namespace")
+//        }
         var outputFile = File(fileData.name + ".rs")
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
-        val namespace = fileData.namespaces.entries.first().value
+//        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
             writeNode(fileData, out)
 

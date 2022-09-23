@@ -3,8 +3,12 @@ package generators.kotlin
 import ce.defs.DataType
 import ce.settings.Project
 import generators.obj.Generator
+import generators.obj.input.Block
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.Node
+import generators.obj.out.BlockStart
+import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
 class KotlinEnumGenerator(
@@ -12,17 +16,15 @@ class KotlinEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsEnum): KotlinClassData {
-        val result = KotlinClassData(desc.getParentPath(), desc.name, file)
+    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): KotlinClassData {
+        val result = KotlinClassData(desc.name, parent)
         result.apply {
-            appendNotEmptyWithNewLine(classComment, desc.classComment)
+            addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
-
-            classDefinition.append("enum class ${desc.name}")
+            subs.add(BlockStart("enum class ${desc.name}", this))
             if (!withRawValues) {
                 classDefinition.append(" {")
                     .append(fileGenerator.newLine())
-                putTabs(classDefinition, 1)
             } else {
                 classDefinition.append("(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {")
                     .append(fileGenerator.newLine())

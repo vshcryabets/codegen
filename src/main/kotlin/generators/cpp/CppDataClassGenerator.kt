@@ -5,6 +5,9 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.DataClass
+import generators.obj.input.Node
+import generators.obj.out.CommentLeaf
+import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 
 class CppDataClassGenerator(
@@ -12,15 +15,16 @@ class CppDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, CppClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: DataClass): CppClassData {
-        val result = CppClassData(desc.getParentPath(), desc.name, file)
-        val headerData = CppHeaderData(desc.getParentPath(), desc.name, result)
+    override fun processBlock(file: FileData, parent: Node, desc: DataClass): CppClassData {
+        val result = CppClassData(desc.name, parent)
+        val headerData = CppHeaderData(desc.name, result)
         result.subs.add(headerData)
         headerData.apply {
-            appendNotEmptyWithNewLine(desc.classComment.toString(), classComment)
-            classComment
-                .append("Constants ${desc.name}")
-                .append(fileGenerator.newLine())
+            subs.add(CommentsBlock(this).apply {
+                if (desc.classComment.isNotEmpty())
+                    subs.add(CommentLeaf(desc.classComment.toString(), this))
+                subs.add(CommentLeaf("Constants ${desc.name}", this))
+            })
 
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField

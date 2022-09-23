@@ -5,6 +5,7 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.Node
 import generators.obj.out.FileData
 import javax.xml.stream.events.Namespace
 
@@ -13,8 +14,8 @@ class CppConstantsBlockGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, CppClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsBlock): CppClassData {
-        val result = CppClassData(desc.getParentPath(), desc.name, file)
+    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): CppClassData {
+        val result = CppClassData(desc.name, parent)
 //        result.headerData.apply {
 //            appendNotEmptyWithNewLine(desc.classComment.toString(), classComment)
 //            classComment
