@@ -1,22 +1,24 @@
 package ce.defs
 
-enum class DataType {
-    VOID,
+sealed class DataType {
+    object VOID : DataType()
 
-    int8,
-    int16,
-    int32,
-    int64,
+    object int8 : DataType()
+    object int16 : DataType()
+    object int32 : DataType()
+    object int64 : DataType()
 
-    uint8,
-    uint16,
-    uint32,
-    uint64,
+    object uint8 : DataType()
+    object uint16 : DataType()
+    object uint32 : DataType()
+    object uint64 : DataType()
 
-    float32,
-    float64,
-    float128,
+    object float32 : DataType()
+    object float64 : DataType()
+    object float128 : DataType()
 
-    string,
-    bool
+    object string : DataType()
+    object bool : DataType()
+    class array(val elementDataType: DataType) : DataType()
 }
+

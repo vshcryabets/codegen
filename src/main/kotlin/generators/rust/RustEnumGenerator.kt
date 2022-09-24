@@ -17,7 +17,7 @@ class RustEnumGenerator(
         val result = RustClassData(desc.name, parent)
         result.apply {
             addMultilineCommentsBlock(desc.classComment.toString(), result)
-            val withRawValues = desc.defaultDataType != DataType.VOID
+            val withRawValues = !(desc.defaultDataType is DataType.VOID)
             if (withRawValues) {
                 appendClassDefinition(result, "enum ${desc.name}  : ${Types.typeTo(file, desc.defaultDataType)} {")
             } else {
