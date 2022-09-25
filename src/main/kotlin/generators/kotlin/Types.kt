@@ -9,6 +9,7 @@ object Types {
             DataType.int8 -> "ByteArray"
             DataType.int16 -> "ShortArray"
             DataType.int32 -> "IntArray"
+            DataType.int64 -> "LongArray"
             DataType.uint16 -> "IntArray"
             DataType.uint32 -> "LongArray"
             DataType.float32 -> "FloatArray"
