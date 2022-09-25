@@ -3,11 +3,9 @@ package generators.cpp
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.Node
 import generators.obj.out.FileData
-import javax.xml.stream.events.Namespace
 
 class CppConstantsBlockGenerator(
     fileGenerator: FileGenerator,
