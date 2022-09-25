@@ -5,6 +5,7 @@ import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class SwiftEnumGenerator(
@@ -12,10 +13,10 @@ class SwiftEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsEnum): SwiftClassData {
-        val result = super.processBlock(file, desc)
+    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): SwiftClassData {
+        val result = SwiftClassData(desc.name, parent)
         result.apply {
-            classComment.append(desc.classComment).append(fileGenerator.newLine())
+            addMultilineCommentsBlock(desc.classComment.toString(), result)
             val withRawValues = desc.defaultDataType != DataType.VOID
             if (withRawValues) {
                 appendClassDefinition(result, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
@@ -26,7 +27,7 @@ class SwiftEnumGenerator(
             }
             var previous: Any? = null
             var needToAddComa = false
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;
@@ -57,6 +58,4 @@ class SwiftEnumGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): SwiftClassData = SwiftClassData(namespace)
 }

@@ -2,19 +2,17 @@ package generators.kotlin
 
 import ce.settings.CodeStyle
 import generators.obj.CLikeFileGenerator
-import generators.obj.FileGenerator
 import generators.obj.input.Block
+import generators.obj.input.TreeRoot
 import generators.obj.out.FileData
 import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.nodes.FileInitialCommentsBlock
+import generators.obj.out.ProjectOutput
 import java.io.File
 
 class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
-    override fun createFile(outputFile: String): FileData {
-        return FileData().apply {
-            this.fullOutputFileName= outputFile
-            addLeaf(FileInitialCommentsBlock())
-            addLeaf(NamespaceDeclaration("MISSED"))
+    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData {
+        return FileData(outputFile, project).apply {
+            subs.add(NamespaceDeclaration(block.getParentPath(), this))
         }
     }
 
@@ -23,7 +21,7 @@ class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
         if (block.outputFile.isNotEmpty()) {
             fileName = "${block.outputFile}"
         }
-        val namespace = block.namespace.replace('.', File.separatorChar)
+        val namespace = block.getParentPath().replace('.', File.separatorChar)
         return block.objectBaseFolder + File.separatorChar + namespace + File.separatorChar + fileName
     }
 }

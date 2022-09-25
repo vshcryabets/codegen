@@ -1,12 +1,8 @@
 package generators.obj.out
 
-open class ClassData(val namespace : String) {
-    companion object {
-        val emptyClassData = ClassData("")
-    }
-    val classStart = StringBuilder()
-    val classComment = StringBuilder()
+import generators.obj.input.TreeRoot
+
+open class ClassData(name: String, parent : OutNode) : OutNode(name, parent) {
     val classDefinition = StringBuilder()
-    val classEnd = StringBuilder()
 }
 

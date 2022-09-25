@@ -5,15 +5,15 @@ import ce.defs.DataType
 
 open class ConstantsEnum(
     name: String,
-    namespace: String,
+    parent: Node,
     var defaultDataType: DataType = DataType.VOID
-) : Block(name, namespace) {
+) : Block(name, parent) {
 
     fun defaultType(name: DataType) {
         defaultDataType = name
     }
 
     fun add(name: String, value: Any = NotDefined) {
-        leafs.add(ClassField(name, defaultDataType, value))
+        subs.add(ClassField(name, this, defaultDataType, value))
     }
 }

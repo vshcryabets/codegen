@@ -95,24 +95,23 @@ fun main(args: Array<String>) {
         if (target in supportedMeta) {
             val meta = supportedMeta[target]!!
             println("Target $target")
-            ce.defs.currentTarget = target
-            val objects = mutableListOf<Block>()
+            namespaceMap.clear()
+            currentTarget = target
+            globRootNamespace.subs.clear()
 
             project.files.forEach { fileName ->
                 println("Processing $fileName")
                 val fileObject = File(fileName)
                 val reader = InputStreamReader(FileInputStream(fileObject))
                 // clean global defines for each file
-                definedBloks.clear()
-                namescpaceDef.setLength(0)
+                globCurrentNamespace = globRootNamespace
                 customBaseFolderPath = project.outputFolder
                 sourceFile = fileObject.absolutePath
                 outputFile = ""
                 engine.eval(reader)
                 reader.close()
-                objects.addAll(definedBloks)
             }
-            meta.write(objects)
+            meta.write(globRootNamespace, namespaceMap)
         } else {
             println("Not supported $target")
         }

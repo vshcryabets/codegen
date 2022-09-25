@@ -3,7 +3,7 @@ package generators.cpp
 import ce.defs.DataType
 import generators.obj.out.FileData
 import generators.obj.out.ImportLeaf
-import generators.obj.out.nodes.ImportsBlock
+import generators.obj.out.ImportsBlock
 
 object Types {
     fun typeTo(file: FileData,
@@ -17,7 +17,7 @@ object Types {
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
             DataType.string -> {
-                file.findSub(ImportsBlock::class.java).addLeaf(ImportLeaf("<string>"))
+                file.findSub(ImportsBlock::class.java).addInclude("<string>")
                 "std::string"
             }
             DataType.float32 -> "float"

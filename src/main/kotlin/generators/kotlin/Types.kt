@@ -4,6 +4,20 @@ import ce.defs.DataType
 import generators.obj.out.FileData
 
 object Types {
+    fun getArrayType(type: DataType): String =
+        when (type) {
+            DataType.int8 -> "ByteArray"
+            DataType.int16 -> "ShortArray"
+            DataType.int32 -> "IntArray"
+            DataType.int64 -> "LongArray"
+            DataType.uint16 -> "IntArray"
+            DataType.uint32 -> "LongArray"
+            DataType.float32 -> "FloatArray"
+            DataType.float64 -> "DoubleArray"
+            DataType.string -> "String[]"
+            else -> "QQTP_array_$type"
+        }
+
     fun typeTo(file: FileData,
                type: DataType
     ) : String =
@@ -17,6 +31,7 @@ object Types {
             DataType.float32 -> "Float"
             DataType.float64 -> "Double"
             DataType.string -> "String"
+            is DataType.array -> getArrayType(type.elementDataType)
             else -> "QQTP_$type"
         }
 

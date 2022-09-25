@@ -5,6 +5,9 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.Node
+import generators.obj.out.CommentLeaf
+import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 
 class CppEnumGenerator(
@@ -12,17 +15,27 @@ class CppEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsEnum): CppClassData {
-        val result = super.processBlock(file, desc)
-        result.headerData.apply {
+    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): CppClassData {
+        val result = CppClassData(desc.name, parent)
+        val headerData = CppHeaderData(desc.name, result)
+        result.subs.add(headerData)
+        headerData.apply {
             if (desc.classComment.isNotEmpty()) {
-                desc.classComment.lines().forEach { line ->
-                    classComment.append("* ").append(line).append(fileGenerator.newLine())
-                }
+                subs.add(CommentsBlock(this).apply {
+                    desc.classComment.lines().forEach { line ->
+                        subs.add(CommentLeaf("${fileGenerator.multilineCommentMid()} $line", this))
+                    }
+                })
             }
+            if (desc.classComment.isNotEmpty()) {
+                subs.add(CommentsBlock(this).apply {
+                    subs.add(CommentLeaf(desc.classComment.toString(), this))
+                })
+            }
+
             classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
             var previous: Any? = null
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 if (it.value == null && previous != null) {
                     it.value = previous!! as Int + 1;
@@ -42,5 +55,4 @@ class CppEnumGenerator(
         return result
     }
 
-    override fun createClassData(namespace : String): CppClassData = CppClassData(namespace)
 }

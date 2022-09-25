@@ -1,7 +1,6 @@
 package generators.cpp
 
 import generators.obj.out.ClassData
+import generators.obj.out.OutNode
 
-open class CppHeaderData(namespace : String) : generators.obj.out.ClassData(namespace) {
-
-}
+open class CppHeaderData(name: String, parent : OutNode) : ClassData(name, parent)

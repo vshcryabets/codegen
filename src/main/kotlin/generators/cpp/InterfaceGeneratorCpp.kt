@@ -2,9 +2,9 @@ package generators.cpp
 
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.InterfaceDescription
+import generators.obj.input.InterfaceDescription
+import generators.obj.input.Node
 import generators.obj.out.FileData
-import javax.xml.stream.events.Namespace
 
 class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
     : Generator<InterfaceDescription, CppClassData>(fileGenerator) {
@@ -34,15 +34,17 @@ class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
 //        }
 //    }
 
-    override fun processBlock(file: FileData, desc: InterfaceDescription): CppClassData {
-        val result = super.processBlock(file, desc)
-            //prepareHeader(desc)
+    override fun processBlock(file: FileData, parent: Node, desc: InterfaceDescription): CppClassData {
+        val result = CppClassData(desc.name, parent)
+        val headerData = CppHeaderData(desc.name, result)
+        result.subs.add(headerData)
+        headerData.apply {
+        }
+        //prepareHeader(desc)
 //        println(result.headers)
 //        println(result.getIncludes())
 //        println(result.classDefinition)
 //        println(result.end)
         return result
     }
-
-    override fun createClassData(namespace: String): CppClassData = CppClassData(namespace)
 }

@@ -1,5 +1,6 @@
 package generators.swift
 
-class SwiftClassData(namespace: String) : generators.obj.out.ClassData(namespace) {
+import generators.obj.out.OutNode
 
-}
+class SwiftClassData(name: String, parent: OutNode) :
+    generators.obj.out.ClassData(name, parent)

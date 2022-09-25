@@ -4,8 +4,8 @@ import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
-import generators.obj.input.ConstantsBlock
 import generators.obj.input.DataClass
+import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class RsDataClassGenerator(
@@ -13,14 +13,12 @@ class RsDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, RustClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: DataClass): RustClassData {
-        val result = super.processBlock(file, desc)
+    override fun processBlock(file: FileData, parent: Node, desc: DataClass): RustClassData {
+        val result = RustClassData(desc.name, parent)
         result.apply {
-            appendNotEmptyWithNewLine(desc.classComment.toString(), classComment)
-            classComment
-                .append("Constants ${desc.name}")
+            addMultilineCommentsBlock(desc.classComment.toString(), result)
 
-            desc.leafs.forEach { leaf ->
+            desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 classDefinition.append("const ")
                     .append(it.name)
@@ -32,6 +30,4 @@ class RsDataClassGenerator(
         }
         return result
     }
-
-    override fun createClassData(namespace: String): RustClassData = RustClassData(namespace)
 }
