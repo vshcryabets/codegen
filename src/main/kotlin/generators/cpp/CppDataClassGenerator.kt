@@ -5,7 +5,6 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.DataClass
-import generators.obj.input.Node
 import generators.obj.out.CommentLeaf
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
@@ -15,27 +14,27 @@ class CppDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, CppClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: DataClass): CppClassData {
-        val result = CppClassData(desc.name, parent)
-        val headerData = CppHeaderData(desc.name, result)
-        result.subs.add(headerData)
-        headerData.apply {
-            subs.add(CommentsBlock(this).apply {
+    override fun processBlock(files: List<FileData>, desc: DataClass): CppClassData {
+        val header = files.find { it is CppHeaderFile }
+            ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
+
+//        val result = CppClassData(desc.name, parent)
+        return header.addSub(CppClassData(desc.name, header)).apply {
+            addSub(CommentsBlock(this)).apply {
                 if (desc.classComment.isNotEmpty())
-                    subs.add(CommentLeaf(desc.classComment.toString(), this))
-                subs.add(CommentLeaf("Constants ${desc.name}", this))
-            })
+                    addSub(CommentLeaf(desc.classComment.toString(), this))
+                addSub(CommentLeaf("Constants ${desc.name}", this))
+            }
 
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 classDefinition.append("const ")
-                    .append(Types.typeTo(file, it.type))
+                    .append(Types.typeTo(header, it.type))
                     .append(" ")
                     .append(it.name)
-                    .append(" = ${Types.toValue(this, it.type, it.value)};")
+                    .append(" = ${Types.toValue(header, it.type, it.value)};")
                     .append(fileGenerator.newLine())
             }
         }
-        return result
     }
 }

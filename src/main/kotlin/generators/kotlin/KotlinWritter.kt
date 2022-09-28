@@ -17,11 +17,6 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
         outputFile.bufferedWriter().use { out ->
             writeNode(fileData, out)
 
-            val headers = fileData.getHeaders()
-            if (headers.isNotEmpty()) {
-                out.write(headers)
-            }
-
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())
             }

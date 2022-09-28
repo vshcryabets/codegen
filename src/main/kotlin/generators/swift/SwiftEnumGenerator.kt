@@ -13,7 +13,8 @@ class SwiftEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): SwiftClassData {
+    override fun processBlock(file: FileData, desc: ConstantsEnum): SwiftClassData {
+        val parent = file.getNamespace(desc.getParentPath())
         val result = SwiftClassData(desc.name, parent)
         result.apply {
             addMultilineCommentsBlock(desc.classComment.toString(), result)

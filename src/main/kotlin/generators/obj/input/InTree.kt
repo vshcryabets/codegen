@@ -25,9 +25,13 @@ open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutab
                 return it as T
             }
         }
-        val newNode = clazz.getDeclaredConstructor().newInstance("", this)
-        subs.add(newNode)
-        return newNode
+        val newNode = clazz.getConstructor(String::class.java, Node::class.java).newInstance("", this)
+        return addSub(newNode)
+    }
+
+    fun <T : Leaf> addSub(leaf: T): T {
+        subs.add(leaf)
+        return leaf
     }
 }
 

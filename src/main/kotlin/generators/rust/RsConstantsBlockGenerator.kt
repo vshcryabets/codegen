@@ -1,6 +1,7 @@
 package generators.rust
 
 import ce.settings.Project
+import generators.kotlin.KotlinClassData
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
@@ -13,11 +14,13 @@ class RsConstantsBlockGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, RustClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): RustClassData {
-        val result = RustClassData(desc.name, parent)
-        result.apply {
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): RustClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
+
+        return file.addSub(RustClassData(desc.name, file)).apply {
             desc.classComment.append("Constants ${desc.name}")
-            addMultilineCommentsBlock(desc.classComment.toString(), result)
+            addMultilineCommentsBlock(desc.classComment.toString(), this)
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
                 classDefinition.append("const ")
@@ -28,6 +31,5 @@ class RsConstantsBlockGenerator(
                     .append(fileGenerator.newLine())
             }
         }
-        return result
     }
 }

@@ -13,10 +13,12 @@ class RsDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, RustClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: DataClass): RustClassData {
-        val result = RustClassData(desc.name, parent)
-        result.apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), result)
+    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): RustClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
+
+        return file.addSub(RustClassData(desc.name, file)).apply {
+            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
@@ -28,6 +30,5 @@ class RsDataClassGenerator(
                     .append(fileGenerator.newLine())
             }
         }
-        return result
     }
 }

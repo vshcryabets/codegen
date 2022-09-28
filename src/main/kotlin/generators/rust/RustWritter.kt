@@ -21,11 +21,6 @@ class RustWritter(fileGenerator: RustFileGenerator, outputFolder: String)
 
             //out.write("package ${namespace.name}${fileGenerator.newLine()}");
 
-            val headers = fileData.getHeaders()
-            if (headers.isNotEmpty()) {
-                out.write(headers)
-            }
-
 //            namespace.subs.forEach {
 //                val classDef = it.value
 //                writeNotEmpty(out, classDef.classStart)

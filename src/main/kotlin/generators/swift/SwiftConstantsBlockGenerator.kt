@@ -13,7 +13,8 @@ class SwiftConstantsBlockGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): SwiftClassData {
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): SwiftClassData {
+        val parent = file.getNamespace(desc.getParentPath())
         val result = SwiftClassData(desc.name, parent)
         result.apply {
             addMultilineCommentsBlock(desc.classComment.toString(), result)

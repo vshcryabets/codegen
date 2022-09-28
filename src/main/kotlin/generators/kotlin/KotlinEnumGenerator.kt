@@ -2,10 +2,11 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.settings.Project
+import generators.cpp.CppClassData
+import generators.cpp.CppHeaderFile
 import generators.obj.Generator
 import generators.obj.input.*
 import generators.obj.out.BlockStart
-import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
 class KotlinEnumGenerator(
@@ -13,9 +14,12 @@ class KotlinEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): KotlinClassData {
-        val result = KotlinClassData(desc.name, parent)
-        result.apply {
+    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
+        val file = files.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Header file for Kotlin")
+
+        //        val definition = CppClassData(desc.name, header)
+        return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
             subs.add(BlockStart("enum class ${desc.name}", this))
@@ -57,8 +61,7 @@ class KotlinEnumGenerator(
                 classDefinition.append(fileGenerator.newLine())
                     .append(fileGenerator.newLine())
             }
-            appendClassDefinition(result, "}");
+            appendClassDefinition(this, "}");
         }
-        return result
     }
 }

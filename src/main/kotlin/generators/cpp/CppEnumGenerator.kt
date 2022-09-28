@@ -5,9 +5,6 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
-import generators.obj.input.Node
-import generators.obj.out.CommentLeaf
-import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 
 class CppEnumGenerator(
@@ -15,23 +12,13 @@ class CppEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): CppClassData {
-        val result = CppClassData(desc.name, parent)
-        val headerData = CppHeaderData(desc.name, result)
-        result.subs.add(headerData)
-        headerData.apply {
-            if (desc.classComment.isNotEmpty()) {
-                subs.add(CommentsBlock(this).apply {
-                    desc.classComment.lines().forEach { line ->
-                        subs.add(CommentLeaf("${fileGenerator.multilineCommentMid()} $line", this))
-                    }
-                })
-            }
-            if (desc.classComment.isNotEmpty()) {
-                subs.add(CommentsBlock(this).apply {
-                    subs.add(CommentLeaf(desc.classComment.toString(), this))
-                })
-            }
+    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): CppClassData {
+        val header = files.find { it is CppHeaderFile }
+            ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
+
+        //        val definition = CppClassData(desc.name, header)
+        return header.addSub(CppClassData(desc.name, header)).apply {
+            addBlockDefaults(desc, this)
 
             classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
             var previous: Any? = null
@@ -46,13 +33,12 @@ class CppEnumGenerator(
                 }
                 putTabs(classDefinition, 1)
                 classDefinition.append(it.name);
-                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
+                classDefinition.append(" = ${Types.toValue(header, it.type, it.value)},")
                 classDefinition.append('\n')
             }
             appendClassDefinition(this, "};");
 
         }
-        return result
     }
 
 }

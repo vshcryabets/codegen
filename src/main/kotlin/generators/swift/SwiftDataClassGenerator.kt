@@ -13,7 +13,8 @@ class SwiftDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: DataClass): SwiftClassData {
+    override fun processBlock(file: FileData, desc: DataClass): SwiftClassData {
+        val parent = file.getNamespace(desc.getParentPath())
         val result = SwiftClassData(desc.name, parent)
         result.apply {
             addMultilineCommentsBlock(desc.classComment.toString(), result)

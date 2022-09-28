@@ -14,9 +14,11 @@ class KtDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: DataClass): KotlinClassData {
-        val result = KotlinClassData(desc.name, parent)
-        result.apply {
+    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): KotlinClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
+
+        return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
 
@@ -35,6 +37,5 @@ class KtDataClassGenerator(
             }
             appendNotEmptyWithNewLine(")", classDefinition)
         }
-        return result
     }
 }

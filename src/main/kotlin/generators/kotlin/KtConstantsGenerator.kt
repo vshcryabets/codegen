@@ -15,9 +15,11 @@ class KtConstantsGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): KotlinClassData {
-        val result = KotlinClassData(desc.name, parent)
-        result.apply {
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
+
+        return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             subs.add(BlockStart("object ${desc.name} {", this))
             var previous: Any? = null
@@ -40,6 +42,5 @@ class KtConstantsGenerator(
             }
             appendNotEmptyWithNewLine("}", classDefinition)
         }
-        return result
     }
 }

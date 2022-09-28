@@ -7,15 +7,14 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 
 class CppFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
-    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData {
-        return CppFileData(outputFile, project).apply {
-            this.headerBegin.append("#pragma once")
-                .append(newLine())
-        }
+    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
+        return listOf(
+            CppFileData(outputFile, project),
+            CppHeaderFile(outputFile, project)
+        )
     }
 
     override fun appendInitialComment(s: FileData, s1: String) {
         super.appendInitialComment(s, s1)
-//        (s as CppFileData)
     }
 }

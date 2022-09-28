@@ -18,7 +18,7 @@ abstract class FileGenerator(val style : CodeStyle) {
         tabSpace = builder.toString()
     }
 
-    abstract fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData
+    abstract fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData>
     abstract fun multilineCommentStart() : String
     abstract fun multilineCommentMid() : String
     abstract fun multilineCommentEnd() : String

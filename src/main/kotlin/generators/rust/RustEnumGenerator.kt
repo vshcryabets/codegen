@@ -13,15 +13,17 @@ class RustEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, RustClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): RustClassData {
-        val result = RustClassData(desc.name, parent)
-        result.apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), result)
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): RustClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
+
+        return file.addSub(RustClassData(desc.name, file)).apply {
+            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = !(desc.defaultDataType is DataType.VOID)
             if (withRawValues) {
-                appendClassDefinition(result, "enum ${desc.name}  : ${Types.typeTo(file, desc.defaultDataType)} {")
+                appendClassDefinition(this, "enum ${desc.name}  : ${Types.typeTo(file, desc.defaultDataType)} {")
             } else {
-                appendClassDefinition(result, "enum ${desc.name} {");
+                appendClassDefinition(this, "enum ${desc.name} {");
                 putTabs(classDefinition, 1)
                 classDefinition.append("case ")
             }
@@ -54,8 +56,7 @@ class RustEnumGenerator(
             if (!withRawValues) {
                 classDefinition.append(fileGenerator.newLine())
             }
-            appendClassDefinition(result, "}");
+            appendClassDefinition(this, "}");
         }
-        return result
     }
 }
