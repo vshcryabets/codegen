@@ -25,12 +25,12 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
 
     override fun writeNode(node: Node, out: BufferedWriter) {
         when (node) {
-            is KotlinClassData -> {
-                super.writeNode(node, out)
-                if (node.classDefinition.isNotEmpty()) {
-                    out.write(node.classDefinition.toString())
-                }
-            }
+//            is KotlinClassData -> {
+//                super.writeNode(node, out)
+//                if (node.classDefinition.isNotEmpty()) {
+//                    out.write(node.classDefinition.toString())
+//                }
+//            }
             else -> super.writeNode(node, out)
         }
     }

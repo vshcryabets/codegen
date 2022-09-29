@@ -2,8 +2,7 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.cpp.CppClassData
-import generators.cpp.CppHeaderFile
+import generators.obj.AutoincrementInt
 import generators.obj.Generator
 import generators.obj.input.*
 import generators.obj.out.BlockStart
@@ -31,17 +30,11 @@ class KotlinEnumGenerator(
                     .append(fileGenerator.newLine())
             }
 
-            var previous: Any? = null
+            val autoIncrement = AutoincrementInt()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                if (NotDefined.equals(it.value) && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
-
-                if (!NotDefined.equals(it.value)) {
-                    previous = it.value
-                }
+                autoIncrement.invoke(it)
 
                 if (withRawValues) {
                     putTabs(classDefinition, 1)

@@ -2,10 +2,10 @@ package generators.swift
 
 import ce.defs.DataType
 import ce.settings.Project
+import generators.obj.AutoincrementInt
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsEnum
-import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class SwiftEnumGenerator(
@@ -13,30 +13,26 @@ class SwiftEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, desc: ConstantsEnum): SwiftClassData {
-        val parent = file.getNamespace(desc.getParentPath())
-        val result = SwiftClassData(desc.name, parent)
-        result.apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), result)
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): SwiftClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
+
+        return file.addSub(SwiftClassData(desc.name, file)).apply {
+
+            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = desc.defaultDataType != DataType.VOID
             if (withRawValues) {
-                appendClassDefinition(result, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
+                appendClassDefinition(this, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
             } else {
-                appendClassDefinition(result, "enum ${desc.name} {");
+                appendClassDefinition(this, "enum ${desc.name} {");
                 putTabs(classDefinition, 1)
                 classDefinition.append("case ")
             }
-            var previous: Any? = null
+            val autoIncrement = AutoincrementInt()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                if (it.value == null && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
-
-                if (it.value != null) {
-                    previous = it.value
-                }
+                autoIncrement(it)
 
                 if (withRawValues) {
                     putTabs(classDefinition, 1)
@@ -55,8 +51,7 @@ class SwiftEnumGenerator(
             if (!withRawValues) {
                 classDefinition.append(fileGenerator.newLine())
             }
-            appendClassDefinition(result, "}");
+            appendClassDefinition(this, "}");
         }
-        return result
     }
 }

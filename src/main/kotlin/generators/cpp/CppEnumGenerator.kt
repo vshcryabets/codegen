@@ -1,6 +1,7 @@
 package generators.cpp
 
 import ce.settings.Project
+import generators.obj.AutoincrementInt
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
@@ -21,16 +22,11 @@ class CppEnumGenerator(
             addBlockDefaults(desc, this)
 
             classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
-            var previous: Any? = null
+            val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                if (it.value == null && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
+                autoIncrement.invoke(it)
 
-                if (it.value != null) {
-                    previous = it.value
-                }
                 putTabs(classDefinition, 1)
                 classDefinition.append(it.name);
                 classDefinition.append(" = ${Types.toValue(header, it.type, it.value)},")

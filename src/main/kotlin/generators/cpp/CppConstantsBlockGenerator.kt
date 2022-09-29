@@ -1,6 +1,7 @@
 package generators.cpp
 
 import ce.settings.Project
+import generators.obj.AutoincrementInt
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
@@ -20,9 +21,11 @@ class CppConstantsBlockGenerator(
         return header.addSub(CppClassData(desc.name, header)).apply {
             desc.classComment.append("Constants ${desc.name}${fileGenerator.newLine()}")
             addBlockDefaults(desc, this)
-
+            val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
+                autoIncrement.invoke(it)
+
                 classDefinition.append("const ")
                     .append(Types.typeTo(header, it.type))
                     .append(" ")

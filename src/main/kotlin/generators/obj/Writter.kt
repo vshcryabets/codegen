@@ -54,6 +54,12 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
 
     open fun writeNode(node: Node, out: BufferedWriter) {
         when (node) {
+            is ClassData -> {
+                writeSubNodes(node, out)
+                if (node.classDefinition.isNotEmpty()) {
+                    out.write(node.classDefinition.toString())
+                }
+            }
             is MultilineCommentsBlock -> {
                 out.write(fileGenerator.multilineCommentStart())
                 writeSubNodes(node, out)

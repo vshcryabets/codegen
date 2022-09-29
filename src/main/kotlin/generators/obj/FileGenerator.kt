@@ -31,7 +31,7 @@ abstract class FileGenerator(val style : CodeStyle) {
         val commentsNode = s.findSub(CommentsBlock::class.java)
         if (s1.trimIndent().isNotEmpty()) {
             s1.lines().forEach { line ->
-                commentsNode.subs.add(CommentLeaf("${singleComment()} $line$", commentsNode))
+                commentsNode.subs.add(CommentLeaf("${singleComment()} $line", commentsNode))
             }
         }
     }
