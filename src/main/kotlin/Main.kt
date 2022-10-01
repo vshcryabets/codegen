@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import generators.obj.MetaGenerator
 import generators.cpp.*
+import generators.java.*
 import generators.kotlin.KotlinClassData
 import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
@@ -43,6 +44,7 @@ fun main(args: Array<String>) {
     val cppFileGenerator = CppFileGenerator(project.codeStyle)
     val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
     val rustFileGenerator = RustFileGenerator(project.codeStyle)
+    val javaFileGenerator = JavaFileGenerator(project.codeStyle)
 
     val kotlinMeta = MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
@@ -78,17 +80,28 @@ fun main(args: Array<String>) {
         target = Target.Rust,
         enum = RustEnumGenerator(rustFileGenerator, project),
         constantsBlock = generators.rust.RsConstantsBlockGenerator(rustFileGenerator, project),
-        dataClass = RsDataClassGenerator(cppFileGenerator, project),
+        dataClass = RsDataClassGenerator(rustFileGenerator, project),
         writter = RustWritter(rustFileGenerator, project.outputFolder),
         project = project,
         fileGenerator = rustFileGenerator
+    )
+
+    val javaMeta = MetaGenerator<JavaClassData>(
+        target = Target.Java,
+        enum = JavaEnumGenerator(javaFileGenerator, project),
+        constantsBlock = JavaConstantsGenerator(javaFileGenerator, project),
+        dataClass = JavaDataClassGenerator(javaFileGenerator, project),
+        writter = JavaWritter(javaFileGenerator, project.outputFolder),
+        project = project,
+        fileGenerator = javaFileGenerator
     )
 
     val supportedMeta = mapOf(
         Target.Kotlin to kotlinMeta,
         Target.Cxx to cppMeta,
         Target.Swift to swiftMeta,
-        Target.Rust to rustMeta
+        Target.Rust to rustMeta,
+        Target.Java to javaMeta
     )
 
     project.targets.forEach { target ->
