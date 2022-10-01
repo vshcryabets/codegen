@@ -1,5 +1,7 @@
 package generators.obj.input
 
+import ce.defs.DataType
+
 object TreeRoot : Node("ROOT", null)
 
 open class Leaf(val name: String, val parent: Node?) {
@@ -61,5 +63,30 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
         val newNamaspace = Namespace(searchName, this)
         subs.add(newNamaspace)
         return newNamaspace.getNamespace(endPath)
+    }
+}
+
+open class Method(name: String, parent: Node) : Node(name, parent)
+open class OutputList() : Node("", null) {
+    fun output(name: String, type : DataType) {
+        subs.add(ClassField(name, this, type, NotDefined))
+    }
+
+    fun outputReusable(name: String, type : DataType) {
+        subs.add(ClassField(name, this, type, NotDefined))
+    }
+}
+open class InputList() : Node("", null) {
+    fun argument(name: String, type : DataType, value: Any? = NotDefined) {
+        subs.add(ClassField(name, this, type, value))
+    }
+}
+
+class InterfaceDescription(name: String, parent: Node) : Block(name, parent) {
+    fun addMethod(name: String, outputs: OutputList?, inputs: InputList?) {
+        addSub(Method(name, this)).apply {
+            outputs?.let { addSub(outputs) }
+            inputs?.let { addSub(inputs) }
+        }
     }
 }

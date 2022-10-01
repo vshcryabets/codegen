@@ -52,7 +52,7 @@ open class MetaGenerator<T : ClassData>(
                 val filesData = files[outputFile]!!
 
                 val namespacePath = it.getParentPath()
-
+                println("Translating ${it.name}")
                 val classData = when (it) {
                     is ConstantsEnum -> enum.processBlock(filesData, it)
                     is ConstantsBlock -> constantsBlock.processBlock(filesData, it)

@@ -15,9 +15,7 @@ class KotlinEnumGenerator(
 
     override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
         val file = files.find { it is FileData }
-            ?: throw java.lang.IllegalStateException("Can't find Header file for Kotlin")
-
-        //        val definition = CppClassData(desc.name, header)
+            ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
@@ -34,9 +32,9 @@ class KotlinEnumGenerator(
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                autoIncrement.invoke(it)
 
                 if (withRawValues) {
+                    autoIncrement.invoke(it)
                     putTabs(classDefinition, 1)
                     classDefinition
                         .append(it.name)

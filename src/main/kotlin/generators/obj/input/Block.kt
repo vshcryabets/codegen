@@ -19,5 +19,3 @@ open class Block(
         subs.add(ClassField(name, this, type, value))
     }
 }
-
-class InterfaceDescription(name: String, parent: Node) : Block(name, parent)
