@@ -7,6 +7,7 @@ import generators.obj.input.ClassField
 import generators.obj.input.DataClass
 import generators.obj.input.Node
 import generators.obj.input.NotDefined
+import generators.obj.out.BlockStart
 import generators.obj.out.FileData
 
 class KtDataClassGenerator(
@@ -20,8 +21,7 @@ class KtDataClassGenerator(
 
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
-            appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
-
+            subs.add(BlockStart("data class ${desc.name} (", this))
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
 

@@ -25,6 +25,14 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
 
     override fun writeNode(node: Node, out: BufferedWriter) {
         when (node) {
+            is OutBlock -> {
+                out.write(node.name)
+                out.write(" {")
+                out.write(fileGenerator.newLine())
+                writeSubNodes(node, out)
+                out.write("}")
+                out.write(fileGenerator.newLine())
+            }
 //            is KotlinClassData -> {
 //                super.writeNode(node, out)
 //                if (node.classDefinition.isNotEmpty()) {
@@ -37,6 +45,7 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
 
     override fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
         when (leaf) {
+            is ConstantLeaf -> out.write("${leaf.name}${fileGenerator.newLine()}")
             is ImportLeaf -> out.write("import ${leaf.name}${fileGenerator.newLine()}")
             is NamespaceDeclaration -> out.write("package ${leaf.name}${fileGenerator.newLine()}")
             else -> super.writeLeaf(leaf, out)

@@ -2,7 +2,6 @@ package generators.obj.input
 
 import ce.defs.DataType
 
-
 open class ConstantsBlock(
     name: String,
     parent: Node,
@@ -13,11 +12,9 @@ open class ConstantsBlock(
         defaultDataType = name
     }
 
-    fun add(name: String, value: Any = NotDefined) {
-        subs.add(ClassField(name, this, defaultDataType, value))
-    }
+    fun add(name: String, value: Any = NotDefined) : ConstantDesc =
+        addSub(ConstantDesc(name, this, defaultDataType, value))
 
-    fun add(name: String, type : DataType, value: Any = NotDefined) {
-        subs.add(ClassField(name, this, type, value))
-    }
+    fun add(name: String, type : DataType, value: Any = NotDefined) =
+        addSub(ConstantDesc(name, this, type, value))
 }
