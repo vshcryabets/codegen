@@ -23,7 +23,7 @@ object Types {
             DataType.float64 -> "double"
             else -> "QQTP_$type"
         }
-    fun toValue(file: FileData, type: DataType, value: Any?) : String =
+    fun toValue(file: CppClassData, type: DataType, value: Any?) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,

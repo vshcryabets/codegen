@@ -9,8 +9,8 @@ import generators.obj.out.ProjectOutput
 class CppFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
         return listOf(
-            CppFileData(outputFile, project),
-            CppHeaderFile(outputFile, project)
+            CppFileData(outputFile + ".cpp", project),
+            CppHeaderFile(outputFile + ".h", project)
         )
     }
 
