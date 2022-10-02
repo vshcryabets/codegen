@@ -2,10 +2,10 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.settings.Project
+import generators.obj.AutoincrementInt
 import generators.obj.Generator
 import generators.obj.input.*
 import generators.obj.out.BlockStart
-import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
 class KotlinEnumGenerator(
@@ -13,9 +13,12 @@ class KotlinEnumGenerator(
     private val project: Project
 ) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsEnum): KotlinClassData {
-        val result = KotlinClassData(desc.name, parent)
-        result.apply {
+    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
+        val file = files.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Header file for Kotlin")
+
+        //        val definition = CppClassData(desc.name, header)
+        return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
             subs.add(BlockStart("enum class ${desc.name}", this))
@@ -27,19 +30,13 @@ class KotlinEnumGenerator(
                     .append(fileGenerator.newLine())
             }
 
-            var previous: Any? = null
+            val autoIncrement = AutoincrementInt()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                if (NotDefined.equals(it.value) && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
-
-                if (!NotDefined.equals(it.value)) {
-                    previous = it.value
-                }
 
                 if (withRawValues) {
+                    autoIncrement.invoke(it)
                     putTabs(classDefinition, 1)
                     classDefinition
                         .append(it.name)
@@ -57,8 +54,7 @@ class KotlinEnumGenerator(
                 classDefinition.append(fileGenerator.newLine())
                     .append(fileGenerator.newLine())
             }
-            appendClassDefinition(result, "}");
+            appendClassDefinition(this, "}");
         }
-        return result
     }
 }

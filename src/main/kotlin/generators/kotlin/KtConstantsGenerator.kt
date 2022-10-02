@@ -1,12 +1,11 @@
 package generators.kotlin
 
 import ce.settings.Project
+import generators.obj.AutoincrementInt
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
-import generators.obj.input.Node
-import generators.obj.input.NotDefined
 import generators.obj.out.BlockStart
 import generators.obj.out.FileData
 
@@ -15,21 +14,17 @@ class KtConstantsGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): KotlinClassData {
-        val result = KotlinClassData(desc.name, parent)
-        result.apply {
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
+
+        return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             subs.add(BlockStart("object ${desc.name} {", this))
-            var previous: Any? = null
+            val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                if ((it.value == null || it.value == NotDefined) && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
-
-                if (it.value != null) {
-                    previous = it.value
-                }
+                autoIncrement.invoke(it)
 
                 classDefinition.append(fileGenerator.tabSpace);
                 classDefinition.append("const val ");
@@ -40,6 +35,5 @@ class KtConstantsGenerator(
             }
             appendNotEmptyWithNewLine("}", classDefinition)
         }
-        return result
     }
 }

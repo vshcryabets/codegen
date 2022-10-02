@@ -13,10 +13,12 @@ class SwiftDataClassGenerator(
     private val project: Project
 ) : Generator<DataClass, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: DataClass): SwiftClassData {
-        val result = SwiftClassData(desc.name, parent)
-        result.apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), result)
+    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): SwiftClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
+
+        return file.addSub(SwiftClassData(desc.name, file)).apply {
+            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
@@ -40,6 +42,5 @@ class SwiftDataClassGenerator(
             }
             classDefinition.append("}\n");
         }
-        return result
     }
 }

@@ -15,8 +15,6 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
         outFolder.mkdirs()
     }
 
-    abstract fun writeFile(fileData: FileData)
-
     open fun write(data: ProjectOutput) {
         data.subs.forEach {
             if (it is FileData) {
@@ -24,6 +22,8 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
             }
         }
     }
+
+    abstract fun writeFile(fileData: FileData)
 
     open fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
         when (leaf) {
@@ -42,8 +42,24 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
         }
     }
 
+    open fun writeSubNodes(node: Node, out: BufferedWriter) {
+        node.subs.forEach {
+            if (it is Node) {
+                writeNode(it, out)
+            } else {
+                writeLeaf(it, out)
+            }
+        }
+    }
+
     open fun writeNode(node: Node, out: BufferedWriter) {
         when (node) {
+            is ClassData -> {
+                writeSubNodes(node, out)
+                if (node.classDefinition.isNotEmpty()) {
+                    out.write(node.classDefinition.toString())
+                }
+            }
             is MultilineCommentsBlock -> {
                 out.write(fileGenerator.multilineCommentStart())
                 writeSubNodes(node, out)
@@ -55,16 +71,6 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
             else -> writeSubNodes(node, out)
         }
 
-    }
-
-    open fun writeSubNodes(node: Node, out: BufferedWriter) {
-        node.subs.forEach {
-            if (it is Node) {
-                writeNode(it, out)
-            } else {
-                writeLeaf(it, out)
-            }
-        }
     }
 
     fun writeNotEmpty(out: BufferedWriter, builder: StringBuilder) {

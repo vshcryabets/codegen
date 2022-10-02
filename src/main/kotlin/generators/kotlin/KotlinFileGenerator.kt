@@ -10,10 +10,10 @@ import generators.obj.out.ProjectOutput
 import java.io.File
 
 class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
-    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData {
-        return FileData(outputFile, project).apply {
+    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
+        return listOf(FileData(outputFile, project).apply {
             subs.add(NamespaceDeclaration(block.getParentPath(), this))
-        }
+        })
     }
 
     override fun getBlockFilePath(block: Block): String {

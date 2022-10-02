@@ -1,11 +1,11 @@
 package generators.swift
 
 import ce.settings.Project
+import generators.obj.AutoincrementInt
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ClassField
 import generators.obj.input.ConstantsBlock
-import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class SwiftConstantsBlockGenerator(
@@ -13,23 +13,19 @@ class SwiftConstantsBlockGenerator(
     private val project: Project
 ) : Generator<ConstantsBlock, SwiftClassData>(fileGenerator) {
 
-    override fun processBlock(file: FileData, parent: Node, desc: ConstantsBlock): SwiftClassData {
-        val result = SwiftClassData(desc.name, parent)
-        result.apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), result)
+    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): SwiftClassData {
+        val file = blockFiles.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
+
+        return file.addSub(SwiftClassData(desc.name, file)).apply {
+            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
-            var previous: Any? = null
+            val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                if (it.value == null && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
-
-                if (it.value != null) {
-                    previous = it.value
-                }
+                autoIncrement(it)
 
                 classDefinition.append(fileGenerator.tabSpace);
                 classDefinition.append("static let ");
@@ -40,6 +36,5 @@ class SwiftConstantsBlockGenerator(
             }
             classDefinition.append("}\n");
         }
-        return result
     }
 }

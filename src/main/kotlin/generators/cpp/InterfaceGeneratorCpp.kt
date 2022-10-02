@@ -3,7 +3,6 @@ package generators.cpp
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.InterfaceDescription
-import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
@@ -34,17 +33,13 @@ class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
 //        }
 //    }
 
-    override fun processBlock(file: FileData, parent: Node, desc: InterfaceDescription): CppClassData {
-        val result = CppClassData(desc.name, parent)
-        val headerData = CppHeaderData(desc.name, result)
-        result.subs.add(headerData)
-        headerData.apply {
+    override fun processBlock(files: List<FileData>, desc: InterfaceDescription): CppClassData {
+        val header = files.find { it is CppHeaderFile }
+            ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
+
+        //        val definition = CppClassData(desc.name, header)
+        return header.addSub(CppClassData(desc.name, header)).apply {
+            addBlockDefaults(desc, this)
         }
-        //prepareHeader(desc)
-//        println(result.headers)
-//        println(result.getIncludes())
-//        println(result.classDefinition)
-//        println(result.end)
-        return result
     }
 }

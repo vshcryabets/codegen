@@ -18,7 +18,7 @@ abstract class FileGenerator(val style : CodeStyle) {
         tabSpace = builder.toString()
     }
 
-    abstract fun createFile(project: ProjectOutput, outputFile: String, block: Block): FileData
+    abstract fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData>
     abstract fun multilineCommentStart() : String
     abstract fun multilineCommentMid() : String
     abstract fun multilineCommentEnd() : String
@@ -31,7 +31,7 @@ abstract class FileGenerator(val style : CodeStyle) {
         val commentsNode = s.findSub(CommentsBlock::class.java)
         if (s1.trimIndent().isNotEmpty()) {
             s1.lines().forEach { line ->
-                commentsNode.subs.add(CommentLeaf("${singleComment()} $line$", commentsNode))
+                commentsNode.subs.add(CommentLeaf("${singleComment()} $line", commentsNode))
             }
         }
     }
