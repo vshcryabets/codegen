@@ -34,9 +34,9 @@ class KotlinEnumGenerator(
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                autoIncrement.invoke(it)
 
                 if (withRawValues) {
+                    autoIncrement.invoke(it)
                     putTabs(classDefinition, 1)
                     classDefinition
                         .append(it.name)

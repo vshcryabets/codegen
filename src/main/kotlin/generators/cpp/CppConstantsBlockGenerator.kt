@@ -14,11 +14,12 @@ class CppConstantsBlockGenerator(
 ) : Generator<ConstantsBlock, CppClassData>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: ConstantsBlock): CppClassData {
-        val header = files.find { it is CppHeaderFile }
+        val declaration = files.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
+        val definition = files.find { it is CppFileData }
+            ?: throw java.lang.IllegalStateException("Can't find Definition file for C++")
 
-        //        val definition = CppClassData(desc.name, header)
-        return header.addSub(CppClassData(desc.name, header)).apply {
+        return declaration.addSub(CppClassData(desc.name, declaration)).apply {
             desc.classComment.append("Constants ${desc.name}${fileGenerator.newLine()}")
             addBlockDefaults(desc, this)
             val autoIncrement = AutoincrementInt()
@@ -27,10 +28,10 @@ class CppConstantsBlockGenerator(
                 autoIncrement.invoke(it)
 
                 classDefinition.append("const ")
-                    .append(Types.typeTo(header, it.type))
+                    .append(Types.typeTo(declaration, it.type))
                     .append(" ")
                     .append(it.name)
-                    .append(" = ${Types.toValue(header, it.type, it.value)};")
+                    .append(" = ${Types.toValue(this, it.type, it.value)};")
                     .append(fileGenerator.newLine())
             }
         }

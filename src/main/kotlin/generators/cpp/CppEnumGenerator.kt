@@ -1,5 +1,6 @@
 package generators.cpp
 
+import ce.defs.DataType
 import ce.settings.Project
 import generators.obj.AutoincrementInt
 import generators.obj.FileGenerator
@@ -20,17 +21,22 @@ class CppEnumGenerator(
         //        val definition = CppClassData(desc.name, header)
         return header.addSub(CppClassData(desc.name, header)).apply {
             addBlockDefaults(desc, this)
+            val withRawValues = desc.defaultDataType != DataType.VOID
 
             classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
             val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField
-                autoIncrement.invoke(it)
-
                 putTabs(classDefinition, 1)
-                classDefinition.append(it.name);
-                classDefinition.append(" = ${Types.toValue(header, it.type, it.value)},")
-                classDefinition.append('\n')
+
+                if (withRawValues) {
+                    autoIncrement.invoke(it)
+                    classDefinition.append(it.name);
+                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
+                    classDefinition.append(fileGenerator.newLine())
+                } else {
+                    classDefinition.append("${it.name},${fileGenerator.newLine()}");
+                }
             }
             appendClassDefinition(this, "};");
 

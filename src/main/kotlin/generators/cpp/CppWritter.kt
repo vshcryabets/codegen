@@ -16,7 +16,7 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String)
     override fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
         when (leaf) {
             is CompilerDirective -> out.write("#${leaf.name}${fileGenerator.newLine()}")
-            is ImportLeaf -> out.write("#include ${leaf.name}${fileGenerator.newLine()}")
+            is ImportLeaf -> out.write("#include \"${leaf.name}\"${fileGenerator.newLine()}")
             else -> super.writeLeaf(leaf, out)
         }
     }
@@ -28,23 +28,12 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String)
                 super.writeNode(node, out)
                 out.write("}${fileGenerator.newLine()}")
             }
-//            is CppClassData -> {
-//                super.writeNode(node, out)
-//                if (node.classDefinition.isNotEmpty()) {
-//                    out.write(node.classDefinition.toString())
-//                }
-//            }
             else -> super.writeNode(node, out)
         }
     }
 
     override fun writeFile(fileData: FileData) {
-        val fileExt = when (fileData) {
-            is CppHeaderFile -> ".h"
-            is CppFileData -> ".cpp"
-            else -> throw java.lang.IllegalStateException("Unsupported file type $fileData")
-        }
-        val outputFile = File(fileData.name + fileExt)
+        val outputFile = File(fileData.name)
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
