@@ -12,7 +12,7 @@ import generators.obj.out.FileData
 class JavaConstantsGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, JavaClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): JavaClassData {
         val file = blockFiles.find { it is FileData }

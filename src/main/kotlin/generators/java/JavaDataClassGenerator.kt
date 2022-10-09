@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class JavaDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass, JavaClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: DataClass): JavaClassData {
         val file = blockFiles.find { it is FileData }

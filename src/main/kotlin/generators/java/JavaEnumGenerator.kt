@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class JavaEnumGenerator(
     fileGenerator: JavaFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, JavaClassData>(fileGenerator) {
+) : Generator<ConstantsEnum>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: ConstantsEnum): JavaClassData {
         val file = files.find { it is FileData }

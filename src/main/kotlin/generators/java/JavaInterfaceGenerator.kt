@@ -9,7 +9,7 @@ import generators.obj.out.FileData
 
 class JavaInterfaceGenerator(fileGenerator: JavaFileGenerator,
                              private val project: Project
-) : Generator<InterfaceDescription, JavaClassData>(fileGenerator) {
+) : Generator<InterfaceDescription>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: InterfaceDescription): JavaClassData {
         val file = files.find { it is FileData }
