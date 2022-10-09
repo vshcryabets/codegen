@@ -20,14 +20,17 @@ class KotlinEnumGenerator(
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
-            addSub(BlockStart("enum class ${desc.name}", this))
-            if (!withRawValues) {
-                classDefinition.append(" {")
-                    .append(fileGenerator.newLine())
-            } else {
-                classDefinition.append("(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {")
-                    .append(fileGenerator.newLine())
-            }
+            addSub(
+                if (!withRawValues) {
+                    BlockStart("enum class ${desc.name} {", this)
+                } else {
+                    BlockStart(
+                        "enum class ${desc.name}" +
+                                "(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {",
+                        this
+                    )
+                }
+            )
 
             val autoIncrement = AutoincrementInt()
             var needToAddComa = false

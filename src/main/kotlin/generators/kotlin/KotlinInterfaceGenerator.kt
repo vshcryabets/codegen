@@ -2,11 +2,10 @@ package generators.kotlin
 
 import ce.settings.Project
 import generators.obj.Generator
-import generators.obj.input.ClassField
 import generators.obj.input.InterfaceDescription
 import generators.obj.out.BlockEnd
-import generators.obj.out.BlockStart
 import generators.obj.out.FileData
+import generators.obj.out.OutBlock
 
 class KotlinInterfaceGenerator(fileGenerator: KotlinFileGenerator,
 private val project: Project
@@ -17,12 +16,13 @@ private val project: Project
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
-            addSub(BlockStart("interface ${desc.name}", this))
-
-//            desc.subs.forEach { leaf ->
-//                val it = leaf as ClassField
-//            }
-            addSub(BlockEnd("}", this))
+            addSub(OutBlock("interface ${desc.name}", this)).apply {
+//                desc.subs.forEach { leaf ->
+//                    when (leaf) {
+//                        is Method ->
+//                    }
+//                }
+            }
         }
     }
 

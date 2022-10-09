@@ -23,3 +23,10 @@ open class Input(name: String, parent: Node, type: DataType, value : Any? = NotD
     type,
     value
 )
+
+open class ConstantDesc(name: String, parent: Node, type: DataType, value : Any? = NotDefined) : ClassField(
+    name,
+    parent,
+    type,
+    value
+)
