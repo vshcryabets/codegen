@@ -14,7 +14,7 @@ import generators.obj.out.FileData
 class KtConstantsGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
         val file = blockFiles.find { it is FileData }

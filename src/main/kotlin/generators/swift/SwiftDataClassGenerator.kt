@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class SwiftDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass, SwiftClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: DataClass): SwiftClassData {
         val file = blockFiles.find { it is FileData }

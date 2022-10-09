@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class SwiftEnumGenerator(
     fileGenerator: SwiftFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, SwiftClassData>(fileGenerator) {
+) : Generator<ConstantsEnum>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): SwiftClassData {
         val file = blockFiles.find { it is FileData }

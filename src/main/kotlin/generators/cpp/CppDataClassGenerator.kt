@@ -14,7 +14,7 @@ import generators.obj.out.ImportsBlock
 class CppDataClassGenerator(
     fileGenerator: FileGenerator,
     private val project: Project
-) : Generator<DataClass, CppClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: DataClass): CppClassData {
         val header = files.find { it is CppHeaderFile }

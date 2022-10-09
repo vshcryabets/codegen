@@ -4,9 +4,9 @@ import generators.obj.input.Block
 import generators.obj.input.Node
 import generators.obj.out.*
 
-abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenerator) {
+abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
 
-    abstract fun processBlock(blockFiles: List<FileData>, desc: I) : T
+    abstract fun processBlock(blockFiles: List<FileData>, desc: I) : ClassData
 
     fun putTabs(builder: StringBuilder, count : Int) {
         for (i in 0 .. count - 1) {

@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class CppConstantsBlockGenerator(
     fileGenerator: FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, CppClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: ConstantsBlock): CppClassData {
         val declaration = files.find { it is CppHeaderFile }
