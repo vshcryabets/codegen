@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class RustEnumGenerator(
     fileGenerator: RustFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, RustClassData>(fileGenerator) {
+) : Generator<ConstantsEnum>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): RustClassData {
         val file = blockFiles.find { it is FileData }

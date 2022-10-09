@@ -7,11 +7,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import generators.obj.MetaGenerator
 import generators.cpp.*
 import generators.java.*
-import generators.kotlin.KotlinClassData
-import generators.kotlin.KotlinEnumGenerator
-import generators.kotlin.KotlinFileGenerator
-import generators.kotlin.KotlinWritter
-import generators.obj.input.Block
+import generators.kotlin.*
+import generators.obj.Generator
+import generators.obj.input.*
 import generators.rust.*
 import generators.swift.*
 import generators.swift.SwiftConstantsBlockGenerator
@@ -21,6 +19,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import javax.script.ScriptEngineManager
+import kotlin.reflect.KClass
 
 fun main(args: Array<String>) {
     if (args.size < 1) {
@@ -46,54 +45,70 @@ fun main(args: Array<String>) {
     val rustFileGenerator = RustFileGenerator(project.codeStyle)
     val javaFileGenerator = JavaFileGenerator(project.codeStyle)
 
+    val kotlinGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        ConstantsEnum::class.java to KotlinEnumGenerator(kotlinFileGenerator, project),
+        ConstantsBlock::class.java to KtConstantsGenerator(kotlinFileGenerator, project),
+        DataClass::class.java to KtDataClassGenerator(kotlinFileGenerator, project),
+        InterfaceDescription::class.java to KotlinInterfaceGenerator(kotlinFileGenerator, project)
+    )
     val kotlinMeta = MetaGenerator<KotlinClassData>(
         target = Target.Kotlin,
-        enum = KotlinEnumGenerator(kotlinFileGenerator, project),
-        constantsBlock = generators.kotlin.KtConstantsGenerator(kotlinFileGenerator, project),
-        dataClass = generators.kotlin.KtDataClassGenerator(kotlinFileGenerator, project),
         writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
         project = project,
-        fileGenerator = kotlinFileGenerator
+        fileGenerator = kotlinFileGenerator,
+        generatorsMap = kotlinGenerators
     )
 
+    val cppGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        ConstantsEnum::class.java to CppEnumGenerator(cppFileGenerator, project),
+        ConstantsBlock::class.java to CppConstantsBlockGenerator(cppFileGenerator, project),
+        DataClass::class.java to CppDataClassGenerator(cppFileGenerator, project)
+    )
     val cppMeta = MetaGenerator<CppClassData>(
         target = Target.Cxx,
-        enum = CppEnumGenerator(cppFileGenerator, project),
-        constantsBlock = CppConstantsBlockGenerator(cppFileGenerator, project),
         writter = CppWritter(cppFileGenerator, project.outputFolder),
-        dataClass = CppDataClassGenerator(cppFileGenerator, project),
         project = project,
-        fileGenerator = cppFileGenerator
+        fileGenerator = cppFileGenerator,
+        generatorsMap = cppGenerators
     )
 
+    val swiftGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        ConstantsEnum::class.java to SwiftEnumGenerator(swiftFileGenerator, project),
+        ConstantsBlock::class.java to SwiftConstantsBlockGenerator(swiftFileGenerator, project),
+        DataClass::class.java to SwiftDataClassGenerator(swiftFileGenerator, project)
+    )
     val swiftMeta = MetaGenerator<SwiftClassData>(
         target = Target.Swift,
-        enum = SwiftEnumGenerator(swiftFileGenerator, project),
-        constantsBlock = SwiftConstantsBlockGenerator(swiftFileGenerator, project),
-        dataClass = SwiftDataClassGenerator(cppFileGenerator, project),
         writter = SwiftWritter(swiftFileGenerator, project.outputFolder),
         project = project,
-        fileGenerator = swiftFileGenerator
+        fileGenerator = swiftFileGenerator,
+        generatorsMap = swiftGenerators
     )
 
+    val rustGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        ConstantsEnum::class.java to RustEnumGenerator(rustFileGenerator, project),
+        ConstantsBlock::class.java to RsConstantsBlockGenerator(rustFileGenerator, project),
+        DataClass::class.java to RsDataClassGenerator(rustFileGenerator, project)
+    )
     val rustMeta = MetaGenerator<RustClassData>(
         target = Target.Rust,
-        enum = RustEnumGenerator(rustFileGenerator, project),
-        constantsBlock = generators.rust.RsConstantsBlockGenerator(rustFileGenerator, project),
-        dataClass = RsDataClassGenerator(rustFileGenerator, project),
         writter = RustWritter(rustFileGenerator, project.outputFolder),
         project = project,
-        fileGenerator = rustFileGenerator
+        fileGenerator = rustFileGenerator,
+        generatorsMap = rustGenerators
     )
 
+    val javaGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        ConstantsEnum::class.java to JavaEnumGenerator(javaFileGenerator, project),
+        ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, project),
+        DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, project)
+    )
     val javaMeta = MetaGenerator<JavaClassData>(
         target = Target.Java,
-        enum = JavaEnumGenerator(javaFileGenerator, project),
-        constantsBlock = JavaConstantsGenerator(javaFileGenerator, project),
-        dataClass = JavaDataClassGenerator(javaFileGenerator, project),
         writter = JavaWritter(javaFileGenerator, project.outputFolder),
         project = project,
-        fileGenerator = javaFileGenerator
+        fileGenerator = javaFileGenerator,
+        generatorsMap = javaGenerators
     )
 
     val supportedMeta = mapOf(

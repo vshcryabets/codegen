@@ -12,7 +12,7 @@ import generators.obj.out.FileData
 class RsConstantsBlockGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, RustClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): RustClassData {
         val file = blockFiles.find { it is FileData }

@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class SwiftConstantsBlockGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, SwiftClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): SwiftClassData {
         val file = blockFiles.find { it is FileData }

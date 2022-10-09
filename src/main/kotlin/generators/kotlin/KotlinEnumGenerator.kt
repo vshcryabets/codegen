@@ -5,13 +5,14 @@ import ce.settings.Project
 import generators.obj.AutoincrementInt
 import generators.obj.Generator
 import generators.obj.input.*
+import generators.obj.out.BlockEnd
 import generators.obj.out.BlockStart
 import generators.obj.out.FileData
 
 class KotlinEnumGenerator(
     fileGenerator: KotlinFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, KotlinClassData>(fileGenerator) {
+) : Generator<ConstantsEnum>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
         val file = files.find { it is FileData }
@@ -19,7 +20,7 @@ class KotlinEnumGenerator(
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
-            subs.add(BlockStart("enum class ${desc.name}", this))
+            addSub(BlockStart("enum class ${desc.name}", this))
             if (!withRawValues) {
                 classDefinition.append(" {")
                     .append(fileGenerator.newLine())
@@ -52,7 +53,7 @@ class KotlinEnumGenerator(
                 classDefinition.append(fileGenerator.newLine())
                     .append(fileGenerator.newLine())
             }
-            appendClassDefinition(this, "}");
+            addSub(BlockEnd("}", this))
         }
     }
 }

@@ -12,7 +12,7 @@ import generators.obj.out.FileData
 class KtDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass, KotlinClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: DataClass): KotlinClassData {
         val file = blockFiles.find { it is FileData }

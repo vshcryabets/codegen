@@ -12,7 +12,7 @@ import generators.obj.out.FileData
 class KtConstantsGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, KotlinClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
         val file = blockFiles.find { it is FileData }
@@ -20,7 +20,7 @@ class KtConstantsGenerator(
 
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
-            subs.add(BlockStart("object ${desc.name} {", this))
+            addSub(BlockStart("object ${desc.name} {", this))
             val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
                 val it = leaf as ClassField

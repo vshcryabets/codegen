@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class RsDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass, RustClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: DataClass): RustClassData {
         val file = blockFiles.find { it is FileData }

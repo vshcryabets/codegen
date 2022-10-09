@@ -6,7 +6,7 @@ import generators.obj.input.InterfaceDescription
 import generators.obj.out.FileData
 
 class InterfaceGeneratorCpp(fileGenerator: FileGenerator)
-    : Generator<InterfaceDescription, CppClassData>(fileGenerator) {
+    : Generator<InterfaceDescription>(fileGenerator) {
 
 //    fun prepareHeader(desc: InterfaceDescription) = CppClassData().apply {
 //        headers.append("#pragma once\n")

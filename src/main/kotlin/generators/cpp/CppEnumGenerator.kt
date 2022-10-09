@@ -11,7 +11,7 @@ import generators.obj.out.FileData
 class CppEnumGenerator(
     fileGenerator: FileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum, CppClassData>(fileGenerator) {
+) : Generator<ConstantsEnum>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: ConstantsEnum): CppClassData {
         val header = files.find { it is CppHeaderFile }
