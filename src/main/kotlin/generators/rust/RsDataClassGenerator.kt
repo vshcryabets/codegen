@@ -3,9 +3,8 @@ package generators.rust
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.DataClass
-import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class RsDataClassGenerator(
@@ -21,7 +20,7 @@ class RsDataClassGenerator(
             addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
                 classDefinition.append("const ")
                     .append(it.name)
                     .append(" : ")

@@ -16,7 +16,7 @@ object Types {
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
             DataType.string -> {
-                file.findSub(ImportsBlock::class.java).addInclude("<string>")
+                file.findOrCreateSub(ImportsBlock::class.java).addInclude("<string>")
                 "std::string"
             }
             DataType.float32 -> "float"

@@ -2,7 +2,7 @@ package generators.java
 
 import ce.settings.Project
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.InterfaceDescription
 import generators.obj.out.BlockStart
 import generators.obj.out.FileData
@@ -19,7 +19,7 @@ class JavaInterfaceGenerator(fileGenerator: JavaFileGenerator,
             subs.add(BlockStart("interface ${desc.name}", this))
 
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
             }
             appendClassDefinition(this, "}");
         }

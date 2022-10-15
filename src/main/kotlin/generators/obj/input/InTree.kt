@@ -4,7 +4,7 @@ import ce.defs.DataType
 
 object TreeRoot : Node("ROOT", null)
 
-open class Leaf(val name: String, val parent: Node?) {
+open class Leaf(val name: String, var parent: Node? = null) {
     fun getParentPath(): String = parent?.getPath() ?: ""
     fun getPath(): String {
         if (parent == null) {
@@ -21,7 +21,17 @@ open class Leaf(val name: String, val parent: Node?) {
 
 open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutableListOf()) :
     Leaf(name, parent) {
-    fun <T : Node> findSub(clazz: Class<T>): T {
+
+    fun <T : Node> findOrNull(clazz: Class<T>): T? {
+        subs.forEach {
+            if (it.javaClass == clazz) {
+                return it as T
+            }
+        }
+        return null
+    }
+
+    fun <T : Node> findOrCreateSub(clazz: Class<T>): T {
         subs.forEach {
             if (it.javaClass == clazz) {
                 return it as T
@@ -69,16 +79,16 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
 open class Method(name: String, parent: Node) : Node(name, parent)
 open class OutputList() : Node("", null) {
     fun output(name: String, type : DataType) {
-        subs.add(ClassField(name, this, type, NotDefined))
+        subs.add(DataField(name, this, type, NotDefined))
     }
 
     fun outputReusable(name: String, type : DataType) {
-        subs.add(ClassField(name, this, type, NotDefined))
+        subs.add(DataField(name, this, type, NotDefined))
     }
 }
 open class InputList() : Node("", null) {
     fun argument(name: String, type : DataType, value: Any? = NotDefined) {
-        subs.add(ClassField(name, this, type, value))
+        subs.add(DataField(name, this, type, value))
     }
 }
 

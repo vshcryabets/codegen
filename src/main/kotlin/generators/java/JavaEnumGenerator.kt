@@ -31,7 +31,7 @@ class JavaEnumGenerator(
             val autoIncrement = AutoincrementInt()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
 
                 if (withRawValues) {
                     autoIncrement.invoke(it)

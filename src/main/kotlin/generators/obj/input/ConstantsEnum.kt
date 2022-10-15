@@ -14,6 +14,6 @@ open class ConstantsEnum(
     }
 
     fun add(name: String, value: Any = NotDefined) {
-        subs.add(ClassField(name, this, defaultDataType, value))
+        addSub(DataField(name, this, defaultDataType, value))
     }
 }

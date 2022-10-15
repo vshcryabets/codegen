@@ -5,9 +5,7 @@ import ce.settings.Project
 import generators.obj.AutoincrementInt
 import generators.obj.Generator
 import generators.obj.input.*
-import generators.obj.out.BlockEnd
-import generators.obj.out.BlockStart
-import generators.obj.out.FileData
+import generators.obj.out.*
 
 class KotlinEnumGenerator(
     fileGenerator: KotlinFileGenerator,
@@ -17,46 +15,35 @@ class KotlinEnumGenerator(
     override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
-        return file.addSub(KotlinClassData(desc.name, file)).apply {
-            addBlockDefaults(desc, this)
-            val withRawValues = desc.defaultDataType != DataType.VOID
-            addSub(
-                if (!withRawValues) {
-                    BlockStart("enum class ${desc.name} {", this)
-                } else {
-                    BlockStart(
-                        "enum class ${desc.name}" +
-                                "(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {",
-                        this
-                    )
-                }
-            )
+        val withRawValues = desc.defaultDataType != DataType.VOID
+        val autoIncrement = AutoincrementInt()
+        var needToAddComa = false
 
-            val autoIncrement = AutoincrementInt()
-            var needToAddComa = false
-            desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
-
+        return KotlinClassData(desc.name, file).also { classData ->
+            file.addSub(classData)
+            addBlockDefaults(desc, classData)
+            classData.addSub(OutBlock("enum class ${desc.name}", classData)).apply {
                 if (withRawValues) {
-                    autoIncrement.invoke(it)
-                    putTabs(classDefinition, 1)
-                    classDefinition
-                        .append(it.name)
-                        .append("(${Types.toValue(this, it.type, it.value)}),")
-                        .append(fileGenerator.newLine())
-                } else {
-                    if (needToAddComa) {
-                        classDefinition.append(", ")
+                    this.addSub(OutBlockArguments("", this)).apply {
+                        addSub(DataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", this, desc.defaultDataType))
                     }
-                    classDefinition.append(it.name)
+                }
+                desc.subs.forEach { leaf ->
+                    val it = leaf as DataField
+                    if (needToAddComa) {
+                        addSub(Separator(",${fileGenerator.newLine()}", this))
+                    }
+
+                    if (withRawValues) {
+                        autoIncrement(it)
+                        addSub(EnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})", this))
+                    } else {
+                        addSub(EnumLeaf("${it.name}", this))
+                    }
                     needToAddComa = true
                 }
+                addSub(NlSeparator(this))
             }
-            if (!withRawValues) {
-                classDefinition.append(fileGenerator.newLine())
-                    .append(fileGenerator.newLine())
-            }
-            addSub(BlockEnd("}", this))
         }
     }
 }

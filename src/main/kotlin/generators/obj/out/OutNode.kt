@@ -9,8 +9,12 @@ class MultilineCommentsBlock(parent : Node) : Node("", parent)
 
 class ImportsBlock(name: String, parent : Node) : Node(name, parent) {
     fun addInclude(name: String) {
-        subs.add(ImportLeaf(name, this))
+        addSub(ImportLeaf(name, this))
     }
 }
 
+// $name ($OutBlockArguments) {
+// ...
+// }
 open class OutBlock(name: String, parent: Node) : Node(name, parent)
+open class OutBlockArguments(name: String, parent: Node) : Node(name, parent)

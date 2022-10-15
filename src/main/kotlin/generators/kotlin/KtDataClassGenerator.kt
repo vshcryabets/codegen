@@ -3,9 +3,8 @@ package generators.kotlin
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.DataClass
-import generators.obj.input.Node
 import generators.obj.input.NotDefined
 import generators.obj.out.BlockStart
 import generators.obj.out.FileData
@@ -23,7 +22,7 @@ class KtDataClassGenerator(
             addBlockDefaults(desc, this)
             subs.add(BlockStart("data class ${desc.name} (", this))
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
 
                 classDefinition.append(fileGenerator.tabSpace)
                 classDefinition.append("val ")

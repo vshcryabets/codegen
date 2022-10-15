@@ -5,7 +5,7 @@ import ce.settings.Project
 import generators.obj.AutoincrementInt
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
@@ -26,7 +26,7 @@ class CppEnumGenerator(
             classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
             val autoIncrement = AutoincrementInt()
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
                 putTabs(classDefinition, 1)
 
                 if (withRawValues) {

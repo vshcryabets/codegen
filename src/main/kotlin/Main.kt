@@ -30,6 +30,7 @@ fun main(args: Array<String>) {
     val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
+    engine.eval("val x = 5")
 
     val adapter: JsonAdapter<Project> = moshi.adapter(Project::class.java)
 
