@@ -1,6 +1,8 @@
 package generators.obj.input
 
 import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.NotDefined
 
 
 open class ConstantsEnum(
@@ -14,6 +16,6 @@ open class ConstantsEnum(
     }
 
     fun add(name: String, value: Any = NotDefined) {
-        addSub(DataField(name, this, defaultDataType, value))
+        addSub(DataField(name, this, defaultDataType, DataValue(value)))
     }
 }

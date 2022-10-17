@@ -5,7 +5,6 @@ import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
-import generators.obj.input.NotDefined
 import generators.obj.out.FileData
 
 class JavaDataClassGenerator(
@@ -28,7 +27,7 @@ class JavaDataClassGenerator(
                 classDefinition.append("val ")
                 classDefinition.append(it.name)
                 classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-                if (it.value != NotDefined) {
+                if (it.value.notDefined()) {
                     classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
                 }
 

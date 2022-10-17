@@ -30,9 +30,9 @@ class RustEnumGenerator(
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
-                if (it.value == null && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
+//                if (it.value == null && previous != null) {
+//                    it.value = previous!! as Int + 1;
+//                }
 
                 if (it.value != null) {
                     previous = it.value

@@ -1,25 +1,30 @@
 import ce.defs.*
 import ce.defs.Target
 import ce.settings.Project
+import ce.treeio.DataTypeSerializer
+import ce.treeio.DataValueSerializer
+import ce.treeio.TreeLeafSerializer
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import generators.obj.MetaGenerator
 import generators.cpp.*
 import generators.java.*
 import generators.kotlin.*
 import generators.obj.Generator
+import generators.obj.MetaGenerator
 import generators.obj.input.*
 import generators.rust.*
 import generators.swift.*
-import generators.swift.SwiftConstantsBlockGenerator
 import okio.buffer
 import okio.source
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import javax.script.ScriptEngineManager
-import kotlin.reflect.KClass
+
 
 fun main(args: Array<String>) {
     if (args.size < 1) {
@@ -27,16 +32,16 @@ fun main(args: Array<String>) {
     }
 
     val engine = ScriptEngineManager().getEngineByExtension("kts")
-    val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
-    engine.eval("val x = 5")
 
-    val adapter: JsonAdapter<Project> = moshi.adapter(Project::class.java)
+    val mapper = ObjectMapper()
+    val module = SimpleModule()
+    module.addSerializer(DataType::class.java, DataTypeSerializer())
+    module.addSerializer(DataValue::class.java, DataValueSerializer())
+    mapper.registerModule(module)
 
     // load project file
     val projectJson = FileInputStream(args[0])
-    val project = adapter.fromJson(projectJson.source().buffer())!!
+    val project : Project = mapper.readValue(projectJson, Project::class.java)// adapter.fromJson(projectJson.source().buffer())!!
     projectJson.close()
     println(project)
 
@@ -140,6 +145,11 @@ fun main(args: Array<String>) {
                 engine.eval(reader)
                 reader.close()
             }
+
+            // store input tree
+            val node: JsonNode = mapper.valueToTree(globRootNamespace)
+
+            // build output tree and generate code
             meta.write(globRootNamespace, namespaceMap)
         } else {
             println("Not supported $target")

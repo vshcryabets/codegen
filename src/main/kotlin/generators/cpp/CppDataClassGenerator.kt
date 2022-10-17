@@ -1,11 +1,11 @@
 package generators.cpp
 
+import ce.defs.NotDefined
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
-import generators.obj.input.NotDefined
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 
@@ -35,7 +35,7 @@ class CppDataClassGenerator(
                     .append(Types.typeTo(header, it.type))
                     .append(" ")
                     .append(it.name)
-                if (it.value != NotDefined) {
+                if (it.value.notDefined()) {
                     classDefinition.append(" = ${Types.toValue(this, it.type, it.value)};${fileGenerator.newLine()}")
                 }
                 classDefinition

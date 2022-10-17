@@ -1,11 +1,22 @@
 package generators.obj.input
 
 import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.NotDefined
+import ce.defs.NotDefinedValue
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 
 object TreeRoot : Node("ROOT", null)
 
-open class Leaf(val name: String, var parent: Node? = null) {
+open class Leaf(val name: String,
+                @JsonBackReference
+                var parent: Node? = null) {
+    @JsonIgnore
     fun getParentPath(): String = parent?.getPath() ?: ""
+
+    @JsonIgnore
     fun getPath(): String {
         if (parent == null) {
             return ""
@@ -19,7 +30,10 @@ open class Leaf(val name: String, var parent: Node? = null) {
     }
 }
 
-open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutableListOf()) :
+open class Node(name: String,
+                parent: Node?,
+                @JsonManagedReference
+                val subs: MutableList<Leaf> = mutableListOf()) :
     Leaf(name, parent) {
 
     fun <T : Node> findOrNull(clazz: Class<T>): T? {
@@ -79,16 +93,16 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
 open class Method(name: String, parent: Node) : Node(name, parent)
 open class OutputList() : Node("", null) {
     fun output(name: String, type : DataType) {
-        subs.add(DataField(name, this, type, NotDefined))
+        subs.add(DataField(name, this, type, NotDefinedValue))
     }
 
     fun outputReusable(name: String, type : DataType) {
-        subs.add(DataField(name, this, type, NotDefined))
+        subs.add(DataField(name, this, type, NotDefinedValue))
     }
 }
 open class InputList() : Node("", null) {
     fun argument(name: String, type : DataType, value: Any? = NotDefined) {
-        subs.add(DataField(name, this, type, value))
+        subs.add(DataField(name, this, type, DataValue(value)))
     }
 }
 
