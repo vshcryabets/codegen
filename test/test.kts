@@ -10,8 +10,6 @@ namespace(
         }
     })
 
-
-
 enum("GoldErrors").apply {
     defaultType(DataType.int16)
     add("OK", 0)

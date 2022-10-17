@@ -3,18 +3,16 @@ package generators.cpp
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.DataClass
 import generators.obj.input.NotDefined
-import generators.obj.out.CommentLeaf
-import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 
 class CppDataClassGenerator(
     fileGenerator: FileGenerator,
     private val project: Project
-) : Generator<DataClass, CppClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(files: List<FileData>, desc: DataClass): CppClassData {
         val header = files.find { it is CppHeaderFile }
@@ -22,7 +20,7 @@ class CppDataClassGenerator(
         val definition = files.find { it is CppFileData }
             ?: throw java.lang.IllegalStateException("Can't find Definition file for C++")
 
-        definition.findSub(ImportsBlock::class.java).addInclude(header.name)
+        definition.findOrCreateSub(ImportsBlock::class.java).addInclude(header.name)
 
         return header.addSub(CppClassData(desc.name, header)).apply {
             desc.classComment.append("Data class ${desc.name}${fileGenerator.newLine()}")
@@ -31,7 +29,7 @@ class CppDataClassGenerator(
             classDefinition.append("class ${desc.name} {${fileGenerator.newLine()}")
             classDefinition.append("private:${fileGenerator.newLine()}")
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
                 putTabs(classDefinition, 1)
                 classDefinition
                     .append(Types.typeTo(header, it.type))

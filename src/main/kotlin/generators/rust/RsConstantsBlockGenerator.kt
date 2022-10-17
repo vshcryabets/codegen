@@ -1,18 +1,16 @@
 package generators.rust
 
 import ce.settings.Project
-import generators.kotlin.KotlinClassData
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.ConstantsBlock
-import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class RsConstantsBlockGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<ConstantsBlock, RustClassData>(fileGenerator) {
+) : Generator<ConstantsBlock>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): RustClassData {
         val file = blockFiles.find { it is FileData }
@@ -22,7 +20,7 @@ class RsConstantsBlockGenerator(
             desc.classComment.append("Constants ${desc.name}")
             addMultilineCommentsBlock(desc.classComment.toString(), this)
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
+                val it = leaf as DataField
                 classDefinition.append("const ")
                     .append(it.name)
                     .append(" : ")

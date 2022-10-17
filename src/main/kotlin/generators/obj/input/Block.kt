@@ -16,6 +16,6 @@ open class Block(
     }
 
     fun addClassField(name: String, type : DataType, value: Any? = NotDefined) {
-        subs.add(ClassField(name, this, type, value))
+        subs.add(DataField(name, this, type, value))
     }
 }
