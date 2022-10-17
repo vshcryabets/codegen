@@ -31,15 +31,15 @@ abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
     }
 
     protected fun addBlockDefaults(desc: Block, result: ClassData) {
-        result.addSub(BlockPreNewLines(result))
+        result.addSub(BlockPreNewLines())
         addMultilineCommentsBlock(desc.classComment.toString(), result)
     }
 
     fun addMultilineCommentsBlock(comment: String, parent: Node) {
         if (comment.isNotEmpty()) {
-            parent.addSub(MultilineCommentsBlock(parent)).apply {
+            parent.addSub(MultilineCommentsBlock()).apply {
                 comment.lines().forEach { line ->
-                    addSub(CommentLeaf("${fileGenerator.multilineCommentMid()} $line", this))
+                    addSub(CommentLeaf("${fileGenerator.multilineCommentMid()} $line"))
                 }
             }
         }

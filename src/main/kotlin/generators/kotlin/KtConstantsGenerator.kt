@@ -27,9 +27,7 @@ class KtConstantsGenerator(
                         addSub(ConstantLeaf(
                             "const val ${it.name} : " +
                                     "${Types.typeTo(file, it.type)} = " +
-                                    "${Types.toValue(classData, it.type, it.value)}", this
-                        )
-                        )
+                                    "${Types.toValue(classData, it.type, it.value)}"))
                     }
                 }
             }

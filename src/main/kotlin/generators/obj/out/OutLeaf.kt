@@ -1,5 +1,8 @@
 package generators.obj.out
 
+import ce.defs.DataType
+import ce.defs.DataValue
+import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 
@@ -10,17 +13,18 @@ class NamespaceDeclaration(name : String, parent: Node) : Leaf(name, parent)
 class ImportLeaf(name : String, parent: Node) : Leaf(name, parent)
 
 // //$name
-class CommentLeaf(name : String, parent: Node) : Leaf(name, parent)
+class CommentLeaf(name : String) : Leaf(name, null)
 
 
 class BlockStart(name : String, parent : Node) : Leaf(name, parent)
 class BlockEnd(name : String, parent : Node) : Leaf(name, parent)
 
+class ArgumentLeaf(name : String) : Leaf(name, null)
 class FieldLeaf(name : String, parent : Node) : Leaf(name, parent)
-class ConstantLeaf(name : String, parent : Node) : Leaf(name, parent)
+class ConstantLeaf(name : String) : Leaf(name, null)
 class EnumLeaf(name : String, parent : Node) : Leaf(name, parent)
 
 // for example ",\n"
-class Separator(name : String, parent : Node) : Leaf(name, parent)
-class NlSeparator(parent : Node) : Leaf("", parent)
-class BlockPreNewLines(parent : Node) : Leaf("", parent)
+class Separator(name : String) : Leaf(name, null)
+class NlSeparator : Leaf("", null)
+class BlockPreNewLines : Leaf("", null)

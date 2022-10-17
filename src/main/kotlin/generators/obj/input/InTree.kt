@@ -57,6 +57,7 @@ open class Node(name: String,
 
     fun <T : Leaf> addSub(leaf: T): T {
         subs.add(leaf)
+        leaf.parent = this
         return leaf
     }
 }
@@ -90,25 +91,26 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
     }
 }
 
-open class Method(name: String, parent: Node) : Node(name, parent)
+open class Method(name: String) : Node(name, null)
+
 open class OutputList() : Node("", null) {
     fun output(name: String, type : DataType) {
-        subs.add(DataField(name, this, type, NotDefinedValue))
+        addSub(DataField(name, this, type))
     }
 
     fun outputReusable(name: String, type : DataType) {
-        subs.add(DataField(name, this, type, NotDefinedValue))
+        addSub(DataField(name, this, type))
     }
 }
 open class InputList() : Node("", null) {
     fun argument(name: String, type : DataType, value: Any? = NotDefined) {
-        subs.add(DataField(name, this, type, DataValue(value)))
+        addSub(DataField(name = name, type = type, value = DataValue(value)))
     }
 }
 
 class InterfaceDescription(name: String, parent: Node) : Block(name, parent) {
     fun addMethod(name: String, outputs: OutputList?, inputs: InputList?) {
-        addSub(Method(name, this)).apply {
+        addSub(Method(name)).apply {
             outputs?.let { addSub(outputs) }
             inputs?.let { addSub(inputs) }
         }

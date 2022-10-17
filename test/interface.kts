@@ -2,7 +2,7 @@ import ce.defs.*
 import generators.obj.input.*
 
 namespace("com.goldman.data").apply {
-    declareInterface("Interface1").apply {
+    declareInterface("Interface").apply {
         addMethod(
             "getSize",
             OutputList().apply {
@@ -10,7 +10,7 @@ namespace("com.goldman.data").apply {
             }, null
         )
         addMethod(
-            "getSize",
+            "read",
             outputs = OutputList().apply {
                 output("size", DataType.int64)
                 outputReusable("array", DataType.array(DataType.uint8))

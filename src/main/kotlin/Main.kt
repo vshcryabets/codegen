@@ -4,8 +4,10 @@ import ce.settings.Project
 import ce.treeio.DataTypeSerializer
 import ce.treeio.DataValueSerializer
 import ce.treeio.TreeLeafSerializer
+import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -22,6 +24,7 @@ import okio.buffer
 import okio.source
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.InputStreamReader
 import javax.script.ScriptEngineManager
 
@@ -33,7 +36,7 @@ fun main(args: Array<String>) {
 
     val engine = ScriptEngineManager().getEngineByExtension("kts")
 
-    val mapper = ObjectMapper()
+    val mapper = ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
     val module = SimpleModule()
     module.addSerializer(DataType::class.java, DataTypeSerializer())
     module.addSerializer(DataValue::class.java, DataValueSerializer())
@@ -147,7 +150,10 @@ fun main(args: Array<String>) {
             }
 
             // store input tree
-            val node: JsonNode = mapper.valueToTree(globRootNamespace)
+            var outputFile = File(project.outputFolder + "input_tree.json")
+            outputFile.parentFile.mkdirs()
+            println("Writing $outputFile")
+            mapper.writeValue(outputFile, globRootNamespace);
 
             // build output tree and generate code
             meta.write(globRootNamespace, namespaceMap)

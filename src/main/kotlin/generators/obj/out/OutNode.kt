@@ -5,7 +5,7 @@ import generators.obj.input.Node
 typealias OutNode = Node
 
 class CommentsBlock(parent : Node) : Node("", parent)
-class MultilineCommentsBlock(parent : Node) : Node("", parent)
+class MultilineCommentsBlock() : Node("", null)
 
 class ImportsBlock(name: String, parent : Node) : Node(name, parent) {
     fun addInclude(name: String) {

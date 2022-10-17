@@ -27,6 +27,7 @@ object Types {
             DataType.int8 -> "Byte"
             DataType.int16 -> "Short"
             DataType.int32 -> "Int"
+            DataType.int64 -> "Long"
             DataType.uint16 -> "Int"
             DataType.uint32 -> "Long"
             DataType.float32 -> "Float"

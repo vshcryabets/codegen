@@ -31,7 +31,7 @@ class KotlinEnumGenerator(
                 desc.subs.forEach { leaf ->
                     val it = leaf as DataField
                     if (needToAddComa) {
-                        addSub(Separator(",${fileGenerator.newLine()}", this))
+                        addSub(Separator(",${fileGenerator.newLine()}"))
                     }
 
                     if (withRawValues) {
@@ -42,7 +42,7 @@ class KotlinEnumGenerator(
                     }
                     needToAddComa = true
                 }
-                addSub(NlSeparator(this))
+                addSub(NlSeparator())
             }
         }
     }
