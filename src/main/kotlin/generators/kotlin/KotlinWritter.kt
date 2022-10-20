@@ -32,6 +32,10 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                     node.subs.remove(this)
                 }
                 out.write(")")
+                node.findOrNull(ResultLeaf::class.java)?.apply {
+                    writeLeaf(this, out)
+                    node.subs.remove(this)
+                }
                 out.write(fileGenerator.newLine())
             }
             is OutBlockArguments -> {

@@ -12,10 +12,11 @@ open class DataField(
     var value : DataValue = NotDefinedValue
 )  : Leaf(name, parent)
 
-open class Output(name: String, parent: Node, type: DataType) : DataField(name, parent, type, NotDefinedValue)
-open class Input(name: String, parent: Node, type: DataType, value : DataValue) : DataField(
+open class Output(name: String, type: DataType) : DataField(name, null, type, NotDefinedValue)
+open class OutputReusable(name: String, type: DataType) : DataField(name, null, type, NotDefinedValue)
+open class Input(name: String, type: DataType, value : DataValue) : DataField(
     name,
-    parent,
+    null,
     type,
     value
 )

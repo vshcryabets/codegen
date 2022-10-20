@@ -28,7 +28,7 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
 
     open fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
         when (leaf) {
-            is ArgumentLeaf -> out.write(leaf.name)
+            is ArgumentLeaf, is ResultLeaf -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
             is ConstantLeaf -> out.write("${leaf.name}${fileGenerator.newLine()}")
             is EnumLeaf, is Separator -> out.write(leaf.name)

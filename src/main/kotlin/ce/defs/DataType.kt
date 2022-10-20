@@ -1,6 +1,17 @@
 package ce.defs
 
 sealed class DataType {
+    fun getWeight(): Int =
+        when (this) {
+            VOID -> 0
+            int8, int16, int32, int64 -> 1
+            uint8, uint16, uint32, uint64 -> 1
+            float32, float64, float128 -> 1
+            string -> 1
+            bool -> 1
+            is array -> 2
+        }
+
     object VOID : DataType()
 
     object int8 : DataType()

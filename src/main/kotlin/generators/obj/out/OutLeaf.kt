@@ -1,8 +1,5 @@
 package generators.obj.out
 
-import ce.defs.DataType
-import ce.defs.DataValue
-import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 
@@ -20,6 +17,7 @@ class BlockStart(name : String, parent : Node) : Leaf(name, parent)
 class BlockEnd(name : String, parent : Node) : Leaf(name, parent)
 
 class ArgumentLeaf(name : String) : Leaf(name, null)
+class ResultLeaf(name : String) : Leaf(name, null)
 class FieldLeaf(name : String, parent : Node) : Leaf(name, parent)
 class ConstantLeaf(name : String) : Leaf(name, null)
 class EnumLeaf(name : String, parent : Node) : Leaf(name, parent)

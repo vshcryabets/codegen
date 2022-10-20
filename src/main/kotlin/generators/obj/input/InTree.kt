@@ -36,7 +36,7 @@ open class Node(name: String,
                 val subs: MutableList<Leaf> = mutableListOf()) :
     Leaf(name, parent) {
 
-    fun <T : Node> findOrNull(clazz: Class<T>): T? {
+    fun <T : Leaf> findOrNull(clazz: Class<T>): T? {
         subs.forEach {
             if (it.javaClass == clazz) {
                 return it as T
@@ -95,16 +95,16 @@ open class Method(name: String) : Node(name, null)
 
 open class OutputList() : Node("", null) {
     fun output(name: String, type : DataType) {
-        addSub(DataField(name, this, type))
+        addSub(Output(name, type))
     }
 
     fun outputReusable(name: String, type : DataType) {
-        addSub(DataField(name, this, type))
+        addSub(OutputReusable(name, type))
     }
 }
 open class InputList() : Node("", null) {
     fun argument(name: String, type : DataType, value: Any? = NotDefined) {
-        addSub(DataField(name = name, type = type, value = DataValue(value)))
+        addSub(Input(name = name, type = type, value = DataValue(value)))
     }
 }
 

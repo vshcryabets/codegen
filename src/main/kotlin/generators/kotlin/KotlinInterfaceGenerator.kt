@@ -29,12 +29,26 @@ class KotlinInterfaceGenerator(
     private fun addMethod(outBlock: OutBlock, leaf: Method, file: FileData, itf: KotlinClassData) {
         outBlock.addSub(Method("fun ${leaf.name}").apply {
             val outputList = leaf.findOrNull(OutputList::class.java)
+            val sl = outputList?.subs?.filter {
+                it is Output
+            }?.map {
+                it as Output
+            }?.sortedBy {
+                it.type.getWeight()
+            } ?: emptyList()
+
+            if (sl.size == 1) {
+                addSub(ResultLeaf(" : ${Types.typeTo(file, sl[0].type)}"))
+            } else {
+                throw java.lang.IllegalStateException("Not uspported more then 1 result")
+            }
+
             val inputList = leaf.findOrNull(InputList::class.java)
             if (inputList != null && inputList.subs.isNotEmpty()) {
                 var needToAddComa= false
                 addSub(InputList()).apply {
                     inputList.subs.forEach {
-                        if (it is DataField) {
+                        if (it is Input) {
                             if (needToAddComa) addSub(Separator(", "))
                             addSub(
                                 ArgumentLeaf(
