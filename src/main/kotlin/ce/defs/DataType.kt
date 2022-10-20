@@ -1,15 +1,21 @@
 package ce.defs
 
 sealed class DataType {
+    companion object {
+        const val WEIGHT_NONE = 0
+        const val WEIGHT_PRIMITIVE = 1
+        const val WEIGHT_ARRAY = 2
+    }
     fun getWeight(): Int =
         when (this) {
-            VOID -> 0
-            int8, int16, int32, int64 -> 1
-            uint8, uint16, uint32, uint64 -> 1
-            float32, float64, float128 -> 1
-            string -> 1
-            bool -> 1
-            is array -> 2
+            VOID -> WEIGHT_NONE
+            int8, int16, int32, int64 -> WEIGHT_PRIMITIVE
+            uint8, uint16, uint32, uint64 -> WEIGHT_PRIMITIVE
+            float32, float64, float128 -> WEIGHT_PRIMITIVE
+            string -> WEIGHT_PRIMITIVE
+            bool -> WEIGHT_PRIMITIVE
+            is pointer -> WEIGHT_PRIMITIVE
+            is array -> WEIGHT_ARRAY
         }
 
     object VOID : DataType()
@@ -30,6 +36,7 @@ sealed class DataType {
 
     object string : DataType()
     object bool : DataType()
+    class pointer(val subType: DataType) : DataType()
     class array(val elementDataType: DataType) : DataType()
 }
 

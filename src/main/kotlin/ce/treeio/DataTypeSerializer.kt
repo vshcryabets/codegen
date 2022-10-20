@@ -24,6 +24,7 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             DataType.uint32 -> "uint32"
             DataType.uint64 -> "uint64"
             DataType.uint8 -> "uitn8"
+            is DataType.pointer -> "pointerXXX"
         }
         gen.writeString(typeStr)
     }

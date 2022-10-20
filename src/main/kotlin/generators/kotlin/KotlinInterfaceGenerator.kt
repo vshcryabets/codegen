@@ -1,5 +1,6 @@
 package generators.kotlin
 
+import ce.defs.DataType
 import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.*
@@ -29,7 +30,7 @@ class KotlinInterfaceGenerator(
     private fun addMethod(outBlock: OutBlock, leaf: Method, file: FileData, itf: KotlinClassData) {
         outBlock.addSub(Method("fun ${leaf.name}").apply {
             val outputList = leaf.findOrNull(OutputList::class.java)
-            val sl = outputList?.subs?.filter {
+            val simplestResults = outputList?.subs?.filter {
                 it is Output
             }?.map {
                 it as Output
@@ -37,15 +38,24 @@ class KotlinInterfaceGenerator(
                 it.type.getWeight()
             } ?: emptyList()
 
-            if (sl.size == 1) {
-                addSub(ResultLeaf(" : ${Types.typeTo(file, sl[0].type)}"))
+            if (simplestResults.size == 1) {
+                addSub(ResultLeaf(" : ${Types.typeTo(file, simplestResults[0].type)}"))
             } else {
-                throw java.lang.IllegalStateException("Not uspported more then 1 result")
+                throw IllegalStateException("Not suspported more then 1 result")
             }
 
             val inputList = leaf.findOrNull(InputList::class.java)
+            var needToAddComa = false
+
+            val reusableResults = outputList?.subs?.filter {
+                it is OutputReusable
+            }?.map {
+                it as OutputReusable
+            }?.sortedBy {
+                it.type.getWeight()
+            } ?: emptyList()
+
             if (inputList != null && inputList.subs.isNotEmpty()) {
-                var needToAddComa= false
                 addSub(InputList()).apply {
                     inputList.subs.forEach {
                         if (it is Input) {
@@ -57,7 +67,29 @@ class KotlinInterfaceGenerator(
                                     } else {
                                         "${it.name} : ${Types.typeTo(file, it.type)} = " +
                                                 "${Types.toValue(itf, it.type, it.value)}"
-                                    }))
+                                    }
+                                )
+                            )
+                            needToAddComa = true
+                        }
+                    }
+                    // reusable vars
+                    if (reusableResults.size > 0) {
+                        if (reusableResults[0].type.getWeight() < DataType.WEIGHT_ARRAY) {
+                            throw IllegalStateException("Primitives can't be reusable in kotlin")
+                        }
+                        reusableResults.forEach {
+                            if (needToAddComa) addSub(Separator(", "))
+                            addSub(
+                                ArgumentLeaf(
+                                    if (it.value.notDefined()) {
+                                        "${it.name} : ${Types.typeTo(file, it.type)}"
+                                    } else {
+                                        "${it.name} : ${Types.typeTo(file, it.type)} = " +
+                                                "${Types.toValue(itf, it.type, it.value)}"
+                                    }
+                                )
+                            )
                             needToAddComa = true
                         }
                     }

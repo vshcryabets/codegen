@@ -7,12 +7,12 @@ import generators.obj.out.FileData
 object Types {
     fun getArrayType(type: DataType): String =
         when (type) {
-            DataType.int8 -> "ByteArray"
+            DataType.int8, DataType.uint8 -> "ByteArray"
             DataType.int16 -> "ShortArray"
             DataType.int32 -> "IntArray"
             DataType.int64 -> "LongArray"
-            DataType.uint16 -> "IntArray"
-            DataType.uint32 -> "LongArray"
+            DataType.uint16 -> "ShortArray"
+            DataType.uint32 -> "IntArray"
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
             DataType.string -> "String[]"
