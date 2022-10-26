@@ -4,9 +4,9 @@ import generators.obj.input.Block
 import generators.obj.input.Node
 import generators.obj.out.*
 
-abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenerator) {
+abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
 
-    abstract fun processBlock(blockFiles: List<FileData>, desc: I) : T
+    abstract fun processBlock(blockFiles: List<FileData>, desc: I) : ClassData
 
     fun putTabs(builder: StringBuilder, count : Int) {
         for (i in 0 .. count - 1) {
@@ -31,15 +31,15 @@ abstract class Generator<I: Block, T : ClassData >(val fileGenerator: FileGenera
     }
 
     protected fun addBlockDefaults(desc: Block, result: ClassData) {
-        result.addSub(BlockPreNewLines(result))
+        result.addSub(BlockPreNewLines())
         addMultilineCommentsBlock(desc.classComment.toString(), result)
     }
 
     fun addMultilineCommentsBlock(comment: String, parent: Node) {
         if (comment.isNotEmpty()) {
-            parent.addSub(MultilineCommentsBlock(parent)).apply {
+            parent.addSub(MultilineCommentsBlock()).apply {
                 comment.lines().forEach { line ->
-                    addSub(CommentLeaf("${fileGenerator.multilineCommentMid()} $line", this))
+                    addSub(CommentLeaf("${fileGenerator.multilineCommentMid()} $line"))
                 }
             }
         }

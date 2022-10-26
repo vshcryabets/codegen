@@ -1,6 +1,7 @@
 package generators.obj
 
 import ce.settings.CodeStyle
+import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.out.*
@@ -27,14 +28,15 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
 
     open fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
         when (leaf) {
-            is BlockStart, is BlockEnd, is FieldLeaf -> {
+            is ArgumentLeaf, is ResultLeaf -> out.write(leaf.name)
+            is DataField -> out.write(leaf.name)
+            is ConstantLeaf -> out.write("${leaf.name}${fileGenerator.newLine()}")
+            is EnumLeaf, is Separator -> out.write(leaf.name)
+            is BlockStart, is BlockEnd, is FieldLeaf, is CommentLeaf -> {
                 out.write(leaf.name)
                 out.write(fileGenerator.newLine())
             }
-            is CommentLeaf -> {
-                out.write(leaf.name)
-                out.write(fileGenerator.newLine())
-            }
+            is NlSeparator -> out.write(fileGenerator.newLine())
             is BlockPreNewLines -> {
                 for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
             }

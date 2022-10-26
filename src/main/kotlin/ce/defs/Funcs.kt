@@ -47,6 +47,13 @@ fun dataClass(name: String): DataClass {
         }
 }
 
+fun declareInterface(name: String): InterfaceDescription {
+    return InterfaceDescription(name, globCurrentNamespace)
+        .apply {
+            putDefaults(this)
+        }
+}
+
 fun target(): Target = currentTarget
 
 fun setOutputFileName(name: String) {

@@ -1,6 +1,8 @@
 package generators.obj.input
 
 import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.NotDefinedValue
 
 open class Block(
     name: String,
@@ -15,9 +17,7 @@ open class Block(
         classComment.append(value)
     }
 
-    fun addClassField(name: String, type : DataType, value: Any? = NotDefined) {
-        subs.add(ClassField(name, this, type, value))
+    fun addClassField(name: String, type : DataType, value: DataValue = NotDefinedValue) {
+        subs.add(DataField(name, this, type, value))
     }
 }
-
-class InterfaceDescription(name: String, parent: Node) : Block(name, parent)

@@ -3,15 +3,14 @@ package generators.swift
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.ClassField
+import generators.obj.input.DataField
 import generators.obj.input.DataClass
-import generators.obj.input.Node
 import generators.obj.out.FileData
 
 class SwiftDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass, SwiftClassData>(fileGenerator) {
+) : Generator<DataClass>(fileGenerator) {
 
     override fun processBlock(blockFiles: List<FileData>, desc: DataClass): SwiftClassData {
         val file = blockFiles.find { it is FileData }
@@ -24,10 +23,10 @@ class SwiftDataClassGenerator(
             classDefinition.append(fileGenerator.newLine())
             var previous: Any? = null
             desc.subs.forEach { leaf ->
-                val it = leaf as ClassField
-                if (it.value == null && previous != null) {
-                    it.value = previous!! as Int + 1;
-                }
+                val it = leaf as DataField
+//                if (it.value == null && previous != null) {
+//                    it.value = previous!! as Int + 1;
+//                }
 
                 if (it.value != null) {
                     previous = it.value

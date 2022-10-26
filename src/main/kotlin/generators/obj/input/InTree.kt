@@ -1,9 +1,22 @@
 package generators.obj.input
 
+import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.NotDefined
+import ce.defs.NotDefinedValue
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
+
 object TreeRoot : Node("ROOT", null)
 
-open class Leaf(val name: String, val parent: Node?) {
+open class Leaf(val name: String,
+                @JsonBackReference
+                var parent: Node? = null) {
+    @JsonIgnore
     fun getParentPath(): String = parent?.getPath() ?: ""
+
+    @JsonIgnore
     fun getPath(): String {
         if (parent == null) {
             return ""
@@ -17,9 +30,22 @@ open class Leaf(val name: String, val parent: Node?) {
     }
 }
 
-open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutableListOf()) :
+open class Node(name: String,
+                parent: Node?,
+                @JsonManagedReference
+                val subs: MutableList<Leaf> = mutableListOf()) :
     Leaf(name, parent) {
-    fun <T : Node> findSub(clazz: Class<T>): T {
+
+    fun <T : Leaf> findOrNull(clazz: Class<T>): T? {
+        subs.forEach {
+            if (it.javaClass == clazz) {
+                return it as T
+            }
+        }
+        return null
+    }
+
+    fun <T : Node> findOrCreateSub(clazz: Class<T>): T {
         subs.forEach {
             if (it.javaClass == clazz) {
                 return it as T
@@ -31,6 +57,7 @@ open class Node(name: String, parent: Node?, val subs: MutableList<Leaf> = mutab
 
     fun <T : Leaf> addSub(leaf: T): T {
         subs.add(leaf)
+        leaf.parent = this
         return leaf
     }
 }
@@ -61,5 +88,31 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
         val newNamaspace = Namespace(searchName, this)
         subs.add(newNamaspace)
         return newNamaspace.getNamespace(endPath)
+    }
+}
+
+open class Method(name: String) : Node(name, null)
+
+open class OutputList() : Node("", null) {
+    fun output(name: String, type : DataType) {
+        addSub(Output(name, type))
+    }
+
+    fun outputReusable(name: String, type : DataType) {
+        addSub(OutputReusable(name, type))
+    }
+}
+open class InputList() : Node("", null) {
+    fun argument(name: String, type : DataType, value: Any? = NotDefined) {
+        addSub(Input(name = name, type = type, value = DataValue(value)))
+    }
+}
+
+class InterfaceDescription(name: String, parent: Node) : Block(name, parent) {
+    fun addMethod(name: String, outputs: OutputList? = null, inputs: InputList? = null) {
+        addSub(Method(name)).apply {
+            outputs?.let { addSub(outputs) }
+            inputs?.let { addSub(inputs) }
+        }
     }
 }

@@ -28,10 +28,10 @@ abstract class FileGenerator(val style : CodeStyle) {
     abstract fun getBlockFilePath(block: Block): String
 
     open fun appendInitialComment(s: FileData, s1: String) {
-        val commentsNode = s.findSub(CommentsBlock::class.java)
+        val commentsNode = s.findOrCreateSub(CommentsBlock::class.java)
         if (s1.trimIndent().isNotEmpty()) {
             s1.lines().forEach { line ->
-                commentsNode.subs.add(CommentLeaf("${singleComment()} $line", commentsNode))
+                commentsNode.addSub(CommentLeaf("${singleComment()} $line"))
             }
         }
     }

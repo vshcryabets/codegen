@@ -1,14 +1,14 @@
 package generators.obj
 
-import generators.obj.input.ClassField
-import generators.obj.input.NotDefined
+import ce.defs.DataValue
+import generators.obj.input.DataField
 
 class AutoincrementInt {
-    var previous: Any? = null
+    var previous: DataValue? = null
 
-    operator fun invoke(field : ClassField) {
-        if ((field.value == null || field.value == NotDefined) && previous != null) {
-            field.value = previous!! as Int + 1
+    operator fun invoke(field : DataField) {
+        if ((field.value == null || field.value.notDefined()) && previous != null) {
+            field.value = DataValue(previous!!.value as Int + 1)
         }
 
         if (field.value != null) {

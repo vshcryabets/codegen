@@ -8,14 +8,13 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 import java.nio.file.Paths
+import kotlin.reflect.KClass
 
 
 open class MetaGenerator<T : ClassData>(
     val target: Target = Target.Other,
-    val enum: Generator<ConstantsEnum, T>,
-    val constantsBlock: Generator<ConstantsBlock, T>,
-    val dataClass: Generator<DataClass, T>,
     val fileGenerator: FileGenerator,
+    val generatorsMap: Map<Class<out Block>, Generator<out Block>>,
     private val writter: Writter,
     private val project: Project
 ) {
@@ -52,20 +51,26 @@ open class MetaGenerator<T : ClassData>(
                 val filesData = files[outputFile]!!
 
                 val namespacePath = it.getParentPath()
-
-                val classData = when (it) {
-                    is ConstantsEnum -> enum.processBlock(filesData, it)
-                    is ConstantsBlock -> constantsBlock.processBlock(filesData, it)
-                    is DataClass -> dataClass.processBlock(filesData, it)
-                    else -> null
+                println("Translating ${it.name}")
+                if (generatorsMap.contains(it::class.java)) {
+                    val generator = generatorsMap.get(it::class.java)!! as Generator<Block>
+                    generator.processBlock(filesData, it)
                 }
-                classData?.let {
-                    // TODO check duplicate block in namespace
+                else {
+//                    val classData = when (it) {
+//                        is ConstantsEnum -> enum.processBlock(filesData, it)
+//                        is ConstantsBlock -> constantsBlock.processBlock(filesData, it)
+//                        is DataClass -> dataClass.processBlock(filesData, it)
+//                        else -> null
+//                    }
+//                    classData?.let {
+//                        // TODO check duplicate block in namespace
 //                if (namespace.outputBlocks.contains(block.name)) {
 //                    throw java.lang.IllegalStateException(
 //                        "Duplicate block error! ${namespace.name} already contains block with name ${block.name}"
 //                    );
 //                }
+//                    }
                 }
 
             } else if (it is Node) {

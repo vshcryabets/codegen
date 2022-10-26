@@ -1,44 +1,44 @@
-package generators.swift
+package generators.java
 
 import ce.defs.DataType
 import ce.settings.Project
 import generators.obj.AutoincrementInt
 import generators.obj.Generator
-import generators.obj.input.DataField
-import generators.obj.input.ConstantsEnum
+import generators.obj.input.*
+import generators.obj.out.BlockStart
 import generators.obj.out.FileData
 
-class SwiftEnumGenerator(
-    fileGenerator: SwiftFileGenerator,
+class JavaEnumGenerator(
+    fileGenerator: JavaFileGenerator,
     private val project: Project
 ) : Generator<ConstantsEnum>(fileGenerator) {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): SwiftClassData {
-        val file = blockFiles.find { it is FileData }
-            ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
-
-        return file.addSub(SwiftClassData(desc.name, file)).apply {
-
-            addMultilineCommentsBlock(desc.classComment.toString(), this)
+    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): JavaClassData {
+        val file = files.find { it is FileData }
+            ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
+        return file.addSub(JavaClassData(desc.name, file)).apply {
+            addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
-            if (withRawValues) {
-                appendClassDefinition(this, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
+            subs.add(BlockStart("enum class ${desc.name}", this))
+            if (!withRawValues) {
+                classDefinition.append(" {")
+                    .append(fileGenerator.newLine())
             } else {
-                appendClassDefinition(this, "enum ${desc.name} {");
-                putTabs(classDefinition, 1)
-                classDefinition.append("case ")
+                classDefinition.append("(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {")
+                    .append(fileGenerator.newLine())
             }
+
             val autoIncrement = AutoincrementInt()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
-                autoIncrement(it)
 
                 if (withRawValues) {
+                    autoIncrement.invoke(it)
                     putTabs(classDefinition, 1)
-                    classDefinition.append("case ")
+                    classDefinition
                         .append(it.name)
-                        .append(" = ${Types.toValue(this, it.type, it.value)}")
+                        .append("(${Types.toValue(this, it.type, it.value)}),")
                         .append(fileGenerator.newLine())
                 } else {
                     if (needToAddComa) {
@@ -50,6 +50,7 @@ class SwiftEnumGenerator(
             }
             if (!withRawValues) {
                 classDefinition.append(fileGenerator.newLine())
+                    .append(fileGenerator.newLine())
             }
             appendClassDefinition(this, "}");
         }
