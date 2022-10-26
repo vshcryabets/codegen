@@ -109,7 +109,7 @@ open class InputList() : Node("", null) {
 }
 
 class InterfaceDescription(name: String, parent: Node) : Block(name, parent) {
-    fun addMethod(name: String, outputs: OutputList?, inputs: InputList?) {
+    fun addMethod(name: String, outputs: OutputList? = null, inputs: InputList? = null) {
         addSub(Method(name)).apply {
             outputs?.let { addSub(outputs) }
             inputs?.let { addSub(inputs) }

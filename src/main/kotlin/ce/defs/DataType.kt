@@ -1,10 +1,14 @@
 package ce.defs
 
-sealed class DataType {
+open class DataType(
+    val nullable: Boolean = false
+) {
     companion object {
         const val WEIGHT_NONE = 0
         const val WEIGHT_PRIMITIVE = 1
         const val WEIGHT_ARRAY = 2
+        const val WEIGHT_PROMISE = 3
+        const val WEIGHT_CLASS = 4
     }
     fun getWeight(): Int =
         when (this) {
@@ -16,6 +20,9 @@ sealed class DataType {
             bool -> WEIGHT_PRIMITIVE
             is pointer -> WEIGHT_PRIMITIVE
             is array -> WEIGHT_ARRAY
+            is promise -> WEIGHT_PROMISE
+            is userClass -> WEIGHT_CLASS
+            else -> WEIGHT_CLASS
         }
 
     object VOID : DataType()
@@ -37,6 +44,8 @@ sealed class DataType {
     object string : DataType()
     object bool : DataType()
     class pointer(val subType: DataType) : DataType()
-    class array(val elementDataType: DataType) : DataType()
+    class array(val elementDataType: DataType, nullable : Boolean = false) : DataType(nullable)
+    class promise(val elementDataType: DataType) : DataType()
+    class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
 }
 

@@ -16,6 +16,7 @@ object Types {
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
             DataType.string -> "String[]"
+            is DataType.userClass -> type.path
             else -> "QQTP_array_$type"
         }
 
@@ -34,8 +35,9 @@ object Types {
             DataType.float64 -> "Double"
             DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
+            is DataType.userClass -> type.path
             else -> "QQTP_$type"
-        }
+        } + (if (type.nullable) "?" else "")
 
     fun toValue(classData: KotlinClassData, type: DataType, value: DataValue) : String =
         when (type) {

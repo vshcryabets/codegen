@@ -38,7 +38,9 @@ class KotlinInterfaceGenerator(
                 it.type.getWeight()
             } ?: emptyList()
 
-            if (simplestResults.size == 1) {
+            if (simplestResults.size == 0) {
+               addSub(ResultLeaf(""))
+            } else if (simplestResults.size == 1) {
                 addSub(ResultLeaf(" : ${Types.typeTo(file, simplestResults[0].type)}"))
             } else {
                 throw IllegalStateException("Not suspported more then 1 result")

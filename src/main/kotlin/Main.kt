@@ -27,6 +27,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStreamReader
 import javax.script.ScriptEngineManager
+import javax.script.ScriptException
 
 
 fun main(args: Array<String>) {
@@ -145,7 +146,14 @@ fun main(args: Array<String>) {
                 customBaseFolderPath = project.outputFolder
                 sourceFile = fileObject.absolutePath
                 outputFile = ""
-                engine.eval(reader)
+                try {
+                    engine.eval(reader)
+                }
+                catch (error: ScriptException) {
+                    println("Error in file ${fileObject.absoluteFile}:${error.message}")
+                    System.exit(0)
+                }
+
                 reader.close()
             }
 

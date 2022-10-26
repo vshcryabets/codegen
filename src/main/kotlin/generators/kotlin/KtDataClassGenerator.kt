@@ -15,7 +15,7 @@ class KtDataClassGenerator(
 
     override fun processBlock(blockFiles: List<FileData>, desc: DataClass): KotlinClassData {
         val file = blockFiles.find { it is FileData }
-            ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
+            ?: throw IllegalStateException("Can't find Main file for Kotlin")
 
         return file.addSub(KotlinClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
@@ -27,7 +27,7 @@ class KtDataClassGenerator(
                 classDefinition.append("val ")
                 classDefinition.append(it.name)
                 classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-                if (it.value.notDefined()) {
+                if (!it.value.notDefined()) {
                     classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
                 }
 
