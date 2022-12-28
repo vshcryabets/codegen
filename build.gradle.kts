@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ce"
-version = "0.1.1-SNAPSHOT"
+version = "0.1.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -36,16 +36,16 @@ tasks.jar {
         attributes["Main-Class"] = "CgenKt"
     }
 
-//    // To avoid the duplicate handling strategy error
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//
-//    // To add all of the dependencies
-//    from(sourceSets.main.get().output)
-//
-//    dependsOn(configurations.runtimeClasspath)
-//    from({
-//        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-//    })
+    // To avoid the duplicate handling strategy error
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // To add all of the dependencies
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
 }
 
 application {
