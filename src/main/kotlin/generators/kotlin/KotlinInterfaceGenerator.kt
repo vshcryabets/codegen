@@ -30,6 +30,7 @@ class KotlinInterfaceGenerator(
     private fun addMethod(outBlock: OutBlock, leaf: Method, file: FileData, itf: KotlinClassData) {
         outBlock.addSub(Method("fun ${leaf.name}").apply {
             val outputList = leaf.findOrNull(OutputList::class.java)
+
             val simplestResults = outputList?.subs?.filter {
                 it is Output
             }?.map {
@@ -38,17 +39,6 @@ class KotlinInterfaceGenerator(
                 it.type.getWeight()
             } ?: emptyList()
 
-            if (simplestResults.size == 0) {
-               addSub(ResultLeaf(""))
-            } else if (simplestResults.size == 1) {
-                addSub(ResultLeaf(" : ${Types.typeTo(file, simplestResults[0].type)}"))
-            } else {
-                throw IllegalStateException("Not suspported more then 1 result")
-            }
-
-            val inputList = leaf.findOrNull(InputList::class.java)
-            var needToAddComa = false
-
             val reusableResults = outputList?.subs?.filter {
                 it is OutputReusable
             }?.map {
@@ -56,6 +46,19 @@ class KotlinInterfaceGenerator(
             }?.sortedBy {
                 it.type.getWeight()
             } ?: emptyList()
+
+
+            if (simplestResults.size == 0) {
+               addSub(ResultLeaf(""))
+            } else if (simplestResults.size == 1) {
+                addSub(ResultLeaf(" : ${Types.typeTo(file, simplestResults[0].type)}"))
+            } else {
+                throw IllegalStateException("Not supported more then 1 simple result")
+            }
+
+            val inputList = leaf.findOrNull(InputList::class.java)
+            var needToAddComa = false
+
 
             if (inputList != null && inputList.subs.isNotEmpty()) {
                 addSub(InputList()).apply {

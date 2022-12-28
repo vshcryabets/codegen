@@ -19,6 +19,11 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
     }
 
     override fun serialize(value: DataType, gen: JsonGenerator, serializers: SerializerProvider) {
+        val typeStr = stringValue(value)
+        gen.writeString(typeStr)
+    }
+
+    fun stringValue(value: DataType) : String {
         val typeStr = when (value) {
             is DataType.int8 -> "int8"
             DataType.VOID -> "void"
@@ -40,6 +45,6 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             is DataType.userClass -> value.path
             else -> "UNK" + value.toString()
         }
-        gen.writeString(typeStr)
+        return typeStr
     }
 }
