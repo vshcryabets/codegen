@@ -15,7 +15,7 @@ class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
-            writeNode(fileData, out)
+            writeNode(fileData, out, "")
 
             if (fileData.end.isNotEmpty()) {
                 out.write(fileData.end.toString())
@@ -23,7 +23,7 @@ class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
         }
     }
 
-    override fun writeNode(node: Node, out: BufferedWriter) {
+    override fun writeNode(node: Node, out: BufferedWriter, indent: String) {
         when (node) {
 //            is KotlinClassData -> {
 //                super.writeNode(node, out)
@@ -31,15 +31,15 @@ class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
 //                    out.write(node.classDefinition.toString())
 //                }
 //            }
-            else -> super.writeNode(node, out)
+            else -> super.writeNode(node, out, indent)
         }
     }
 
-    override fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
+    override fun writeLeaf(leaf: Leaf, out: BufferedWriter, indent: String) {
         when (leaf) {
             is ImportLeaf -> out.write("import ${leaf.name}${fileGenerator.newLine()}")
             is NamespaceDeclaration -> out.write("package ${leaf.name};${fileGenerator.newLine()}")
-            else -> super.writeLeaf(leaf, out)
+            else -> super.writeLeaf(leaf, out, indent)
         }
     }
 }

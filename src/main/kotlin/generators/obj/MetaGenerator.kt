@@ -1,14 +1,15 @@
 package generators.obj
 
 import ce.defs.Target
+import ce.defs.globRootNamespace
 import ce.settings.Project
+import ce.treeio.XmlInTreeWritterImpl
 import generators.obj.input.*
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 import java.nio.file.Paths
-import kotlin.reflect.KClass
 
 
 open class MetaGenerator<T : ClassData>(
@@ -86,6 +87,10 @@ open class MetaGenerator<T : ClassData>(
         val files = mutableMapOf<String, List<FileData>>()
         prepareFilesByTree(result, root, files)
         translateTree(root, files)
+
+        val treeWritter = XmlInTreeWritterImpl()
+        treeWritter.storeTree(project.outputFolder + "${target.name}_output_tree.xml", result)
+
         return result
     }
 

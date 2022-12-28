@@ -2,7 +2,7 @@ import ce.defs.*
 import generators.obj.input.*
 
 namespace("com.goldman.data").apply {
-    declareInterface("Interface").apply {
+    declareInterface("DataReader").apply {
         addMethod(
             "getSize",
             OutputList().apply {
