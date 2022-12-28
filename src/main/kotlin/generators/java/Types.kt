@@ -1,6 +1,7 @@
 package generators.java
 
 import ce.defs.DataType
+import ce.defs.DataValue
 import generators.obj.out.FileData
 
 object Types {
@@ -35,15 +36,15 @@ object Types {
             else -> "QQTP_$type"
         }
 
-    fun toValue(classData: JavaClassData, type: DataType, value: Any?) : String =
+    fun toValue(classData: JavaClassData, type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16, DataType.uint32 -> value.toString()
-            DataType.float32 -> value.toString() + "f"
-            DataType.float64 -> value.toString()
+            DataType.uint16, DataType.uint32 -> value.value.toString()
+            DataType.float32 -> value.value.toString() + "f"
+            DataType.float64 -> value.value.toString()
             DataType.string -> {
-                "\"${value}\""
+                "\"${value.value}\""
             }
             else -> "QQVAL_$type"
         }

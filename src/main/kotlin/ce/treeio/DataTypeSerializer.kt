@@ -4,9 +4,20 @@ import ce.defs.DataType
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer
 import generators.obj.input.Leaf
 
 class DataTypeSerializer : JsonSerializer<DataType>() {
+
+    override fun serializeWithType(
+        value: DataType?,
+        gen: JsonGenerator?,
+        serializers: SerializerProvider?,
+        typeSer: TypeSerializer?
+    ) {
+
+    }
+
     override fun serialize(value: DataType, gen: JsonGenerator, serializers: SerializerProvider) {
         val typeStr = when (value) {
             is DataType.int8 -> "int8"
