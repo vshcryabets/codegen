@@ -13,22 +13,22 @@ import java.io.File
 class CppWritter(fileGenerator: FileGenerator, outputFolder: String)
     : Writter(fileGenerator, fileGenerator.style, outputFolder) {
 
-    override fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
+    override fun writeLeaf(leaf: Leaf, out: BufferedWriter, indent: String) {
         when (leaf) {
             is CompilerDirective -> out.write("#${leaf.name}${fileGenerator.newLine()}")
             is ImportLeaf -> out.write("#include \"${leaf.name}\"${fileGenerator.newLine()}")
-            else -> super.writeLeaf(leaf, out)
+            else -> super.writeLeaf(leaf, out, indent)
         }
     }
 
-    override fun writeNode(node: Node, out: BufferedWriter) {
+    override fun writeNode(node: Node, out: BufferedWriter, indent: String) {
         when (node) {
             is Namespace -> {
                 out.write("namespace ${node.name} {${fileGenerator.newLine()}")
-                super.writeNode(node, out)
+                super.writeNode(node, out, indent)
                 out.write("}${fileGenerator.newLine()}")
             }
-            else -> super.writeNode(node, out)
+            else -> super.writeNode(node, out, indent)
         }
     }
 
@@ -37,7 +37,7 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String)
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
-            writeSubNodes(fileData, out)
+            writeSubNodes(fileData, out, "")
         }
     }
 }

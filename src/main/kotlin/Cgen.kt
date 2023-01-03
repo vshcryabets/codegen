@@ -147,7 +147,7 @@ fun main(args: Array<String>) {
                 reader.close()
             }
 
-            val treeWritter = XmlTreeWritterImpl()
+            val treeWritter = XmlInTreeWritterImpl()
             treeWritter.storeTree(project.outputFolder + "input_tree.xml", globRootNamespace)
 
             // build output tree and generate code

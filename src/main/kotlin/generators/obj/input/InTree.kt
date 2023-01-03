@@ -3,7 +3,6 @@ package generators.obj.input
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefined
-import ce.defs.NotDefinedValue
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference

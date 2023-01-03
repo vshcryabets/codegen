@@ -17,7 +17,7 @@ class RustWritter(fileGenerator: RustFileGenerator, outputFolder: String)
         println("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
-            writeNode(fileData, out)
+            writeNode(fileData, out, "")
 
             //out.write("package ${namespace.name}${fileGenerator.newLine()}");
 

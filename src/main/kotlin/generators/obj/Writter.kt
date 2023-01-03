@@ -26,13 +26,25 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
 
     abstract fun writeFile(fileData: FileData)
 
-    open fun writeLeaf(leaf: Leaf, out: BufferedWriter) {
+    open fun writeLeaf(leaf: Leaf, out: BufferedWriter, indent: String) {
         when (leaf) {
-            is ArgumentLeaf, is ResultLeaf -> out.write(leaf.name)
-            is DataField -> out.write(leaf.name)
-            is ConstantLeaf -> out.write("${leaf.name}${fileGenerator.newLine()}")
-            is EnumLeaf, is Separator -> out.write(leaf.name)
+            is ArgumentLeaf, is ResultLeaf, is Separator -> {
+                out.write(leaf.name)
+            }
+            is DataField -> {
+                out.write(indent)
+                out.write(leaf.name)
+            }
+            is ConstantLeaf -> {
+                out.write(indent)
+                out.write("${leaf.name}${fileGenerator.newLine()}")
+            }
+            is EnumLeaf -> {
+                out.write(indent)
+                out.write(leaf.name)
+            }
             is BlockStart, is BlockEnd, is FieldLeaf, is CommentLeaf -> {
+                out.write(indent)
                 out.write(leaf.name)
                 out.write(fileGenerator.newLine())
             }
@@ -44,41 +56,34 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
         }
     }
 
-    open fun writeSubNodes(node: Node, out: BufferedWriter) {
+    open fun writeSubNodes(node: Node, out: BufferedWriter, indent: String) {
         node.subs.forEach {
             if (it is Node) {
-                writeNode(it, out)
+                writeNode(it, out, indent)
             } else {
-                writeLeaf(it, out)
+                writeLeaf(it, out, indent)
             }
         }
     }
 
-    open fun writeNode(node: Node, out: BufferedWriter) {
+    open fun writeNode(node: Node, out: BufferedWriter, indent: String) {
         when (node) {
             is ClassData -> {
-                writeSubNodes(node, out)
+                writeSubNodes(node, out, indent)
                 if (node.classDefinition.isNotEmpty()) {
                     out.write(node.classDefinition.toString())
                 }
             }
             is MultilineCommentsBlock -> {
                 out.write(fileGenerator.multilineCommentStart())
-                writeSubNodes(node, out)
+                writeSubNodes(node, out, indent)
                 out.write(fileGenerator.multilineCommentEnd())
             }
             is CommentsBlock -> {
-                writeSubNodes(node, out)
+                writeSubNodes(node, out, indent)
             }
-            else -> writeSubNodes(node, out)
+            else -> writeSubNodes(node, out, indent)
         }
 
     }
-
-    fun writeNotEmpty(out: BufferedWriter, builder: StringBuilder) {
-        if (builder.isNotEmpty()) {
-            out.write(builder.toString())
-        }
-    }
-
 }

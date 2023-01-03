@@ -12,10 +12,10 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
 
-class XmlTreeWritterImpl : TreeWritter {
+class XmlInTreeWritterImpl : TreeWritter {
     val dataTypeSerializer = DataTypeSerializer()
     val dataValueSerializer = DataValueSerializer()
-    override fun storeTree(filePath: String, tree: Namespace) {
+    override fun storeTree(filePath: String, tree: Leaf) {
         val factory = DocumentBuilderFactory.newInstance()
         val doc: Document = factory.newDocumentBuilder().newDocument()
 
