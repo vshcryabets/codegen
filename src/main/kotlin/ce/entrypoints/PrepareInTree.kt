@@ -1,7 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.*
-import ce.domain.usecase.GetProjectUseCase
+import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreInTreeUseCase
 import ce.settings.Project
 import java.io.File
@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
 
     val engine = ScriptEngineManager().getEngineByExtension("kts")
 
-    val getProjectUseCase = GetProjectUseCase()
+    val getProjectUseCase = LoadProjectUseCase()
     val storeInTreeUseCase = StoreInTreeUseCase()
 
     val project : Project = getProjectUseCase(args[0])

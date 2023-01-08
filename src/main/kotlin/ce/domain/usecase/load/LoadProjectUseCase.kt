@@ -1,4 +1,4 @@
-package ce.domain.usecase
+package ce.domain.usecase.load
 
 import ce.defs.DataType
 import ce.defs.DataValue
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import java.io.FileInputStream
 
-class GetProjectUseCase {
+class LoadProjectUseCase {
     operator fun invoke(projectPath : String) : Project {
         val mapper = ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
         val module = SimpleModule()

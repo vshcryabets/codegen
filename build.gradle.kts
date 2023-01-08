@@ -25,6 +25,13 @@ dependencies {
     implementation(kotlin("scripting-jsr223"))
 
     implementation(compose.desktop.currentOs)
+
+    // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
+    implementation("org.jfree:org.jfree.svg:5.0.3")
+
+    // https://mvnrepository.com/artifact/org.abego.treelayout/org.abego.treelayout.core
+    implementation("org.abego.treelayout:org.abego.treelayout.core:1.0.3")
+
 }
 
 tasks.test {
@@ -35,22 +42,22 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "CgenKt"
-    }
-
-    // To avoid the duplicate handling strategy error
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    // To add all of the dependencies
-    from(sourceSets.main.get().output)
-
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-    })
-}
+//tasks.jar {
+//    manifest {
+//        attributes["Main-Class"] = "CgenKt"
+//    }
+//
+//    // To avoid the duplicate handling strategy error
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//
+//    // To add all of the dependencies
+//    from(sourceSets.main.get().output)
+//
+//    dependsOn(configurations.runtimeClasspath)
+//    from({
+//        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+//    })
+//}
 
 application {
     mainClass.set("MainKt")
