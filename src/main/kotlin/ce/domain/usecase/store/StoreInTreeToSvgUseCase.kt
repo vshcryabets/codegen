@@ -41,7 +41,7 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
         val gapBetweenLevels = 50.0
         val gapBetweenNodes = 10.0
         val configuration: DefaultConfiguration<Leaf> = DefaultConfiguration<Leaf>(gapBetweenLevels, gapBetweenNodes,
-            Configuration.Location.Left)
+            Configuration.Location.Top)
         val affinetransform = AffineTransform()
         val fontRenderContext = FontRenderContext(affinetransform, true, true)
 
@@ -123,7 +123,7 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
 
     fun Leaf.toDisplayString() : String =
         when  {
-            this is Namespace && name.isEmpty() -> "ROOT"
+            this is Namespace && name.isEmpty() -> "/"
             this is DataField && this.value.isDefined() -> "${this.name} = ${this.value.value}"
             else -> this.name
         }
