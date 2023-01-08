@@ -9,7 +9,7 @@ namespace(
 
 setOutputFileName("GoldEnums")
 
-enum("GoldEnumWithValue").apply {
+enum("PhoneState").apply {
     addBlockComment(
         """
           Long line class comment.
@@ -21,7 +21,7 @@ enum("GoldEnumWithValue").apply {
     add("BUSY")
 }
 
-enum("GoldEnum").apply {
+enum("Seasons").apply {
     add("winter")
     add("summer")
     add("spring")

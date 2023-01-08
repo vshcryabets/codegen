@@ -1,5 +1,6 @@
 package ce.domain.usecase.store
 
+import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Namespace
 import generators.obj.input.Node
@@ -46,7 +47,7 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
 
         val nodeExtentProvider = object : NodeExtentProvider<Leaf> {
             override fun getWidth(treeNode: Leaf): Double {
-                val line1 = maxOf(minWidth, FONT_SANS_BOLD.getStringBounds(treeNode.name, fontRenderContext).width + 15.0)
+                val line1 = maxOf(minWidth, FONT_SANS_BOLD.getStringBounds(treeNode.toDisplayString(), fontRenderContext).width + 15.0)
                 val line2 = maxOf(minWidth,
                     FONT_SANS_REGULAR.getStringBounds(treeNode.javaClass.simpleName, fontRenderContext).width + 15.0)
                 return maxOf(line1, line2)
@@ -103,11 +104,7 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
         g2.font = FONT_SANS_REGULAR
         g2.drawString(leaf.javaClass.simpleName, box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height + 1)
         g2.font = FONT_SANS_BOLD
-        if (leaf is Namespace && leaf.name.isEmpty()) {
-            g2.drawString("ROOT", box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height * 2 + 1)
-        } else {
-            g2.drawString(leaf.name, box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height * 2 + 1)
-        }
+        g2.drawString(leaf.toDisplayString(), box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height * 2 + 1)
     }
 
     private fun generateEdges(g2: SVGGraphics2D, treeLayout: TreeLayout<Leaf>, parent: Leaf, boxStroke: BasicStroke) {
@@ -123,4 +120,12 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
             }
         }
     }
+
+    fun Leaf.toDisplayString() : String =
+        when  {
+            this is Namespace && name.isEmpty() -> "ROOT"
+            this is DataField && this.value.isDefined() -> "${this.name} = ${this.value.value}"
+            else -> this.name
+        }
+
 }

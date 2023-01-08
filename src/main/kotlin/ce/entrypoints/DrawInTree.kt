@@ -1,7 +1,6 @@
 package ce.entrypoints
 
 import ce.domain.usecase.load.LoadInTreeUseCase
-import ce.domain.usecase.store.StoreInTreeToSvgUseCase
 import ce.domain.usecase.store.StoreInTreeToSvgUseCaseImpl
 
 fun main(args: Array<String>) {

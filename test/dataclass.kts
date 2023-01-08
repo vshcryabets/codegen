@@ -7,9 +7,3 @@ namespace("com.goldman.data").apply {
         field("lastBlockSize", DataType.int32, 10)
     }
 }
-
-dataClass("GoldBufferRoot").apply {
-    field("blockSize", DataType.int32)
-    field("blockCount", DataType.int32)
-    field("lastBlockSize", DataType.int32)
-}
