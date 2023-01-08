@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `maven-publish`
     kotlin("jvm") version "1.7.20"
+    id("org.jetbrains.compose") version "1.2.1"
     application
 }
 
@@ -11,6 +12,7 @@ version = "0.1.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
@@ -21,6 +23,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
 
     implementation(kotlin("scripting-jsr223"))
+
+    implementation(compose.desktop.currentOs)
 }
 
 tasks.test {

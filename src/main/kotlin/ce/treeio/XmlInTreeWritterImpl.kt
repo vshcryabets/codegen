@@ -13,6 +13,14 @@ import javax.xml.transform.stream.StreamResult
 
 
 class XmlInTreeWritterImpl : TreeWritter {
+
+    companion object {
+        const val KEY_NAME = "name"
+        const val KEY_DEFAULT_TYPE = "defaultType"
+        const val KEY_TYPE = "type"
+        const val KEY_VALUE = "value"
+    }
+
     val dataTypeSerializer = DataTypeSerializer()
     val dataValueSerializer = DataValueSerializer()
     override fun storeTree(filePath: String, tree: Leaf) {
@@ -35,15 +43,18 @@ class XmlInTreeWritterImpl : TreeWritter {
     private fun treeToXml(doc: Document, node: Leaf): Element {
         val tagName = node.javaClass.simpleName
         val element = doc.createElement(tagName)
-        element.setAttribute("name", node.name)
+        element.setAttribute(KEY_NAME, node.name)
         when (node) {
             is ConstantsEnum -> {
-                element.setAttribute("defaultType", dataTypeSerializer.stringValue(node.defaultDataType))
+                element.setAttribute(KEY_DEFAULT_TYPE, dataTypeSerializer.stringValue(node.defaultDataType))
+            }
+            is ConstantsBlock -> {
+                element.setAttribute(KEY_DEFAULT_TYPE, dataTypeSerializer.stringValue(node.defaultDataType))
             }
             is DataField -> {
-                element.setAttribute("type", dataTypeSerializer.stringValue(node.type))
+                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
                 dataValueSerializer.stringValue(node.value)?.also {
-                    element.setAttribute("value", it)
+                    element.setAttribute(KEY_VALUE, it)
                 }
             }
             else -> {}
