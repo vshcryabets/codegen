@@ -19,10 +19,11 @@ import java.awt.geom.AffineTransform
 import java.awt.geom.Rectangle2D
 import java.io.FileOutputStream
 
-
 interface StoreInTreeToSvgUseCase {
     operator fun invoke(outputSvgFile : String, tree: Leaf)
 }
+
+// Using https://treelayout.sourceforge.net/
 class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
 
     private val LIGHTBLUE = Color(154,192,205)
