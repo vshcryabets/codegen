@@ -2,7 +2,7 @@ package generators.swift
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.Generator
 import generators.obj.input.DataField
 import generators.obj.input.ConstantsEnum
@@ -19,7 +19,7 @@ class SwiftEnumGenerator(
 
         return file.addSub(SwiftClassData(desc.name, file)).apply {
 
-            addMultilineCommentsBlock(desc.classComment.toString(), this)
+//            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = desc.defaultDataType != DataType.VOID
             if (withRawValues) {
                 appendClassDefinition(this, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
@@ -28,7 +28,7 @@ class SwiftEnumGenerator(
                 putTabs(classDefinition, 1)
                 classDefinition.append("case ")
             }
-            val autoIncrement = AutoincrementInt()
+            val autoIncrement = AutoincrementField()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField

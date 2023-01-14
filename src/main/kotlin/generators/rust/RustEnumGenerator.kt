@@ -17,7 +17,7 @@ class RustEnumGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
 
         return file.addSub(RustClassData(desc.name, file)).apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), this)
+//            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = !(desc.defaultDataType is DataType.VOID)
             if (withRawValues) {
                 appendClassDefinition(this, "enum ${desc.name}  : ${Types.typeTo(file, desc.defaultDataType)} {")

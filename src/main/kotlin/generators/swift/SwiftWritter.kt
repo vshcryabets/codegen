@@ -47,10 +47,6 @@ class SwiftWritter(fileGenerator: SwiftFileGenerator, outputFolder: String)
 //
 //                writeNotEmpty(out, classDef.classEnd)
 //            }
-
-            if (fileData.end.isNotEmpty()) {
-                out.write(fileData.end.toString())
-            }
         }
     }
 }

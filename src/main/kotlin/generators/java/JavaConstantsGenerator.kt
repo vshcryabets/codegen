@@ -1,7 +1,7 @@
 package generators.java
 
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.DataField
@@ -21,7 +21,7 @@ class JavaConstantsGenerator(
         return file.addSub(JavaClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
             subs.add(BlockStart("public class ${desc.name} {", this))
-            val autoIncrement = AutoincrementInt()
+            val autoIncrement = AutoincrementField()
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
                 autoIncrement.invoke(it)

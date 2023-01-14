@@ -17,7 +17,7 @@ class SwiftDataClassGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
 
         return file.addSub(SwiftClassData(desc.name, file)).apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), this)
+//            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())

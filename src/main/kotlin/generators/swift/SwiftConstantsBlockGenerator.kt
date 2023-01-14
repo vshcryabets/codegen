@@ -1,7 +1,7 @@
 package generators.swift
 
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.DataField
@@ -18,11 +18,11 @@ class SwiftConstantsBlockGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
 
         return file.addSub(SwiftClassData(desc.name, file)).apply {
-            addMultilineCommentsBlock(desc.classComment.toString(), this)
+//            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             classDefinition.append("struct ${desc.name} {")
             classDefinition.append(fileGenerator.newLine())
-            val autoIncrement = AutoincrementInt()
+            val autoIncrement = AutoincrementField()
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
                 autoIncrement(it)

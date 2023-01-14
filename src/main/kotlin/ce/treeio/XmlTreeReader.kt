@@ -25,8 +25,8 @@ class XmlTreeReader : TreeReader {
         val tagName = node.tagName
         val name = node.getAttribute(XmlInTreeWritterImpl.KEY_NAME)
         return when (tagName) {
-            "Namespace" -> Namespace(name, parent)
-            "ConstantsEnum" -> ConstantsEnum(name, parent,
+            Namespace::class.java.simpleName -> Namespace(name, parent)
+            ConstantsEnum::class.java.simpleName -> ConstantsEnum(name, parent,
                 dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE)))
             "ConstantsBlock" -> ConstantsBlock(name, parent,
                 dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE)))
@@ -62,6 +62,11 @@ class XmlTreeReader : TreeReader {
             }
             else -> throw IllegalStateException("Unknown $tagName")
         }.also {
+            if (it is Block) {
+                it.sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE)
+                it.outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE)
+                it.objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER)
+            }
             if (node.childNodes.length > 0) {
                 for (i in 0..node.childNodes.length - 1) {
                     val subnode = node.childNodes.item(i)

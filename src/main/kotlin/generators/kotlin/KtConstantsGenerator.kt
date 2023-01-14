@@ -1,7 +1,7 @@
 package generators.kotlin
 
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.ConstantDesc
@@ -16,7 +16,7 @@ class KtConstantsGenerator(
     override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
-        val autoIncrement = AutoincrementInt()
+        val autoIncrement = AutoincrementField()
 
         return file.addSub(KotlinClassData(desc.name, file)).also { classData ->
             addBlockDefaults(desc, classData)

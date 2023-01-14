@@ -2,7 +2,7 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.Generator
 import generators.obj.input.*
 import generators.obj.out.*
@@ -16,7 +16,7 @@ class KotlinEnumGenerator(
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         val withRawValues = desc.defaultDataType != DataType.VOID
-        val autoIncrement = AutoincrementInt()
+        val autoIncrement = AutoincrementField()
         var needToAddComa = false
 
         return KotlinClassData(desc.name, file).also { classData ->

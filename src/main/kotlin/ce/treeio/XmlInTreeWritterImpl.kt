@@ -19,6 +19,9 @@ class XmlInTreeWritterImpl : TreeWritter {
         const val KEY_DEFAULT_TYPE = "defaultType"
         const val KEY_TYPE = "type"
         const val KEY_VALUE = "value"
+        const val KEY_SOURCE_FILE = "srcFile"
+        const val KEY_OUTPUT_FILE = "outFile"
+        const val KEY_BASE_FOLDER = "baseFolder"
     }
 
     val dataTypeSerializer = DataTypeSerializer()
@@ -44,6 +47,11 @@ class XmlInTreeWritterImpl : TreeWritter {
         val tagName = node.javaClass.simpleName
         val element = doc.createElement(tagName)
         element.setAttribute(KEY_NAME, node.name)
+        if (node is Block) {
+            element.setAttribute(KEY_SOURCE_FILE, node.sourceFile)
+            element.setAttribute(KEY_OUTPUT_FILE, node.outputFile)
+            element.setAttribute(KEY_BASE_FOLDER, node.objectBaseFolder)
+        }
         when (node) {
             is ConstantsEnum -> {
                 element.setAttribute(KEY_DEFAULT_TYPE, dataTypeSerializer.stringValue(node.defaultDataType))

@@ -8,14 +8,10 @@ open class Block(
     name: String,
     parent: Node
 ) : Node(name, parent) {
-    val classComment = StringBuilder()
+//    val classComment = StringBuilder()
     var sourceFile = ""
     var outputFile = ""
     var objectBaseFolder = ""
-
-    fun addBlockComment(value : String) {
-        classComment.append(value)
-    }
 
     fun addClassField(name: String, type : DataType, value: DataValue = NotDefinedValue) {
         subs.add(DataField(name, this, type, value))

@@ -2,7 +2,7 @@ package generators.java
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.Generator
 import generators.obj.input.*
 import generators.obj.out.BlockStart
@@ -28,7 +28,7 @@ class JavaEnumGenerator(
                     .append(fileGenerator.newLine())
             }
 
-            val autoIncrement = AutoincrementInt()
+            val autoIncrement = AutoincrementField()
             var needToAddComa = false
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField

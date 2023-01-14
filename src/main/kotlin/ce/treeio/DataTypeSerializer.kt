@@ -67,6 +67,6 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
     fun fromStringValue(value: String): DataType {
         if (DATATYPES_REVERSE_MAP.containsKey(value))
             return DATATYPES_REVERSE_MAP[value]!!
-        throw IllegalStateException("Not supported $value")
+        throw IllegalStateException("Not supported \"$value\"")
     }
 }

@@ -15,10 +15,6 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             writeNode(fileData, out, "")
-
-            if (fileData.end.isNotEmpty()) {
-                out.write(fileData.end.toString())
-            }
         }
     }
 

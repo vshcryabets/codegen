@@ -31,8 +31,14 @@ class DataValueSerializer : JsonSerializer<DataValue>() {
         }
         val result = when (dataType) {
             DataType.VOID -> NotDefinedValue
-            DataType.int8, DataType.int16, DataType.int32, DataType.int64 -> DataValue(value.toLong())
-            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> DataValue(value.toLong())
+            DataType.int8 -> DataValue(value.toByte())
+            DataType.int16 -> DataValue(value.toShort())
+            DataType.int32 -> DataValue(value.toInt())
+            DataType.int64 -> DataValue(value.toLong())
+            DataType.uint8 -> DataValue(value.toUByte())
+            DataType.uint16 -> DataValue(value.toUShort())
+            DataType.uint32 -> DataValue(value.toUInt())
+            DataType.uint64 -> DataValue(value.toULong())
             DataType.float32, DataType.float64, DataType.float128 -> DataValue(value.toDouble())
             DataType.string -> DataValue(value)
             DataType.bool -> DataValue(value.toBoolean())

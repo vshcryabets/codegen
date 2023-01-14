@@ -17,8 +17,8 @@ class RsConstantsBlockGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
 
         return file.addSub(RustClassData(desc.name, file)).apply {
-            desc.classComment.append("Constants ${desc.name}")
-            addMultilineCommentsBlock(desc.classComment.toString(), this)
+//            desc.classComment.append("Constants ${desc.name}")
+//            addMultilineCommentsBlock(desc.classComment.toString(), this)
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
                 classDefinition.append("const ")

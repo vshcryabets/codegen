@@ -32,7 +32,7 @@ abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
 
     protected fun addBlockDefaults(desc: Block, result: ClassData) {
         result.addSub(BlockPreNewLines())
-        addMultilineCommentsBlock(desc.classComment.toString(), result)
+//        addMultilineCommentsBlock(desc.classComment.toString(), result)
     }
 
     fun addMultilineCommentsBlock(comment: String, parent: Node) {

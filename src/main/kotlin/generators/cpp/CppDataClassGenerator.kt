@@ -23,7 +23,7 @@ class CppDataClassGenerator(
         definition.findOrCreateSub(ImportsBlock::class.java).addInclude(header.name)
 
         return header.addSub(CppClassData(desc.name, header)).apply {
-            desc.classComment.append("Data class ${desc.name}${fileGenerator.newLine()}")
+//            desc.classComment.append("Data class ${desc.name}${fileGenerator.newLine()}")
             addBlockDefaults(desc, this)
 
             classDefinition.append("class ${desc.name} {${fileGenerator.newLine()}")

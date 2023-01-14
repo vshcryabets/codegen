@@ -95,6 +95,7 @@ open class MetaGenerator<T : ClassData>(
     }
 
 
+
     fun write(root: Node, namespaceMap: NamespaceMap) {
         val projectOutput = processProject(root, namespaceMap)
         writter.write(projectOutput)

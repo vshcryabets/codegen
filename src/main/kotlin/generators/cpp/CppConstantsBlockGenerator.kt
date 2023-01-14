@@ -1,7 +1,7 @@
 package generators.cpp
 
 import ce.settings.Project
-import generators.obj.AutoincrementInt
+import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.DataField
@@ -20,9 +20,9 @@ class CppConstantsBlockGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Definition file for C++")
 
         return declaration.addSub(CppClassData(desc.name, declaration)).apply {
-            desc.classComment.append("Constants ${desc.name}${fileGenerator.newLine()}")
+//            desc.classComment.append("Constants ${desc.name}${fileGenerator.newLine()}")
             addBlockDefaults(desc, this)
-            val autoIncrement = AutoincrementInt()
+            val autoIncrement = AutoincrementField()
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
                 autoIncrement.invoke(it)
