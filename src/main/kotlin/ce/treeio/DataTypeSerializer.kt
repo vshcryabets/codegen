@@ -9,6 +9,11 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer
 class DataTypeSerializer : JsonSerializer<DataType>() {
 
     companion object {
+        val PREFIX_ARRAY_OF = "arrayOf_"
+        val PREFIX_POINTER_TO = "pointerTo_"
+        val PREFIX_FLOW_OF = "flowOf_"
+        val PREFIX_CLASS = "class_"
+
         val DATATYPES_MAP = hashMapOf(
             DataType.int8 to "int8",
             DataType.VOID to "void",
@@ -55,10 +60,10 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             return DATATYPES_MAP[value]!!
 
         val typeStr = when (value) {
-            is DataType.array -> "arrayOfXXXXX"
-            is DataType.pointer -> "pointerXXX"
-            is DataType.promise -> "FlowXXX"
-            is DataType.userClass -> value.path
+            is DataType.array -> PREFIX_ARRAY_OF + stringValue(value.elementDataType)
+            is DataType.pointer -> PREFIX_POINTER_TO + stringValue(value.subType)
+            is DataType.promise -> PREFIX_FLOW_OF + stringValue(value.elementDataType)
+            is DataType.userClass -> PREFIX_CLASS + value.path
             else -> "UNK" + value.toString()
         }
         return typeStr
@@ -67,6 +72,9 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
     fun fromStringValue(value: String): DataType {
         if (DATATYPES_REVERSE_MAP.containsKey(value))
             return DATATYPES_REVERSE_MAP[value]!!
+        if (value.startsWith(PREFIX_ARRAY_OF)) {
+            return DataType.array(fromStringValue(value.substring(PREFIX_ARRAY_OF.length)))
+        }
         throw IllegalStateException("Not supported \"$value\"")
     }
 }

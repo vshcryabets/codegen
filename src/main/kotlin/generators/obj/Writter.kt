@@ -43,7 +43,7 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
                 out.write(indent)
                 out.write(leaf.name)
             }
-            is BlockStart, is BlockEnd, is FieldLeaf, is CommentLeaf -> {
+            is FieldLeaf, is CommentLeaf -> {
                 out.write(indent)
                 out.write(leaf.name)
                 out.write(fileGenerator.newLine())
@@ -70,9 +70,9 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
         when (node) {
             is ClassData -> {
                 writeSubNodes(node, out, indent)
-                if (node.classDefinition.isNotEmpty()) {
-                    out.write(node.classDefinition.toString())
-                }
+//                if (node.classDefinition.isNotEmpty()) {
+//                    out.write(node.classDefinition.toString())
+//                }
             }
             is MultilineCommentsBlock -> {
                 out.write(fileGenerator.multilineCommentStart())

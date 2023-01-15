@@ -9,6 +9,6 @@ open class DataClass(
     parent: Node,
 ) : Block(name, parent) {
     fun field(name: String, type : DataType, value: Any? = NotDefined) {
-        addSub(DataField(name, this, type, DataValue(value)))
+        addSub(DataField(name, type, DataValue(value)))
     }
 }

@@ -19,26 +19,28 @@ class KotlinEnumGenerator(
         val autoIncrement = AutoincrementField()
         var needToAddComa = false
 
-        return KotlinClassData(desc.name, file).also { classData ->
-            file.addSub(classData)
+        return file.addSub(KotlinClassData(desc.name)).also { classData ->
             addBlockDefaults(desc, classData)
-            classData.addSub(OutBlock("enum class ${desc.name}", classData)).apply {
+            classData.addOutBlock("enum class ${desc.name}") {
                 if (withRawValues) {
-                    this.addSub(OutBlockArguments("", this)).apply {
-                        addSub(DataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", this, desc.defaultDataType))
+                    addOutBlockArguments {
+                        addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
                     }
+//                    this.addSub(OutBlockArguments("")).apply {
+//                        addSub(DataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType))
+//                    }
                 }
                 desc.subs.forEach { leaf ->
                     val it = leaf as DataField
                     if (needToAddComa) {
-                        addSub(Separator(",${fileGenerator.newLine()}"))
+                        addSeparator(",${fileGenerator.newLine()}")
                     }
 
                     if (withRawValues) {
                         autoIncrement(it)
-                        addSub(EnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})", this))
+                        addEnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})")
                     } else {
-                        addSub(EnumLeaf("${it.name}", this))
+                        addEnumLeaf("${it.name}")
                     }
                     needToAddComa = true
                 }

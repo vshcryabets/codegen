@@ -1,6 +1,8 @@
 package ce.treeio
 
+import generators.kotlin.KotlinClassData
 import generators.obj.input.*
+import generators.obj.out.*
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -26,17 +28,28 @@ class XmlTreeReader : TreeReader {
         val name = node.getAttribute(XmlInTreeWritterImpl.KEY_NAME)
         return when (tagName) {
             Namespace::class.java.simpleName -> Namespace(name, parent)
-            ConstantsEnum::class.java.simpleName -> ConstantsEnum(name, parent,
-                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE)))
-            "ConstantsBlock" -> ConstantsBlock(name, parent,
-                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE)))
+            ConstantsEnum::class.java.simpleName -> ConstantsEnum(
+                name, parent,
+                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
+            )
+
+            CommentsBlock::class.java.simpleName -> CommentsBlock(parent)
+            CommentLeaf::class.java.simpleName -> CommentLeaf(name)
+            "ConstantsBlock" -> ConstantsBlock(
+                name, parent,
+                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
+            )
+
             "DataClass" -> DataClass(name, parent)
             "InterfaceDescription" -> InterfaceDescription(name, parent)
             "Method" -> Method(name)
             "OutputList" -> OutputList()
             "InputList" -> InputList()
-            "Output" -> Output(name,
-                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE)))
+            "Output" -> Output(
+                name,
+                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
+            )
+
             "Input" -> {
                 val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 Input(
@@ -44,15 +57,21 @@ class XmlTreeReader : TreeReader {
                     dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
                 )
             }
-            "OutputReusable" -> OutputReusable(name,
-                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE)))
+
+            "OutputReusable" -> OutputReusable(
+                name,
+                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
+            )
+
             "DataField" -> {
                 val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 DataField(
-                    name, parent, dataType,
-                    dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
+                    name = name,
+                    type = dataType,
+                    value = dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
                 )
             }
+
             "ConstantDesc" -> {
                 val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 ConstantDesc(
@@ -60,6 +79,21 @@ class XmlTreeReader : TreeReader {
                     dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
                 )
             }
+            // OUT TREE
+            ProjectOutput::class.java.simpleName -> ProjectOutput(NamespaceMap())
+            FileData::class.java.simpleName -> FileData(name, parent)
+            NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)
+            KotlinClassData::class.java.simpleName -> KotlinClassData(name)
+            BlockPreNewLines::class.java.simpleName -> BlockPreNewLines()
+            OutBlock::class.java.simpleName -> OutBlock(name)
+            OutBlockArguments::class.java.simpleName -> OutBlockArguments(name)
+            EnumLeaf::class.java.simpleName -> EnumLeaf(name)
+            Separator::class.java.simpleName -> Separator(name)
+            NlSeparator::class.java.simpleName -> NlSeparator()
+            ConstantLeaf::class.java.simpleName -> ConstantLeaf(name)
+            ResultLeaf::class.java.simpleName -> ResultLeaf(name)
+            ArgumentLeaf::class.java.simpleName -> ArgumentLeaf(name)
+
             else -> throw IllegalStateException("Unknown $tagName")
         }.also {
             if (it is Block) {
@@ -70,7 +104,7 @@ class XmlTreeReader : TreeReader {
             if (node.childNodes.length > 0) {
                 for (i in 0..node.childNodes.length - 1) {
                     val subnode = node.childNodes.item(i)
-                    if ( subnode != null && subnode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                    if (subnode != null && subnode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                         (it as Node).addSub(xmlToTree(subnode as Element, it))
                     }
                 }

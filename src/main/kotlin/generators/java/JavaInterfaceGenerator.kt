@@ -4,7 +4,6 @@ import ce.settings.Project
 import generators.obj.Generator
 import generators.obj.input.DataField
 import generators.obj.input.InterfaceDescription
-import generators.obj.out.BlockStart
 import generators.obj.out.FileData
 
 class JavaInterfaceGenerator(fileGenerator: JavaFileGenerator,
@@ -16,12 +15,12 @@ class JavaInterfaceGenerator(fileGenerator: JavaFileGenerator,
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         return file.addSub(JavaClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
-            subs.add(BlockStart("interface ${desc.name}", this))
+//            subs.add(BlockStart("interface ${desc.name}", this))
 
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
             }
-            appendClassDefinition(this, "}");
+//            appendClassDefinition(this, "}");
         }
     }
 

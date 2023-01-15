@@ -18,9 +18,9 @@ class KtConstantsGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
         val autoIncrement = AutoincrementField()
 
-        return file.addSub(KotlinClassData(desc.name, file)).also { classData ->
+        return file.addSub(KotlinClassData(desc.name)).also { classData ->
             addBlockDefaults(desc, classData)
-            classData.addSub(OutBlock("object ${desc.name}", classData)).apply {
+            classData.addSub(OutBlock("object ${desc.name}")).apply {
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)

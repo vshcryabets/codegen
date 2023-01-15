@@ -16,6 +16,6 @@ open class ConstantsEnum(
     }
 
     fun add(name: String, value: Any = NotDefined) {
-        addSub(DataField(name, this, defaultDataType, DataValue(value)))
+        addSub(DataField(name, defaultDataType, DataValue(value)))
     }
 }

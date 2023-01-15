@@ -8,8 +8,13 @@ import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 import generators.obj.input.Node
 
 fun main(args: Array<String>) {
-    if (args.size < 2) {
-        error("Please, specify input tree file, target and output tree file.")
+    if (args.size < 3) {
+        error("""
+            Please, specify: 
+             - input tree file
+             - project file
+             - output tree file
+            """)
     }
 
     val loadInTreeUseCase = LoadInTreeUseCase()
@@ -19,5 +24,5 @@ fun main(args: Array<String>) {
 
     val tree = loadInTreeUseCase(args[0])
     val outTree = transformInTreeToOutTreeUseCase(tree as Node, Target.Kotlin, getProjectUseCase(args[1]))
-    storeOutTreeUseCase("outtree_kotlin.xml", outTree)
+    storeOutTreeUseCase(args[2], outTree)
 }

@@ -14,9 +14,9 @@ class KotlinInterfaceGenerator(
     override fun processBlock(files: List<FileData>, desc: InterfaceDescription): KotlinClassData {
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
-        return file.addSub(KotlinClassData(desc.name, file)).let { kclass ->
+        return file.addSub(KotlinClassData(desc.name)).let { kclass ->
             addBlockDefaults(desc, kclass)
-            kclass.addSub(OutBlock("interface ${desc.name}", kclass)).apply {
+            kclass.addSub(OutBlock("interface ${desc.name}")).apply {
                 desc.subs.forEach { leaf ->
                     if (leaf is Method) {
                         addMethod(this, leaf, file, kclass)

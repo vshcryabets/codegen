@@ -3,9 +3,14 @@ package generators.obj.input
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefined
+import ce.defs.NotDefinedValue
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import generators.obj.out.EnumLeaf
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.Separator
 
 object TreeRoot : Node("ROOT", null)
 
@@ -50,8 +55,15 @@ open class Node(name: String,
                 return it as T
             }
         }
-        val newNode = clazz.getConstructor(String::class.java, Node::class.java).newInstance("", this)
-        return addSub(newNode)
+        try {
+            // try contructor(name: String, parent: Node)
+            val newNode = clazz.getConstructor(String::class.java, Node::class.java).newInstance("", this)
+            return addSub(newNode)
+        } catch (noConstructor : NoSuchMethodException) {
+            // try contructor(parent: Node)
+            val newNode = clazz.getConstructor(Node::class.java).newInstance(this)
+            return addSub(newNode)
+        }
     }
 
     fun <T : Leaf> addSub(leaf: T): T {
@@ -59,6 +71,22 @@ open class Node(name: String,
         leaf.parent = this
         return leaf
     }
+
+    fun addOutBlock(name: String = "", function: OutBlock.() -> Unit) =
+        addSub(OutBlock(name)).apply(function)
+
+    fun addOutBlockArguments(name: String = "", function: OutBlockArguments.() -> Unit) =
+        addSub(OutBlockArguments(name)).apply(function)
+
+
+    fun addDataField(name: String, dataType: DataType) = addSub(DataField(name, dataType))
+
+    fun addClassField(name: String, type : DataType, value: DataValue = NotDefinedValue) =
+        addSub(DataField(name, type, value))
+
+    fun addEnumLeaf(name: String) = addSub(EnumLeaf(name))
+
+    fun addSeparator(name: String) = addSub(Separator(name))
 }
 
 open class Namespace(name: String, parent: Node) : Node(name, parent) {

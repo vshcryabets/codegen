@@ -21,37 +21,37 @@ class SwiftEnumGenerator(
 
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = desc.defaultDataType != DataType.VOID
-            if (withRawValues) {
-                appendClassDefinition(this, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
-            } else {
-                appendClassDefinition(this, "enum ${desc.name} {");
-                putTabs(classDefinition, 1)
-                classDefinition.append("case ")
-            }
-            val autoIncrement = AutoincrementField()
-            var needToAddComa = false
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-                autoIncrement(it)
-
-                if (withRawValues) {
-                    putTabs(classDefinition, 1)
-                    classDefinition.append("case ")
-                        .append(it.name)
-                        .append(" = ${Types.toValue(this, it.type, it.value)}")
-                        .append(fileGenerator.newLine())
-                } else {
-                    if (needToAddComa) {
-                        classDefinition.append(", ")
-                    }
-                    classDefinition.append(it.name)
-                    needToAddComa = true
-                }
-            }
-            if (!withRawValues) {
-                classDefinition.append(fileGenerator.newLine())
-            }
-            appendClassDefinition(this, "}");
+//            if (withRawValues) {
+//                appendClassDefinition(this, "enum ${desc.name}  `: ${Types.typeTo(file, desc.defaultDataType)} {")
+//            } else {
+//                appendClassDefinition(this, "enum ${desc.name} {");
+//                putTabs(classDefinition, 1)
+//                classDefinition.append("case ")
+//            }
+//            val autoIncrement = AutoincrementField()
+//            var needToAddComa = false
+//            desc.subs.forEach { leaf ->
+//                val it = leaf as DataField
+//                autoIncrement(it)
+//
+//                if (withRawValues) {
+//                    putTabs(classDefinition, 1)
+//                    classDefinition.append("case ")
+//                        .append(it.name)
+//                        .append(" = ${Types.toValue(this, it.type, it.value)}")
+//                        .append(fileGenerator.newLine())
+//                } else {
+//                    if (needToAddComa) {
+//                        classDefinition.append(", ")
+//                    }
+//                    classDefinition.append(it.name)
+//                    needToAddComa = true
+//                }
+//            }
+//            if (!withRawValues) {
+//                classDefinition.append(fileGenerator.newLine())
+//            }
+//            appendClassDefinition(this, "}");
         }
     }
 }

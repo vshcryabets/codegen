@@ -11,7 +11,7 @@ import java.io.File
 class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
         return listOf(FileData(outputFile, project).apply {
-            subs.add(NamespaceDeclaration(block.getParentPath(), this))
+            addSub(NamespaceDeclaration(block.getParentPath()))
         })
     }
 

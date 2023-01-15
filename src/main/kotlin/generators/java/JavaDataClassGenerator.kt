@@ -18,22 +18,22 @@ class JavaDataClassGenerator(
 
         return file.addSub(JavaClassData(desc.name, file)).apply {
             addBlockDefaults(desc, this)
-            appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
-
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-
-                classDefinition.append(fileGenerator.tabSpace)
-                classDefinition.append("val ")
-                classDefinition.append(it.name)
-                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-                if (it.value.notDefined()) {
-                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-                }
-
-                appendNotEmptyWithNewLine(",", classDefinition)
-            }
-            appendNotEmptyWithNewLine(")", classDefinition)
+//            appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
+//
+//            desc.subs.forEach { leaf ->
+//                val it = leaf as DataField
+//
+//                classDefinition.append(fileGenerator.tabSpace)
+//                classDefinition.append("val ")
+//                classDefinition.append(it.name)
+//                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
+//                if (it.value.notDefined()) {
+//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
+//                }
+//
+//                appendNotEmptyWithNewLine(",", classDefinition)
+//            }
+//            appendNotEmptyWithNewLine(")", classDefinition)
         }
     }
 }

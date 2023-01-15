@@ -16,5 +16,5 @@ class ImportsBlock(name: String, parent : Node) : Node(name, parent) {
 // $name ($OutBlockArguments) {
 // ...
 // }
-open class OutBlock(name: String, parent: Node) : Node(name, parent)
-open class OutBlockArguments(name: String, parent: Node) : Node(name, parent)
+open class OutBlock(name: String) : Node(name, null)
+open class OutBlockArguments(name: String) : Node(name, null)

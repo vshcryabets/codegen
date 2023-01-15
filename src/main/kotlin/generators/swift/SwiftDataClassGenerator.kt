@@ -19,27 +19,27 @@ class SwiftDataClassGenerator(
         return file.addSub(SwiftClassData(desc.name, file)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
-            classDefinition.append("struct ${desc.name} {")
-            classDefinition.append(fileGenerator.newLine())
-            var previous: Any? = null
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-//                if (it.value == null && previous != null) {
-//                    it.value = previous!! as Int + 1;
+//            classDefinition.append("struct ${desc.name} {")
+//            classDefinition.append(fileGenerator.newLine())
+//            var previous: Any? = null
+//            desc.subs.forEach { leaf ->
+//                val it = leaf as DataField
+////                if (it.value == null && previous != null) {
+////                    it.value = previous!! as Int + 1;
+////                }
+//
+//                if (it.value != null) {
+//                    previous = it.value
 //                }
-
-                if (it.value != null) {
-                    previous = it.value
-                }
-
-                classDefinition.append(fileGenerator.tabSpace);
-                classDefinition.append("static let ");
-                classDefinition.append(it.name);
-                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-                classDefinition.append(fileGenerator.newLine())
-            }
-            classDefinition.append("}\n");
+//
+//                classDefinition.append(fileGenerator.tabSpace);
+//                classDefinition.append("static let ");
+//                classDefinition.append(it.name);
+//                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
+//                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
+//                classDefinition.append(fileGenerator.newLine())
+//            }
+//            classDefinition.append("}\n");
         }
     }
 }

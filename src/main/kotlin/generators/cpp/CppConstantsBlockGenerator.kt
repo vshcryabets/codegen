@@ -27,12 +27,12 @@ class CppConstantsBlockGenerator(
                 val it = leaf as DataField
                 autoIncrement.invoke(it)
 
-                classDefinition.append("const ")
-                    .append(Types.typeTo(declaration, it.type))
-                    .append(" ")
-                    .append(it.name)
-                    .append(" = ${Types.toValue(this, it.type, it.value)};")
-                    .append(fileGenerator.newLine())
+//                classDefinition.append("const ")
+//                    .append(Types.typeTo(declaration, it.type))
+//                    .append(" ")
+//                    .append(it.name)
+//                    .append(" = ${Types.toValue(this, it.type, it.value)};")
+//                    .append(fileGenerator.newLine())
             }
         }
     }

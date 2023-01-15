@@ -21,12 +21,12 @@ class RsConstantsBlockGenerator(
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
             desc.subs.forEach { leaf ->
                 val it = leaf as DataField
-                classDefinition.append("const ")
-                    .append(it.name)
-                    .append(" : ")
-                    .append(Types.typeTo(file, it.type))
-                    .append(" = ${Types.toValue(this, it.type, it.value)};")
-                    .append(fileGenerator.newLine())
+//                classDefinition.append("const ")
+//                    .append(it.name)
+//                    .append(" : ")
+//                    .append(Types.typeTo(file, it.type))
+//                    .append(" = ${Types.toValue(this, it.type, it.value)};")
+//                    .append(fileGenerator.newLine())
             }
         }
     }

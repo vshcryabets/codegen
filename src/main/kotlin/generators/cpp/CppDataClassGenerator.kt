@@ -26,23 +26,23 @@ class CppDataClassGenerator(
 //            desc.classComment.append("Data class ${desc.name}${fileGenerator.newLine()}")
             addBlockDefaults(desc, this)
 
-            classDefinition.append("class ${desc.name} {${fileGenerator.newLine()}")
-            classDefinition.append("private:${fileGenerator.newLine()}")
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-                putTabs(classDefinition, 1)
-                classDefinition
-                    .append(Types.typeTo(header, it.type))
-                    .append(" ")
-                    .append(it.name)
-                if (it.value.notDefined()) {
-                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)};${fileGenerator.newLine()}")
-                }
-                classDefinition
-                    .append(";")
-                    .append(fileGenerator.newLine())
-            }
-            classDefinition.append("}${fileGenerator.newLine()}")
+//            classDefinition.append("class ${desc.name} {${fileGenerator.newLine()}")
+//            classDefinition.append("private:${fileGenerator.newLine()}")
+//            desc.subs.forEach { leaf ->
+//                val it = leaf as DataField
+//                putTabs(classDefinition, 1)
+//                classDefinition
+//                    .append(Types.typeTo(header, it.type))
+//                    .append(" ")
+//                    .append(it.name)
+//                if (it.value.notDefined()) {
+//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)};${fileGenerator.newLine()}")
+//                }
+//                classDefinition
+//                    .append(";")
+//                    .append(fileGenerator.newLine())
+//            }
+//            classDefinition.append("}${fileGenerator.newLine()}")
         }
     }
 }

@@ -23,22 +23,22 @@ class CppEnumGenerator(
             addBlockDefaults(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
 
-            classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
-            val autoIncrement = AutoincrementField()
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-                putTabs(classDefinition, 1)
-
-                if (withRawValues) {
-                    autoIncrement.invoke(it)
-                    classDefinition.append(it.name);
-                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
-                    classDefinition.append(fileGenerator.newLine())
-                } else {
-                    classDefinition.append("${it.name},${fileGenerator.newLine()}");
-                }
-            }
-            appendClassDefinition(this, "};");
+//            classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
+//            val autoIncrement = AutoincrementField()
+//            desc.subs.forEach { leaf ->
+//                val it = leaf as DataField
+//                putTabs(classDefinition, 1)
+//
+//                if (withRawValues) {
+//                    autoIncrement.invoke(it)
+//                    classDefinition.append(it.name);
+//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
+//                    classDefinition.append(fileGenerator.newLine())
+//                } else {
+//                    classDefinition.append("${it.name},${fileGenerator.newLine()}");
+//                }
+//            }
+//            appendClassDefinition(this, "};");
 
         }
     }

@@ -23,16 +23,22 @@ abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
         }
     }
 
-    fun appendClassDefinition(outputClassData: ClassData, s: String) {
-        outputClassData.apply {
-            classDefinition.append(s)
-            classDefinition.append(fileGenerator.newLine())
-        }
-    }
+//    fun appendClassDefinition(outputClassData: ClassData, s: String) {
+//        outputClassData.apply {
+//            classDefinition.append(s)
+//            classDefinition.append(fileGenerator.newLine())
+//        }
+//    }
 
     protected fun addBlockDefaults(desc: Block, result: ClassData) {
         result.addSub(BlockPreNewLines())
-//        addMultilineCommentsBlock(desc.classComment.toString(), result)
+        if (desc.subs.size > 0) {
+            val first = desc.subs[0]
+            if (first is CommentsBlock) {
+                desc.subs.removeAt(0)
+                result.addSub(first)
+            }
+        }
     }
 
     fun addMultilineCommentsBlock(comment: String, parent: Node) {

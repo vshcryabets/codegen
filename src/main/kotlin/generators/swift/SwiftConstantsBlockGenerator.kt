@@ -20,21 +20,21 @@ class SwiftConstantsBlockGenerator(
         return file.addSub(SwiftClassData(desc.name, file)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
-            classDefinition.append("struct ${desc.name} {")
-            classDefinition.append(fileGenerator.newLine())
-            val autoIncrement = AutoincrementField()
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-                autoIncrement(it)
-
-                classDefinition.append(fileGenerator.tabSpace);
-                classDefinition.append("static let ");
-                classDefinition.append(it.name);
-                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-                classDefinition.append(fileGenerator.newLine())
-            }
-            classDefinition.append("}\n");
+//            classDefinition.append("struct ${desc.name} {")
+//            classDefinition.append(fileGenerator.newLine())
+//            val autoIncrement = AutoincrementField()
+//            desc.subs.forEach { leaf ->
+//                val it = leaf as DataField
+//                autoIncrement(it)
+//
+//                classDefinition.append(fileGenerator.tabSpace);
+//                classDefinition.append("static let ");
+//                classDefinition.append(it.name);
+//                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
+//                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
+//                classDefinition.append(fileGenerator.newLine())
+//            }
+//            classDefinition.append("}\n");
         }
     }
 }
