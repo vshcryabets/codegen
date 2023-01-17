@@ -13,8 +13,4 @@ class CppFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
             CppHeaderFile(outputFile + ".h", project)
         )
     }
-
-    override fun appendInitialComment(s: FileData, s1: String) {
-        super.appendInitialComment(s, s1)
-    }
 }

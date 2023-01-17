@@ -7,10 +7,7 @@ import ce.defs.NotDefinedValue
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
-import generators.obj.out.EnumLeaf
-import generators.obj.out.OutBlock
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.Separator
+import generators.obj.out.*
 
 object TreeRoot : Node("ROOT", null)
 
@@ -85,6 +82,8 @@ open class Node(name: String,
         addSub(DataField(name, type, value))
 
     fun addEnumLeaf(name: String) = addSub(EnumLeaf(name))
+
+    fun addCommentLine(name: String) = addSub(CommentLeaf(name))
 
     fun addSeparator(name: String) = addSub(Separator(name))
 }
