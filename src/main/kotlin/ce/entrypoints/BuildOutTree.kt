@@ -5,6 +5,7 @@ import ce.domain.usecase.load.LoadInTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import ce.repository.GeneratorsRepo
 import generators.obj.input.Node
 
 fun main(args: Array<String>) {
@@ -19,10 +20,11 @@ fun main(args: Array<String>) {
 
     val loadInTreeUseCase = LoadInTreeUseCase()
     val getProjectUseCase = LoadProjectUseCase()
-    val transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase()
+    val generatorsRepo = GeneratorsRepo(getProjectUseCase(args[1]))
+    val transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(generatorsRepo)
     val storeOutTreeUseCase = StoreOutTreeUseCase()
 
     val tree = loadInTreeUseCase(args[0])
-    val outTree = transformInTreeToOutTreeUseCase(tree as Node, Target.Kotlin, getProjectUseCase(args[1]))
+    val outTree = transformInTreeToOutTreeUseCase(tree as Node, Target.Kotlin)
     storeOutTreeUseCase(args[2], outTree)
 }
