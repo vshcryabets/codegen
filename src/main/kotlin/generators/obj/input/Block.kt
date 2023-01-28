@@ -16,7 +16,9 @@ open class Block(
 
     fun addBlockComment(value : String) {
         findOrCreateSub(CommentsBlock::class.java).apply {
-            addSub(CommentLeaf(value))
+            value.lines().forEach {
+                addSub(CommentLeaf(it.trim()))
+            }
         }
     }
 

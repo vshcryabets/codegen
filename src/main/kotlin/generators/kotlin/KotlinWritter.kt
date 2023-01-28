@@ -52,12 +52,6 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                 out.write("}")
                 out.write(fileGenerator.newLine())
             }
-//            is KotlinClassData -> {
-//                super.writeNode(node, out)
-//                if (node.classDefinition.isNotEmpty()) {
-//                    out.write(node.classDefinition.toString())
-//                }
-//            }
             else -> super.writeNode(node, out, indent)
         }
     }

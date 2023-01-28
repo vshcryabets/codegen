@@ -70,13 +70,12 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
         when (node) {
             is ClassData -> {
                 writeSubNodes(node, out, indent)
-//                if (node.classDefinition.isNotEmpty()) {
-//                    out.write(node.classDefinition.toString())
-//                }
             }
             is MultilineCommentsBlock -> {
+                out.write(indent)
                 out.write(fileGenerator.multilineCommentStart())
-                writeSubNodes(node, out, indent)
+                writeSubNodes(node, out, "$indent ")
+                out.write("$indent ")
                 out.write(fileGenerator.multilineCommentEnd())
             }
             is CommentsBlock -> {

@@ -35,8 +35,26 @@ abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
         if (desc.subs.size > 0) {
             val first = desc.subs[0]
             if (first is CommentsBlock) {
-                desc.subs.removeAt(0)
-                result.addSub(first)
+                if (first.subs.size > 1) {
+                    // multiline
+                    result.addSub(MultilineCommentsBlock()).apply {
+                        first.subs.forEach {
+                            addSub(it)
+                        }
+                    }
+                } else {
+                    // singleline
+                    result.addSub(CommentsBlock()).apply {
+                        first.subs.forEach {
+                            if (it is CommentLeaf) {
+                                this.addSub(CommentLeaf(fileGenerator.singleComment() + " " + it.name))
+                            } else {
+                                this.addSub(it)
+                            }
+                        }
+                    }
+                }
+                desc.subs.removeAt(0) // lets remove comments block becuase we already handle it
             }
         }
     }

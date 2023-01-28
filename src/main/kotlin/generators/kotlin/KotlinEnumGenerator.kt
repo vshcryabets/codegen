@@ -26,23 +26,22 @@ class KotlinEnumGenerator(
                     addOutBlockArguments {
                         addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
                     }
-//                    this.addSub(OutBlockArguments("")).apply {
-//                        addSub(DataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType))
-//                    }
                 }
                 desc.subs.forEach { leaf ->
-                    val it = leaf as DataField
-                    if (needToAddComa) {
-                        addSeparator(",${fileGenerator.newLine()}")
-                    }
+                    if (leaf is DataField) {
+                        val it = leaf as DataField
+                        if (needToAddComa) {
+                            addSeparator(",${fileGenerator.newLine()}")
+                        }
 
-                    if (withRawValues) {
-                        autoIncrement(it)
-                        addEnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})")
-                    } else {
-                        addEnumLeaf("${it.name}")
+                        if (withRawValues) {
+                            autoIncrement(it)
+                            addEnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})")
+                        } else {
+                            addEnumLeaf("${it.name}")
+                        }
+                        needToAddComa = true
                     }
-                    needToAddComa = true
                 }
                 addSub(NlSeparator())
             }

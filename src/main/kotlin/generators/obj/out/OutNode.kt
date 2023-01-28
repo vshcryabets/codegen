@@ -4,7 +4,7 @@ import generators.obj.input.Node
 
 typealias OutNode = Node
 
-class CommentsBlock(parent : Node) : Node("", parent)
+class CommentsBlock() : Node("", null)
 class MultilineCommentsBlock() : Node("", null)
 
 class ImportsBlock(name: String, parent : Node) : Node(name, parent) {

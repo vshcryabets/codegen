@@ -52,14 +52,24 @@ open class Node(name: String,
                 return it as T
             }
         }
+
         try {
             // try contructor(name: String, parent: Node)
-            val newNode = clazz.getConstructor(String::class.java, Node::class.java).newInstance("", this)
+            val ctor1 = clazz.getConstructor(String::class.java, Node::class.java)
+            val newNode = ctor1.newInstance("", this)
             return addSub(newNode)
         } catch (noConstructor : NoSuchMethodException) {
             // try contructor(parent: Node)
-            val newNode = clazz.getConstructor(Node::class.java).newInstance(this)
-            return addSub(newNode)
+            try {
+                val ctor2 = clazz.getConstructor(Node::class.java)
+                val newNode = ctor2.newInstance(this)
+                return addSub(newNode)
+            } catch (noConstructor : NoSuchMethodException) {
+                // try contructor() without args
+                val ctor3 = clazz.getConstructor()
+                val newNode = ctor3.newInstance()
+                return addSub(newNode)
+            }
         }
     }
 

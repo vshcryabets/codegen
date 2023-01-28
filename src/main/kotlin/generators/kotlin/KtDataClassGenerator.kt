@@ -6,6 +6,7 @@ import generators.obj.Generator
 import generators.obj.input.DataClass
 import generators.obj.input.DataField
 import generators.obj.out.FileData
+import generators.obj.out.NlSeparator
 
 class KtDataClassGenerator(
     fileGenerator: FileGenerator,
@@ -29,18 +30,9 @@ class KtDataClassGenerator(
                                 else
                                     "val ${leaf.name} : ${Types.typeTo(file, leaf.type)}",
                                 leaf.type)
+                            addSeparator(",")
+                            addSub(NlSeparator())
                         }
-//                val it = leaf as DataField
-//
-//                classDefinition.append(fileGenerator.tabSpace)
-//                classDefinition.append("val ")
-//                classDefinition.append(it.name)
-//                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-//                if (!it.value.notDefined()) {
-//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-//                }
-//
-//                appendNotEmptyWithNewLine(",", classDefinition)
                     }
                 }
             }

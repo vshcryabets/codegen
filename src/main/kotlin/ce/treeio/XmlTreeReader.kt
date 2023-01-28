@@ -34,7 +34,7 @@ class XmlTreeReader : TreeReader {
                 dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
             )
 
-            CommentsBlock::class.java.simpleName -> CommentsBlock(parent)
+            CommentsBlock::class.java.simpleName -> CommentsBlock()
             CommentLeaf::class.java.simpleName -> CommentLeaf(name)
             "ConstantsBlock" -> ConstantsBlock(
                 name, parent,
@@ -95,6 +95,7 @@ class XmlTreeReader : TreeReader {
             ConstantLeaf::class.java.simpleName -> ConstantLeaf(name)
             ResultLeaf::class.java.simpleName -> ResultLeaf(name)
             ArgumentLeaf::class.java.simpleName -> ArgumentLeaf(name)
+            MultilineCommentsBlock::class.java.simpleName -> MultilineCommentsBlock()
 
             else -> throw IllegalStateException("Unknown $tagName")
         }.also {
