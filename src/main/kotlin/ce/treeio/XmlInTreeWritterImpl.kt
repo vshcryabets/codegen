@@ -28,6 +28,7 @@ class XmlInTreeWritterImpl : TreeWritter {
 
     val dataTypeSerializer = DataTypeSerializer()
     val dataValueSerializer = DataValueSerializer()
+
     override fun storeTree(filePath: String, tree: Leaf) {
         val factory = DocumentBuilderFactory.newInstance()
         val doc: Document = factory.newDocumentBuilder().newDocument()

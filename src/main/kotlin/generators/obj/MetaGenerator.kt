@@ -1,19 +1,17 @@
 package generators.obj
 
 import ce.defs.Target
-import ce.defs.globRootNamespace
 import ce.settings.Project
-import ce.treeio.XmlInTreeWritterImpl
-import generators.obj.input.*
-import generators.obj.out.ClassData
+import generators.obj.input.Block
+import generators.obj.input.NamespaceMap
+import generators.obj.input.Node
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 import java.nio.file.Paths
 
-
-open class MetaGenerator<T : ClassData>(
+open class MetaGenerator (
     private val target: Target,
     private val fileGenerator: FileGenerator,
     private val generatorsMap: Map<Class<out Block>, Generator<out Block>>,
@@ -85,22 +83,17 @@ open class MetaGenerator<T : ClassData>(
         }
     }
 
-    open fun processProject(root: Node, namespaceMap: NamespaceMap): ProjectOutput {
+    fun translateToOutTree(intree: Node, namespaceMap: NamespaceMap): ProjectOutput {
         val result = ProjectOutput(namespaceMap, target)
         val files = mutableMapOf<String, List<FileData>>()
-        prepareFilesByTree(result, root, files)
-        translateTree(root, files)
-
-        val treeWritter = XmlInTreeWritterImpl()
-        treeWritter.storeTree(project.outputFolder + "${target.name}_output_tree.xml", result)
-
+        prepareFilesByTree(result, intree, files)
+        translateTree(intree, files)
         return result
     }
 
 
 
-    fun write(root: Node, namespaceMap: NamespaceMap) {
-        val projectOutput = processProject(root, namespaceMap)
+    fun write(projectOutput: ProjectOutput) {
         writter.write(projectOutput)
     }
 }

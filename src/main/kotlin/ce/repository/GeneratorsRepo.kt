@@ -42,7 +42,7 @@ import generators.swift.SwiftFileGenerator
 import generators.swift.SwiftWritter
 
 class GeneratorsRepo(val project: Project) {
-    val supportedMeta : Map<Target, MetaGenerator<*>>
+    val supportedMeta : Map<Target, MetaGenerator>
 
     init {
         val kotlinFileGenerator = KotlinFileGenerator(project.codeStyle)
@@ -57,7 +57,7 @@ class GeneratorsRepo(val project: Project) {
             DataClass::class.java to KtDataClassGenerator(kotlinFileGenerator, project),
             InterfaceDescription::class.java to KotlinInterfaceGenerator(kotlinFileGenerator, project)
         )
-        val kotlinMeta = MetaGenerator<KotlinClassData>(
+        val kotlinMeta = MetaGenerator(
             target = Target.Kotlin,
             writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
             project = project,
@@ -70,7 +70,7 @@ class GeneratorsRepo(val project: Project) {
             ConstantsBlock::class.java to CppConstantsBlockGenerator(cppFileGenerator, project),
             DataClass::class.java to CppDataClassGenerator(cppFileGenerator, project)
         )
-        val cppMeta = MetaGenerator<CppClassData>(
+        val cppMeta = MetaGenerator(
             target = Target.Cxx,
             writter = CppWritter(cppFileGenerator, project.outputFolder),
             project = project,
@@ -83,7 +83,7 @@ class GeneratorsRepo(val project: Project) {
             ConstantsBlock::class.java to SwiftConstantsBlockGenerator(swiftFileGenerator, project),
             DataClass::class.java to SwiftDataClassGenerator(swiftFileGenerator, project)
         )
-        val swiftMeta = MetaGenerator<SwiftClassData>(
+        val swiftMeta = MetaGenerator(
             target = Target.Swift,
             writter = SwiftWritter(swiftFileGenerator, project.outputFolder),
             project = project,
@@ -96,7 +96,7 @@ class GeneratorsRepo(val project: Project) {
             ConstantsBlock::class.java to RsConstantsBlockGenerator(rustFileGenerator, project),
             DataClass::class.java to RsDataClassGenerator(rustFileGenerator, project)
         )
-        val rustMeta = MetaGenerator<RustClassData>(
+        val rustMeta = MetaGenerator(
             target = Target.Rust,
             writter = RustWritter(rustFileGenerator, project.outputFolder),
             project = project,
@@ -109,7 +109,7 @@ class GeneratorsRepo(val project: Project) {
             ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, project),
             DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, project)
         )
-        val javaMeta = MetaGenerator<JavaClassData>(
+        val javaMeta = MetaGenerator(
             target = Target.Java,
             writter = JavaWritter(javaFileGenerator, project.outputFolder),
             project = project,
@@ -126,7 +126,7 @@ class GeneratorsRepo(val project: Project) {
         )
     }
 
-    fun get(target: Target): MetaGenerator<*> {
+    fun get(target: Target): MetaGenerator {
         return supportedMeta[target]!!
     }
 }
