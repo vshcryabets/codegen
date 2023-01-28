@@ -1,6 +1,7 @@
 package ce.treeio
 
 import generators.obj.input.*
+import generators.obj.out.ProjectOutput
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -22,6 +23,7 @@ class XmlInTreeWritterImpl : TreeWritter {
         const val KEY_SOURCE_FILE = "srcFile"
         const val KEY_OUTPUT_FILE = "outFile"
         const val KEY_BASE_FOLDER = "baseFolder"
+        const val KEY_TARGET = "target"
     }
 
     val dataTypeSerializer = DataTypeSerializer()
@@ -65,6 +67,7 @@ class XmlInTreeWritterImpl : TreeWritter {
                     element.setAttribute(KEY_VALUE, it)
                 }
             }
+            is ProjectOutput -> element.setAttribute(KEY_TARGET, node.target.strName)
             else -> {}
         }
         if (node is Node) {

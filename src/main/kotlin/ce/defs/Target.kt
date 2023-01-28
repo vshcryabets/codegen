@@ -9,5 +9,10 @@ enum class Target(val strName: String) {
     Java("java"),
     Rust("rust"),
     Go("go"),
-    Python("python"),
+    Python("python"), ;
+
+    companion object {
+        fun findByName(name: String): Target =
+            Target.values().find {it.name.equals(name, true) } ?: Other
+    }
 }

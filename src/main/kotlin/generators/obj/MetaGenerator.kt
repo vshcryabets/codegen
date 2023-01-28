@@ -14,9 +14,9 @@ import java.nio.file.Paths
 
 
 open class MetaGenerator<T : ClassData>(
-    val target: Target = Target.Other,
-    val fileGenerator: FileGenerator,
-    val generatorsMap: Map<Class<out Block>, Generator<out Block>>,
+    private val target: Target,
+    private val fileGenerator: FileGenerator,
+    private val generatorsMap: Map<Class<out Block>, Generator<out Block>>,
     private val writter: Writter,
     private val project: Project
 ) {
@@ -86,7 +86,7 @@ open class MetaGenerator<T : ClassData>(
     }
 
     open fun processProject(root: Node, namespaceMap: NamespaceMap): ProjectOutput {
-        val result = ProjectOutput(namespaceMap)
+        val result = ProjectOutput(namespaceMap, target)
         val files = mutableMapOf<String, List<FileData>>()
         prepareFilesByTree(result, root, files)
         translateTree(root, files)
