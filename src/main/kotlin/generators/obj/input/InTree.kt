@@ -96,6 +96,7 @@ open class Node(name: String,
     fun addCommentLine(name: String) = addSub(CommentLeaf(name))
 
     fun addSeparator(name: String) = addSub(Separator(name))
+    fun addSeparatorNewLine(name: String) = addSub(NlSeparator(name))
 }
 
 open class Namespace(name: String, parent: Node) : Node(name, parent) {

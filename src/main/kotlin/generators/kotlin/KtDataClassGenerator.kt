@@ -22,16 +22,16 @@ class KtDataClassGenerator(
             addBlockDefaults(desc, this)
             addOutBlock("data class ${desc.name}") {
                 addOutBlockArguments {
+                    addSub(NlSeparator())
                     desc.subs.forEach { leaf ->
                         if (leaf is DataField) {
                             addDataField(
                                 if (leaf.value.isDefined())
-                                    "val ${leaf.name} : ${Types.typeTo(file, leaf.type)} = ${Types.toValue(kotlinClass, leaf.type, leaf.value)}"
+                                    "val ${leaf.name}: ${Types.typeTo(file, leaf.type)} = ${Types.toValue(kotlinClass, leaf.type, leaf.value)}"
                                 else
-                                    "val ${leaf.name} : ${Types.typeTo(file, leaf.type)}",
+                                    "val ${leaf.name}: ${Types.typeTo(file, leaf.type)}",
                                 leaf.type)
-                            addSeparator(",")
-                            addSub(NlSeparator())
+                            addSeparatorNewLine(",")
                         }
                     }
                 }

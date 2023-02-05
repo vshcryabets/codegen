@@ -91,7 +91,7 @@ class XmlTreeReader : TreeReader {
             OutBlockArguments::class.java.simpleName -> OutBlockArguments(name)
             EnumLeaf::class.java.simpleName -> EnumLeaf(name)
             Separator::class.java.simpleName -> Separator(name)
-            NlSeparator::class.java.simpleName -> NlSeparator()
+            NlSeparator::class.java.simpleName -> NlSeparator(name)
             ConstantLeaf::class.java.simpleName -> ConstantLeaf(name)
             ResultLeaf::class.java.simpleName -> ResultLeaf(name)
             ArgumentLeaf::class.java.simpleName -> ArgumentLeaf(name)

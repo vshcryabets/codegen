@@ -37,7 +37,7 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
             }
             is OutBlockArguments -> {
                 out.write("(")
-                writeSubNodes(node, out, indent)
+                writeSubNodes(node, out, indent + fileGenerator.tabSpace)
                 out.write(")")
             }
             is OutBlock -> {

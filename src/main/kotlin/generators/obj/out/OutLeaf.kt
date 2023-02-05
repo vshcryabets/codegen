@@ -24,5 +24,5 @@ class EnumLeaf(name : String) : Leaf(name)
 
 // for example ",\n"
 class Separator(name : String) : Leaf(name)
-class NlSeparator : Leaf("")
+class NlSeparator(name : String = "") : Leaf(name)
 class BlockPreNewLines : Leaf("")

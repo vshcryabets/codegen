@@ -32,12 +32,12 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
                 out.write(leaf.name)
             }
             is DataField -> {
-                out.write(indent)
                 out.write(leaf.name)
             }
             is ConstantLeaf -> {
                 out.write(indent)
-                out.write("${leaf.name}${fileGenerator.newLine()}")
+                out.write("${leaf.name}")
+                writeNewLine(out, indent)
             }
             is EnumLeaf -> {
                 out.write(indent)
@@ -46,14 +46,22 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
             is FieldLeaf, is CommentLeaf -> {
                 out.write(indent)
                 out.write(leaf.name)
-                out.write(fileGenerator.newLine())
+                writeNewLine(out, indent)
             }
-            is NlSeparator -> out.write(fileGenerator.newLine())
+            is NlSeparator -> {
+                out.write(leaf.name)
+                writeNewLine(out, indent)
+            }
             is BlockPreNewLines -> {
                 for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
             }
             else -> out.write("=== UNKNOWN LEAF $leaf ${fileGenerator.newLine()}")
         }
+    }
+
+    open fun writeNewLine(out: BufferedWriter, indent: String) {
+        out.write(fileGenerator.newLine())
+        out.write(indent)
     }
 
     open fun writeSubNodes(node: Node, out: BufferedWriter, indent: String) {
