@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.Target
+import ce.domain.usecase.entry.BuildOutTreeUseCase
 import ce.domain.usecase.load.LoadInTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
@@ -19,18 +20,22 @@ fun main(args: Array<String>) {
         )
     }
 
-    val loadInTreeUseCase = LoadInTreeUseCase()
-    val getProjectUseCase = LoadProjectUseCase()
-    val storeOutTreeUseCase = StoreOutTreeUseCase()
-    val transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase()
-
-    val generatorsRepo = GeneratorsRepo(getProjectUseCase(args[1]))
     val target = Target.findByName(args[3])
     if (target == Target.Other) {
         error("Unknown target \"${args[3]}\"")
     }
 
-    val tree = loadInTreeUseCase(args[0])
-    val outTree = transformInTreeToOutTreeUseCase(tree as Node, generatorsRepo.get(target))
-    storeOutTreeUseCase(args[2], outTree)
+    val buildOutTreeUseCase = BuildOutTreeUseCase(
+        LoadInTreeUseCase(),
+        LoadProjectUseCase(),
+        StoreOutTreeUseCase(),
+        TransformInTreeToOutTreeUseCase(),
+    )
+
+    buildOutTreeUseCase(
+        projectFile = args[1],
+        inTreeFile = args[0],
+        outTreeFile = args[2],
+        target = target
+    )
 }

@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.*
+import ce.domain.usecase.entry.PrepareInTreeUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreInTreeUseCase
@@ -15,16 +16,10 @@ fun main(args: Array<String>) {
     if (args.size < 1) {
         error("Please, specify project file!")
     }
-
-    val getProjectUseCase = LoadProjectUseCase()
-    val storeInTreeUseCase = StoreInTreeUseCase()
-    val loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase()
-
-    val project : Project = getProjectUseCase(args[0])
-    println("Processing $project")
-
-    project.targets.forEach { target ->
-        val root = loadMetaFilesUseCase(project, target)
-        storeInTreeUseCase(project.outputFolder + "input_tree_${target.name}.xml", root)
-    }
+    val prepareInTreeUseCase = PrepareInTreeUseCase(
+        LoadProjectUseCase(),
+        StoreInTreeUseCase(),
+        LoadMetaFilesForTargetUseCase()
+    )
+    prepareInTreeUseCase(args[0])
 }

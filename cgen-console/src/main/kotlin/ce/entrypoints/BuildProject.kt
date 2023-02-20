@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.*
+import ce.domain.usecase.entry.BuildProjectUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreInTreeUseCase
@@ -20,20 +21,12 @@ fun main(args: Array<String>) {
         error("Please, specify project file!")
     }
 
-    val getProjectUseCase = LoadProjectUseCase()
-    val storeInTreeUseCase = StoreInTreeUseCase()
-    val loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase()
-    val storeOutTreeUseCase = StoreOutTreeUseCase()
-    val transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase()
-
-    val project : Project = getProjectUseCase(args[0])
-    println("Processing $project")
-    val generatorsRepo = GeneratorsRepo(project)
-
-    project.targets.forEach { target ->
-        val root = loadMetaFilesUseCase(project, target)
-        storeInTreeUseCase(project.outputFolder + "input_tree_${target.name}.xml", root)
-        val outTree = transformInTreeToOutTreeUseCase(root, generatorsRepo.get(target))
-        storeOutTreeUseCase(args[2], outTree)
-    }
+    val buildProjectUseCase = BuildProjectUseCase(
+        getProjectUseCase = LoadProjectUseCase(),
+        storeInTreeUseCase = StoreInTreeUseCase(),
+        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(),
+        storeOutTreeUseCase = StoreOutTreeUseCase(),
+        transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
+    )
+    buildProjectUseCase(args[0])
 }
