@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `maven-publish`
     kotlin("jvm") version "1.7.20"
-    id("org.jetbrains.compose") version "1.2.1"
     application
 }
 
@@ -12,7 +11,6 @@ version = "0.1.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
@@ -21,16 +19,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
     implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
-
-    implementation(kotlin("scripting-jsr223"))
-
-    implementation(compose.desktop.currentOs)
-
-    // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
-    implementation("org.jfree:org.jfree.svg:5.0.3")
-
-    // https://mvnrepository.com/artifact/org.abego.treelayout/org.abego.treelayout.core
-    implementation("org.abego.treelayout:org.abego.treelayout.core:1.0.3")
 
 }
 
