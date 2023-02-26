@@ -3,9 +3,11 @@
 //}
 
 allprojects {
+    version = "0.1.2-SNAPSHOT"
+    group = "ce"
+
     repositories {
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
 }
-
