@@ -2,7 +2,6 @@ package generators.swift
 
 import generators.obj.Writter
 import generators.obj.out.FileData
-import generators.obj.out.ProjectOutput
 import java.io.File
 
 class SwiftWritter(fileGenerator: SwiftFileGenerator, outputFolder: String)

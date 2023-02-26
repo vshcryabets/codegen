@@ -2,9 +2,7 @@ package generators.swift
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.obj.AutoincrementField
 import generators.obj.Generator
-import generators.obj.input.DataField
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 

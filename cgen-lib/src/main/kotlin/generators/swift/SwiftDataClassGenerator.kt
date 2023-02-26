@@ -3,7 +3,6 @@ package generators.swift
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.DataField
 import generators.obj.input.DataClass
 import generators.obj.out.FileData
 

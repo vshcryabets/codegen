@@ -1,10 +1,8 @@
 package generators.swift
 
 import ce.settings.Project
-import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.DataField
 import generators.obj.input.ConstantsBlock
 import generators.obj.out.FileData
 
