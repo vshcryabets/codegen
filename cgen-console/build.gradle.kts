@@ -10,8 +10,7 @@ repositories {
 
 dependencies {
     implementation(project(":cgen-lib"))
-//    implementation("ce:cgen-lib:0.1.2-SNAPSHOT")
-//    implementation("com.github.vshcryabets:cgen-lib:dc65e025a7")
+//    implementation("com.github.vshcryabets:codegen:daa6c19bcf")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
