@@ -19,9 +19,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.github.vshcryabets:codegen:daa6c19bcf")
+        classpath("com.github.vshcryabets:codegen:12661a00a8")
     }
 }
 
 // Create a task using the task type
-//tasks.register<GreetingTask>("hello")
+tasks.register<ce.gradle.GreetingTask>("hello")
