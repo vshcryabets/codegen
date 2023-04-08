@@ -1,5 +1,6 @@
 package ce.entrypoints
 
+import ce.defs.Target
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import generators.obj.input.Leaf
@@ -40,6 +41,16 @@ fun storeDictionary(fileName: String, dictionary: Map<Int, Leaf>) {
         CSVWriter.DEFAULT_LINE_END).use {
         dictionary.forEach { id, word ->
             it.writeNext(arrayOf(id.toString(), "\"${word.name}\""))
+        }
+    }
+}
+
+fun storeTokens(fileName: String, tokens: List<Int>) {
+    val dictionaryFile = File(fileName)
+    dictionaryFile.outputStream().use {
+        tokens.forEach {token ->
+            it.write(token.toString().toByteArray())
+            it.write(0x20)
         }
     }
 }
@@ -174,21 +185,25 @@ fun readLiteral(buffer: StringBuilder, startPos: Int): Pair<Literal, Int> {
 }
 
 fun main(args: Array<String>) {
-    if (args.size < 1) {
+    if (args.size < 2) {
         error("""
             Please, specify: 
                 - input file
+                - input target
             """)
     }
+    val inputFileName = args[0]
+    val target = Target.findByName(args[1])
 
     val dictionary = mutableMapOf<Int, Word>()
-    val dictionaryName = "./test/parser/kotlin_dictionary.csv"
+    val dictionaryName = "./test/parser/${target.strName}_dictionary.csv"
     loadDictionary(dictionaryName, dictionary)
 
-    val buffer = readFileLineByLineUsingForEachLine(args[0])
+    val buffer = readFileLineByLineUsingForEachLine(inputFileName)
     val result = buildLinear(buffer, 0, dictionary)
 
     storeDictionary(dictionaryName, result.wordsMap)
     storeDictionary("./test/parser/literals.csv", result.literalsMap)
     storeDictionary("./test/parser/digits.csv", result.digits)
+    storeTokens("./test/parser/tokens.txt", result.tokens)
 }
