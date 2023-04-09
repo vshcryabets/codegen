@@ -55,7 +55,6 @@ fun storeTokens(fileName: String, tokens: List<Int>) {
     }
 }
 
-
 fun readFileLineByLineUsingForEachLine(fileName: String) : StringBuilder {
     val result = StringBuilder()
     File(fileName).forEachLine {
