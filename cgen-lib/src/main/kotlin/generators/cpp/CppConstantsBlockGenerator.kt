@@ -4,8 +4,9 @@ import ce.settings.Project
 import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.Generator
-import generators.obj.input.DataField
+import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
+import generators.obj.out.ConstantLeaf
 import generators.obj.out.FileData
 
 class CppConstantsBlockGenerator(
@@ -19,20 +20,20 @@ class CppConstantsBlockGenerator(
         val definition = files.find { it is CppFileData }
             ?: throw java.lang.IllegalStateException("Can't find Definition file for C++")
 
-        return declaration.addSub(CppClassData(desc.name, declaration)).apply {
-//            desc.classComment.append("Constants ${desc.name}${fileGenerator.newLine()}")
-            addBlockDefaults(desc, this)
+        return declaration.addSub(CppClassData(desc.name, declaration)).also { classData ->
+            addBlockDefaults(desc, classData)
             val autoIncrement = AutoincrementField()
-            desc.subs.forEach { leaf ->
-                val it = leaf as DataField
-                autoIncrement.invoke(it)
-
-//                classDefinition.append("const ")
-//                    .append(Types.typeTo(declaration, it.type))
-//                    .append(" ")
-//                    .append(it.name)
-//                    .append(" = ${Types.toValue(this, it.type, it.value)};")
-//                    .append(fileGenerator.newLine())
+            desc.subs.forEach {
+                if (it is ConstantDesc) {
+                    autoIncrement.invoke(it)
+                    classData.addSub(
+                        ConstantLeaf(
+                            "const " +
+                                    "${Types.typeTo(declaration, it.type)} ${it.name} = " +
+                                    "${Types.toValue(classData, it.type, it.value)};"
+                        )
+                    )
+                }
             }
         }
     }

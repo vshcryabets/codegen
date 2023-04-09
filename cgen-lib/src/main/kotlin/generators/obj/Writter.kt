@@ -37,7 +37,7 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
             is ConstantLeaf -> {
                 out.write(indent)
                 out.write("${leaf.name}")
-                writeNewLine(out, indent)
+                writeNewLine(out, "")
             }
             is EnumLeaf -> {
                 out.write(indent)
@@ -46,7 +46,7 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
             is FieldLeaf, is CommentLeaf -> {
                 out.write(indent)
                 out.write(leaf.name)
-                writeNewLine(out, indent)
+                writeNewLine(out, "")
             }
             is NlSeparator -> {
                 out.write(leaf.name)

@@ -9,7 +9,7 @@ import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 
 fun main(args: Array<String>) {
     if (args.size < 1) {
-        error("Please, specify project file!")
+        error("Please specify project file!")
     }
 
     val buildProjectUseCase = BuildProjectUseCase(

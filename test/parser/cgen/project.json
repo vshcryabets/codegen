@@ -8,5 +8,5 @@
     "newLinesBeforeClass" : 1,
     "tabSize" : 4
   },
-  "outputFolder" : "../generated/"
+  "outputFolder" : "../"
 }

@@ -1,7 +1,13 @@
 import ce.defs.*
 import generators.obj.input.*
 
-namespace("sample")
+namespace("enums")
+
+when (target()) {
+    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
+    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
+    else -> namespace("styxlib")
+}
 
 constantsBlock("ModeType").apply {
     addBlockComment("File mode types")

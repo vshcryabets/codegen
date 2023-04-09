@@ -2,6 +2,7 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
 object Types {
@@ -39,7 +40,7 @@ object Types {
             else -> "QQTP_$type"
         } + (if (type.nullable) "?" else "")
 
-    fun toValue(classData: KotlinClassData, type: DataType, value: DataValue) : String =
+    fun toValue(classData: ClassData, type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,
