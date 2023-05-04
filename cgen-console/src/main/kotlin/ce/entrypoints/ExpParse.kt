@@ -82,6 +82,7 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
             value.name to key
         }.toMap())
     }
+    counter++
 
 //    var pos = inPos
     do {
