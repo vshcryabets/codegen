@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.7.20"
-    id("org.jetbrains.compose") version "1.2.1"
+    kotlin("jvm") version Versions.kotlin
+    id("org.jetbrains.compose") version Versions.compose
     application
 }
 
@@ -22,16 +22,16 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.jar { // could also be a new task rather than the default one
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    manifest {
-        attributes["Main-Class"] = "ce.entrypoints.BuildProjectKt"
-    }
-
-    from(sourceSets.main.get().output)
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-    })
-}
+//tasks.jar { // could also be a new task rather than the default one
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//
+//    manifest {
+//        attributes["Main-Class"] = "ce.entrypoints.BuildProjectKt"
+//    }
+//
+//    from(sourceSets.main.get().output)
+//    dependsOn(configurations.runtimeClasspath)
+//    from({
+//        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+//    })
+//}
