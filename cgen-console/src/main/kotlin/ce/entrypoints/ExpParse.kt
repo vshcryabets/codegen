@@ -5,8 +5,11 @@ import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import generators.obj.input.Leaf
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
+import java.lang.Exception
+import java.nio.file.Paths
 
 
 class Literal(name: String) : Leaf(name)
@@ -29,6 +32,8 @@ fun loadDictionary(fileName: String, dictionary: MutableMap<Int, Word>) {
                 dictionary[it[0].toInt()] = Word(it[1])
             }
         }
+    } else {
+        throw FileNotFoundException("Dictionary $fileName not found")
     }
 }
 
@@ -188,19 +193,31 @@ fun main(args: Array<String>) {
         error("""
             Please, specify: 
                 - input file
-                - input target
+                - input target [Cxx, kotlin, etc]
             """)
     }
     val inputFileName = args[0]
     val target = Target.findByName(args[1])
 
     val dictionary = mutableMapOf<Int, Word>()
-    val dictionaryName = "./test/parser/${target.strName}_dictionary.csv"
-    loadDictionary(dictionaryName, dictionary)
+    val dictionaryName = "./${target.strName}_dictionary.csv"
 
+    val path = Paths.get("").toAbsolutePath().toString()
+    println("Working Directory = $path")
+
+    println("Loading $dictionaryName")
+    try {
+        loadDictionary(dictionaryName, dictionary)
+    } catch (error: Exception) {
+        println("Error! $error")
+    }
+
+    println("Loading $inputFileName")
     val buffer = readFileLineByLineUsingForEachLine(inputFileName)
+    println("Parsing $inputFileName")
     val result = buildLinear(buffer, 0, dictionary)
 
+    println("Store updated dictionary")
     storeDictionary(dictionaryName, result.wordsMap)
     storeDictionary("./test/parser/literals.csv", result.literalsMap)
     storeDictionary("./test/parser/digits.csv", result.digits)
