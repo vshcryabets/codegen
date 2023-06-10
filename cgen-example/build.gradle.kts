@@ -20,11 +20,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.github.vshcryabets:codegen:2486b4e47c")
+        classpath("com.github.vshcryabets:codegen:20eac1c984")
     }
 }
 
 // Create a task using the task type
-tasks.register<ce.gradle.GreetingTask>("hello") {
+tasks.register<ce.gradle.CgenBuildTask>("hello") {
+    outputFolder.set(File("./generated/"))
+    files.from("../test/")
     cgenPath.set("TestPath")
 }

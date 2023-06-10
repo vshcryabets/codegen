@@ -13,7 +13,7 @@ abstract class CgenBuildTask : DefaultTask() {
 
     @get:Input
     abstract val cgenPath: Property<String>
-    
+
     @get:InputFiles
     abstract val files : ConfigurableFileCollection
 
@@ -26,6 +26,8 @@ abstract class CgenBuildTask : DefaultTask() {
 
     @TaskAction
     fun greet() {
-        println("hello from CgenBuildTask ${cgenPath.get()} $files, $outputFolder")
+        println("hello from CgenBuildTask ${cgenPath.get()} " +
+                "files=${files.toList()}, " +
+                "out=${outputFolder.get().toString()}")
     }
 }
