@@ -22,11 +22,11 @@ abstract class CgenBuildTask : DefaultTask() {
 
     @get:Optional
     @get:OutputDirectory
-    abstract var outputFolder : DirectoryProperty?
+    abstract var outputFolder : DirectoryProperty
 
     @get:Optional
     @get:OutputDirectory
-    abstract var inputFolder : DirectoryProperty?
+    abstract var inputFolder : DirectoryProperty
 
     init {
         cgenPath.convention("hello from CgenBuildTask")
