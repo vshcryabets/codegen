@@ -6,19 +6,27 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
 abstract class CgenBuildTask : DefaultTask() {
 
+    @get:Optional
     @get:Input
-    abstract val cgenPath: Property<String>
+    abstract var cgenPath: Property<String>
 
+    @get:Optional
     @get:InputFiles
-    abstract val files : ConfigurableFileCollection
+    abstract var files : ConfigurableFileCollection
 
+    @get:Optional
     @get:OutputDirectory
-    abstract val outputFolder : DirectoryProperty
+    abstract var outputFolder : DirectoryProperty
+
+    @get:Optional
+    @get:OutputDirectory
+    abstract var inputFolder : DirectoryProperty
 
     init {
         cgenPath.convention("hello from CgenBuildTask")
@@ -27,7 +35,8 @@ abstract class CgenBuildTask : DefaultTask() {
     @TaskAction
     fun greet() {
         println("hello from CgenBuildTask ${cgenPath.get()} " +
-                "files=${files.toList()}, " +
+                "inputFolder=${inputFolder.get().toString()}" +
+                "files=${files.files.toString()}, " +
                 "out=${outputFolder.get().toString()}")
     }
 }
