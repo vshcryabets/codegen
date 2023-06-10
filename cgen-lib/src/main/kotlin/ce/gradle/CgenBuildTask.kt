@@ -14,7 +14,7 @@ abstract class CgenBuildTask : DefaultTask() {
 
     @get:Optional
     @get:Input
-    abstract var cgenPath: Property<String?>
+    abstract var cgenPath: Property<String>
 
     @get:Optional
     @get:InputFiles
