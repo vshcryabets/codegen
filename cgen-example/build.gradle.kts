@@ -1,3 +1,10 @@
+import ce.domain.usecase.entry.BuildProjectUseCase
+import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
+import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.store.StoreInTreeUseCase
+import ce.domain.usecase.store.StoreOutTreeUseCase
+import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+
 plugins {
     kotlin("jvm") version Versions.kotlin
     id("org.jetbrains.compose") version Versions.compose
@@ -26,11 +33,10 @@ buildscript {
 }
 
 
-abstract class CgenBuildTask2 : DefaultTask() {
+abstract class CgenProjectTask : DefaultTask() {
 
     private var outputFolder = File("")
 
-    @Optional
     @OutputDirectory
     fun getOutputFolder() : File = outputFolder
 
@@ -38,38 +44,28 @@ abstract class CgenBuildTask2 : DefaultTask() {
         this.outputFolder = folder
     }
 
-//    @get:Optional
-//    @get:InputFiles
-//    abstract var files : ConfigurableFileCollection
-
-
-//    @get:Optional
-//    @get:InputFile
-//    abstract var projectFile : RegularFileProperty
-
-    init {
-//        projectFile.set(File(""))
-    }
+    @get: InputFile
+    abstract val projectFile: RegularFileProperty
 
     @TaskAction
-    fun greet() {
-//        println("Project file = ${projectFile.get().toString()}")
-
-        println("ASD hello from CgenBuildTask " +
-                "out=${outputFolder.toString()}")
-//        +
-//                "inputFolder=${inputFolder.get().toString()}" +
-//                "files=${files.files.toString()}, " +
-//                )
+    fun execute() {
+        println("CGEN: Project file = ${projectFile.get()}")
+//        println("ASD hello from CgenBuildTask " +
+//                "out=${outputFolder.toString()}")
+        val buildProjectUseCase = BuildProjectUseCase(
+            getProjectUseCase = LoadProjectUseCase(),
+            storeInTreeUseCase = StoreInTreeUseCase(),
+            loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(),
+            storeOutTreeUseCase = StoreOutTreeUseCase(),
+            transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
+        )
+        buildProjectUseCase(projectFile.get().toString())
     }
 }
 
 
 // Create a task using the task type
-tasks.register<CgenBuildTask2>("hello") {
-    setOutputFolder(File("./generated/"))
-//    projectFile.set(File("../test/project.json"))
-//    files.files.addAll(
-//
-//    )
+tasks.register<CgenProjectTask>("hello") {
+    setOutputFolder(File("./generated2/"))
+    projectFile.set(File("../test/project.json"))
 }
