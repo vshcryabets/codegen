@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
+    `java-library`
+    `maven-publish`
     application
 }
 

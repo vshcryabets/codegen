@@ -40,7 +40,6 @@ java {
     }
 }
 
-
 publishing {
     repositories {
         maven {
