@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version Versions.kotlin
-    id("org.jetbrains.compose") version Versions.compose
+    kotlin("jvm")
+    id("org.jetbrains.compose")
     application
 }
 
@@ -20,13 +20,31 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.github.vshcryabets:codegen:20eac1c984")
+//        classpath("com.github.vshcryabets:codegen:238769ae06")
+//        classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
+//        classpath(project(":cgen-lib"))
     }
 }
 
-// Create a task using the task type
-tasks.register<ce.gradle.CgenBuildTask>("hello") {
-    outputFolder.set(File("./generated/"))
-    files.from("../test/")
-    cgenPath.set("TestPath")
+dependencies {
+//    api(project(":cgen-lib"))
+//    api(project(":cgen-console"))
+    api("com.github.vshcryabets:codegen:238769ae06")
+}
+
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
+}
+
+task("hello2", JavaExec::class) {
+//    workingDir(File("../"))
+//    args("./test/project.json")
+//    mainClass.set("ce.entrypoints.BuildProjectKt")
+//    classpath = sourceSets["test"].runtimeClasspath
 }
