@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version Versions.kotlin
+    kotlin("jvm")
     `java-library`
     `maven-publish`
 }
@@ -27,6 +27,17 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
+
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
+}
+
 
 publishing {
     repositories {

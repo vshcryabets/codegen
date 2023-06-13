@@ -6,8 +6,8 @@ import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 
 plugins {
-    kotlin("jvm") version Versions.kotlin
-    id("org.jetbrains.compose") version Versions.compose
+    kotlin("jvm")
+    id("org.jetbrains.compose")
     application
 }
 
@@ -32,6 +32,15 @@ buildscript {
     }
 }
 
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
+}
 
 abstract class CgenProjectTask : DefaultTask() {
 

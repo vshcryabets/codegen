@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version Versions.kotlin
-    id("org.jetbrains.compose") version Versions.compose
+    kotlin("jvm")
+    id("org.jetbrains.compose")
     application
 }
 
@@ -16,6 +16,16 @@ dependencies {
     implementation("com.opencsv:opencsv:5.7.1")
 
     implementation(compose.desktop.currentOs)
+}
+
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
 }
 
 tasks.getByName<Test>("test") {

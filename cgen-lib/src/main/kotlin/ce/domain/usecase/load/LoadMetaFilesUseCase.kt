@@ -46,7 +46,7 @@ class LoadMetaFilesForTargetUseCase {
                 engine.eval(reader)
             }
             catch (error: ScriptException) {
-                println("Error in file ${fileObject.absoluteFile}:${error.message}")
+                error("Error in file ${fileObject.absoluteFile}:${error.message}")
                 System.exit(0)
             }
 
