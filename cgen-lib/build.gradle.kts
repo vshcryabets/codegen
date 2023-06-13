@@ -15,7 +15,9 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
 
-    implementation(kotlin("scripting-jsr223"))
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
     implementation("org.jfree:org.jfree.svg:5.0.3")
