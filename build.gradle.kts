@@ -5,7 +5,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven { url = uri("https://jitpack.io") }
     }
 }
