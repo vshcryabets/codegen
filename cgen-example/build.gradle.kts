@@ -43,8 +43,8 @@ java {
 }
 
 task("hello2", JavaExec::class) {
-    workingDir(File("../"))
-    args("./test/project.json")
-    mainClass.set("ce.entrypoints.BuildProjectKt")
-    classpath = sourceSets["test"].runtimeClasspath
+//    workingDir(File("../"))
+//    args("./test/project.json")
+//    mainClass.set("ce.entrypoints.BuildProjectKt")
+//    classpath = sourceSets["test"].runtimeClasspath
 }

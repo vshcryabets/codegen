@@ -17,7 +17,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.0")
     implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
+//    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
     implementation("org.jfree:org.jfree.svg:5.0.3")
