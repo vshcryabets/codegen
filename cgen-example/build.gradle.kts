@@ -29,7 +29,7 @@ buildscript {
 dependencies {
 //    api(project(":cgen-lib"))
 //    api(project(":cgen-console"))
-    api("com.github.vshcryabets:codegen:238769ae06")
+    api("com.github.vshcryabets:codegen:43ed923e5d")
 }
 
 kotlin {
@@ -43,8 +43,8 @@ java {
 }
 
 task("hello2", JavaExec::class) {
-//    workingDir(File("../"))
-//    args("./test/project.json")
-//    mainClass.set("ce.entrypoints.BuildProjectKt")
-//    classpath = sourceSets["test"].runtimeClasspath
+    workingDir(File("../"))
+    args("./test/project.json")
+    mainClass.set("ce.entrypoints.BuildProjectKt")
+    classpath = sourceSets["test"].runtimeClasspath
 }

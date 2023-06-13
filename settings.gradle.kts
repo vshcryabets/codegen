@@ -1,3 +1,7 @@
-include("cgen-lib")
-include("cgen-console")
-//include("cgen-example")
+listOf(
+    "cgen-lib",
+    "cgen-console",
+    "cgen-example",
+    ).forEach {
+        include(":$it")
+}
