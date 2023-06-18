@@ -2,6 +2,17 @@ import ce.defs.*
 import generators.obj.input.DataField
 
 namespace("com.goldman.data").apply {
+    val currency = enum("CryptoCurrency").apply {
+        add("BTC")
+        add("ETH")
+        add("BCH")
+    }
+
+    dataClass("Money").apply {
+        field("sum", DataType.int32)
+        field("currency", DataType.custom(currency))
+    }
+
     dataClass("GoldBuffer").apply {
         // add fields using DataClass::field method
         field("blockCount", DataType.int32)
