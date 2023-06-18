@@ -7,7 +7,7 @@ import generators.obj.input.Node
 class NamespaceDeclaration(name : String) : Leaf(name)
 
 //import $name
-class ImportLeaf(name : String, parent: Node) : Leaf(name, parent)
+class ImportLeaf(name : String) : Leaf(name)
 
 // //$name
 class CommentLeaf(name : String) : Leaf(name)
