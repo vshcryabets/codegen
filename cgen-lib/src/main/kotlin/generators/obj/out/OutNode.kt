@@ -7,9 +7,9 @@ typealias OutNode = Node
 class CommentsBlock() : Node("", null)
 class MultilineCommentsBlock() : Node("", null)
 
-class ImportsBlock(name: String, parent : Node) : Node(name, parent) {
+class ImportsBlock() : Node("", null) {
     fun addInclude(name: String) {
-        addSub(ImportLeaf(name, this))
+        addSub(ImportLeaf(name))
     }
 }
 

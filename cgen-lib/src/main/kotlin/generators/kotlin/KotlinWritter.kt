@@ -52,6 +52,11 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                 out.write("}")
                 out.write(fileGenerator.newLine())
             }
+            is ImportsBlock -> {
+                out.write(fileGenerator.newLine())
+                writeSubNodes(node, out, indent)
+                out.write(fileGenerator.newLine())
+            }
             else -> super.writeNode(node, out, indent)
         }
     }

@@ -1,5 +1,7 @@
 package ce.defs
 
+import generators.obj.input.Block
+
 open class DataType(
     val nullable: Boolean = false
 ) {
@@ -21,6 +23,8 @@ open class DataType(
             is pointer -> WEIGHT_PRIMITIVE
             is array -> WEIGHT_ARRAY
             is promise -> WEIGHT_PROMISE
+            is custom -> WEIGHT_CLASS
+            is customNullable -> WEIGHT_CLASS
             is userClass -> WEIGHT_CLASS
             else -> WEIGHT_CLASS
         }
@@ -46,6 +50,8 @@ open class DataType(
     class pointer(val subType: DataType) : DataType()
     class array(val elementDataType: DataType, nullable : Boolean = false) : DataType(nullable)
     class promise(val elementDataType: DataType) : DataType()
+    class custom(val block: Block) : DataType()
+    class customNullable(val block: Block) : DataType()
     class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
 }
 

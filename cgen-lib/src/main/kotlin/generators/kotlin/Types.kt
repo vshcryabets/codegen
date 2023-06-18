@@ -4,6 +4,8 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
+import generators.obj.out.ImportsBlock
 
 object Types {
     fun getArrayType(type: DataType): String =
@@ -18,6 +20,7 @@ object Types {
             DataType.float64 -> "DoubleArray"
             DataType.string -> "String[]"
             is DataType.userClass -> type.path
+            is DataType.custom -> type.block.name
             else -> "QQTP_array_$type"
         }
 
@@ -37,6 +40,11 @@ object Types {
             DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
+            is DataType.custom -> {
+                file.findOrCreateSub(ImportsBlock::class.java)
+                    .addInclude("${type.block.getParentPath()}.${type.block.name}");
+                type.block.name
+            }
             else -> "QQTP_$type"
         } + (if (type.nullable) "?" else "")
 
