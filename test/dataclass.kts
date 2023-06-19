@@ -11,6 +11,7 @@ namespace("com.goldman.data").apply {
     dataClass("Money").apply {
         field("sum", DataType.int32)
         field("currency", DataType.custom(currency))
+        field("name", DataType.string(canBeNull = true))
     }
 
     dataClass("GoldBuffer").apply {

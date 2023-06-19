@@ -3,7 +3,7 @@ package ce.defs
 import generators.obj.input.Block
 
 open class DataType(
-    val nullable: Boolean = false
+    val canBeNull: Boolean = false
 ) {
     companion object {
         const val WEIGHT_NONE = 0
@@ -18,7 +18,7 @@ open class DataType(
             int8, int16, int32, int64 -> WEIGHT_PRIMITIVE
             uint8, uint16, uint32, uint64 -> WEIGHT_PRIMITIVE
             float32, float64, float128 -> WEIGHT_PRIMITIVE
-            string -> WEIGHT_PRIMITIVE
+            is string -> WEIGHT_PRIMITIVE
             bool -> WEIGHT_PRIMITIVE
             is pointer -> WEIGHT_PRIMITIVE
             is array -> WEIGHT_ARRAY
@@ -44,12 +44,13 @@ open class DataType(
     object float64 : DataType()
     object float128 : DataType()
 
-    object string : DataType()
+    class string(canBeNull: Boolean = false) : DataType(canBeNull)
     object bool : DataType()
     class pointer(val subType: DataType) : DataType()
     class array(val elementDataType: DataType, nullable : Boolean = false) : DataType(nullable)
     class promise(val elementDataType: DataType) : DataType()
     class custom(val block: Block, nullable : Boolean = false) : DataType(nullable)
     class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
+//    class nullable(val inner: DataType) : DataType(true)
 }
 

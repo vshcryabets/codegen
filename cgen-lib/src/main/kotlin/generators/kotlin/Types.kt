@@ -18,7 +18,7 @@ object Types {
             DataType.uint32 -> "IntArray"
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
-            DataType.string -> "String[]"
+            is DataType.string -> "String[]"
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name // TODO nullable check ?
             else -> "QQTP_array_$type"
@@ -43,12 +43,12 @@ object Types {
             DataType.uint32 -> "Long"
             DataType.float32 -> "Float"
             DataType.float64 -> "Double"
-            DataType.string -> "String"
+            is DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name
             else -> "QQTP_$type"
-        } + (if (type.nullable) "?" else "")
+        } + (if (type.canBeNull) "?" else "")
     }
 
     fun toValue(classData: ClassData, type: DataType, value: DataValue) : String =
@@ -58,7 +58,7 @@ object Types {
             DataType.uint16, DataType.uint32 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
-            DataType.string -> {
+            is DataType.string -> {
                 "\"${value.value}\""
             }
             else -> "QQVAL_$type"

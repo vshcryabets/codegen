@@ -24,7 +24,6 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             DataType.int16 to "int16",
             DataType.int32 to "int32",
             DataType.int64 to "int64",
-            DataType.string to "string",
             DataType.uint16 to "uint16",
             DataType.uint32 to "uint32",
             DataType.uint64 to "uint64",
@@ -64,6 +63,7 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             is DataType.pointer -> PREFIX_POINTER_TO + stringValue(value.subType)
             is DataType.promise -> PREFIX_FLOW_OF + stringValue(value.elementDataType)
             is DataType.userClass -> PREFIX_CLASS + value.path
+            is DataType.string -> "string"
             else -> "UNK" + value.toString()
         }
         return typeStr

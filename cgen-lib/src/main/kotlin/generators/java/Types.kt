@@ -15,7 +15,7 @@ object Types {
             DataType.uint32 -> "LongArray"
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
-            DataType.string -> "String[]"
+            is DataType.string -> "String[]"
             else -> "QQTP_array_$type"
         }
 
@@ -31,7 +31,7 @@ object Types {
             DataType.uint32 -> "long"
             DataType.float32 -> "float"
             DataType.float64 -> "double"
-            DataType.string -> "string"
+            is DataType.string -> "string"
             is DataType.array -> getArrayType(type.elementDataType)
             else -> "QQTP_$type"
         }
@@ -43,7 +43,7 @@ object Types {
             DataType.uint16, DataType.uint32 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
-            DataType.string -> {
+            is DataType.string -> {
                 "\"${value.value}\""
             }
             else -> "QQVAL_$type"

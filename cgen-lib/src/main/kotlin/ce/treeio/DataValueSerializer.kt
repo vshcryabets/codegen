@@ -40,7 +40,7 @@ class DataValueSerializer : JsonSerializer<DataValue>() {
             DataType.uint32 -> DataValue(value.toUInt())
             DataType.uint64 -> DataValue(value.toULong())
             DataType.float32, DataType.float64, DataType.float128 -> DataValue(value.toDouble())
-            DataType.string -> DataValue(value)
+            is DataType.string -> DataValue(value)
             DataType.bool -> DataValue(value.toBoolean())
             else -> throw IllegalStateException("Unsupported datatValue for data type $dataType")
         }
