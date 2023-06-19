@@ -43,6 +43,7 @@ object Types {
             DataType.uint32 -> "Long"
             DataType.float32 -> "Float"
             DataType.float64 -> "Double"
+            DataType.bool -> "Boolean"
             is DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
@@ -58,9 +59,8 @@ object Types {
             DataType.uint16, DataType.uint32 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
-            is DataType.string -> {
-                "\"${value.value}\""
-            }
+            DataType.bool -> value.value.toString()
+            is DataType.string -> "\"${value.value}\""
             else -> "QQVAL_$type"
         }
 }

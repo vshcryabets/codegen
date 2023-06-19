@@ -27,9 +27,7 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
                 }
             }
         }
-        val newNamaspace = Namespace(searchName, this)
-        subs.add(newNamaspace)
-        return newNamaspace.getNamespace(endPath)
+        return addSub(Namespace(searchName, this)).getNamespace(endPath)
     }
 
     fun putDefaults(block: Block) {
