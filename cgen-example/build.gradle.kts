@@ -1,3 +1,10 @@
+import ce.domain.usecase.entry.BuildProjectUseCase
+import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
+import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.store.StoreInTreeUseCase
+import ce.domain.usecase.store.StoreOutTreeUseCase
+import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
@@ -20,16 +27,17 @@ buildscript {
         }
     }
     dependencies {
-//        classpath("com.github.vshcryabets:codegen:238769ae06")
-//        classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
-//        classpath(project(":cgen-lib"))
+        classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
+//        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
+//        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
+        classpath("com.github.vshcryabets:codegen:43ed923e5d")
     }
 }
 
 dependencies {
 //    api(project(":cgen-lib"))
 //    api(project(":cgen-console"))
-    api("com.github.vshcryabets:codegen:238769ae06")
+    implementation("com.github.vshcryabets:codegen:43ed923e5d")
 }
 
 kotlin {
@@ -42,9 +50,20 @@ java {
     }
 }
 
-task("hello2", JavaExec::class) {
-//    workingDir(File("../"))
-//    args("./test/project.json")
-//    mainClass.set("ce.entrypoints.BuildProjectKt")
-//    classpath = sourceSets["test"].runtimeClasspath
+task("buildCgen1", JavaExec::class) {
+    workingDir(File("../"))
+    args("./test/project.json")
+    mainClass.set("ce.entrypoints.BuildProjectKt")
+    classpath = sourceSets["test"].runtimeClasspath
 }
+
+//task("buildCgen2", DefaultTask::class) {
+//    val buildProjectUseCase = BuildProjectUseCase(
+//        getProjectUseCase = LoadProjectUseCase(),
+//        storeInTreeUseCase = StoreInTreeUseCase(),
+//        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(),
+//        storeOutTreeUseCase = StoreOutTreeUseCase(),
+//        transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
+//    )
+//    buildProjectUseCase("./test/project.json")
+//}

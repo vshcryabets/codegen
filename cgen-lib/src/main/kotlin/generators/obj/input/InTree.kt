@@ -1,9 +1,6 @@
 package generators.obj.input
 
-import ce.defs.DataType
-import ce.defs.DataValue
-import ce.defs.NotDefined
-import ce.defs.NotDefinedValue
+import ce.defs.*
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
@@ -97,35 +94,6 @@ open class Node(name: String,
 
     fun addSeparator(name: String) = addSub(Separator(name))
     fun addSeparatorNewLine(name: String) = addSub(NlSeparator(name))
-}
-
-open class Namespace(name: String, parent: Node) : Node(name, parent) {
-    fun getNamespace(name: String): Namespace {
-        if (name.isEmpty()) {
-            return this
-        }
-        val pointPos = name.indexOf('.')
-        val searchName: String
-        val endPath: String
-        if (pointPos < 0) {
-            searchName = name
-            endPath = ""
-        } else {
-            searchName = name.substring(0, pointPos)
-            endPath = name.substring(pointPos + 1)
-        }
-
-        subs.forEach {
-            if (it is Namespace) {
-                if (it.name == searchName) {
-                    return it.getNamespace(endPath)
-                }
-            }
-        }
-        val newNamaspace = Namespace(searchName, this)
-        subs.add(newNamaspace)
-        return newNamaspace.getNamespace(endPath)
-    }
 }
 
 open class Method(name: String) : Node(name, null)

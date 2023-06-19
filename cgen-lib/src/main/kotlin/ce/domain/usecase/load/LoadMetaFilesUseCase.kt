@@ -26,7 +26,6 @@ class LoadMetaFilesForTargetUseCase {
             val fileObject = File(fileName)
             val reader = InputStreamReader(FileInputStream(fileObject))
             // clean global defines for each file
-            globCurrentNamespace = globRootNamespace
             customBaseFolderPath = project.outputFolder
             sourceFile = fileObject.absolutePath
             outputFile = ""
