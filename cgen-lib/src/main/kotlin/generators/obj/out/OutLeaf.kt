@@ -5,7 +5,7 @@ import generators.obj.input.Node
 
 // package $name
 class NamespaceDeclaration(name : String) : Leaf(name)
-
+class NamespaceBlock(name : String) : Node(name, null)
 //import $name
 class ImportLeaf(name : String) : Leaf(name)
 
