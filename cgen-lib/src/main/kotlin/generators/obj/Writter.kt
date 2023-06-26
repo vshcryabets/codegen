@@ -8,7 +8,9 @@ import generators.obj.out.*
 import java.io.BufferedWriter
 import java.io.File
 
-abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyle, outputFolderPath: String) {
+abstract class Writter(val fileGenerator: FileGenerator,
+                       val codeStyle: CodeStyle,
+                       outputFolderPath: String) {
     val outFolder : File
 
     init {
@@ -31,14 +33,10 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
             is ArgumentLeaf, is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
             }
-            is DataField -> {
-                out.write(leaf.name)
-            }
-            is ConstantLeaf -> {
-                out.write(indent)
-                out.write("${leaf.name}")
-                writeNewLine(out, "")
-            }
+            is RValue -> out.write(leaf.name)
+            is DataField -> out.write(leaf.name)
+            is Keyword -> out.write(leaf.name + " ")
+            is VariableName -> out.write(leaf.name)
             is EnumLeaf -> {
                 out.write(indent)
                 out.write(leaf.name)
@@ -76,9 +74,8 @@ abstract class Writter(val fileGenerator: FileGenerator, val codeStyle: CodeStyl
 
     open fun writeNode(node: Node, out: BufferedWriter, indent: String) {
         when (node) {
-            is ClassData -> {
-                writeSubNodes(node, out, indent)
-            }
+            is ConstantLeaf -> writeSubNodes(node, out, "")
+            is ClassData -> writeSubNodes(node, out, indent)
             is MultilineCommentsBlock -> {
                 out.write(indent)
                 out.write(fileGenerator.multilineCommentStart())

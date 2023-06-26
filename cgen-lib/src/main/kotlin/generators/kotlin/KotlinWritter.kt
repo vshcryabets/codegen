@@ -38,6 +38,8 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
             is OutBlockArguments -> {
                 out.write("(")
                 writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                out.write(fileGenerator.newLine())
+                out.write(indent)
                 out.write(")")
             }
             is OutBlock -> {
@@ -46,10 +48,14 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                     writeNode(this, out, indent)
                     node.subs.remove(this)
                 }
-                out.write(" {")
-                out.write(fileGenerator.newLine())
-                writeSubNodes(node, out, indent + fileGenerator.tabSpace)
-                out.write("}")
+                if (!(node.subs.isEmpty() && codeStyle.preventEmptyBlocks)) {
+                    // prevent empty blocks
+                    out.write(" {")
+                    writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                    out.write(fileGenerator.newLine())
+                    out.write(indent)
+                    out.write("}")
+                }
                 out.write(fileGenerator.newLine())
             }
             is ImportsBlock -> {

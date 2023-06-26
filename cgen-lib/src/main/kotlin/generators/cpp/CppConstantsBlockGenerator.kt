@@ -27,11 +27,12 @@ class CppConstantsBlockGenerator(
                 if (it is ConstantDesc) {
                     autoIncrement.invoke(it)
                     classData.addSub(
-                        ConstantLeaf(
-                            "const " +
-                                    "${Types.typeTo(declaration, it.type)} ${it.name} = " +
-                                    "${Types.toValue(classData, it.type, it.value)};"
-                        )
+                        ConstantLeaf().apply {
+                            addKeyword("const")
+                            addKeyword(Types.typeTo(declaration, it.type))
+                            addVarName(it.name)
+                            // "${Types.toValue(classData, it.type, it.value)};"
+                        }
                     )
                 }
             }
