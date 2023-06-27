@@ -43,6 +43,7 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                 out.write(")")
             }
             is OutBlock -> {
+                out.write(indent)
                 out.write(node.name)
                 node.findOrNull(OutBlockArguments::class.java)?.apply {
                     writeNode(this, out, indent)

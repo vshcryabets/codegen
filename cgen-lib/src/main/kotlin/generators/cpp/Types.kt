@@ -14,8 +14,10 @@ object Types {
             DataType.int8 -> "int8_t"
             DataType.int16 -> "int16_t"
             DataType.int32 -> "int32_t"
+            DataType.int64 -> "int64_t"
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
+            DataType.uint64 -> "uint64_t"
             is DataType.string -> {
                 file.findOrCreateSub(ImportsBlock::class.java).addInclude("<string>")
                 "std::string"
