@@ -1,5 +1,6 @@
 package generators.rust
 
+import ce.io.FileCodeWritter
 import generators.obj.Writter
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
@@ -17,7 +18,9 @@ class RustWritter(fileGenerator: RustFileGenerator, outputFolder: String)
         println("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
-            writeNode(fileData, out, "")
+            val codeWritter = FileCodeWritter(out)
+            codeWritter.setNewLine(fileGenerator.newLine())
+            writeNode(fileData, codeWritter, "")
 
             //out.write("package ${namespace.name}${fileGenerator.newLine()}");
 

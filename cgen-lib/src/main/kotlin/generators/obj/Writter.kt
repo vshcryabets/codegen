@@ -1,11 +1,11 @@
 package generators.obj
 
+import ce.io.CodeWritter
 import ce.settings.CodeStyle
 import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.out.*
-import java.io.BufferedWriter
 import java.io.File
 
 abstract class Writter(val fileGenerator: FileGenerator,
@@ -28,7 +28,7 @@ abstract class Writter(val fileGenerator: FileGenerator,
 
     abstract fun writeFile(fileData: FileData)
 
-    open fun writeLeaf(leaf: Leaf, out: BufferedWriter, indent: String) {
+    open fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
             is ArgumentLeaf, is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
@@ -38,31 +38,22 @@ abstract class Writter(val fileGenerator: FileGenerator,
             is Keyword -> out.write(leaf.name + " ")
             is VariableName -> out.write(leaf.name)
             is EnumLeaf -> {
-                out.write(indent)
                 out.write(leaf.name)
             }
             is FieldLeaf, is CommentLeaf -> {
-                out.write(indent)
-                out.write(leaf.name)
-                writeNewLine(out, "")
+                out.write(leaf.name).writeNl()
             }
             is NlSeparator -> {
-                out.write(leaf.name)
-                writeNewLine(out, "")
+                out.write(leaf.name).writeNl()
             }
             is BlockPreNewLines -> {
-                for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())
+                for (i in 0..codeStyle.newLinesBeforeClass - 1) out.writeNl()
             }
-            else -> out.write("=== UNKNOWN LEAF $leaf ${fileGenerator.newLine()}")
+            else -> out.write("=== UNKNOWN LEAF $leaf").writeNl()
         }
     }
 
-    open fun writeNewLine(out: BufferedWriter, indent: String) {
-        out.write(fileGenerator.newLine())
-        out.write(indent)
-    }
-
-    open fun writeSubNodes(node: Node, out: BufferedWriter, indent: String) {
+    open fun writeSubNodes(node: Node, out: CodeWritter, indent: String) {
         node.subs.forEach {
             if (it is Node) {
                 writeNode(it, out, indent)
@@ -72,7 +63,7 @@ abstract class Writter(val fileGenerator: FileGenerator,
         }
     }
 
-    open fun writeNode(node: Node, out: BufferedWriter, indent: String) {
+    open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
             is ConstantLeaf -> writeSubNodes(node, out, "")
             is ClassData -> writeSubNodes(node, out, indent)

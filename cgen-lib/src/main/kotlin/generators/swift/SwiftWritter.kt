@@ -1,5 +1,6 @@
 package generators.swift
 
+import ce.io.FileCodeWritter
 import generators.obj.Writter
 import generators.obj.out.FileData
 import java.io.File
@@ -16,7 +17,9 @@ class SwiftWritter(fileGenerator: SwiftFileGenerator, outputFolder: String)
         println("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
-            writeNode(fileData, out, "")
+            val codeWritter = FileCodeWritter(out)
+            codeWritter.setNewLine(fileGenerator.newLine())
+            writeNode(fileData, codeWritter, "")
 
             //out.write("package ${namespace.name}${fileGenerator.newLine()}");
 

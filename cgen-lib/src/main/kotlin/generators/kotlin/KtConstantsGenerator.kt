@@ -24,7 +24,6 @@ class KtConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSeparatorNewLine("")
                         addSub(ConstantLeaf().apply {
                             addKeyword("const")
                             addKeyword("val")
@@ -33,6 +32,7 @@ class KtConstantsGenerator(
                             addKeyword(Types.typeTo(file, it.type))
                             addKeyword("=")
                             addRValue(Types.toValue(classData, it.type, it.value))
+                            addSeparatorNewLine("")
                         })
                     }
                 }

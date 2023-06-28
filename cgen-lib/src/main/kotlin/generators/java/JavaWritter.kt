@@ -1,5 +1,7 @@
 package generators.java
 
+import ce.io.CodeWritter
+import ce.io.FileCodeWritter
 import generators.obj.Writter
 import generators.obj.input.Leaf
 import generators.obj.input.Node
@@ -15,11 +17,13 @@ class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
-            writeNode(fileData, out, "")
+            val codeWritter = FileCodeWritter(out)
+            codeWritter.setNewLine(fileGenerator.newLine())
+            writeNode(fileData, codeWritter, "")
         }
     }
 
-    override fun writeNode(node: Node, out: BufferedWriter, indent: String) {
+    override fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
 //            is KotlinClassData -> {
 //                super.writeNode(node, out)
@@ -31,10 +35,10 @@ class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
         }
     }
 
-    override fun writeLeaf(leaf: Leaf, out: BufferedWriter, indent: String) {
+    override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
-            is ImportLeaf -> out.write("import ${leaf.name}${fileGenerator.newLine()}")
-            is NamespaceDeclaration -> out.write("package ${leaf.name};${fileGenerator.newLine()}")
+            is ImportLeaf -> out.write("import ${leaf.name}").writeNl()
+            is NamespaceDeclaration -> out.write("package ${leaf.name};").writeNl()
             else -> super.writeLeaf(leaf, out, indent)
         }
     }
