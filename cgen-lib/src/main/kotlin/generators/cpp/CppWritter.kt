@@ -5,8 +5,7 @@ import generators.obj.Writter
 import generators.obj.input.Leaf
 import generators.obj.input.Namespace
 import generators.obj.input.Node
-import generators.obj.out.FileData
-import generators.obj.out.ImportLeaf
+import generators.obj.out.*
 import java.io.BufferedWriter
 import java.io.File
 
@@ -23,10 +22,24 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String)
 
     override fun writeNode(node: Node, out: BufferedWriter, indent: String) {
         when (node) {
-            is Namespace -> {
-                out.write("namespace ${node.name} {${fileGenerator.newLine()}")
-                super.writeNode(node, out, indent)
+            is NamespaceBlock -> {
+                out.write("namespace ${node.name.replace(".", "::")} {${fileGenerator.newLine()}")
+                super.writeSubNodes(node, out, indent + fileGenerator.tabSpace)
                 out.write("}${fileGenerator.newLine()}")
+            }
+            is OutBlock -> {
+                out.write(indent)
+                out.write(node.name)
+                node.findOrNull(OutBlockArguments::class.java)?.apply {
+                    writeNode(this, out, indent)
+                    node.subs.remove(this)
+                }
+                out.write(" {")
+                writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                out.write(fileGenerator.newLine())
+                out.write(indent)
+                out.write("};")
+                out.write(fileGenerator.newLine())
             }
             else -> super.writeNode(node, out, indent)
         }

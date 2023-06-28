@@ -48,7 +48,7 @@ abstract class Writter(val fileGenerator: FileGenerator,
             }
             is NlSeparator -> {
                 out.write(leaf.name)
-                writeNewLine(out, indent)
+                writeNewLine(out, "")
             }
             is BlockPreNewLines -> {
                 for (i in 0..codeStyle.newLinesBeforeClass - 1) out.write(fileGenerator.newLine())

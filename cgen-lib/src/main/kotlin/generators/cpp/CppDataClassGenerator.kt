@@ -1,13 +1,11 @@
 package generators.cpp
 
-import ce.defs.NotDefined
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.Generator
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
-import generators.obj.out.FileData
-import generators.obj.out.ImportsBlock
+import generators.obj.out.*
 
 class CppDataClassGenerator(
     fileGenerator: FileGenerator,
@@ -22,27 +20,29 @@ class CppDataClassGenerator(
 
         definition.findOrCreateSub(ImportsBlock::class.java).addInclude(header.name)
 
-        return header.addSub(CppClassData(desc.name, header)).apply {
-//            desc.classComment.append("Data class ${desc.name}${fileGenerator.newLine()}")
-            addBlockDefaults(desc, this)
+        val namespace = header.addSub(NamespaceBlock(desc.getParentPath()))
 
-//            classDefinition.append("class ${desc.name} {${fileGenerator.newLine()}")
-//            classDefinition.append("private:${fileGenerator.newLine()}")
-//            desc.subs.forEach { leaf ->
-//                val it = leaf as DataField
-//                putTabs(classDefinition, 1)
-//                classDefinition
-//                    .append(Types.typeTo(header, it.type))
-//                    .append(" ")
-//                    .append(it.name)
-//                if (it.value.notDefined()) {
-//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)};${fileGenerator.newLine()}")
-//                }
-//                classDefinition
-//                    .append(";")
-//                    .append(fileGenerator.newLine())
-//            }
-//            classDefinition.append("}${fileGenerator.newLine()}")
+        return namespace.addSub(CppClassData(desc.name, header)).apply {
+            addBlockDefaults(desc, this)
+            if (findOrNull(CommentsBlock::class.java) == null) {
+                // add default comments block
+                addSub(CommentsBlock()).apply {
+                    addCommentLine("${fileGenerator.singleComment()} Data class ${desc.name}")
+                }
+            }
+            addOutBlock("struct ${desc.name}") {
+                addSub(NlSeparator())
+                var addNewLine = false
+                desc.subs.forEach { leaf ->
+                    if (leaf is DataField) {
+                        if (addNewLine) {
+                            addSeparatorNewLine(";")
+                        }
+                        addDataField("${Types.typeTo(header, leaf.type)} ${leaf.name}", leaf.type)
+                        addNewLine = true
+                    }
+                }
+            }
         }
     }
 }
