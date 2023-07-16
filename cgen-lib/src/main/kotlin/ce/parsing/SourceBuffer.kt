@@ -7,8 +7,10 @@ class Name(name: String) : Leaf(name)
 class Word(name: String) : Leaf(name)
 class Digit(name: String) : Leaf(name)
 
-class SourceBuffer(private val buffer: StringBuilder,
-                    startPos: Int) {
+class SourceBuffer(
+    private val buffer: StringBuilder,
+    startPos: Int
+) {
     companion object {
         const val operators = "({}[].+-/*^%$#@!<>,;"
         const val spaces = " \n\r\t "
@@ -56,7 +58,7 @@ class SourceBuffer(private val buffer: StringBuilder,
         pos++
     }
 
-    fun readDigit(): Pair<Digit,Int> {
+    fun readDigit(): Pair<Digit, Int> {
         val readBuffer = StringBuilder()
         while (getNextChar() in digits) {
             readBuffer.append(getNextChar())
@@ -65,15 +67,15 @@ class SourceBuffer(private val buffer: StringBuilder,
         return Pair(Digit(readBuffer.toString()), pos)
     }
 
-    fun readWord(): Pair<Word,Int> {
-        val ch = buffer.get(pos)
+    fun readWord(): Pair<Word, Int> {
+        var ch = buffer.get(pos)
         if (ch in operators) {
             pos++
             return Pair(Word(ch.toString()), pos)
         }
         val wordBuffer = StringBuilder()
         do {
-            val ch = buffer.get(pos)
+            ch = buffer.get(pos)
             if (ch in operators || ch in spaces) {
                 break
             }
@@ -84,4 +86,34 @@ class SourceBuffer(private val buffer: StringBuilder,
     }
 
     fun end(): Boolean = pos >= buffer.length
+    fun nextIs(s: String, ignoreCase: Boolean = false): Boolean {
+        if (pos + s.length > buffer.length) {
+            // out of buffer size
+            return false
+        }
+        val substr = buffer.subSequence(pos, pos + s.length).toString()
+        return substr.equals(s, ignoreCase)
+    }
+
+    fun nextIn(variants: String): Boolean = buffer.get(pos) in variants
+
+    fun readUntil(end: String,
+                  ignoreCase: Boolean,
+                  includeEnd: Boolean): Pair<String, Int> {
+        val wordBuffer = StringBuilder()
+        do {
+            if (nextIs(end, ignoreCase)) {
+                if (includeEnd) {
+                    wordBuffer.append(end)
+                    pos += end.length
+                }
+                break
+            }
+            val ch = buffer.get(pos)
+            pos++
+            wordBuffer.append(ch)
+        } while (pos < buffer.length)
+        return Pair(wordBuffer.toString(), pos)
+    }
+
 }

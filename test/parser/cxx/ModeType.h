@@ -1,5 +1,8 @@
 #pragma once
-
+// qwe
+/* qwe w
+dsadsa
+*/
 
 const int32_t OREAD = 0;
 const int32_t OWRITE = 1;

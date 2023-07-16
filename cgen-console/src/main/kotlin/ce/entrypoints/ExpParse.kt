@@ -37,7 +37,7 @@ fun storeDictionary(fileName: String, dictionary: Map<Int, Leaf>) {
         CSVWriter.NO_ESCAPE_CHARACTER,
         CSVWriter.DEFAULT_LINE_END).use {
         dictionary.forEach { id, word ->
-            it.writeNext(arrayOf(id.toString(), "\"${word.name}\""))
+            it.writeNext(arrayOf(id.toString(), "\"${word.name.replace("\n", "\\n")}\""))
         }
     }
 }
@@ -95,18 +95,27 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
         val ch = srcBuffer.getNextChar()
         println("Process ${srcBuffer.pos} ${buffer.length} $ch")
         // TODO support for // and /* */
-//        if (nextIs(buffer, pos, "//")) {
-//
-//        } else {
-        if (ch == '"') {
+        if (srcBuffer.nextIs("//")) {
+            val literalPair = srcBuffer.readUntil("\n", false, true)
+            literalsMap[literalCounter] = Literal(literalPair.first)
+            numbers.add(literalCounter)
+            println("Comment \"${literalPair.first}\" = $literalCounter")
+            literalCounter++
+        } else if (srcBuffer.nextIs("/*")) {
+            val strPair = srcBuffer.readUntil("*/", false, true)
+            literalsMap[literalCounter] = Literal(strPair.first)
+            numbers.add(literalCounter)
+            println("Comment multiline \"${strPair.first}\" = $literalCounter")
+            literalCounter++
+        } else if (srcBuffer.nextIs("\"")) {
             val literalPair = srcBuffer.readLiteral()
             literalsMap[literalCounter] = literalPair.first
             numbers.add(literalCounter)
             println("Literal \"${literalPair.first.name}\" = $literalCounter")
             literalCounter++
-        } else if (ch in SourceBuffer.spaces) {
+        } else if (srcBuffer.nextIn(SourceBuffer.spaces)) {
             srcBuffer.skipChar()
-        } else if (ch in SourceBuffer.digits) {
+        } else if (srcBuffer.nextIn(SourceBuffer.digits)) {
             val digit = srcBuffer.readDigit()
             digitisMap[digitCounter] = digit.first
             numbers.add(digitCounter)
