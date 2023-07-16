@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose")
+//    id("org.jetbrains.compose")
     `java-library`
     `maven-publish`
     application
@@ -8,7 +8,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+//    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
@@ -18,7 +18,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     implementation("com.opencsv:opencsv:5.7.1")
 
-    implementation(compose.desktop.currentOs)
+//    implementation(compose.desktop.currentOs)
 }
 
 kotlin {
