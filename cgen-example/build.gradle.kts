@@ -1,6 +1,13 @@
+import ce.domain.usecase.entry.BuildProjectUseCase
+import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
+import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.store.StoreInTreeUseCase
+import ce.domain.usecase.store.StoreOutTreeUseCase
+import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+
 plugins {
-    kotlin("jvm") version Versions.kotlin
-    id("org.jetbrains.compose") version Versions.compose
+    kotlin("jvm")
+    id("org.jetbrains.compose")
     application
 }
 
@@ -20,9 +27,43 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.github.vshcryabets:codegen:12661a00a8")
+        classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
+//        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
+//        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
+        classpath("com.github.vshcryabets:codegen:43ed923e5d")
     }
 }
 
-// Create a task using the task type
-tasks.register<ce.gradle.GreetingTask>("hello")
+dependencies {
+//    api(project(":cgen-lib"))
+//    api(project(":cgen-console"))
+    implementation("com.github.vshcryabets:codegen:43ed923e5d")
+}
+
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
+}
+
+task("buildCgen1", JavaExec::class) {
+    workingDir(File("../"))
+    args("./test/project.json")
+    mainClass.set("ce.entrypoints.BuildProjectKt")
+    classpath = sourceSets["test"].runtimeClasspath
+}
+
+//task("buildCgen2", DefaultTask::class) {
+//    val buildProjectUseCase = BuildProjectUseCase(
+//        getProjectUseCase = LoadProjectUseCase(),
+//        storeInTreeUseCase = StoreInTreeUseCase(),
+//        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(),
+//        storeOutTreeUseCase = StoreOutTreeUseCase(),
+//        transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
+//    )
+//    buildProjectUseCase("./test/project.json")
+//}

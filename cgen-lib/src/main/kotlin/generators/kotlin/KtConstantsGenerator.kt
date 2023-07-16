@@ -24,10 +24,16 @@ class KtConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantLeaf(
-                            "const val ${it.name} : " +
-                                    "${Types.typeTo(file, it.type)} = " +
-                                    "${Types.toValue(classData, it.type, it.value)}"))
+                        addSub(ConstantLeaf().apply {
+                            addKeyword("const")
+                            addKeyword("val")
+                            addVarName(it.name)
+                            addKeyword(":")
+                            addKeyword(Types.typeTo(file, it.type))
+                            addKeyword("=")
+                            addRValue(Types.toValue(classData, it.type, it.value))
+                            addSeparatorNewLine("")
+                        })
                     }
                 }
             }

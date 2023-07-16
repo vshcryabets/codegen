@@ -25,7 +25,7 @@ object Types {
             DataType.int8, DataType.int16, DataType.uint16 -> value.toString()
             DataType.float32 -> value.toString()
             DataType.float64 -> value.toString()
-            DataType.string -> {
+            is DataType.string -> {
                 "\"${value}\""
             }
             else -> "QQVAL_$type"

@@ -4,6 +4,8 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
+import generators.obj.out.ImportsBlock
 
 object Types {
     fun getArrayType(type: DataType): String =
@@ -16,15 +18,22 @@ object Types {
             DataType.uint32 -> "IntArray"
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
-            DataType.string -> "String[]"
+            is DataType.string -> "String[]"
             is DataType.userClass -> type.path
+            is DataType.custom -> type.block.name // TODO nullable check ?
             else -> "QQTP_array_$type"
         }
 
     fun typeTo(file: FileData,
                type: DataType
-    ) : String =
+    ) : String {
         when (type) {
+            is DataType.custom ->
+                file.findOrCreateSub(ImportsBlock::class.java)
+                    .addInclude("${type.block.getParentPath()}.${type.block.name}");
+            else -> {}
+        }
+        return when (type) {
             DataType.VOID -> "void"
             DataType.int8 -> "Byte"
             DataType.int16 -> "Short"
@@ -34,11 +43,14 @@ object Types {
             DataType.uint32 -> "Long"
             DataType.float32 -> "Float"
             DataType.float64 -> "Double"
-            DataType.string -> "String"
+            DataType.bool -> "Boolean"
+            is DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
+            is DataType.custom -> type.block.name
             else -> "QQTP_$type"
-        } + (if (type.nullable) "?" else "")
+        } + (if (type.canBeNull) "?" else "")
+    }
 
     fun toValue(classData: ClassData, type: DataType, value: DataValue) : String =
         when (type) {
@@ -47,9 +59,8 @@ object Types {
             DataType.uint16, DataType.uint32 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
-            DataType.string -> {
-                "\"${value.value}\""
-            }
+            DataType.bool -> value.value.toString()
+            is DataType.string -> "\"${value.value}\""
             else -> "QQVAL_$type"
         }
 }

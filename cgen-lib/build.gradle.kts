@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version Versions.kotlin
+    kotlin("jvm")
     `java-library`
     `maven-publish`
 }
@@ -15,7 +15,9 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
 
-    implementation(kotlin("scripting-jsr223"))
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
+//    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
     implementation("org.jfree:org.jfree.svg:5.0.3")
@@ -26,6 +28,16 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
 }
 
 publishing {

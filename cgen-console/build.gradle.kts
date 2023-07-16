@@ -1,10 +1,13 @@
 plugins {
-    kotlin("jvm") version Versions.kotlin
-    id("org.jetbrains.compose") version Versions.compose
+    kotlin("jvm")
+    id("org.jetbrains.compose")
+    `java-library`
+    `maven-publish`
     application
 }
 
 repositories {
+    mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
@@ -18,20 +21,34 @@ dependencies {
     implementation(compose.desktop.currentOs)
 }
 
+kotlin {
+    jvmToolchain(Versions.jvmLevel)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
+    }
+}
+
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-//tasks.jar { // could also be a new task rather than the default one
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//
-//    manifest {
-//        attributes["Main-Class"] = "ce.entrypoints.BuildProjectKt"
-//    }
-//
-//    from(sourceSets.main.get().output)
-//    dependsOn(configurations.runtimeClasspath)
-//    from({
-//        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-//    })
-//}
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vshcryabets/codegen")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
+}
