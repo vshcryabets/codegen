@@ -24,6 +24,7 @@ class EnumLeaf(name : String) : Leaf(name)
 
 class RValue(name : String) : Leaf(name) // something after "="
 class Keyword(name : String) : Leaf(name)
+class Datatype(name : String) : Leaf(name)
 class VariableName(name : String) : Leaf(name)
 
 // for example ",\n"

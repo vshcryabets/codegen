@@ -37,7 +37,7 @@ class CppConstantsBlockGenerator(
                         addSub(
                             ConstantLeaf().apply {
                                 addKeyword("const")
-                                addKeyword(Types.typeTo(declaration, it.type))
+                                addDatatype(Types.typeTo(declaration, it.type))
                                 addVarName(it.name)
                                 addKeyword("=")
                                 addRValue(Types.toValue(classData, it.type, it.value))

@@ -95,6 +95,7 @@ open class Node(name: String,
     fun addSeparator(name: String) = addSub(Separator(name))
     fun addSeparatorNewLine(name: String) = addSub(NlSeparator(name))
     fun addKeyword(name: String) = addSub(Keyword(name))
+    fun addDatatype(name: String) = addSub(Datatype(name))
     fun addVarName(name: String) = addSub(VariableName(name))
 
     fun addRValue(name: String) = addSub(RValue(name))

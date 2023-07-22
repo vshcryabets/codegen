@@ -36,6 +36,7 @@ abstract class Writter(val fileGenerator: FileGenerator,
             is RValue -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
             is Keyword -> out.write(leaf.name + " ")
+            is Datatype -> out.write(leaf.name + " ")
             is VariableName -> out.write(leaf.name)
             is EnumLeaf -> {
                 out.write(leaf.name)

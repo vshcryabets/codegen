@@ -29,7 +29,7 @@ class KtConstantsGenerator(
                             addKeyword("val")
                             addVarName(it.name)
                             addKeyword(":")
-                            addKeyword(Types.typeTo(file, it.type))
+                            addDatatype(Types.typeTo(file, it.type))
                             addKeyword("=")
                             addRValue(Types.toValue(classData, it.type, it.value))
                             addSeparatorNewLine("")
