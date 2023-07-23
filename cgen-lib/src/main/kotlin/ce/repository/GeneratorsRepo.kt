@@ -2,6 +2,7 @@ package ce.repository
 
 import ce.defs.Target
 import ce.domain.usecase.add.AddBlockDefaultsUseCaseImpl
+import ce.formatters.CLikeCodestyleRepo
 import ce.settings.Project
 import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppDataClassGenerator
@@ -41,15 +42,17 @@ class GeneratorsRepo(val project: Project) {
     val supportedMeta : Map<Target, MetaGenerator>
 
     init {
+        val clikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
+
         val kotlinFileGenerator = KotlinFileGenerator(project.codeStyle)
         val cppFileGenerator = CppFileGenerator(project.codeStyle)
         val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
         val rustFileGenerator = RustFileGenerator(project.codeStyle)
         val javaFileGenerator = JavaFileGenerator(project.codeStyle)
 
-        val kotlinAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(kotlinFileGenerator)
-        val cppAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(cppFileGenerator)
-        val javaAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(javaFileGenerator)
+        val kotlinAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(clikeCodeStyleRepo)
+        val cppAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(clikeCodeStyleRepo)
+        val javaAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(clikeCodeStyleRepo)
 
         val kotlinGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
             ConstantsEnum::class.java to KotlinEnumGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
@@ -59,7 +62,7 @@ class GeneratorsRepo(val project: Project) {
         )
         val kotlinMeta = MetaGenerator(
             target = Target.Kotlin,
-            writter = KotlinWritter(kotlinFileGenerator, project.outputFolder),
+            writter = KotlinWritter(clikeCodeStyleRepo, project.outputFolder),
             project = project,
             fileGenerator = kotlinFileGenerator,
             generatorsMap = kotlinGenerators
@@ -68,11 +71,11 @@ class GeneratorsRepo(val project: Project) {
         val cppGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
             ConstantsEnum::class.java to CppEnumGenerator(cppFileGenerator, cppAddBlockDefaultsUseCase),
             ConstantsBlock::class.java to CppConstantsBlockGenerator(cppAddBlockDefaultsUseCase),
-            DataClass::class.java to CppDataClassGenerator(cppFileGenerator, cppAddBlockDefaultsUseCase)
+            DataClass::class.java to CppDataClassGenerator(clikeCodeStyleRepo, cppAddBlockDefaultsUseCase)
         )
         val cppMeta = MetaGenerator(
             target = Target.Cxx,
-            writter = CppWritter(cppFileGenerator, project.outputFolder),
+            writter = CppWritter(clikeCodeStyleRepo, project.outputFolder),
             project = project,
             fileGenerator = cppFileGenerator,
             generatorsMap = cppGenerators
@@ -85,7 +88,7 @@ class GeneratorsRepo(val project: Project) {
         )
         val swiftMeta = MetaGenerator(
             target = Target.Swift,
-            writter = SwiftWritter(swiftFileGenerator, project.outputFolder),
+            writter = SwiftWritter(swiftFileGenerator, project.codeStyle, project.outputFolder),
             project = project,
             fileGenerator = swiftFileGenerator,
             generatorsMap = swiftGenerators
@@ -98,7 +101,7 @@ class GeneratorsRepo(val project: Project) {
         )
         val rustMeta = MetaGenerator(
             target = Target.Rust,
-            writter = RustWritter(rustFileGenerator, project.outputFolder),
+            writter = RustWritter(rustFileGenerator, project.codeStyle, project.outputFolder),
             project = project,
             fileGenerator = rustFileGenerator,
             generatorsMap = rustGenerators
@@ -111,7 +114,7 @@ class GeneratorsRepo(val project: Project) {
         )
         val javaMeta = MetaGenerator(
             target = Target.Java,
-            writter = JavaWritter(javaFileGenerator, project.outputFolder),
+            writter = JavaWritter(clikeCodeStyleRepo, project.outputFolder),
             project = project,
             fileGenerator = javaFileGenerator,
             generatorsMap = javaGenerators

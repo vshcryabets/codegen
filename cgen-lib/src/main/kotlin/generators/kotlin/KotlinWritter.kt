@@ -1,15 +1,17 @@
 package generators.kotlin
 
+import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import ce.io.FileCodeWritter
+import ce.settings.CodeStyle
 import generators.obj.Writter
 import generators.obj.input.*
 import generators.obj.out.*
 import java.io.BufferedWriter
 import java.io.File
 
-class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
-    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
+class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
+    : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
         var outputFile = File(fileData.name + ".kt")
@@ -17,7 +19,7 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
-            codeWritter.setNewLine(fileGenerator.newLine())
+            codeWritter.setNewLine(codeStyleRepo.newLine())
             writeNode(fileData, codeWritter, "")
         }
     }
@@ -25,7 +27,7 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
     override fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
             is Method -> {
-                out.write(node.name).write("(").setIndent(indent + fileGenerator.tabSpace)
+                out.write(node.name).write("(").setIndent(indent + codeStyleRepo.tab)
                 node.findOrNull(InputList::class.java)?.apply {
                     writeNode(this, out, indent)
                     node.removeSub(this)
@@ -39,8 +41,8 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
             }
             is OutBlockArguments -> {
                 out.write("(")
-                out.setIndent(indent + fileGenerator.tabSpace)
-                writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                out.setIndent(indent + codeStyleRepo.tab)
+                writeSubNodes(node, out, indent + codeStyleRepo.tab)
                 out.setIndent(indent).writeNlIfNotEmpty().write(")")
             }
             is OutBlock -> {
@@ -49,12 +51,12 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                     writeNode(this, out, indent)
                     node.removeSub(this)
                 }
-                if (!(node.subs.isEmpty() && codeStyle.preventEmptyBlocks)) {
+                if (!(node.subs.isEmpty() && codeStyleRepo.preventEmptyBlocks)) {
                     // prevent empty blocks
                     out.write(" {")
-                    out.setIndent(indent + fileGenerator.tabSpace)
+                    out.setIndent(indent + codeStyleRepo.tab)
                     out.writeNl()
-                    writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                    writeSubNodes(node, out, indent + codeStyleRepo.tab)
                     out.setIndent(indent).writeNlIfNotEmpty().write("}")
                 }
                 out.writeNl()

@@ -2,6 +2,7 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 
@@ -26,7 +27,7 @@ object Types {
             DataType.float64 -> "double"
             else -> "QQTP_$type"
         }
-    fun toValue(file: CppClassData, type: DataType, value: DataValue) : String =
+    fun toValue(file: ClassData, type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,

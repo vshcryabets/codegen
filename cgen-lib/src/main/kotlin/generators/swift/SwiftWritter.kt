@@ -1,12 +1,13 @@
 package generators.swift
 
 import ce.io.FileCodeWritter
+import ce.settings.CodeStyle
 import generators.obj.Writter
 import generators.obj.out.FileData
 import java.io.File
 
-class SwiftWritter(fileGenerator: SwiftFileGenerator, outputFolder: String)
-    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
+class SwiftWritter(fileGenerator: SwiftFileGenerator, style: CodeStyle, outputFolder: String)
+    : Writter(fileGenerator, style, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {

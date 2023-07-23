@@ -1,13 +1,14 @@
 package generators.rust
 
 import ce.io.FileCodeWritter
+import ce.settings.CodeStyle
 import generators.obj.Writter
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class RustWritter(fileGenerator: RustFileGenerator, outputFolder: String)
-    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
+class RustWritter(fileGenerator: RustFileGenerator, style: CodeStyle, outputFolder: String)
+    : Writter(fileGenerator, style, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {

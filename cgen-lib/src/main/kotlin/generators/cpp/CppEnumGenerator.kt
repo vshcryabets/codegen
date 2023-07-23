@@ -17,7 +17,7 @@ class CppEnumGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         //        val definition = CppClassData(desc.name, header)
-        header.addSub(CppClassData(desc.name, header)).apply {
+        header.addSub(CppClassData(desc.name)).apply {
             addBlockDefaultsUseCase(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
 

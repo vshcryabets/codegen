@@ -1,5 +1,6 @@
 package generators.obj
 
+import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import ce.settings.CodeStyle
 import generators.obj.input.DataField
@@ -8,14 +9,15 @@ import generators.obj.input.Node
 import generators.obj.out.*
 import java.io.File
 
-abstract class Writter(val fileGenerator: FileGenerator,
-                       val codeStyle: CodeStyle,
+abstract class Writter(val codeStyleRepo: CodeStyleRepo,
                        outputFolderPath: String) {
     val outFolder : File
 
     init {
         outFolder = File(outputFolderPath)
         outFolder.mkdirs()
+
+        val builder = StringBuilder()
     }
 
     open fun write(data: ProjectOutput) {
@@ -48,7 +50,7 @@ abstract class Writter(val fileGenerator: FileGenerator,
                 out.write(leaf.name).writeNl()
             }
             is BlockPreNewLines -> {
-                for (i in 0..codeStyle.newLinesBeforeClass - 1) out.writeNl()
+                out.write(codeStyleRepo.spaceBeforeClass())
             }
             else -> out.write("=== UNKNOWN LEAF $leaf").writeNl()
         }
@@ -70,10 +72,10 @@ abstract class Writter(val fileGenerator: FileGenerator,
             is ClassData -> writeSubNodes(node, out, indent)
             is MultilineCommentsBlock -> {
                 out.write(indent)
-                out.write(fileGenerator.multilineCommentStart())
+                out.write(codeStyleRepo.multilineCommentStart())
                 writeSubNodes(node, out, "$indent ")
                 out.write("$indent ")
-                out.write(fileGenerator.multilineCommentEnd())
+                out.write(codeStyleRepo.multilineCommentEnd())
             }
             is CommentsBlock -> {
                 writeSubNodes(node, out, indent)

@@ -1,5 +1,6 @@
 package ce.domain.usecase.add
 
+import ce.formatters.CodeStyleRepo
 import generators.obj.FileGenerator
 import generators.obj.input.Block
 import generators.obj.out.*
@@ -10,7 +11,7 @@ interface AddBlockDefaultsUseCase {
 }
 
 class AddBlockDefaultsUseCaseImpl @Inject constructor(
-    private val fileGenerator: FileGenerator
+    private val codeStyleRepo: CodeStyleRepo,
 ): AddBlockDefaultsUseCase {
     override fun invoke(desc: Block, result: ClassData) {
         result.addSub(BlockPreNewLines())
@@ -29,7 +30,7 @@ class AddBlockDefaultsUseCaseImpl @Inject constructor(
                     result.addSub(CommentsBlock()).apply {
                         first.subs.forEach {
                             if (it is CommentLeaf) {
-                                this.addSub(CommentLeaf(fileGenerator.singleComment() + " " + it.name))
+                                this.addSub(CommentLeaf(codeStyleRepo.singleComment() + " " + it.name))
                             } else {
                                 this.addSub(it)
                             }

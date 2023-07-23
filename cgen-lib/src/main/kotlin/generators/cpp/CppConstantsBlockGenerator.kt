@@ -12,15 +12,12 @@ class CppConstantsBlockGenerator(
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
-        val declaration = blockFiles.find { it is CppHeaderFile }
+        val headerFile = blockFiles.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
-        val namespace = declaration.addSub(NamespaceBlock(desc.getParentPath()))
-        val classData = CppClassData(desc.name, declaration)
-        namespace.addSub(classData)
-
+        val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
+        val classData = namespace.addSub(CppScopeGroup(desc.name))
         addBlockDefaultsUseCase(desc, classData)
-
         val autoIncrement = AutoincrementField()
 
         if (classData.findOrNull(CommentsBlock::class.java) == null) {
@@ -29,8 +26,7 @@ class CppConstantsBlockGenerator(
                 addCommentLine("Constants ${desc.name}")
             }
         }
-
-        val outBlock = classData.addSub(OutBlock(""))
+        val outBlock = classData
 
         desc.subs.forEach {
             if (it is ConstantDesc) {
@@ -38,7 +34,7 @@ class CppConstantsBlockGenerator(
                 outBlock.addSub(
                     ConstantLeaf().apply {
                         addKeyword("const")
-                        addDatatype(Types.typeTo(declaration, it.type))
+                        addDatatype(Types.typeTo(headerFile, it.type))
                         addVarName(it.name)
                         addKeyword("=")
                         addRValue(Types.toValue(classData, it.type, it.value))

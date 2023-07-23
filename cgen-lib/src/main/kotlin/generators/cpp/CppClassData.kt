@@ -7,7 +7,8 @@ import generators.obj.out.FileData
 
 
 class CompilerDirective(name: String, parent: Node) : Leaf(name, parent)
-class CppClassData(name: String, parent: Node) : ClassData(name, parent)
+class CppClassData(name: String) : ClassData(name)
+class CppScopeGroup(name: String) : ClassData(name)
 
 open class CppHeaderFile(name: String, parent: Node) : FileData(name, parent) {
     init {

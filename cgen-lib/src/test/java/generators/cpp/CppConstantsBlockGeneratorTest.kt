@@ -42,7 +42,7 @@ class CppConstantsBlockGeneratorTest {
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
         Assert.assertEquals(1, outNamespace.subs.size)
-        val constantsBlock = outNamespace.findOrNull(CppClassData::class.java)!!
-        Assert.assertEquals(2, constantsBlock.subs.size)
+        val constantsBlock = outNamespace.findOrNull(CppScopeGroup::class.java)!!
+        Assert.assertEquals(7, constantsBlock.subs.size)
     }
 }

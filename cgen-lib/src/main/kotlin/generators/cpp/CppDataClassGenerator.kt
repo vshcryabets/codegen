@@ -1,6 +1,8 @@
 package generators.cpp
 
 import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeStyleRepo
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
@@ -8,7 +10,7 @@ import generators.obj.input.DataClass
 import generators.obj.out.*
 
 class CppDataClassGenerator(
-    private val fileGenerator: FileGenerator,
+    private val codestyleRepo: CodeStyleRepo,
     private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
 ) : TransformBlockUseCase<DataClass> {
 
@@ -22,12 +24,12 @@ class CppDataClassGenerator(
 
         val namespace = header.addSub(NamespaceBlock(desc.getParentPath()))
 
-        namespace.addSub(CppClassData(desc.name, header)).apply {
+        namespace.addSub(CppClassData(desc.name)).apply {
             addBlockDefaultsUseCase(desc, this)
             if (findOrNull(CommentsBlock::class.java) == null) {
                 // add default comments block
                 addSub(CommentsBlock()).apply {
-                    addCommentLine("${fileGenerator.singleComment()} Data class ${desc.name}")
+                    addCommentLine("${codestyleRepo.singleComment()} Data class ${desc.name}")
                 }
             }
             addOutBlock("struct ${desc.name}") {

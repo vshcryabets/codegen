@@ -1,7 +1,9 @@
 package generators.cpp
 
+import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import ce.io.FileCodeWritter
+import ce.settings.CodeStyle
 import generators.obj.FileGenerator
 import generators.obj.Writter
 import generators.obj.input.Leaf
@@ -9,8 +11,8 @@ import generators.obj.input.Node
 import generators.obj.out.*
 import java.io.File
 
-class CppWritter(fileGenerator: FileGenerator, outputFolder: String) :
-    Writter(fileGenerator, fileGenerator.style, outputFolder) {
+class CppWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String) :
+    Writter(codeStyleRepo, outputFolder) {
 
     override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
@@ -23,9 +25,9 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String) :
     override fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
             is NamespaceBlock -> {
-                out.write("namespace ${node.name.replace(".", "::")}")
+                out.write("namespace ${node.name.replace(".", "::")} {")
                     .writeNl()
-                super.writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                super.writeSubNodes(node, out, indent + codeStyleRepo.tab)
                 out.write("}").writeNl()
             }
 
@@ -37,8 +39,8 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String) :
                     node.removeSub(this)
                 }
                 out.write(" {")
-                out.setIndent(indent + fileGenerator.tabSpace)
-                writeSubNodes(node, out, indent + fileGenerator.tabSpace)
+                out.setIndent(indent + codeStyleRepo.tab)
+                writeSubNodes(node, out, indent + codeStyleRepo.tab)
                 out.writeNl()
                 out.write(indent)
                 out.write("};")
@@ -59,7 +61,7 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String) :
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
-            codeWritter.setNewLine(fileGenerator.newLine())
+            codeWritter.setNewLine(codeStyleRepo.newLine())
             writeSubNodes(fileData, codeWritter, "")
         }
     }

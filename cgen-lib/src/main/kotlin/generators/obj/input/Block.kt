@@ -11,13 +11,12 @@ open class Block(
     var outputFile = ""
     var objectBaseFolder = ""
 
-//    fun addBlockComment(value : String) {
-//        findOrCreateSub(CommentsBlock::class.java).apply {
-//            value.lines().forEach {
-//                addSub(CommentLeaf(it.trim()))
-//            }
-//        }
-//    }
-
-
+    // Used in KTS
+    fun addBlockComment(value : String) {
+        findOrCreateSub(CommentsBlock::class.java).apply {
+            value.lines().forEach {
+                addSub(CommentLeaf(it.trim()))
+            }
+        }
+    }
 }
