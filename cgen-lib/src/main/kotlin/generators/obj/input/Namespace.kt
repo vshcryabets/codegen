@@ -31,7 +31,6 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
     }
 
     fun putDefaults(block: Block) {
-        this.addSub(block)
         block.objectBaseFolder = customBaseFolderPath
         block.sourceFile = sourceFile
         block.outputFile = if (outputFile.isEmpty()) block.name else outputFile
@@ -45,7 +44,7 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
     }
 
     fun constantsBlock(name: String): ConstantsBlock {
-        return ConstantsBlock(name, this).apply {
+        return addSub(ConstantsBlock(name)).apply {
             putDefaults(this)
         }
     }

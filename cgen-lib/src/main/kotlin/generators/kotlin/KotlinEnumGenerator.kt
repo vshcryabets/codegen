@@ -1,26 +1,26 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.settings.Project
+import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.AutoincrementField
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
 import generators.obj.out.*
 
 class KotlinEnumGenerator(
     fileGenerator: KotlinFileGenerator,
-    private val project: Project
-) : Generator<ConstantsEnum>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
+    override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         val withRawValues = desc.defaultDataType != DataType.VOID
         val autoIncrement = AutoincrementField()
         var needToAddComa = false
 
-        return file.addSub(KotlinClassData(desc.name)).also { classData ->
-            addBlockDefaults(desc, classData)
+        file.addSub(KotlinClassData(desc.name)).also { classData ->
+            addBlockDefaultsUseCase(desc, classData)
             classData.addOutBlock("enum class ${desc.name}") {
                 if (withRawValues) {
                     addOutBlockArguments {

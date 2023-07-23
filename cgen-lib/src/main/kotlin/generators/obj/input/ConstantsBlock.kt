@@ -6,7 +6,7 @@ import ce.defs.NotDefined
 
 open class ConstantsBlock(
     name: String,
-    parent: Node,
+    parent: Node? = null,
     var defaultDataType: DataType = DataType.VOID
 ) : Block(name, parent) {
 

@@ -13,7 +13,7 @@ import java.nio.file.Paths
 open class MetaGenerator(
     private val target: Target,
     private val fileGenerator: FileGenerator,
-    private val generatorsMap: Map<Class<out Block>, Generator<out Block>>,
+    private val generatorsMap: Map<Class<out Block>, TransformBlockUseCase<out Block>>,
     private val writter: Writter,
     private val project: Project
 ) {
@@ -55,25 +55,11 @@ open class MetaGenerator(
                 val namespacePath = it.getParentPath()
                 println("Translating ${it.name}")
                 if (generatorsMap.contains(it::class.java)) {
-                    val generator = generatorsMap.get(it::class.java)!! as Generator<Block>
-                    generator.processBlock(filesData, it)
+                    val generator = generatorsMap.get(it::class.java)!! as TransformBlockUseCase<Block>
+                    generator.invoke(filesData, it)
                 } else {
-//                    val classData = when (it) {
-//                        is ConstantsEnum -> enum.processBlock(filesData, it)
-//                        is ConstantsBlock -> constantsBlock.processBlock(filesData, it)
-//                        is DataClass -> dataClass.processBlock(filesData, it)
-//                        else -> null
-//                    }
-//                    classData?.let {
-//                        // TODO check duplicate block in namespace
-//                if (namespace.outputBlocks.contains(block.name)) {
-//                    throw java.lang.IllegalStateException(
-//                        "Duplicate block error! ${namespace.name} already contains block with name ${block.name}"
-//                    );
-//                }
-//                    }
+                    throw IllegalStateException("${it::class.java} nto supported")
                 }
-
             } else if (it is Node) {
                 translateTree(it, files)
             } else {

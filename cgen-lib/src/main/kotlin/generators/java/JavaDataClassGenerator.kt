@@ -1,23 +1,22 @@
 package generators.java
 
-import ce.settings.Project
+import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.FileGenerator
-import generators.obj.Generator
-import generators.obj.input.DataField
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataClass
 import generators.obj.out.FileData
 
 class JavaDataClassGenerator(
     fileGenerator : FileGenerator,
-    private val project: Project
-) : Generator<DataClass>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+) : TransformBlockUseCase<DataClass> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): JavaClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
 
-        return file.addSub(JavaClassData(desc.name, file)).apply {
-            addBlockDefaults(desc, this)
+        file.addSub(JavaClassData(desc.name, file)).apply {
+            addBlockDefaultsUseCase(desc, this)
 //            appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
 //
 //            desc.subs.forEach { leaf ->

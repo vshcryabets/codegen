@@ -1,27 +1,25 @@
 package ce.repository
 
 import ce.defs.Target
+import ce.domain.usecase.add.AddBlockDefaultsUseCaseImpl
 import ce.settings.Project
-import generators.cpp.CppClassData
 import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppDataClassGenerator
 import generators.cpp.CppEnumGenerator
 import generators.cpp.CppFileGenerator
 import generators.cpp.CppWritter
-import generators.java.JavaClassData
 import generators.java.JavaConstantsGenerator
 import generators.java.JavaDataClassGenerator
 import generators.java.JavaEnumGenerator
 import generators.java.JavaFileGenerator
 import generators.java.JavaWritter
-import generators.kotlin.KotlinClassData
 import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
 import generators.kotlin.KotlinInterfaceGenerator
 import generators.kotlin.KotlinWritter
 import generators.kotlin.KtConstantsGenerator
 import generators.kotlin.KtDataClassGenerator
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.MetaGenerator
 import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
@@ -30,11 +28,9 @@ import generators.obj.input.DataClass
 import generators.obj.input.InterfaceDescription
 import generators.rust.RsConstantsBlockGenerator
 import generators.rust.RsDataClassGenerator
-import generators.rust.RustClassData
 import generators.rust.RustEnumGenerator
 import generators.rust.RustFileGenerator
 import generators.rust.RustWritter
-import generators.swift.SwiftClassData
 import generators.swift.SwiftConstantsBlockGenerator
 import generators.swift.SwiftDataClassGenerator
 import generators.swift.SwiftEnumGenerator
@@ -51,11 +47,15 @@ class GeneratorsRepo(val project: Project) {
         val rustFileGenerator = RustFileGenerator(project.codeStyle)
         val javaFileGenerator = JavaFileGenerator(project.codeStyle)
 
-        val kotlinGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
-            ConstantsEnum::class.java to KotlinEnumGenerator(kotlinFileGenerator, project),
-            ConstantsBlock::class.java to KtConstantsGenerator(kotlinFileGenerator, project),
-            DataClass::class.java to KtDataClassGenerator(kotlinFileGenerator, project),
-            InterfaceDescription::class.java to KotlinInterfaceGenerator(kotlinFileGenerator, project)
+        val kotlinAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(kotlinFileGenerator)
+        val cppAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(cppFileGenerator)
+        val javaAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(javaFileGenerator)
+
+        val kotlinGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
+            ConstantsEnum::class.java to KotlinEnumGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
+            ConstantsBlock::class.java to KtConstantsGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
+            DataClass::class.java to KtDataClassGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
+            InterfaceDescription::class.java to KotlinInterfaceGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase)
         )
         val kotlinMeta = MetaGenerator(
             target = Target.Kotlin,
@@ -65,10 +65,10 @@ class GeneratorsRepo(val project: Project) {
             generatorsMap = kotlinGenerators
         )
 
-        val cppGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
-            ConstantsEnum::class.java to CppEnumGenerator(cppFileGenerator, project),
-            ConstantsBlock::class.java to CppConstantsBlockGenerator(cppFileGenerator, project),
-            DataClass::class.java to CppDataClassGenerator(cppFileGenerator, project)
+        val cppGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
+            ConstantsEnum::class.java to CppEnumGenerator(cppFileGenerator, cppAddBlockDefaultsUseCase),
+            ConstantsBlock::class.java to CppConstantsBlockGenerator(cppAddBlockDefaultsUseCase),
+            DataClass::class.java to CppDataClassGenerator(cppFileGenerator, cppAddBlockDefaultsUseCase)
         )
         val cppMeta = MetaGenerator(
             target = Target.Cxx,
@@ -78,7 +78,7 @@ class GeneratorsRepo(val project: Project) {
             generatorsMap = cppGenerators
         )
 
-        val swiftGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        val swiftGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
             ConstantsEnum::class.java to SwiftEnumGenerator(swiftFileGenerator, project),
             ConstantsBlock::class.java to SwiftConstantsBlockGenerator(swiftFileGenerator, project),
             DataClass::class.java to SwiftDataClassGenerator(swiftFileGenerator, project)
@@ -91,7 +91,7 @@ class GeneratorsRepo(val project: Project) {
             generatorsMap = swiftGenerators
         )
 
-        val rustGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
+        val rustGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
             ConstantsEnum::class.java to RustEnumGenerator(rustFileGenerator, project),
             ConstantsBlock::class.java to RsConstantsBlockGenerator(rustFileGenerator, project),
             DataClass::class.java to RsDataClassGenerator(rustFileGenerator, project)
@@ -104,10 +104,10 @@ class GeneratorsRepo(val project: Project) {
             generatorsMap = rustGenerators
         )
 
-        val javaGenerators : Map<Class<out Block>, Generator<out Block>> = mapOf(
-            ConstantsEnum::class.java to JavaEnumGenerator(javaFileGenerator, project),
-            ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, project),
-            DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, project)
+        val javaGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
+            ConstantsEnum::class.java to JavaEnumGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
+            ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
+            DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase)
         )
         val javaMeta = MetaGenerator(
             target = Target.Java,

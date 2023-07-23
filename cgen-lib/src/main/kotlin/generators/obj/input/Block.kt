@@ -5,19 +5,19 @@ import generators.obj.out.CommentsBlock
 
 open class Block(
     name: String,
-    parent: Node
+    parent: Node? = null
 ) : Node(name, parent) {
     var sourceFile = ""
     var outputFile = ""
     var objectBaseFolder = ""
 
-    fun addBlockComment(value : String) {
-        findOrCreateSub(CommentsBlock::class.java).apply {
-            value.lines().forEach {
-                addSub(CommentLeaf(it.trim()))
-            }
-        }
-    }
+//    fun addBlockComment(value : String) {
+//        findOrCreateSub(CommentsBlock::class.java).apply {
+//            value.lines().forEach {
+//                addSub(CommentLeaf(it.trim()))
+//            }
+//        }
+//    }
 
 
 }

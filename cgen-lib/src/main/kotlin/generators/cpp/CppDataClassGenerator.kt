@@ -1,18 +1,18 @@
 package generators.cpp
 
-import ce.settings.Project
+import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.FileGenerator
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
 import generators.obj.out.*
 
 class CppDataClassGenerator(
-    fileGenerator: FileGenerator,
-    private val project: Project
-) : Generator<DataClass>(fileGenerator) {
+    private val fileGenerator: FileGenerator,
+    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+) : TransformBlockUseCase<DataClass> {
 
-    override fun processBlock(files: List<FileData>, desc: DataClass): CppClassData {
+    override fun invoke(files: List<FileData>, desc: DataClass) {
         val header = files.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
         val definition = files.find { it is CppFileData }
@@ -22,8 +22,8 @@ class CppDataClassGenerator(
 
         val namespace = header.addSub(NamespaceBlock(desc.getParentPath()))
 
-        return namespace.addSub(CppClassData(desc.name, header)).apply {
-            addBlockDefaults(desc, this)
+        namespace.addSub(CppClassData(desc.name, header)).apply {
+            addBlockDefaultsUseCase(desc, this)
             if (findOrNull(CommentsBlock::class.java) == null) {
                 // add default comments block
                 addSub(CommentsBlock()).apply {

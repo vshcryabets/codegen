@@ -2,20 +2,20 @@ package generators.swift
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
 class SwiftEnumGenerator(
     fileGenerator: SwiftFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum>(fileGenerator) {
+) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): SwiftClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: ConstantsEnum) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
 
-        return file.addSub(SwiftClassData(desc.name, file)).apply {
+        file.addSub(SwiftClassData(desc.name, file)).apply {
 
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = desc.defaultDataType != DataType.VOID

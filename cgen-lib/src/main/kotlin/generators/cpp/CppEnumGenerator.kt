@@ -1,26 +1,24 @@
 package generators.cpp
 
 import ce.defs.DataType
-import ce.settings.Project
-import generators.obj.AutoincrementField
+import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.FileGenerator
-import generators.obj.Generator
-import generators.obj.input.DataField
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
 class CppEnumGenerator(
     fileGenerator: FileGenerator,
-    private val project: Project
-) : Generator<ConstantsEnum>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): CppClassData {
+    override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
         val header = files.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         //        val definition = CppClassData(desc.name, header)
-        return header.addSub(CppClassData(desc.name, header)).apply {
-            addBlockDefaults(desc, this)
+        header.addSub(CppClassData(desc.name, header)).apply {
+            addBlockDefaultsUseCase(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
 
 //            classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())

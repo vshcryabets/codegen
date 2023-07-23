@@ -1,8 +1,8 @@
 package generators.kotlin
 
-import ce.settings.Project
+import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.FileGenerator
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataClass
 import generators.obj.input.DataField
 import generators.obj.out.FileData
@@ -10,16 +10,16 @@ import generators.obj.out.NlSeparator
 
 class KtDataClassGenerator(
     fileGenerator: FileGenerator,
-    private val project: Project
-) : Generator<DataClass>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+) : TransformBlockUseCase<DataClass> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): KotlinClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
         val file = blockFiles.find { it is FileData }
             ?: throw IllegalStateException("Can't find Main file for Kotlin")
 
-        return file.addSub(KotlinClassData(desc.name)).apply {
+        file.addSub(KotlinClassData(desc.name)).apply {
             val kotlinClass = this
-            addBlockDefaults(desc, this)
+            addBlockDefaultsUseCase(desc, this)
             addOutBlock("data class ${desc.name}") {
                 addOutBlockArguments {
                     addSub(NlSeparator())

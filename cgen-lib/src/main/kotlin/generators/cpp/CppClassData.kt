@@ -12,6 +12,7 @@ class CppClassData(name: String, parent: Node) : ClassData(name, parent)
 open class CppHeaderFile(name: String, parent: Node) : FileData(name, parent) {
     init {
         addSub(CompilerDirective("pragma once", this))
+        resetDirtyFlag()
     }
 }
 

@@ -1,25 +1,25 @@
 package generators.kotlin
 
-import ce.settings.Project
+import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
 import generators.obj.out.*
 
 class KtConstantsGenerator(
     fileGenerator : FileGenerator,
-    private val project: Project
-) : Generator<ConstantsBlock>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+) : TransformBlockUseCase<ConstantsBlock> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
         val autoIncrement = AutoincrementField()
 
-        return file.addSub(KotlinClassData(desc.name)).also { classData ->
-            addBlockDefaults(desc, classData)
+        file.addSub(KotlinClassData(desc.name)).also { classData ->
+            addBlockDefaultsUseCase(desc, classData)
             classData.addSub(OutBlock("object ${desc.name}")).apply {
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
