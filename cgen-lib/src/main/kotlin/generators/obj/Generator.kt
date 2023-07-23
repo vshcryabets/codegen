@@ -54,7 +54,7 @@ abstract class Generator<I: Block>(val fileGenerator: FileGenerator) {
                         }
                     }
                 }
-                desc.subs.removeAt(0) // lets remove comments block becuase we already handle it
+                desc.removeSub(first) // let's remove comments block because we already handle it
             }
         }
     }

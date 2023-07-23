@@ -17,9 +17,8 @@ class LoadMetaFilesForTargetUseCase {
         val engine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
 
         println("Target $target")
-        namespaceMap.clear()
         currentTarget = target
-        globRootNamespace.subs.clear()
+        globRootNamespace.clearSubs()
 
         project.files.forEach { fileName ->
             println("Processing $fileName")

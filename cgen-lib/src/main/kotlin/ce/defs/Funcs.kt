@@ -3,7 +3,6 @@ package ce.defs
 import generators.obj.input.*
 
 val globRootNamespace = Namespace("", TreeRoot)
-val namespaceMap = NamespaceMap()
 var currentTarget: Target = Target.Other
 var customBaseFolderPath = ""
 var sourceFile = ""
@@ -12,10 +11,6 @@ var outputFile = ""
 fun rootNamespace() : Namespace = globRootNamespace
 
 fun namespace(name: String) : Namespace = globRootNamespace.getNamespace(name)
-
-fun namespaceMap(): NamespaceMap {
-    return namespaceMap
-}
 
 fun target(): Target = currentTarget
 

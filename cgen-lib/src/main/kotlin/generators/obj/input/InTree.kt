@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import generators.obj.out.*
+import kotlin.reflect.KClass
 
 object TreeRoot : Node("ROOT", null)
 
@@ -29,10 +30,12 @@ open class Leaf(val name: String,
 }
 
 open class Node(name: String,
-                parent: Node?,
-                @JsonManagedReference
-                val subs: MutableList<Leaf> = mutableListOf()) :
+                parent: Node?) :
     Leaf(name, parent) {
+
+    private val _subs: MutableList<Leaf> = mutableListOf()
+    @JsonManagedReference
+    val subs: List<Leaf> = _subs
 
     fun <T : Leaf> findOrNull(clazz: Class<T>): T? {
         subs.forEach {
@@ -70,9 +73,17 @@ open class Node(name: String,
         }
     }
 
+    fun findParent(kClass: KClass<FileData>): Node? {
+        if (kClass.isInstance(this)) {
+            return this
+        }
+        return parent?.findParent(kClass)
+    }
+
     fun <T : Leaf> addSub(leaf: T): T {
-        subs.add(leaf)
+        _subs.add(leaf)
         leaf.parent = this
+        (findParent(FileData::class) as FileData?)?.setDirtyFlag()
         return leaf
     }
 
@@ -99,6 +110,13 @@ open class Node(name: String,
     fun addVarName(name: String) = addSub(VariableName(name))
 
     fun addRValue(name: String) = addSub(RValue(name))
+    fun clearSubs() {
+        _subs.clear()
+    }
+
+    fun removeSub(leaf: Leaf) {
+        _subs.remove(leaf)
+    }
 }
 
 open class Method(name: String) : Node(name, null)

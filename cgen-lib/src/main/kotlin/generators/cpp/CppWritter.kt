@@ -34,7 +34,7 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String) :
                 out.write(node.name)
                 node.findOrNull(OutBlockArguments::class.java)?.apply {
                     writeNode(this, out, indent)
-                    node.subs.remove(this)
+                    node.removeSub(this)
                 }
                 out.write(" {")
                 out.setIndent(indent + fileGenerator.tabSpace)
@@ -50,6 +50,10 @@ class CppWritter(fileGenerator: FileGenerator, outputFolder: String) :
     }
 
     override fun writeFile(fileData: FileData) {
+        if (!fileData.isDirty) {
+            println("No data to write ${fileData.name}")
+            return
+        }
         val outputFile = File(fileData.name)
         outputFile.parentFile.mkdirs()
         println("Writing $outputFile")

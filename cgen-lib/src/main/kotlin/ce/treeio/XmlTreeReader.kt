@@ -81,7 +81,7 @@ class XmlTreeReader : TreeReader {
                 )
             }
             // OUT TREE
-            ProjectOutput::class.java.simpleName -> ProjectOutput(NamespaceMap(),
+            ProjectOutput::class.java.simpleName -> ProjectOutput(
                 Target.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
             FileData::class.java.simpleName -> FileData(name, parent)
             NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)
@@ -94,6 +94,7 @@ class XmlTreeReader : TreeReader {
             NlSeparator::class.java.simpleName -> NlSeparator(name)
             ConstantLeaf::class.java.simpleName -> ConstantLeaf()
             Keyword::class.java.simpleName -> Keyword(name)
+            Datatype::class.java.simpleName -> Datatype(name)
             RValue::class.java.simpleName -> RValue(name)
             VariableName::class.java.simpleName -> VariableName(name)
             ResultLeaf::class.java.simpleName -> ResultLeaf(name)

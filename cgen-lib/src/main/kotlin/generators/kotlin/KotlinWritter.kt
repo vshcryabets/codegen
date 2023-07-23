@@ -28,12 +28,12 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                 out.write(node.name).write("(").setIndent(indent + fileGenerator.tabSpace)
                 node.findOrNull(InputList::class.java)?.apply {
                     writeNode(this, out, indent)
-                    node.subs.remove(this)
+                    node.removeSub(this)
                 }
                 out.setIndent(indent).write(")")
                 node.findOrNull(ResultLeaf::class.java)?.apply {
                     writeLeaf(this, out, indent)
-                    node.subs.remove(this)
+                    node.removeSub(this)
                 }
                 out.writeNl()
             }
@@ -47,7 +47,7 @@ class KotlinWritter(fileGenerator: KotlinFileGenerator, outputFolder: String)
                 out.write(node.name)
                 node.findOrNull(OutBlockArguments::class.java)?.apply {
                     writeNode(this, out, indent)
-                    node.subs.remove(this)
+                    node.removeSub(this)
                 }
                 if (!(node.subs.isEmpty() && codeStyle.preventEmptyBlocks)) {
                     // prevent empty blocks
