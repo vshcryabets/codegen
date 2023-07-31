@@ -1,5 +1,6 @@
 package generators.rust
 
+import ce.formatters.CodeStyleRepo
 import ce.io.FileCodeWritter
 import ce.settings.CodeStyle
 import generators.obj.Writter
@@ -7,8 +8,8 @@ import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class RustWritter(fileGenerator: RustFileGenerator, style: CodeStyle, outputFolder: String)
-    : Writter(fileGenerator, style, outputFolder) {
+class RustWritter(fileGenerator: RustFileGenerator, codeStyleRepo: CodeStyleRepo, outputFolder: String)
+    : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {
@@ -20,7 +21,7 @@ class RustWritter(fileGenerator: RustFileGenerator, style: CodeStyle, outputFold
 //        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
-            codeWritter.setNewLine(fileGenerator.newLine())
+            codeWritter.setNewLine(codeStyleRepo.newLine())
             writeNode(fileData, codeWritter, "")
 
             //out.write("package ${namespace.name}${fileGenerator.newLine()}");

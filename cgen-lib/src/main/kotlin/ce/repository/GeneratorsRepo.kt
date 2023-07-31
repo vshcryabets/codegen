@@ -22,6 +22,7 @@ import generators.kotlin.KtConstantsGenerator
 import generators.kotlin.KtDataClassGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.MetaGenerator
+import generators.obj.PrepareFilesListUseCaseImpl
 import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.ConstantsEnum
@@ -39,94 +40,109 @@ import generators.swift.SwiftFileGenerator
 import generators.swift.SwiftWritter
 
 class GeneratorsRepo(val project: Project) {
-    val supportedMeta : Map<Target, MetaGenerator>
+    val supportedMeta: Map<Target, MetaGenerator>
 
     init {
         val clikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
 
-        val kotlinFileGenerator = KotlinFileGenerator(project.codeStyle)
-        val cppFileGenerator = CppFileGenerator(project.codeStyle)
-        val swiftFileGenerator = SwiftFileGenerator(project.codeStyle)
-        val rustFileGenerator = RustFileGenerator(project.codeStyle)
-        val javaFileGenerator = JavaFileGenerator(project.codeStyle)
-
-        val kotlinAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(clikeCodeStyleRepo)
-        val cppAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(clikeCodeStyleRepo)
-        val javaAddBlockDefaultsUseCase = AddBlockDefaultsUseCaseImpl(clikeCodeStyleRepo)
-
-        val kotlinGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-            ConstantsEnum::class.java to KotlinEnumGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
-            ConstantsBlock::class.java to KtConstantsGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
-            DataClass::class.java to KtDataClassGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase),
-            InterfaceDescription::class.java to KotlinInterfaceGenerator(kotlinFileGenerator, kotlinAddBlockDefaultsUseCase)
-        )
-        val kotlinMeta = MetaGenerator(
-            target = Target.Kotlin,
-            writter = KotlinWritter(clikeCodeStyleRepo, project.outputFolder),
-            project = project,
-            fileGenerator = kotlinFileGenerator,
-            generatorsMap = kotlinGenerators
+        val targets = listOf(
+            Target.Kotlin,
+            Target.Cxx,
         )
 
-        val cppGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-            ConstantsEnum::class.java to CppEnumGenerator(cppFileGenerator, cppAddBlockDefaultsUseCase),
-            ConstantsBlock::class.java to CppConstantsBlockGenerator(cppAddBlockDefaultsUseCase),
-            DataClass::class.java to CppDataClassGenerator(clikeCodeStyleRepo, cppAddBlockDefaultsUseCase)
-        )
-        val cppMeta = MetaGenerator(
-            target = Target.Cxx,
-            writter = CppWritter(clikeCodeStyleRepo, project.outputFolder),
-            project = project,
-            fileGenerator = cppFileGenerator,
-            generatorsMap = cppGenerators
+        val fileGeneratorsMap = mapOf(
+            Target.Kotlin to KotlinFileGenerator(project.codeStyle),
+            Target.Cxx to CppFileGenerator(project.codeStyle),
+            Target.Swift to SwiftFileGenerator(project.codeStyle),
+            Target.Rust to RustFileGenerator(project.codeStyle),
+            Target.Java to JavaFileGenerator(project.codeStyle),
         )
 
-        val swiftGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-            ConstantsEnum::class.java to SwiftEnumGenerator(swiftFileGenerator, project),
-            ConstantsBlock::class.java to SwiftConstantsBlockGenerator(swiftFileGenerator, project),
-            DataClass::class.java to SwiftDataClassGenerator(swiftFileGenerator, project)
-        )
-        val swiftMeta = MetaGenerator(
-            target = Target.Swift,
-            writter = SwiftWritter(swiftFileGenerator, project.codeStyle, project.outputFolder),
-            project = project,
-            fileGenerator = swiftFileGenerator,
-            generatorsMap = swiftGenerators
+        val codestylesMap = targets.map {
+            it to clikeCodeStyleRepo
+        }.toMap()
+
+
+        val writtersMap = mapOf(
+            Target.Kotlin to KotlinWritter(codestylesMap[Target.Kotlin]!!, project.outputFolder),
+            Target.Cxx to CppWritter(codestylesMap[Target.Cxx]!!, project.outputFolder),
+//            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
+//            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
+//            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),
         )
 
-        val rustGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-            ConstantsEnum::class.java to RustEnumGenerator(rustFileGenerator, project),
-            ConstantsBlock::class.java to RsConstantsBlockGenerator(rustFileGenerator, project),
-            DataClass::class.java to RsDataClassGenerator(rustFileGenerator, project)
-        )
-        val rustMeta = MetaGenerator(
-            target = Target.Rust,
-            writter = RustWritter(rustFileGenerator, project.codeStyle, project.outputFolder),
-            project = project,
-            fileGenerator = rustFileGenerator,
-            generatorsMap = rustGenerators
-        )
+        val addBlockDefaultsUseCases = targets.map {
+            it to AddBlockDefaultsUseCaseImpl(codestylesMap[it]!!)
+        }.toMap()
 
-        val javaGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-            ConstantsEnum::class.java to JavaEnumGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
-            ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
-            DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase)
-        )
-        val javaMeta = MetaGenerator(
-            target = Target.Java,
-            writter = JavaWritter(clikeCodeStyleRepo, project.outputFolder),
-            project = project,
-            fileGenerator = javaFileGenerator,
-            generatorsMap = javaGenerators
-        )
+        val prepareFilesListUseCases = targets.map {
+            it to PrepareFilesListUseCaseImpl(project, fileGeneratorsMap[it]!!)
+        }.toMap()
 
-        supportedMeta = mapOf(
-            Target.Kotlin to kotlinMeta,
-            Target.Cxx to cppMeta,
-            Target.Swift to swiftMeta,
-            Target.Rust to rustMeta,
-            Target.Java to javaMeta
-        )
+
+        supportedMeta = targets.map {
+            val fileGenerator = fileGeneratorsMap[it]!!
+            val addBlockUseCase = addBlockDefaultsUseCases[it]!!
+            val generators = when (it) {
+                Target.Kotlin -> mapOf(
+                    ConstantsEnum::class.java to KotlinEnumGenerator(fileGenerator, addBlockUseCase),
+                    ConstantsBlock::class.java to KtConstantsGenerator(fileGenerator, addBlockUseCase),
+                    DataClass::class.java to KtDataClassGenerator(fileGenerator, addBlockUseCase),
+                    InterfaceDescription::class.java to KotlinInterfaceGenerator(fileGenerator, addBlockUseCase)
+                )
+
+                Target.Cxx -> mapOf(
+                    ConstantsEnum::class.java to CppEnumGenerator(fileGenerator, addBlockUseCase),
+                    ConstantsBlock::class.java to CppConstantsBlockGenerator(addBlockUseCase),
+                    DataClass::class.java to CppDataClassGenerator(clikeCodeStyleRepo, addBlockUseCase)
+                )
+
+                Target.Swift -> mapOf(
+                    ConstantsEnum::class.java to SwiftEnumGenerator(fileGenerator, project),
+                    ConstantsBlock::class.java to SwiftConstantsBlockGenerator(fileGenerator, project),
+                    DataClass::class.java to SwiftDataClassGenerator(fileGenerator, project)
+                )
+
+                else -> throw IllegalStateException("Not supported target $it")
+            }
+            it to MetaGenerator(
+                target = it,
+                writter = writtersMap[it]!!,
+                fileGenerator = fileGenerator,
+                generatorsMap = generators,
+                prepareFilesListUseCase = prepareFilesListUseCases[it]!!
+            )
+        }.toMap()
+
+
+
+//        val rustGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
+//            ConstantsEnum::class.java to RustEnumGenerator(rustFileGenerator, project),
+//            ConstantsBlock::class.java to RsConstantsBlockGenerator(rustFileGenerator, project),
+//            DataClass::class.java to RsDataClassGenerator(rustFileGenerator, project)
+//        )
+//        val rustMeta = MetaGenerator(
+//            target = Target.Rust,
+//            writter = RustWritter(rustFileGenerator, clikeCodeStyleRepo, project.outputFolder),
+//            project = project,
+//            fileGenerator = rustFileGenerator,
+//            generatorsMap = rustGenerators,
+//            codeStyleRepo = clikeCodeStyleRepo
+//        )
+//
+//        val javaGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
+//            ConstantsEnum::class.java to JavaEnumGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
+//            ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
+//            DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase)
+//        )
+//        val javaMeta = MetaGenerator(
+//            target = Target.Java,
+//            writter = JavaWritter(clikeCodeStyleRepo, project.outputFolder),
+//            project = project,
+//            fileGenerator = javaFileGenerator,
+//            generatorsMap = javaGenerators,
+//            codeStyleRepo = clikeCodeStyleRepo
+//        )
     }
 
     fun get(target: Target): MetaGenerator {

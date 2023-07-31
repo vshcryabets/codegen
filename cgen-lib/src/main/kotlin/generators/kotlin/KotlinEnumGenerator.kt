@@ -3,12 +3,13 @@ package generators.kotlin
 import ce.defs.DataType
 import ce.domain.usecase.add.AddBlockDefaultsUseCase
 import generators.obj.AutoincrementField
+import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
 import generators.obj.out.*
 
 class KotlinEnumGenerator(
-    fileGenerator: KotlinFileGenerator,
+    fileGenerator: FileGenerator,
     private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 

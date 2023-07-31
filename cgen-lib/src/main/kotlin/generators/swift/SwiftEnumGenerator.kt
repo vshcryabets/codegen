@@ -2,12 +2,13 @@ package generators.swift
 
 import ce.defs.DataType
 import ce.settings.Project
+import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
 import generators.obj.out.FileData
 
 class SwiftEnumGenerator(
-    fileGenerator: SwiftFileGenerator,
+    fileGenerator: FileGenerator,
     private val project: Project
 ) : TransformBlockUseCase<ConstantsEnum> {
 
