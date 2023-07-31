@@ -1,6 +1,7 @@
 package generators.obj
 
 import ce.defs.Target
+import ce.formatters.CodeFormatterUseCase
 import ce.formatters.CodeStyleRepo
 import ce.settings.Project
 import generators.obj.input.Block
@@ -17,6 +18,7 @@ open class MetaGenerator(
     private val generatorsMap: Map<Class<out Block>, TransformBlockUseCase<out Block>>,
     private val writter: Writter,
     private val prepareFilesListUseCase: PrepareFilesListUseCase,
+    private val codeFormatter: CodeFormatterUseCase,
 ) {
 
     private fun translateTree(root: Node, files: Map<String, List<FileData>>) {
@@ -50,6 +52,7 @@ open class MetaGenerator(
 
 
     fun write(projectOutput: ProjectOutput) {
-        writter.write(projectOutput)
+        val formattedOutput = codeFormatter(projectOutput)
+        writter.write(formattedOutput)
     }
 }

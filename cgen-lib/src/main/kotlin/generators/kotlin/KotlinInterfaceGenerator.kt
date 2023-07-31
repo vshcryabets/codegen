@@ -1,7 +1,7 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
@@ -9,7 +9,7 @@ import generators.obj.out.*
 
 class KotlinInterfaceGenerator(
     fileGenerator: FileGenerator,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<InterfaceDescription> {
 
     override fun invoke(files: List<FileData>, desc: InterfaceDescription) {

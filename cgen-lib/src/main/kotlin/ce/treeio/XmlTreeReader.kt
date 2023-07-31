@@ -92,7 +92,7 @@ class XmlTreeReader : TreeReader {
             EnumLeaf::class.java.simpleName -> EnumLeaf(name)
             Separator::class.java.simpleName -> Separator(name)
             NlSeparator::class.java.simpleName -> NlSeparator(name)
-            ConstantLeaf::class.java.simpleName -> ConstantLeaf()
+            ConstantLeaf::class.java.simpleName -> ConstantLeaf({})
             Keyword::class.java.simpleName -> Keyword(name)
             Datatype::class.java.simpleName -> Datatype(name)
             RValue::class.java.simpleName -> RValue(name)

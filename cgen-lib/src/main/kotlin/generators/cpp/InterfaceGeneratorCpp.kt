@@ -1,6 +1,6 @@
 package generators.cpp
 
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.InterfaceDescription
@@ -8,7 +8,7 @@ import generators.obj.out.FileData
 
 class InterfaceGeneratorCpp(
     fileGenerator: FileGenerator,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 )
     : TransformBlockUseCase<InterfaceDescription> {
 

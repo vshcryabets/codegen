@@ -1,6 +1,6 @@
 package generators.kotlin
 
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataClass
@@ -10,7 +10,7 @@ import generators.obj.out.NlSeparator
 
 class KtDataClassGenerator(
     fileGenerator: FileGenerator,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(blockFiles: List<FileData>, desc: DataClass) {

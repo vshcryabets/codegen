@@ -1,6 +1,6 @@
 package generators.cpp
 
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantDesc
@@ -8,7 +8,7 @@ import generators.obj.input.ConstantsBlock
 import generators.obj.out.*
 
 class CppConstantsBlockGenerator(
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -16,7 +16,7 @@ class CppConstantsBlockGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
-        val classData = namespace.addSub(CppScopeGroup(desc.name))
+        val classData = namespace.addSub(Region(desc.name))
         addBlockDefaultsUseCase(desc, classData)
         val autoIncrement = AutoincrementField()
 
@@ -32,12 +32,12 @@ class CppConstantsBlockGenerator(
             if (it is ConstantDesc) {
                 autoIncrement.invoke(it)
                 outBlock.addSub(
-                    ConstantLeaf().apply {
+                    ConstantLeaf {
                         addKeyword("const")
                         addDatatype(Types.typeTo(headerFile, it.type))
                         addVarName(it.name)
                         addKeyword("=")
-                        addRValue(Types.toValue(classData, it.type, it.value))
+                        addRValue(Types.toValue(it.type, it.value))
                         addKeyword(";")
                     }
                 )

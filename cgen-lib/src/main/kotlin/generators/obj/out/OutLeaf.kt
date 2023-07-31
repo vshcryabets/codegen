@@ -19,7 +19,11 @@ class CommentLeaf(name : String) : Leaf(name)
 class ArgumentLeaf(name : String) : Leaf(name)
 class ResultLeaf(name : String) : Leaf(name)
 class FieldLeaf(name : String, parent : Node) : Leaf(name, parent)
-class ConstantLeaf() : Node("", null)
+class ConstantLeaf(fnc: ConstantLeaf.()->Unit) : Node("", null) {
+    init {
+        fnc(this)
+    }
+}
 class EnumLeaf(name : String) : Leaf(name)
 
 class RValue(name : String) : Leaf(name) // something after "="

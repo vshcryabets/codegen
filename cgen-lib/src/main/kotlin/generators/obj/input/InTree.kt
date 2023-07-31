@@ -87,6 +87,13 @@ open class Node(name: String,
         return leaf
     }
 
+    fun <T : Leaf> addSub2(leaf: T, fnc: T.()->Unit) {
+        _subs.add(leaf)
+        leaf.parent = this
+        (findParent(FileData::class) as FileData?)?.setDirtyFlag()
+        fnc(leaf)
+    }
+
     fun addOutBlock(name: String = "", function: OutBlock.() -> Unit) =
         addSub(OutBlock(name)).apply(function)
 

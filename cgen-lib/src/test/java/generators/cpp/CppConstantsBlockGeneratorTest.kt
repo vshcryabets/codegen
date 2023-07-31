@@ -2,14 +2,14 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.Target
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.Namespace
 import generators.obj.input.TreeRoot
-import generators.obj.out.ClassData
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.ProjectOutput
+import generators.obj.out.Region
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -19,8 +19,8 @@ class CppConstantsBlockGeneratorTest {
     fun test() {
         val project = ProjectOutput(Target.Cxx)
         val item = CppConstantsBlockGenerator(
-            addBlockDefaultsUseCase = object: AddBlockDefaultsUseCase {
-                override fun invoke(desc: Block, result: ClassData) {
+            addBlockDefaultsUseCase = object: AddRegionDefaultsUseCase {
+                override fun invoke(desc: Block, result: Region) {
 
                 }
             }

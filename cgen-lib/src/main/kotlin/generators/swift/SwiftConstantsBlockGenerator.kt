@@ -15,7 +15,7 @@ class SwiftConstantsBlockGenerator(
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
 
-        file.addSub(SwiftClassData(desc.name, file)).apply {
+        file.addSub(SwiftClassData(desc.name)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
 //            classDefinition.append("struct ${desc.name} {")

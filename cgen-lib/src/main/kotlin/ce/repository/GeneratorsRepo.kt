@@ -1,49 +1,40 @@
 package ce.repository
 
 import ce.defs.Target
-import ce.domain.usecase.add.AddBlockDefaultsUseCaseImpl
+import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.Project
 import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppDataClassGenerator
 import generators.cpp.CppEnumGenerator
 import generators.cpp.CppFileGenerator
 import generators.cpp.CppWritter
-import generators.java.JavaConstantsGenerator
-import generators.java.JavaDataClassGenerator
-import generators.java.JavaEnumGenerator
 import generators.java.JavaFileGenerator
-import generators.java.JavaWritter
 import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
 import generators.kotlin.KotlinInterfaceGenerator
 import generators.kotlin.KotlinWritter
 import generators.kotlin.KtConstantsGenerator
 import generators.kotlin.KtDataClassGenerator
-import generators.obj.TransformBlockUseCase
 import generators.obj.MetaGenerator
 import generators.obj.PrepareFilesListUseCaseImpl
-import generators.obj.input.Block
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.ConstantsEnum
 import generators.obj.input.DataClass
 import generators.obj.input.InterfaceDescription
-import generators.rust.RsConstantsBlockGenerator
-import generators.rust.RsDataClassGenerator
-import generators.rust.RustEnumGenerator
 import generators.rust.RustFileGenerator
-import generators.rust.RustWritter
 import generators.swift.SwiftConstantsBlockGenerator
 import generators.swift.SwiftDataClassGenerator
 import generators.swift.SwiftEnumGenerator
 import generators.swift.SwiftFileGenerator
-import generators.swift.SwiftWritter
 
 class GeneratorsRepo(val project: Project) {
     val supportedMeta: Map<Target, MetaGenerator>
 
     init {
         val clikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
+        val defaultCodeFormatter = CodeFormatterUseCaseImpl(clikeCodeStyleRepo)
 
         val targets = listOf(
             Target.Kotlin,
@@ -72,7 +63,7 @@ class GeneratorsRepo(val project: Project) {
         )
 
         val addBlockDefaultsUseCases = targets.map {
-            it to AddBlockDefaultsUseCaseImpl(codestylesMap[it]!!)
+            it to AddRegionDefaultsUseCaseImpl(codestylesMap[it]!!)
         }.toMap()
 
         val prepareFilesListUseCases = targets.map {
@@ -110,7 +101,8 @@ class GeneratorsRepo(val project: Project) {
                 writter = writtersMap[it]!!,
                 fileGenerator = fileGenerator,
                 generatorsMap = generators,
-                prepareFilesListUseCase = prepareFilesListUseCases[it]!!
+                prepareFilesListUseCase = prepareFilesListUseCases[it]!!,
+                codeFormatter = defaultCodeFormatter,
             )
         }.toMap()
 

@@ -1,6 +1,6 @@
 package generators.kotlin
 
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
@@ -10,7 +10,7 @@ import generators.obj.out.*
 
 class KtConstantsGenerator(
     fileGenerator : FileGenerator,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -24,7 +24,7 @@ class KtConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantLeaf().apply {
+                        addSub(ConstantLeaf {
                             addKeyword("const")
                             addKeyword("val")
                             addVarName(it.name)

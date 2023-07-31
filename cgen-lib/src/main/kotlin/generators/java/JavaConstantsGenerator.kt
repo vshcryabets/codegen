@@ -1,6 +1,6 @@
 package generators.java
 
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
@@ -9,14 +9,14 @@ import generators.obj.out.FileData
 
 class JavaConstantsGenerator(
     fileGenerator : FileGenerator,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
 
-        file.addSub(JavaClassData(desc.name, file)).apply {
+        file.addSub(JavaClassData(desc.name)).apply {
             addBlockDefaultsUseCase(desc, this)
             addOutBlock("public class ${desc.name}") {
                 val autoIncrement = AutoincrementField()

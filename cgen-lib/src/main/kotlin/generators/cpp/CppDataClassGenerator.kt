@@ -1,9 +1,7 @@
 package generators.cpp
 
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
-import ce.formatters.CLikeCodestyleRepo
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import ce.formatters.CodeStyleRepo
-import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
@@ -11,7 +9,7 @@ import generators.obj.out.*
 
 class CppDataClassGenerator(
     private val codestyleRepo: CodeStyleRepo,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(files: List<FileData>, desc: DataClass) {

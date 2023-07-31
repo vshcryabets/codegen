@@ -1,19 +1,18 @@
 package ce.domain.usecase.add
 
 import ce.formatters.CodeStyleRepo
-import generators.obj.FileGenerator
 import generators.obj.input.Block
 import generators.obj.out.*
 import javax.inject.Inject
 
-interface AddBlockDefaultsUseCase {
-    operator fun invoke(desc: Block, result: ClassData)
+interface AddRegionDefaultsUseCase {
+    operator fun invoke(desc: Block, result: Region)
 }
 
-class AddBlockDefaultsUseCaseImpl @Inject constructor(
+class AddRegionDefaultsUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo,
-): AddBlockDefaultsUseCase {
-    override fun invoke(desc: Block, result: ClassData) {
+): AddRegionDefaultsUseCase {
+    override fun invoke(desc: Block, result: Region) {
         result.addSub(BlockPreNewLines())
         if (desc.subs.size > 0) {
             val first = desc.subs[0]

@@ -1,7 +1,7 @@
 package generators.cpp
 
 import ce.defs.DataType
-import ce.domain.usecase.add.AddBlockDefaultsUseCase
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
@@ -9,7 +9,7 @@ import generators.obj.out.FileData
 
 class CppEnumGenerator(
     fileGenerator: FileGenerator,
-    private val addBlockDefaultsUseCase: AddBlockDefaultsUseCase,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
     override fun invoke(files: List<FileData>, desc: ConstantsEnum) {

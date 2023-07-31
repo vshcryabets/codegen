@@ -16,7 +16,7 @@ class RustEnumGenerator(
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
 
-        file.addSub(RustClassData(desc.name, file)).apply {
+        file.addSub(RustClassData(desc.name)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = !(desc.defaultDataType is DataType.VOID)
 //            if (withRawValues) {

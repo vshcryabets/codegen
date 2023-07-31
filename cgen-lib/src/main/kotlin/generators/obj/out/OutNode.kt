@@ -13,8 +13,11 @@ class ImportsBlock() : Node("", null) {
     }
 }
 
-// $name ($OutBlockArguments) {
+open class Region(name: String) : Node(name, null)
+
+// $OutBlockName ($OutBlockArguments) {
 // ...
 // }
-open class OutBlock(name: String) : Node(name, null)
+open class OutBlock(name: String) : Region(name)
 open class OutBlockArguments(name: String) : Node(name, null)
+open class ClassData(name: String) : Region(name)
