@@ -2,12 +2,13 @@ package generators.obj
 
 import ce.defs.DataValue
 import generators.obj.input.DataField
+import generators.obj.input.Field
 
 class AutoincrementField {
     var previous: DataValue? = null
 
-    operator fun invoke(field : DataField) {
-        if ((field.value == null || field.value.notDefined()) && previous != null) {
+    operator fun invoke(field : Field) {
+        if ((field.value.notDefined()) && previous != null) {
 
             val previousValue = previous!!.value
             val newValue = when (previousValue) {
@@ -21,8 +22,6 @@ class AutoincrementField {
             field.value = DataValue(newValue)
         }
 
-        if (field.value != null) {
-            previous = field.value
-        }
+        previous = field.value
     }
 }

@@ -2,6 +2,7 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import generators.obj.input.getParentPath
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ImportLeaf

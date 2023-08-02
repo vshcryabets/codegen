@@ -76,7 +76,10 @@ class XmlTreeReader : TreeReader {
             "ConstantDesc" -> {
                 val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 ConstantDesc(
-                    name, parent, dataType,
+                    name = name,
+                    parent = parent,
+                    type = dataType,
+                    value =
                     dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
                 )
             }

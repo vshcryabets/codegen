@@ -5,6 +5,8 @@ import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.getParentPath
+import generators.obj.input.getPath
 import generators.obj.out.*
 
 class CppConstantsBlockGenerator(

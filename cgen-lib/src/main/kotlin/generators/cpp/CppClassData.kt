@@ -6,7 +6,7 @@ import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
 
-class CompilerDirective(name: String, parent: Node) : Leaf(name, parent)
+class CompilerDirective(override val name: String, override var parent: Node?) : Leaf
 class CppClassData(name: String) : ClassData(name)
 class CppScopeGroup(name: String) : ClassData(name)
 

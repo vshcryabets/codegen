@@ -52,7 +52,7 @@ open class MetaGenerator(
 
 
     fun write(projectOutput: ProjectOutput) {
-        val formattedOutput = codeFormatter(projectOutput)
+        val formattedOutput = codeFormatter(projectOutput) as ProjectOutput
         writter.write(formattedOutput)
     }
 }

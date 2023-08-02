@@ -3,6 +3,7 @@ package generators.kotlin
 import ce.settings.CodeStyle
 import generators.obj.CLikeFileGenerator
 import generators.obj.input.Block
+import generators.obj.input.getParentPath
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 import generators.obj.out.NamespaceDeclaration

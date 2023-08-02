@@ -1,40 +1,41 @@
 package generators.obj.input
 
-import ce.defs.*
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
+import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.NotDefined
+import ce.defs.NotDefinedValue
 import generators.obj.out.*
 import kotlin.reflect.KClass
 
 object TreeRoot : Node("ROOT", null)
 
-open class Leaf(val name: String,
-                @JsonBackReference
-                var parent: Node? = null) {
-    @JsonIgnore
-    fun getParentPath(): String = parent?.getPath() ?: ""
 
-    @JsonIgnore
-    fun getPath(): String {
-        if (parent == null) {
-            return ""
-        }
-        val parentPath = getParentPath()
-        return if (parentPath.isNotEmpty()) {
-            "$parentPath.$name"
-        } else {
-            name
-        }
+fun <T: Leaf> T.getParentPath(): String = parent?.getPath() ?: ""
+
+fun <T: Leaf> T.getPath(): String {
+    if (parent == null) {
+        return ""
     }
+    val parentPath = getParentPath()
+    return if (parentPath.isNotEmpty()) {
+        "$parentPath.$name"
+    } else {
+        name
+    }
+
 }
 
-open class Node(name: String,
-                parent: Node?) :
-    Leaf(name, parent) {
+interface Leaf {
+    val name: String
+    var parent: Node?
+}
+
+open class Node(
+    override val name: String,
+    override var parent: Node?) :
+    Leaf {
 
     private val _subs: MutableList<Leaf> = mutableListOf()
-    @JsonManagedReference
     val subs: List<Leaf> = _subs
 
     fun <T : Leaf> findOrNull(clazz: Class<T>): T? {

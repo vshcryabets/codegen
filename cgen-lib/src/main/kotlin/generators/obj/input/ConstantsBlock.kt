@@ -15,8 +15,8 @@ open class ConstantsBlock(
     }
 
     fun add(name: String, value: Any? = NotDefined) : ConstantDesc =
-        addSub(ConstantDesc(name, this, defaultDataType, DataValue(value)))
+        addSub(ConstantDesc(name, defaultDataType, DataValue(value)))
 
     fun add(name: String, type : DataType, value: Any? = NotDefined) =
-        addSub(ConstantDesc(name, this, type, DataValue(value)))
+        addSub(ConstantDesc(name, type, DataValue(value)))
 }

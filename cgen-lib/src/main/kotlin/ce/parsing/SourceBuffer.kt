@@ -1,11 +1,12 @@
 package ce.parsing
 
 import generators.obj.input.Leaf
+import generators.obj.input.Node
 
-class Literal(name: String) : Leaf(name)
-class Name(name: String) : Leaf(name)
-class Word(name: String) : Leaf(name)
-class Digit(name: String) : Leaf(name)
+class Literal(override val name: String, override var parent: Node? = null) : Leaf
+class Name(override val name: String, override var parent: Node? = null) : Leaf
+class Word(override val name: String, override var parent: Node? = null) : Leaf
+class Digit(override val name: String, override var parent: Node? = null) : Leaf
 
 class SourceBuffer(
     private val buffer: StringBuilder,

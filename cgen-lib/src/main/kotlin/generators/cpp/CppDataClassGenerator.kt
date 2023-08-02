@@ -5,6 +5,7 @@ import ce.formatters.CodeStyleRepo
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
+import generators.obj.input.getParentPath
 import generators.obj.out.*
 
 class CppDataClassGenerator(

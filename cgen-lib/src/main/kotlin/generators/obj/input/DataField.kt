@@ -5,24 +5,49 @@ import ce.defs.DataValue
 import ce.defs.NotDefinedValue
 
 
-open class DataField(
-    name: String,
-    val type: DataType,
-    var value : DataValue = NotDefinedValue,
-    parent: Node? = null,
-)  : Leaf(name, parent)
+//open class DataField(
+//    override val name: String,
+//    val type: DataType,
+//    var value: DataValue = NotDefinedValue,
+//    override var parent: Node? = null,
+//) : Leaf
 
-open class Output(name: String, type: DataType) : DataField(name, type, NotDefinedValue, null)
-open class OutputReusable(name: String, type: DataType) : DataField(name, type, NotDefinedValue, null)
-open class Input(name: String, type: DataType, value : DataValue) : DataField(
-    name,
-    type,
-    value
-    )
+interface Field : Leaf {
+    val type: DataType
+    var value: DataValue// = NotDefinedValue
+}
 
-open class ConstantDesc(name: String, parent: Node, type: DataType, value : DataValue) : DataField(
-    name,
-    type,
-    value,
-    parent,
-    )
+data class DataField(
+    override val name: String,
+    override val type: DataType,
+    override var value: DataValue = NotDefinedValue,
+    override var parent: Node? = null,
+) : Field
+
+data class Output(
+    override val name: String,
+    override val type: DataType,
+    override var value: DataValue = NotDefinedValue,
+    override var parent: Node? = null,
+) : Field
+
+data class OutputReusable(
+    override val name: String,
+    override val type: DataType,
+    override var value: DataValue = NotDefinedValue,
+    override var parent: Node? = null,
+) : Field
+
+data class Input(
+    override val name: String,
+    override val type: DataType,
+    override var value: DataValue,
+    override var parent: Node? = null,
+) : Field
+
+data class ConstantDesc(
+    override val name: String,
+    override val type: DataType,
+    override var value: DataValue,
+    override var parent: Node? = null,
+) : Field
