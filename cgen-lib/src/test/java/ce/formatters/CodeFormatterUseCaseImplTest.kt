@@ -1,15 +1,20 @@
 package ce.formatters
 
-import ce.defs.Target
 import ce.settings.CodeStyle
-import generators.cpp.CppHeaderFile
 import generators.obj.input.Namespace
 import generators.obj.input.NamespaceImpl
 import generators.obj.input.addKeyword
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
-import generators.obj.input.addSub2
-import generators.obj.out.*
+import generators.obj.out.CommentLeaf
+import generators.obj.out.CommentsBlock
+import generators.obj.out.ConstantLeaf
+import generators.obj.out.Datatype
+import generators.obj.out.Keyword
+import generators.obj.out.RValue
+import generators.obj.out.RegionImpl
+import generators.obj.out.Separator
+import generators.obj.out.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

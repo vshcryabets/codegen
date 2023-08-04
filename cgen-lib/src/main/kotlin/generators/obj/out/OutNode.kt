@@ -2,8 +2,6 @@ package generators.obj.out
 
 import generators.obj.input.*
 
-typealias OutNode = Node
-
 data class CommentsBlock(
     override val name: String = "",
     override var parent: Node? = null,

@@ -16,7 +16,6 @@ data class NamespaceBlock(
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
     override fun copyLeaf(parent: Node?) = this.copy(parent = parent, subs = mutableListOf())
-
     override fun toString() = name
 }
 
