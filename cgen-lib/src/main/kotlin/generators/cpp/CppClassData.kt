@@ -15,15 +15,8 @@ data class CppClassData(
 ) : ClassData {
     override fun copyLeaf(parent: Node?): CppClassData =
         this.copyLeafExt(parent) { return@copyLeafExt CppClassData(name, parent) }
-}
 
-data class CppScopeGroup(
-    override val name: String = "",
-    override var parent: Node? = null,
-    override val subs: MutableList<Leaf> = mutableListOf()
-) : ClassData {
-    override fun copyLeaf(parent: Node?): CppScopeGroup =
-        this.copyLeafExt(parent) { return@copyLeafExt CppScopeGroup(name, parent) }
+    override fun toString(): String = name
 }
 
 data class CppHeaderFile(
@@ -40,6 +33,8 @@ data class CppHeaderFile(
 
     override fun copyLeaf(parent: Node?) =
         this.copyLeafExt(parent) { this.copy(parent = parent, subs = mutableListOf())}
+
+    override fun toString(): String = name
 }
 
 data class CppFileData(
@@ -54,6 +49,8 @@ data class CppFileData(
         isDirty = false
     }
 
+    override fun toString(): String = name
+
     override fun copyLeaf(parent: Node?): CppFileData =
-        this.copyLeafExt(parent) { return@copyLeafExt CppFileData(name, parent) }
+        this.copyLeafExt(parent) { this.copy(parent = parent, subs = mutableListOf())}
 }

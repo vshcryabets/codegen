@@ -98,8 +98,8 @@ fun <T : Node> T.removeSub(leaf: Leaf) {
     subs.remove(leaf)
 }
 
-fun <T : Node> T.copyLeafExt(parent: Node?, fnc: () -> T): T = fnc().apply {
-    subs.forEach { addSub(it.copyLeaf(this)) }
+fun <T : Node> T.copyLeafExt(parent: Node?, fnc: () -> T): T = fnc().also {newCopy ->
+    subs.forEach { newCopy.addSub(it.copyLeaf(this)) }
 }
 
 
