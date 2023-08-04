@@ -36,7 +36,7 @@ data class NamespaceImpl(override val name: String = "",
                          override var parent: Node? = null,
                          override val subs: MutableList<Leaf> = mutableListOf()
 ) : Namespace {
-
+    override fun toString() = name
 
     fun putDefaults(block: Block) {
         block.objectBaseFolder = customBaseFolderPath

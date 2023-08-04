@@ -6,12 +6,13 @@ import generators.obj.input.Block
 import generators.obj.input.TreeRoot
 import generators.obj.input.getParentPath
 import generators.obj.out.FileData
+import generators.obj.out.FileDataImpl
 import generators.obj.out.ProjectOutput
 import java.io.File
 
 class RustFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
-        return listOf(FileData(outputFile, project))
+        return listOf(FileDataImpl(outputFile, project))
     }
 
     override fun getBlockFilePath(block: Block): String {

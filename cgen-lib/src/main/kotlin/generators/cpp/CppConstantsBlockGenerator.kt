@@ -15,7 +15,7 @@ class CppConstantsBlockGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
-        val classData = namespace.addSub(Region(desc.name))
+        val classData = namespace.addSub(RegionImpl(desc.name))
         addBlockDefaultsUseCase(desc, classData)
         val autoIncrement = AutoincrementField()
 
@@ -31,7 +31,7 @@ class CppConstantsBlockGenerator(
             if (it is ConstantDesc) {
                 autoIncrement.invoke(it)
                 outBlock.addSub(
-                    ConstantLeaf {
+                    ConstantLeaf().apply {
                         addKeyword("const")
                         addDatatype(Types.typeTo(headerFile, it.type))
                         addVarName(it.name)

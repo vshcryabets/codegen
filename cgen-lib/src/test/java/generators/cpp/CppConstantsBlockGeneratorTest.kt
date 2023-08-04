@@ -7,6 +7,7 @@ import generators.obj.input.*
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.ProjectOutput
 import generators.obj.out.Region
+import generators.obj.out.RegionImpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -25,7 +26,7 @@ class CppConstantsBlockGeneratorTest {
         val headerFile = CppHeaderFile("a", project)
         val cxxFile = CppFileData("b", project)
         val files = listOf(headerFile, cxxFile)
-        val namespace = Namespace("a", TreeRoot)
+        val namespace = NamespaceImpl("a", TreeRoot)
         val block = namespace.addSub(ConstantsBlock("c")).apply {
             defaultType(DataType.int32)
             add("A", 1)
@@ -39,7 +40,7 @@ class CppConstantsBlockGeneratorTest {
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
         Assert.assertEquals(1, outNamespace.subs.size)
-        val constantsBlock = outNamespace.findOrNull(CppScopeGroup::class.java)!!
+        val constantsBlock = outNamespace.findOrNull(RegionImpl::class.java)!!
         Assert.assertEquals(7, constantsBlock.subs.size)
     }
 }

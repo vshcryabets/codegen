@@ -3,69 +3,138 @@ package generators.obj.out
 import ce.parsing.Literal
 import generators.obj.input.Leaf
 import generators.obj.input.Node
+import generators.obj.input.copyLeafExt
 
 // package $name
-class NamespaceDeclaration(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = NamespaceDeclaration(name, parent)
+data class NamespaceDeclaration(override val name: String, override var parent: Node? = null) : Leaf {
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
-class NamespaceBlock(name: String) : Node(name, null)
+data class NamespaceBlock(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent, subs = mutableListOf())
+
+    override fun toString() = name
+}
 
 //import $name
-class ImportLeaf(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = ImportLeaf(name, parent)
+data class ImportLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
 // //$name
-class CommentLeaf(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = CommentLeaf(name, parent)
+data class CommentLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
-class ArgumentLeaf(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = ArgumentLeaf(name, parent)
+data class ArgumentLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
-class ResultLeaf(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = ResultLeaf(name, parent)
+data class ResultLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
-class FieldLeaf(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = FieldLeaf(name, parent)
+data class FieldLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
-class ConstantLeaf(fnc: ConstantLeaf.() -> Unit) : Node("", null) {
-    init {
-        fnc(this)
+data class ConstantLeaf(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = copyLeafExt(parent) {
+        this.copy(subs = mutableListOf())
     }
 }
 
-class EnumLeaf(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = EnumLeaf(name, parent)
+data class EnumLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
 // something after "="
-class RValue(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = RValue(name, parent)
+data class RValue(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
-class Keyword(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = Keyword(name, parent)
+data class Keyword(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
-class Datatype(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = Datatype(name, parent)
+
+data class Datatype(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
-class VariableName(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = VariableName(name, parent)
+
+data class VariableName(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
 
 // for example ",\n"
-class Separator(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = Separator(name, parent)
+data class Separator(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
-class NlSeparator(override val name: String = "", override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = NlSeparator(name, parent)
+
+data class NlSeparator(
+    override val name: String = "",
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }
+
 @Deprecated("Shouldn't be used")
-class BlockPreNewLines(override val name: String = "", override var parent: Node? = null) : Leaf {
-    override fun copy(parent: Node?) = BlockPreNewLines(name, parent)
+data class BlockPreNewLines(
+    override val name: String = "",
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
 }

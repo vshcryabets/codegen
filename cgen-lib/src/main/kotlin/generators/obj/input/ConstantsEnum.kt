@@ -5,11 +5,14 @@ import ce.defs.DataValue
 import ce.defs.NotDefined
 
 data class ConstantsEnum(
-    name: String,
-    parent: Node,
+    override val name: String,
+    override var parent: Node?,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+    override var sourceFile: String = "",
+    override var outputFile: String = "",
+    override var objectBaseFolder: String = "",
     var defaultDataType: DataType = DataType.VOID
-) : Block(name, parent) {
-
+) : Block {
     fun defaultType(name: DataType) {
         defaultDataType = name
     }
@@ -17,4 +20,12 @@ data class ConstantsEnum(
     fun add(name: String, value: Any = NotDefined) {
         addSub(DataField(name, defaultDataType, DataValue(value)))
     }
+
+    override fun copyLeaf(parent: Node?): ConstantsEnum =
+        this.copyLeafExt(parent) {
+            this.copy(
+                subs = mutableListOf(),
+                parent = parent
+            )
+        }
 }
