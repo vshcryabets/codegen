@@ -31,7 +31,12 @@ fun <T:Namespace> T.getNamespaceExt(name: String): Namespace {
 }
 interface Namespace: Node {
     fun getNamespace(name: String): Namespace
+    fun enum(name: String): ConstantsEnum
+    fun constantsBlock(name: String): ConstantsBlock
+    fun dataClass(name: String): DataClass
+    fun declareInterface(name: String): InterfaceDescription
 }
+
 data class NamespaceImpl(override val name: String = "",
                          override var parent: Node? = null,
                          override val subs: MutableList<Leaf> = mutableListOf()
@@ -45,26 +50,26 @@ data class NamespaceImpl(override val name: String = "",
         println("Block ${block.name} = ${block.outputFile}");
     }
 
-    fun enum(name: String): ConstantsEnum {
+    override fun enum(name: String): ConstantsEnum {
         return ConstantsEnum(name, this).apply {
             putDefaults(this)
         }
     }
 
-    fun constantsBlock(name: String): ConstantsBlock {
+    override fun constantsBlock(name: String): ConstantsBlock {
         return addSub(ConstantsBlock(name)).apply {
             putDefaults(this)
         }
     }
 
-    fun dataClass(name: String): DataClass {
+    override fun dataClass(name: String): DataClass {
         return DataClass(name, this)
             .apply {
                 putDefaults(this)
             }
     }
 
-    fun declareInterface(name: String): InterfaceDescription {
+    override fun declareInterface(name: String): InterfaceDescription {
         return InterfaceDescription(name, this)
             .apply {
                 putDefaults(this)

@@ -3,6 +3,8 @@ package ce.formatters
 import ce.defs.Target
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
+import generators.obj.input.Namespace
+import generators.obj.input.NamespaceImpl
 import generators.obj.input.addKeyword
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
@@ -22,11 +24,12 @@ class CodeFormatterUseCaseImplTest {
         val repo = CLikeCodestyleRepo(codeStyle)
         val formatter = CodeFormatterUseCaseImpl(repo)
 
-        val project = Region("").apply {
-                addSub2(CommentsBlock()) {
+        val project = NamespaceImpl("ns1").apply {
+            addSub(RegionImpl()).apply {
+                addSub(CommentsBlock()).apply {
                     addSub(CommentLeaf("Line 1"))
                 }
-                addSub(ConstantLeaf {
+                addSub(ConstantLeaf().apply {
                     addSub(Keyword("const"))
                     addSub(Datatype("int32_t"))
                     addSub(VariableName("OREAD"))
@@ -34,7 +37,7 @@ class CodeFormatterUseCaseImplTest {
                     addSub(RValue("0"))
                     addSub(Separator(";"))
                 })
-                addSub(ConstantLeaf {
+                addSub(ConstantLeaf().apply {
                     addKeyword("const")
                     addSub(Datatype("int32_t"))
                     addSub(VariableName("OWRITE"))
@@ -42,9 +45,10 @@ class CodeFormatterUseCaseImplTest {
                     addSub(RValue("1"))
                     addSeparator(";")
                 })
+            }
         }
 
-        val result = formatter(project) as Region
-        Assert.assertEquals(4, result.subs.size) //  newline + namespace + newline
+        val result = formatter(project) as Namespace
+        Assert.assertEquals(2, result.subs.size) //  newline + namespace + newline
     }
 }

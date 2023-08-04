@@ -159,6 +159,10 @@ data class InterfaceDescription(
         }
     }
 
+    override fun addBlockComment(value: String) {
+        this.addBlockCommentExt(value)
+    }
+
     override fun copyLeaf(parent: Node?): InterfaceDescription =
         this.copyLeafExt(parent) {
             this.copyLeafExt(parent) {

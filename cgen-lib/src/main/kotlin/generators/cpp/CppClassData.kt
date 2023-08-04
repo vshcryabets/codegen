@@ -38,8 +38,6 @@ data class CppHeaderFile(
         isDirty = false
     }
 
-    override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
-
     override fun copyLeaf(parent: Node?) =
         this.copyLeafExt(parent) { this.copy(parent = parent, subs = mutableListOf())}
 }
@@ -55,8 +53,6 @@ data class CppFileData(
         addSub(CompilerDirective("pragma once", this))
         isDirty = false
     }
-
-    override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
 
     override fun copyLeaf(parent: Node?): CppFileData =
         this.copyLeafExt(parent) { return@copyLeafExt CppFileData(name, parent) }

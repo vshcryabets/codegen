@@ -25,6 +25,10 @@ data class ConstantsBlock(
     fun add(name: String, type : DataType, value: Any? = NotDefined) =
         addSub(ConstantDesc(name, type, DataValue(value)))
 
+    override fun addBlockComment(value: String) {
+        this.addBlockCommentExt(value)
+    }
+
     override fun copyLeaf(parent: Node?): ConstantsBlock =
         this.copyLeafExt(parent) {
             this.copy(

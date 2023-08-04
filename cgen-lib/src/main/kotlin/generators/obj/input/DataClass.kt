@@ -17,6 +17,10 @@ data class DataClass(
         addSub(DataField(name, type, DataValue(value)))
     }
 
+    override fun addBlockComment(value: String) {
+        this.addBlockCommentExt(value)
+    }
+
     override fun copyLeaf(parent: Node?): DataClass =
         this.copyLeafExt(parent) {
             this.copy(

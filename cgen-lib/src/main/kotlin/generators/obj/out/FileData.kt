@@ -7,7 +7,7 @@ import generators.obj.input.Node
 import generators.obj.input.copyLeafExt
 import generators.obj.input.getNamespaceExt
 
-interface FileData: Namespace {
+interface FileData: Node {
     var isDirty: Boolean
 }
 
@@ -17,8 +17,6 @@ data class FileDataImpl(
     override val subs: MutableList<Leaf> = mutableListOf(),
     override var isDirty: Boolean = false
 ) : FileData {
-
-    override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
 
     override fun copyLeaf(parent: Node?): FileDataImpl = this.copyLeafExt(parent) {
         this.copy(parent = parent, subs = mutableListOf())

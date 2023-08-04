@@ -21,6 +21,10 @@ data class ConstantsEnum(
         addSub(DataField(name, defaultDataType, DataValue(value)))
     }
 
+    override fun addBlockComment(value: String) {
+        this.addBlockCommentExt(value)
+    }
+
     override fun copyLeaf(parent: Node?): ConstantsEnum =
         this.copyLeafExt(parent) {
             this.copy(
