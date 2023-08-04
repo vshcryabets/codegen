@@ -8,8 +8,10 @@ data class CommentsBlock(
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?): CommentsBlock =
-        this.copyLeafExt(parent) { return@copyLeafExt CommentsBlock(name, parent, mutableListOf()) }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }
 
 data class MultilineCommentsBlock(
@@ -17,9 +19,10 @@ data class MultilineCommentsBlock(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
-    override fun copyLeaf(parent: Node?): MultilineCommentsBlock =
-        this.copyLeafExt(parent) { return@copyLeafExt MultilineCommentsBlock(name, parent, mutableListOf()) }
-}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
 
 data class ImportsBlock(
     override val name: String = "",
@@ -27,8 +30,10 @@ data class ImportsBlock(
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Region {
 
-    override fun copyLeaf(parent: Node?): ImportsBlock =
-        this.copyLeafExt(parent) { return@copyLeafExt ImportsBlock(name, parent, mutableListOf()) }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 
     fun addInclude(name: String) {
         addSub(ImportLeaf(name))
@@ -47,9 +52,10 @@ data class RegionImpl(
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Region {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?): Region =
-        this.copyLeafExt(parent) { return@copyLeafExt RegionImpl(name, parent, mutableListOf()) }
-}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
 
 // Outblock Sample (outblock has some prefix, then braces { }
 // $OutBlockName ($OutBlockArguments) {
@@ -60,18 +66,20 @@ data class OutBlock(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Region {
-    override fun copyLeaf(parent: Node?): OutBlock =
-        this.copyLeafExt(parent) { return@copyLeafExt OutBlock(name, parent, mutableListOf()) }
-}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
 
 data class OutBlockArguments(
     override val name: String = "",
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
-    override fun copyLeaf(parent: Node?): OutBlockArguments =
-        this.copyLeafExt(parent) { return@copyLeafExt OutBlockArguments(name, parent, mutableListOf()) }
-}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
 
 // TODO think about it
 interface ClassData : Region
@@ -80,6 +88,7 @@ data class ClassDataImpl(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf>
 ) : ClassData {
-    override fun copyLeaf(parent: Node?): ClassData =
-        this.copyLeafExt(parent) { return@copyLeafExt ClassDataImpl(name, parent, mutableListOf()) }
-}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}

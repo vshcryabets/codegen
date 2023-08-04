@@ -4,33 +4,38 @@ import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.addSeparatorNewLine
 import generators.obj.input.addSub
+import generators.obj.out.CommentLeaf
 import generators.obj.out.Region
-import generators.obj.out.RegionImpl
 import javax.inject.Inject
 
 class CodeFormatterUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo
 ) : CodeFormatterUseCase {
     override fun invoke(syntaxTree: Leaf): Leaf {
-        if (syntaxTree is Node) {
-            return processNode(syntaxTree, null)
+        var res = if (syntaxTree is Node) {
+            processNode(syntaxTree, null)
         } else {
-            return processLeaf(syntaxTree, null)
+            processLeaf(syntaxTree, null)
         }
+        return res
     }
 
     private fun processLeaf(syntaxTree: Leaf, parent: Node?): Leaf {
-        return syntaxTree.copyLeaf(null)
+        val res = when (syntaxTree) {
+            is CommentLeaf -> CommentLeaf(codeStyleRepo.singleComment() + syntaxTree.name)
+            else -> syntaxTree.copyLeaf(parent)
+        }
+        return res
     }
 
     private fun processNode(syntaxTree: Node, parent: Node?): Leaf {
         val res = when (syntaxTree) {
             is Region -> {
                 parent?.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
-                syntaxTree.copyLeaf(null)
+                syntaxTree.copyLeaf(copySubs = false)
             }
 
-            else -> syntaxTree.copyLeaf(null)
+            else -> syntaxTree.copyLeaf(copySubs = false)
         } as Node
         syntaxTree.subs.forEach {
             res.addSub(

@@ -20,7 +20,8 @@ data class FileDataImpl(
 
     override fun toString(): String = name
 
-    override fun copyLeaf(parent: Node?): FileDataImpl = this.copyLeafExt(parent) {
-        this.copy(parent = parent, subs = mutableListOf())
-    }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }

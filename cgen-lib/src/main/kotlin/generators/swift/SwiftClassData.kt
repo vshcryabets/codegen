@@ -9,5 +9,8 @@ data class SwiftClassData(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : generators.obj.out.ClassData {
-    override fun copyLeaf(parent: Node?) = copyLeafExt(parent) { this.copy(subs = mutableListOf()) }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }

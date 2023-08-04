@@ -7,7 +7,7 @@ import generators.obj.input.copyLeafExt
 
 // package $name
 data class NamespaceDeclaration(override val name: String, override var parent: Node? = null) : Leaf {
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class NamespaceBlock(
@@ -15,7 +15,10 @@ data class NamespaceBlock(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent, subs = mutableListOf())
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
     override fun toString() = name
 }
 
@@ -24,7 +27,7 @@ data class ImportLeaf(
     override val name: String,
     override var parent: Node? = null
 ) : Leaf {
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 // //$name
@@ -33,7 +36,7 @@ data class CommentLeaf(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class ArgumentLeaf(
@@ -41,7 +44,7 @@ data class ArgumentLeaf(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class ResultLeaf(
@@ -49,7 +52,7 @@ data class ResultLeaf(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class FieldLeaf(
@@ -57,7 +60,7 @@ data class FieldLeaf(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class ConstantLeaf(
@@ -66,9 +69,10 @@ data class ConstantLeaf(
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = copyLeafExt(parent) {
-        this.copy(subs = mutableListOf())
-    }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }
 
 data class EnumLeaf(
@@ -76,7 +80,7 @@ data class EnumLeaf(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 // something after "="
@@ -85,7 +89,7 @@ data class RValue(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class Keyword(
@@ -93,7 +97,7 @@ data class Keyword(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class Datatype(
@@ -101,7 +105,7 @@ data class Datatype(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class VariableName(
@@ -109,7 +113,7 @@ data class VariableName(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 // for example ",\n"
@@ -118,7 +122,7 @@ data class Separator(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class NlSeparator(
@@ -126,7 +130,7 @@ data class NlSeparator(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 @Deprecated("Shouldn't be used")
@@ -135,5 +139,5 @@ data class BlockPreNewLines(
     override var parent: Node? = null
 ) : Leaf {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }

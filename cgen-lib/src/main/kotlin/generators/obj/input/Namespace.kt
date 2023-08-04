@@ -78,5 +78,8 @@ data class NamespaceImpl(override val name: String = "",
 
     override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
 
-    override fun copyLeaf(parent: Node?): Namespace = this.copyLeafExt(parent) {return@copyLeafExt NamespaceImpl(name, parent) }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }

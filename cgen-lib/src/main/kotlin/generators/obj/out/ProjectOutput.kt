@@ -12,7 +12,7 @@ data class ProjectOutput(
     override var parent: Node? = TreeRoot,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
-    override fun copyLeaf(parent: Node?) = copyLeafExt(parent) {
-        this.copy(subs = mutableListOf())
-    }
-}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}

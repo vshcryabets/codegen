@@ -1,20 +1,13 @@
 package ce.formatters
 
 import ce.settings.CodeStyle
+import generators.cpp.CppHeaderFile
 import generators.obj.input.Namespace
 import generators.obj.input.NamespaceImpl
 import generators.obj.input.addKeyword
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
-import generators.obj.out.CommentLeaf
-import generators.obj.out.CommentsBlock
-import generators.obj.out.ConstantLeaf
-import generators.obj.out.Datatype
-import generators.obj.out.Keyword
-import generators.obj.out.RValue
-import generators.obj.out.RegionImpl
-import generators.obj.out.Separator
-import generators.obj.out.VariableName
+import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -55,5 +48,24 @@ class CodeFormatterUseCaseImplTest {
 
         val result = formatter(project) as Namespace
         Assert.assertEquals(2, result.subs.size) //  newline + namespace + newline
+    }
+
+    @Test
+    fun testCxxPragma() {
+        val codeStyle = CodeStyle(
+            newLinesBeforeClass = 1,
+            tabSize = 2,
+            preventEmptyBlocks = true,
+        )
+        val repo = CLikeCodestyleRepo(codeStyle)
+        val formatter = CodeFormatterUseCaseImpl(repo)
+
+        val project = CppHeaderFile("ns1").apply {
+            addSub(CommentsBlock("a"))
+            addSub(NamespaceBlock("b"))
+        }
+
+        val result = formatter(project) as CppHeaderFile
+        Assert.assertEquals(3, result.subs.size) //  newline + namespace + newline
     }
 }

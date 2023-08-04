@@ -40,7 +40,6 @@ class CppConstantsBlockGenerator(
                         addKeyword(";")
                     }
                 )
-                outBlock.addSeparatorNewLine("")
             }
         }
     }

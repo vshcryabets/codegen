@@ -15,7 +15,6 @@ class AddRegionDefaultsUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo,
 ): AddRegionDefaultsUseCase {
     override fun invoke(desc: Block, result: Region) {
-        result.addSub(BlockPreNewLines())
         if (desc.subs.size > 0) {
             val first = desc.subs[0]
             if (first is CommentsBlock) {
@@ -30,11 +29,7 @@ class AddRegionDefaultsUseCaseImpl @Inject constructor(
                     // singleline
                     result.addSub(CommentsBlock()).apply {
                         first.subs.forEach {
-                            if (it is CommentLeaf) {
-                                this.addSub(CommentLeaf(codeStyleRepo.singleComment() + " " + it.name))
-                            } else {
-                                this.addSub(it)
-                            }
+                            addSub(it.copyLeaf(this, true))
                         }
                     }
                 }

@@ -98,8 +98,9 @@ fun <T : Node> T.removeSub(leaf: Leaf) {
     subs.remove(leaf)
 }
 
-fun <T : Node> T.copyLeafExt(parent: Node?, fnc: () -> T): T = fnc().also {newCopy ->
-    subs.forEach { newCopy.addSub(it.copyLeaf(this)) }
+fun <T : Node> T.copyLeafExt(parent: Node?, copySubs: Boolean, fnc: () -> T): T = fnc().also { newCopy ->
+    if (copySubs)
+        subs.forEach { newCopy.addSub(it.copyLeaf(this, copySubs)) }
 }
 
 
@@ -112,7 +113,8 @@ data class Method(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
-    override fun copyLeaf(parent: Node?): Method = this.copyLeafExt(parent) {return@copyLeafExt Method(name, parent, subs) }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) { return@copyLeafExt Method(name, parent, subs) }
 }
 
 data class OutputList(
@@ -128,7 +130,10 @@ data class OutputList(
         addSub(OutputReusable(name, type))
     }
 
-    override fun copyLeaf(parent: Node?): Method = this.copyLeaf(parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }
 
 data class InputList(
@@ -140,8 +145,10 @@ data class InputList(
         addSub(Input(name = name, type = type, value = DataValue(value)))
     }
 
-    override fun copyLeaf(parent: Node?): InputList =
-        this.copyLeafExt(parent) {return@copyLeafExt this.copy(subs = mutableListOf())}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }
 
 data class InterfaceDescription(
@@ -163,13 +170,8 @@ data class InterfaceDescription(
         this.addBlockCommentExt(value)
     }
 
-    override fun copyLeaf(parent: Node?): InterfaceDescription =
-        this.copyLeafExt(parent) {
-            this.copyLeafExt(parent) {
-                this.copy(
-                    subs = mutableListOf(),
-                    parent = parent
-                )
-            }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
         }
 }

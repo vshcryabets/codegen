@@ -5,7 +5,7 @@ import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
 class CompilerDirective(override val name: String, override var parent: Node?) : Leaf {
-    override fun copyLeaf(parent: Node?) = CompilerDirective(name, parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = CompilerDirective(name, parent)
 }
 
 data class CppClassData(
@@ -13,8 +13,9 @@ data class CppClassData(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : ClassData {
-    override fun copyLeaf(parent: Node?): CppClassData =
-        this.copyLeafExt(parent) { return@copyLeafExt CppClassData(name, parent) }
+
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): CppClassData =
+        this.copyLeafExt(parent, copySubs) { return@copyLeafExt CppClassData(name, parent) }
 
     override fun toString(): String = name
 }
@@ -31,8 +32,9 @@ data class CppHeaderFile(
         isDirty = false
     }
 
-    override fun copyLeaf(parent: Node?) =
-        this.copyLeafExt(parent) { this.copy(parent = parent, subs = mutableListOf())}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) { this.copy(parent = parent, subs = mutableListOf()).apply { subs.clear() }}
+
 
     override fun toString(): String = name
 }
@@ -51,6 +53,6 @@ data class CppFileData(
 
     override fun toString(): String = name
 
-    override fun copyLeaf(parent: Node?): CppFileData =
-        this.copyLeafExt(parent) { this.copy(parent = parent, subs = mutableListOf())}
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) { this.copy(parent = parent, subs = mutableListOf()).apply { subs.clear() }}
 }

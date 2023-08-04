@@ -10,6 +10,8 @@ data class JavaClassData(
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : ClassData {
-    override fun copyLeaf(parent: Node?): ClassData =
-        this.copyLeafExt(parent) { return@copyLeafExt JavaClassData(name, parent, subs) }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }

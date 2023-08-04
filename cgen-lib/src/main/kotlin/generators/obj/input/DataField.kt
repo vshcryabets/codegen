@@ -24,7 +24,7 @@ data class DataField(
     override var value: DataValue = NotDefinedValue,
     override var parent: Node? = null,
 ) : Field {
-    override fun copyLeaf(parent: Node?): DataField = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class Output(
@@ -33,7 +33,7 @@ data class Output(
     override var value: DataValue = NotDefinedValue,
     override var parent: Node? = null,
 ) : Field {
-    override fun copyLeaf(parent: Node?): Output = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class OutputReusable(
@@ -42,7 +42,7 @@ data class OutputReusable(
     override var value: DataValue = NotDefinedValue,
     override var parent: Node? = null,
 ) : Field {
-    override fun copyLeaf(parent: Node?): OutputReusable = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class Input(
@@ -51,7 +51,7 @@ data class Input(
     override var value: DataValue,
     override var parent: Node? = null,
 ) : Field {
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }
 
 data class ConstantDesc(
@@ -60,5 +60,5 @@ data class ConstantDesc(
     override var value: DataValue,
     override var parent: Node? = null,
 ) : Field {
-    override fun copyLeaf(parent: Node?) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 }

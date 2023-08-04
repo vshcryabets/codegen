@@ -15,7 +15,7 @@ object TreeRoot : Node {
 
     override var parent: Node? = null
 
-    override fun copyLeaf(parent: Node?): Leaf {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf {
         TODO("Not yet implemented")
     }
 }
@@ -40,5 +40,5 @@ interface Leaf {
     val name: String
     var parent: Node?
 
-    fun copyLeaf(parent: Node?): Leaf
+    fun copyLeaf(parent: Node? = null, copySubs: Boolean = true): Leaf
 }

@@ -27,5 +27,5 @@ class CLikeCodestyleRepo(
     override fun multilineCommentStart(): String = "/**${newLine()}"
     override fun multilineCommentMid(): String = "*"
     override fun multilineCommentEnd(): String = "**/${newLine()}"
-    override fun singleComment(): String = "//"
+    override fun singleComment(): String = "// "
 }

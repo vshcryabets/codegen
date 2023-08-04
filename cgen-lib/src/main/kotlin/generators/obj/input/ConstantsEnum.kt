@@ -25,11 +25,8 @@ data class ConstantsEnum(
         this.addBlockCommentExt(value)
     }
 
-    override fun copyLeaf(parent: Node?): ConstantsEnum =
-        this.copyLeafExt(parent) {
-            this.copy(
-                subs = mutableListOf(),
-                parent = parent
-            )
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
         }
 }
