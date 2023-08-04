@@ -5,11 +5,14 @@ import ce.defs.DataValue
 import ce.defs.NotDefined
 
 data class ConstantsBlock(
-    name: String,
-    parent: Node? = null,
+    override val name: String,
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+    override var sourceFile: String = "",
+    override var outputFile: String = "",
+    override var objectBaseFolder: String = "",
     var defaultDataType: DataType = DataType.VOID
-) : Block(name, parent) {
-
+) : Block {
     fun defaultType(name: DataType) {
         defaultDataType = name
     }
@@ -19,4 +22,12 @@ data class ConstantsBlock(
 
     fun add(name: String, type : DataType, value: Any? = NotDefined) =
         addSub(ConstantDesc(name, type, DataValue(value)))
+
+    override fun copyLeaf(parent: Node?): ConstantsBlock =
+        this.copyLeafExt(parent) {
+            this.copy(
+                subs = mutableListOf(),
+                parent = parent
+            )
+        }
 }

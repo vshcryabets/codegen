@@ -56,14 +56,14 @@ fun <T : Node> T.findParent(kClass: KClass<FileData>): Node? {
 fun <R : Leaf, T : Node> T.addSub(leaf: R): R {
     subs.add(leaf)
     leaf.parent = this
-    (findParent(FileData::class) as FileData?)?.setDirtyFlag()
+    (findParent(FileData::class) as FileData?)?.isDirty = true
     return leaf
 }
 
 fun <R : Leaf, T : Node> T.addSub2(leaf: R, fnc: R.() -> Unit) {
     subs.add(leaf)
     leaf.parent = this
-    (findParent(FileData::class) as FileData?)?.setDirtyFlag()
+    (findParent(FileData::class) as FileData?)?.isDirty = true
     fnc(leaf)
 }
 
@@ -158,9 +158,9 @@ data class InterfaceDescription(
     override val name: String,
     override var parent: Node?,
     override val subs: MutableList<Leaf> = mutableListOf(),
-    override var sourceFile: String,
-    override var outputFile: String,
-    override var objectBaseFolder: String,
+    override var sourceFile: String = "",
+    override var outputFile: String = "",
+    override var objectBaseFolder: String = "",
 ) : Block {
     fun addMethod(name: String, outputs: OutputList? = null, inputs: InputList? = null) {
         addSub(Method(name)).apply {
@@ -170,5 +170,12 @@ data class InterfaceDescription(
     }
 
     override fun copyLeaf(parent: Node?): InterfaceDescription =
-        this.copyLeafExt(parent) {return@copyLeafExt this.copy(subs = mutableListOf())}
+        this.copyLeafExt(parent) {
+            this.copyLeafExt(parent) {
+                this.copy(
+                    subs = mutableListOf(),
+                    parent = parent
+                )
+            }
+        }
 }

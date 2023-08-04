@@ -5,10 +5,23 @@ import ce.defs.DataValue
 import ce.defs.NotDefined
 
 data class DataClass(
-    name: String,
-    parent: Node,
-) : Block(name, parent) {
-    fun field(name: String, type : DataType, value: Any? = NotDefined) {
+    override val name: String,
+    override var parent: Node?,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+    override var sourceFile: String = "",
+    override var outputFile: String = "",
+    override var objectBaseFolder: String = "",
+) : Block {
+
+    fun field(name: String, type: DataType, value: Any? = NotDefined) {
         addSub(DataField(name, type, DataValue(value)))
     }
+
+    override fun copyLeaf(parent: Node?): DataClass =
+        this.copyLeafExt(parent) {
+            this.copy(
+                subs = mutableListOf(),
+                parent = parent
+            )
+        }
 }

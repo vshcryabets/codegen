@@ -23,7 +23,7 @@ class KtConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantLeaf {
+                        addSub(ConstantLeaf().apply {
                             addKeyword("const")
                             addKeyword("val")
                             addVarName(it.name)

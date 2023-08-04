@@ -4,6 +4,7 @@ import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.addSeparatorNewLine
 import generators.obj.out.Region
+import generators.obj.out.RegionImpl
 import javax.inject.Inject
 
 class CodeFormatterUseCaseImpl @Inject constructor(
@@ -18,7 +19,7 @@ class CodeFormatterUseCaseImpl @Inject constructor(
 
         when (currentInLeaf) {
             is Region -> {
-                currentOutLeaf = Region(currentInLeaf.name).apply {
+                currentOutLeaf = RegionImpl(currentInLeaf.name).apply {
                     addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
                 }
             }

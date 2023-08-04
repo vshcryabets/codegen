@@ -6,6 +6,7 @@ import generators.obj.input.Block
 import generators.obj.input.addSub
 import generators.obj.input.getParentPath
 import generators.obj.out.FileData
+import generators.obj.out.FileDataImpl
 import generators.obj.out.ImportsBlock
 import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.ProjectOutput
@@ -13,7 +14,7 @@ import java.io.File
 
 class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
-        return listOf(FileData(outputFile, project).apply {
+        return listOf(FileDataImpl(outputFile, project).apply {
             addSub(NamespaceDeclaration(block.getParentPath()))
             addSub(ImportsBlock())
         })

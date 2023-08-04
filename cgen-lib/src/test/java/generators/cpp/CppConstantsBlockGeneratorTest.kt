@@ -25,7 +25,7 @@ class CppConstantsBlockGeneratorTest {
         val headerFile = CppHeaderFile("a", project)
         val cxxFile = CppFileData("b", project)
         val files = listOf(headerFile, cxxFile)
-        val namespace = Namespace("a", TreeRoot)
+        val namespace = NamespaceImpl("a", TreeRoot)
         val block = namespace.addSub(ConstantsBlock("c")).apply {
             defaultType(DataType.int32)
             add("A", 1)
