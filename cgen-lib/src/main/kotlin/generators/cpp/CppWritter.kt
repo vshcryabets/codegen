@@ -8,6 +8,8 @@ import generators.obj.FileGenerator
 import generators.obj.Writter
 import generators.obj.input.Leaf
 import generators.obj.input.Node
+import generators.obj.input.findOrNull
+import generators.obj.input.removeSub
 import generators.obj.out.*
 import java.io.File
 

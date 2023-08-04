@@ -3,32 +3,40 @@ package generators.obj.input
 import ce.defs.customBaseFolderPath
 import ce.defs.outputFile
 import ce.defs.sourceFile
+import generators.obj.out.OutBlock
 
-open class Namespace(name: String, parent: Node) : Node(name, parent) {
-    fun getNamespace(name: String): Namespace {
-        if (name.isEmpty()) {
-            return this
-        }
-        val pointPos = name.indexOf('.')
-        val searchName: String
-        val endPath: String
-        if (pointPos < 0) {
-            searchName = name
-            endPath = ""
-        } else {
-            searchName = name.substring(0, pointPos)
-            endPath = name.substring(pointPos + 1)
-        }
+fun <T:Namespace> T.getNamespaceExt(name: String): Namespace {
+    if (name.isEmpty()) {
+        return this
+    }
+    val pointPos = name.indexOf('.')
+    val searchName: String
+    val endPath: String
+    if (pointPos < 0) {
+        searchName = name
+        endPath = ""
+    } else {
+        searchName = name.substring(0, pointPos)
+        endPath = name.substring(pointPos + 1)
+    }
 
-        subs.forEach {
-            if (it is Namespace) {
-                if (it.name == searchName) {
-                    return it.getNamespace(endPath)
-                }
+    subs.forEach {
+        if (it is Namespace) {
+            if (it.name == searchName) {
+                return it.getNamespace(endPath)
             }
         }
-        return addSub(Namespace(searchName, this)).getNamespace(endPath)
     }
+    return addSub(NamespaceImpl(searchName, this)).getNamespace(endPath)
+}
+interface Namespace: Node {
+    fun getNamespace(name: String): Namespace
+}
+data class NamespaceImpl(override val name: String = "",
+                         override var parent: Node? = null,
+                         override val subs: MutableList<Leaf> = mutableListOf()
+) : Namespace {
+
 
     fun putDefaults(block: Block) {
         block.objectBaseFolder = customBaseFolderPath
@@ -62,4 +70,8 @@ open class Namespace(name: String, parent: Node) : Node(name, parent) {
                 putDefaults(this)
             }
     }
+
+    override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
+
+    override fun copyLeaf(parent: Node?): Namespace = this.copyLeafExt(parent) {return@copyLeafExt NamespaceImpl(name, parent) }
 }

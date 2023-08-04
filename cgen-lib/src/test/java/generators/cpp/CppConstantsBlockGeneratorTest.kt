@@ -3,10 +3,7 @@ package generators.cpp
 import ce.defs.DataType
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
-import generators.obj.input.Block
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.Namespace
-import generators.obj.input.TreeRoot
+import generators.obj.input.*
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.ProjectOutput
 import generators.obj.out.Region

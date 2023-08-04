@@ -2,6 +2,7 @@ package ce.formatters
 
 import generators.obj.input.Leaf
 import generators.obj.input.Node
+import generators.obj.input.addSeparatorNewLine
 import generators.obj.out.Region
 import javax.inject.Inject
 

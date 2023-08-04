@@ -1,13 +1,20 @@
 package generators.obj.out
 
-import generators.obj.input.Node
+import generators.obj.input.*
 
 typealias OutNode = Node
 
-class CommentsBlock() : Node("", null)
-class MultilineCommentsBlock() : Node("", null)
+data class CommentsBlock(override val name: String = "", override var parent: Node? = null, override val subs: MutableList<Leaf>) : Node {
+    override fun copyLeaf(parent: Node?): CommentsBlock = this.copyLeafExt(parent) {return@copyLeafExt CommentsBlock(name, parent, subs) }
+}
 
-class ImportsBlock() : Region("") {
+data class MultilineCommentsBlock(override val name: String = "", override var parent: Node? = null, override val subs: MutableList<Leaf>) : Node {
+    override fun copyLeaf(parent: Node?): MultilineCommentsBlock = this.copyLeafExt(parent) {return@copyLeafExt MultilineCommentsBlock(name, parent, subs) }
+}
+
+data class ImportsBlock(override val name: String = "", override var parent: Node? = null, override val subs: MutableList<Leaf>) : Region {
+
+    override fun copyLeaf(parent: Node?): ImportsBlock = this.copyLeafExt(parent) {return@copyLeafExt ImportsBlock(name, parent, subs) }
     fun addInclude(name: String) {
         addSub(ImportLeaf(name))
     }
@@ -17,12 +24,22 @@ class ImportsBlock() : Region("") {
 // // some constants
 // const int a = 10;
 // const int b = 20;
-open class Region(name: String) : Node(name, null)
+interface Region: Node
 
 // Outblock Sample (outblock has some prefix, then braces { }
 // $OutBlockName ($OutBlockArguments) {
 // ...
 // }
-open class OutBlock(name: String) : Region(name)
-open class OutBlockArguments(name: String) : Node(name, null)
-open class ClassData(name: String) : Region(name) // TODO think about it
+data class OutBlock(override val name: String = "", override var parent: Node? = null, override val subs: MutableList<Leaf>) : Region {
+    override fun copyLeaf(parent: Node?): OutBlock = this.copyLeafExt(parent) {return@copyLeafExt OutBlock(name, parent, subs) }
+}
+
+data class OutBlockArguments(override val name: String = "", override var parent: Node? = null, override val subs: MutableList<Leaf>) : Node {
+    override fun copyLeaf(parent: Node?): OutBlockArguments = this.copyLeafExt(parent) {return@copyLeafExt OutBlockArguments(name, parent, subs) }
+}
+
+// TODO think about it
+interface ClassData: Region
+data class ClassDataImpl(override val name: String = "", override var parent: Node? = null, override val subs: MutableList<Leaf>) : ClassData {
+    override fun copyLeaf(parent: Node?): ClassDataImpl = this.copyLeafExt(parent) {return@copyLeafExt ClassDataImpl(name, parent, subs) }
+}

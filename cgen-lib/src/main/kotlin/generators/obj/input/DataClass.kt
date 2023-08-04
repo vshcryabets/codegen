@@ -4,7 +4,7 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefined
 
-open class DataClass(
+data class DataClass(
     name: String,
     parent: Node,
 ) : Block(name, parent) {

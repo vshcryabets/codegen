@@ -5,6 +5,7 @@ import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class RsDataClassGenerator(

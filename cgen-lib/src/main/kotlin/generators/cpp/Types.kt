@@ -2,6 +2,7 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import generators.obj.input.findOrCreateSub
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock

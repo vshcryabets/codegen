@@ -3,8 +3,7 @@ package generators.kotlin
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.DataClass
-import generators.obj.input.DataField
+import generators.obj.input.*
 import generators.obj.out.FileData
 import generators.obj.out.NlSeparator
 

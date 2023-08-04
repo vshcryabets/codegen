@@ -5,6 +5,7 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class CppEnumGenerator(

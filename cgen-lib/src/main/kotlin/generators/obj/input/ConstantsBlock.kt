@@ -4,7 +4,7 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefined
 
-open class ConstantsBlock(
+data class ConstantsBlock(
     name: String,
     parent: Node? = null,
     var defaultDataType: DataType = DataType.VOID

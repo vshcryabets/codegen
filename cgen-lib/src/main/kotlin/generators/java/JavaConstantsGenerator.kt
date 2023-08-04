@@ -5,6 +5,8 @@ import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.addOutBlock
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaConstantsGenerator(

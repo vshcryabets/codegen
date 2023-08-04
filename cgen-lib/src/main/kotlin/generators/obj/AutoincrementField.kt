@@ -1,7 +1,6 @@
 package generators.obj
 
 import ce.defs.DataValue
-import generators.obj.input.DataField
 import generators.obj.input.Field
 
 class AutoincrementField {

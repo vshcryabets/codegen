@@ -4,6 +4,7 @@ import ce.defs.DataType
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaEnumGenerator(

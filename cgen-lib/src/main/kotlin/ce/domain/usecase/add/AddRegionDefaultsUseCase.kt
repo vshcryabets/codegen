@@ -2,6 +2,8 @@ package ce.domain.usecase.add
 
 import ce.formatters.CodeStyleRepo
 import generators.obj.input.Block
+import generators.obj.input.addSub
+import generators.obj.input.removeSub
 import generators.obj.out.*
 import javax.inject.Inject
 

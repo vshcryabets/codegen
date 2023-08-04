@@ -1,8 +1,7 @@
 package generators.obj
 
 import ce.settings.Project
-import generators.obj.input.Block
-import generators.obj.input.Node
+import generators.obj.input.*
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 import generators.obj.out.ProjectOutput

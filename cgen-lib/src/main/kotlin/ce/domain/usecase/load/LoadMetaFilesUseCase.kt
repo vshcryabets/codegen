@@ -4,6 +4,7 @@ import ce.defs.*
 import ce.defs.Target
 import ce.settings.Project
 import generators.obj.input.Namespace
+import generators.obj.input.clearSubs
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader

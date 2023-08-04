@@ -1,23 +1,61 @@
 package generators.cpp
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
+import generators.obj.input.*
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 
-
-class CompilerDirective(override val name: String, override var parent: Node?) : Leaf
-class CppClassData(name: String) : ClassData(name)
-class CppScopeGroup(name: String) : ClassData(name)
-
-open class CppHeaderFile(name: String, parent: Node) : FileData(name, parent) {
-    init {
-        addSub(CompilerDirective("pragma once", this))
-        resetDirtyFlag()
-    }
+class CompilerDirective(override val name: String, override var parent: Node?) : Leaf {
+    override fun copyLeaf(parent: Node?) = CompilerDirective(name, parent)
 }
 
-class CppFileData(
-    name: String,
-    parent: Node
-) : FileData(name, parent)
+data class CppClassData(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : ClassData {
+    override fun copyLeaf(parent: Node?): CppClassData =
+        this.copyLeafExt(parent) { return@copyLeafExt CppClassData(name, parent) }
+}
+
+data class CppScopeGroup(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : ClassData {
+    override fun copyLeaf(parent: Node?): CppScopeGroup =
+        this.copyLeafExt(parent) { return@copyLeafExt CppScopeGroup(name, parent) }
+}
+
+data class CppHeaderFile(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+    override var isDirty: Boolean = false
+) : FileData {
+
+    init {
+        addSub(CompilerDirective("pragma once", this))
+    }
+
+    override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
+
+    override fun copyLeaf(parent: Node?): CppHeaderFile =
+        this.copyLeafExt(parent) { return@copyLeafExt CppHeaderFile(name, parent) }
+}
+
+data class CppFileData(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+    override var isDirty: Boolean = false
+) : FileData {
+
+    init {
+        addSub(CompilerDirective("pragma once", this))
+    }
+
+    override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
+
+    override fun copyLeaf(parent: Node?): CppFileData =
+        this.copyLeafExt(parent) { return@copyLeafExt CppFileData(name, parent) }
+}

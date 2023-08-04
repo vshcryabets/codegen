@@ -4,8 +4,7 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.ConstantDesc
-import generators.obj.input.ConstantsBlock
+import generators.obj.input.*
 import generators.obj.out.*
 
 class KtConstantsGenerator(

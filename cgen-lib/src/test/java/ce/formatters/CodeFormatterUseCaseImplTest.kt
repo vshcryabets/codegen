@@ -3,6 +3,10 @@ package ce.formatters
 import ce.defs.Target
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
+import generators.obj.input.addKeyword
+import generators.obj.input.addSeparator
+import generators.obj.input.addSub
+import generators.obj.input.addSub2
 import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test

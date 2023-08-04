@@ -4,8 +4,7 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefined
 
-
-open class ConstantsEnum(
+data class ConstantsEnum(
     name: String,
     parent: Node,
     var defaultDataType: DataType = DataType.VOID
