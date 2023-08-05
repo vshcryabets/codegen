@@ -15,14 +15,14 @@ class CodeFormatterUseCaseImplTest {
     @Test
     fun testRegion() {
         val codeStyle = CodeStyle(
-            newLinesBeforeClass = 1,
+            newLinesBeforeClass = 0,
             tabSize = 2,
             preventEmptyBlocks = true,
         )
         val repo = CLikeCodestyleRepo(codeStyle)
         val formatter = CodeFormatterUseCaseImpl(repo)
 
-        val project = NamespaceImpl("ns1").apply {
+        val project = NamespaceBlock("ns1").apply {
             addSub(RegionImpl()).apply {
                 addSub(CommentsBlock()).apply {
                     addSub(CommentLeaf("Line 1"))
@@ -46,8 +46,14 @@ class CodeFormatterUseCaseImplTest {
             }
         }
 
-        val result = formatter(project) as Namespace
-        Assert.assertEquals(2, result.subs.size) //  newline + namespace + newline
+        val result = formatter(project) as NamespaceBlock
+        // expected result
+        // <NamespaceBlock> <{> <nl>
+        // <indent> <// CommentsBlock> <nl>
+        // <indent> constant1 <nl>
+        // <indent> constant2 <nl>
+        // <}> </NamespaceBlock>
+        Assert.assertEquals(12, result.subs.size)
     }
 
     @Test
@@ -66,6 +72,13 @@ class CodeFormatterUseCaseImplTest {
         }
 
         val result = formatter(project) as CppHeaderFile
-        Assert.assertEquals(3, result.subs.size) //  newline + namespace + newline
+        // expected result
+        // <CppHeaderFile>
+        //    <nl>
+        //    <CommentsBlock> <nl>
+        //    <NamespaceBlock> <{> <nl>
+        //    <}>
+        // </CppHeaderFile>
+        Assert.assertEquals(7, result.subs.size) //  newline + namespace + newline
     }
 }

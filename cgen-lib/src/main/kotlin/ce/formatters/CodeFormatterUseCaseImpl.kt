@@ -5,6 +5,7 @@ import generators.obj.input.Node
 import generators.obj.input.addSeparatorNewLine
 import generators.obj.input.addSub
 import generators.obj.out.CommentLeaf
+import generators.obj.out.NlSeparator
 import generators.obj.out.Region
 import javax.inject.Inject
 
@@ -21,9 +22,25 @@ class CodeFormatterUseCaseImpl @Inject constructor(
     }
 
     private fun processLeaf(syntaxTree: Leaf, parent: Node?): Leaf {
+        val nodesToAdd = mutableListOf<Leaf>()
         val res = when (syntaxTree) {
-            is CommentLeaf -> CommentLeaf(codeStyleRepo.singleComment() + syntaxTree.name)
-            else -> syntaxTree.copyLeaf(parent)
+            is CommentLeaf -> {
+                val leaf = CommentLeaf(codeStyleRepo.singleComment() + syntaxTree.name)
+                nodesToAdd.add(leaf)
+                nodesToAdd.add(NlSeparator())
+                leaf
+            }
+
+            else -> {
+                val leaf = syntaxTree.copyLeaf(parent)
+                nodesToAdd.add(leaf)
+                leaf
+            }
+        }
+        parent?.apply {
+            nodesToAdd.forEach {
+                addSub(it)
+            }
         }
         return res
     }
@@ -38,13 +55,11 @@ class CodeFormatterUseCaseImpl @Inject constructor(
             else -> syntaxTree.copyLeaf(copySubs = false)
         } as Node
         syntaxTree.subs.forEach {
-            res.addSub(
-                if (it is Node) {
-                    processNode(it, res)
-                } else {
-                    processLeaf(it, res)
-                }
-            )
+            if (it is Node) {
+                res.addSub(processNode(it, res))
+            } else {
+                processLeaf(it, res)
+            }
         }
         return res
     }
