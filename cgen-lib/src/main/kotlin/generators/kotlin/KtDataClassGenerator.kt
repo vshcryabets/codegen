@@ -30,7 +30,7 @@ class KtDataClassGenerator(
                             }
                             addDataField(
                                 if (leaf.value.isDefined())
-                                    "val ${leaf.name}: ${Types.typeTo(file, leaf.type)} = ${Types.toValue(kotlinClass, leaf.type, leaf.value)}"
+                                    "val ${leaf.name}: ${Types.typeTo(file, leaf.type)} = ${Types.toValue(leaf.type, leaf.value)}"
                                 else
                                     "val ${leaf.name}: ${Types.typeTo(file, leaf.type)}",
                                 leaf.type)

@@ -65,7 +65,7 @@ data class OutBlock(
     override val name: String = "",
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf()
-) : Region {
+) : Node {
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)

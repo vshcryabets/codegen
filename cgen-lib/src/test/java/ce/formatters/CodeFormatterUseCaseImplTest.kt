@@ -1,5 +1,6 @@
 package ce.formatters
 
+import ce.defs.Target
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
 import generators.obj.input.addKeyword
@@ -10,13 +11,20 @@ import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class CodeFormatterUseCaseImplTest {
-    val codeStyle = CodeStyle(
+    val codeStyle1NlBeforeRegion = CodeStyle(
+        newLinesBeforeClass = 1,
+        tabSize = 4,
+        preventEmptyBlocks = true,
+    )
+
+    val codeStyleNoSpace = CodeStyle(
         newLinesBeforeClass = 0,
         tabSize = 2,
         preventEmptyBlocks = true,
     )
-    val repo = CLikeCodestyleRepo(codeStyle)
-    val formatter = CodeFormatterUseCaseImpl(repo)
+    val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
+    val repo1NL = CLikeCodestyleRepo(codeStyle1NlBeforeRegion)
+    val formatter = CodeFormatterUseCaseImpl(repoNoSpace)
 
     @Test
     fun testRegion() {
@@ -48,7 +56,7 @@ class CodeFormatterUseCaseImplTest {
         val output = formatter(input) as NamespaceBlock
         // expected result
         // <NamespaceBlock>
-        //     <{> <nl>
+        //     <SPACE> <{> <nl>
         //     // no region pre new lines - because of "newLinesBeforeClass = 0"
         //     <Region>
         //         <CommentBlock>
@@ -60,8 +68,8 @@ class CodeFormatterUseCaseImplTest {
         //     </Region>
         //     <}>
         // </NamespaceBlock>
-        Assert.assertEquals(4, output.subs.size)
-        val region = output.subs[2] as Region
+        Assert.assertEquals(5, output.subs.size)
+        val region = output.subs[3] as Region
         Assert.assertEquals(7, region.subs.size)
         val commentBlock = region.subs[0] as CommentsBlock
         Assert.assertEquals(6, commentBlock.subs.size)
@@ -69,6 +77,7 @@ class CodeFormatterUseCaseImplTest {
 
     @Test
     fun testCxxPragma() {
+        val formatter = CodeFormatterUseCaseImpl(repo1NL)
         val input = CppHeaderFile("ns1").apply {
             addSub(NamespaceBlock("b"))
         }
@@ -77,14 +86,15 @@ class CodeFormatterUseCaseImplTest {
         // expected result
         // <CppHeaderFile>
         //    <pragama once> <nl>
+        //    <nl>
         //    <NamespaceBlock>
-        //       <{><nl>
+        //       <SPACE> <{><nl>
         //       <}>
         //    </NamespaceBlock>
         //    <nl>
         // </CppHeaderFile>
-        Assert.assertEquals(4, output.subs.size)
-        Assert.assertEquals(3, (output.subs[2] as NamespaceBlock).subs.size)
+        Assert.assertEquals(5, output.subs.size)
+        Assert.assertEquals(4, (output.subs[3] as NamespaceBlock).subs.size)
     }
 
     @Test
@@ -109,5 +119,20 @@ class CodeFormatterUseCaseImplTest {
         //     <;>
         // </ConstantLeaf>
         Assert.assertEquals(10, output.subs.size)
+    }
+
+    @Test
+    fun testNonDirtyFileData() {
+        val input = ProjectOutput(target = Target.Cxx).apply {
+            addSub(CppHeaderFile("ns1").apply {
+                addSub(NamespaceBlock("b"))
+            })
+            addSub(CppHeaderFile("ns2").apply {
+                addSub(NamespaceBlock("b"))
+                isDirty = false
+            })
+        }
+        val output = formatter(input) as ProjectOutput
+        Assert.assertEquals(1, output.subs.size)
     }
 }

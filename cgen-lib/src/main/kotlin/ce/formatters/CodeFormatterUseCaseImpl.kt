@@ -6,13 +6,13 @@ import generators.obj.out.*
 import javax.inject.Inject
 
 class CodeFormatterUseCaseImpl @Inject constructor(
-    private val codeStyleRepo: CodeStyleRepo
+    private val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun invoke(syntaxTree: Node): Leaf {
-        return processNode(syntaxTree, null, 0)
+        return processNode(syntaxTree, null, 0)!!
     }
 
-    private fun processLeaf(input: Leaf, parent: Node?, indent: Int) {
+    private fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
         when (input) {
             is CommentLeaf -> {
@@ -20,70 +20,97 @@ class CodeFormatterUseCaseImpl @Inject constructor(
                 nodesToAdd.addAll(getIndents(indent))
                 nodesToAdd.add(leaf)
                 nodesToAdd.add(getNewLine())
-                leaf
             }
 
             is CompilerDirective -> {
-                val leaf = input.copyLeaf(parent = parent)
+                val leaf = input.copyLeaf(parent = outputParent)
                 nodesToAdd.add(leaf)
                 nodesToAdd.add(getNewLine())
-                leaf
             }
 
             else -> {
-                val leaf = input.copyLeaf(parent)
+                val leaf = input.copyLeaf(outputParent)
                 nodesToAdd.add(leaf)
-                leaf
             }
         }
-        parent?.apply {
-            nodesToAdd.forEach {
-                addSub(it)
-            }
+        nodesToAdd.forEach {
+            outputParent.addSub(it)
         }
     }
 
     private fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
-    private fun processNode(input: Node, parent: Node?, indent: Int): Leaf {
-        return when (input) {
-            is Region -> {
-                if (codeStyleRepo.addSpaceBeforeRegion()) {
-                    parent?.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
-                }
-                (input.copyLeaf(copySubs = false) as Region).apply {
-                    parent?.addSub(this)
-                    processSubs(input, this, indent)
-                }
+    private fun processNode(input: Node, outputParent: Node?, indent: Int): Leaf? {
+        if (input is FileData) {
+            if (!input.isDirty) {
+                return null
             }
+        }
+        if ((input is Region) or (input is NamespaceBlock)) {
+            if (codeStyleRepo.addSpaceBeforeRegion()) {
+                outputParent?.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
+            }
+        }
+
+        return when (input) {
 
             is ConstantLeaf -> {
-                input.copyLeaf(copySubs = false).apply {
-                    addIndents(parent, indent)
-                    parent?.addSub(this)
-                    processSubs(input, this, indent)
-                    parent?.addSeparatorNewLine()
+                formatConstantLeaf(input, outputParent, indent)
+            }
+
+            is OutBlock -> {
+                (input.copyLeaf(copySubs = false) as OutBlock).apply {
+                    outputParent?.addSub(this)
+                    addSub(Space())
+                    addKeyword("{")
+                    addSeparatorNewLine()
+                    processSubs(input, this, indent + 1)
+                    addKeyword("}")
+                    outputParent?.addSeparatorNewLine()
                 }
             }
 
             is NamespaceBlock -> {
                 (input.copyLeaf(copySubs = false) as Node).apply {
-                    parent?.addSub(this)
+                    outputParent?.addSub(this)
+                    addSub(Space())
                     addKeyword("{")
                     addSeparatorNewLine()
                     processSubs(input, this, indent + 1)
                     addKeyword("}")
-                    parent?.addSeparatorNewLine()
+                    outputParent?.addSeparatorNewLine()
+                }
+            }
+
+            is Region -> {
+                (input.copyLeaf(copySubs = false) as Region).apply {
+                    outputParent?.addSub(this)
+                    processSubs(input, this, indent)
                 }
             }
 
             else -> {
                 val node = input.copyLeaf(copySubs = false) as Node
-                parent?.addSub(node)
+                outputParent?.addSub(node)
                 processSubs(input, node, indent)
                 node
             }
         }
+    }
+
+    private fun formatConstantLeaf(input: ConstantLeaf, parent: Node?, indent: Int): Leaf {
+        val res = input.copyLeaf(copySubs = false).apply {
+            addIndents(parent, indent)
+            parent?.addSub(this)
+            input.subs.forEach {
+                processLeaf(it, this, indent)
+                if ((it !is RValue) and (it !is Separator)) {
+                    this.addSub(Space())
+                }
+            }
+            parent?.addSeparatorNewLine()
+        }
+        return res
     }
 
     private fun addIndents(parent: Node?, indent: Int) {

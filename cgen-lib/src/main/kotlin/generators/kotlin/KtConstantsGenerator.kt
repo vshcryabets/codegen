@@ -8,7 +8,6 @@ import generators.obj.input.*
 import generators.obj.out.*
 
 class KtConstantsGenerator(
-    fileGenerator : FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
@@ -17,9 +16,9 @@ class KtConstantsGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
         val autoIncrement = AutoincrementField()
 
-        file.addSub(KotlinClassData(desc.name)).also { classData ->
-            addBlockDefaultsUseCase(desc, classData)
-            classData.addSub(OutBlock("object ${desc.name}")).apply {
+        file.addSub(RegionImpl()).apply {
+            addBlockDefaultsUseCase(desc, this)
+            addSub(OutBlock("object ${desc.name}")).apply {
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
@@ -30,8 +29,7 @@ class KtConstantsGenerator(
                             addKeyword(":")
                             addDatatype(Types.typeTo(file, it.type))
                             addKeyword("=")
-                            addRValue(Types.toValue(classData, it.type, it.value))
-                            addSeparatorNewLine("")
+                            addRValue(Types.toValue(it.type, it.value))
                         })
                     }
                 }

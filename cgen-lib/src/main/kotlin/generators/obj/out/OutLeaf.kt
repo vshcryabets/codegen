@@ -1,6 +1,5 @@
 package generators.obj.out
 
-import ce.parsing.Literal
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.copyLeafExt

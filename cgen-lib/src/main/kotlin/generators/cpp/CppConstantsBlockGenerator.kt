@@ -15,17 +15,16 @@ class CppConstantsBlockGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
-        val classData = namespace.addSub(RegionImpl(desc.name))
-        addBlockDefaultsUseCase(desc, classData)
+        val outBlock = namespace.addSub(RegionImpl(desc.name))
+        addBlockDefaultsUseCase(desc, outBlock)
         val autoIncrement = AutoincrementField()
 
-        if (classData.findOrNull(CommentsBlock::class.java) == null) {
+        if (outBlock.findOrNull(CommentsBlock::class.java) == null) {
             // add default comments block
-            classData.addSub(CommentsBlock()).apply {
+            outBlock.addSub(CommentsBlock()).apply {
                 addCommentLine("Constants ${desc.name}")
             }
         }
-        val outBlock = classData
 
         desc.subs.forEach {
             if (it is ConstantDesc) {

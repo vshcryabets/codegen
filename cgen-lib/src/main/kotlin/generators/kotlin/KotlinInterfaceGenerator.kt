@@ -72,7 +72,7 @@ class KotlinInterfaceGenerator(
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
                                         "${it.name}: ${Types.typeTo(file, it.type)} = " +
-                                                "${Types.toValue(itf, it.type, it.value)}"
+                                                "${Types.toValue(it.type, it.value)}"
                                     }
                                 )
                             )
@@ -92,7 +92,7 @@ class KotlinInterfaceGenerator(
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
                                         "${it.name}: ${Types.typeTo(file, it.type)} = " +
-                                                "${Types.toValue(itf, it.type, it.value)}"
+                                                "${Types.toValue(it.type, it.value)}"
                                     }
                                 )
                             )

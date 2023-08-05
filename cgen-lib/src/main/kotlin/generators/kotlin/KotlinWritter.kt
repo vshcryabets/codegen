@@ -39,34 +39,9 @@ class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
                 }
                 out.writeNl()
             }
-            is OutBlockArguments -> {
-                out.write("(")
-                out.setIndent(indent + codeStyleRepo.tab)
-                writeSubNodes(node, out, indent + codeStyleRepo.tab)
-                out.setIndent(indent).writeNlIfNotEmpty().write(")")
-            }
             is OutBlock -> {
                 out.write(node.name)
-                node.findOrNull(OutBlockArguments::class.java)?.apply {
-                    writeNode(this, out, indent)
-                    node.removeSub(this)
-                }
-                if (!(node.subs.isEmpty() && codeStyleRepo.preventEmptyBlocks)) {
-                    // prevent empty blocks
-                    out.write(" {")
-                    out.setIndent(indent + codeStyleRepo.tab)
-                    out.writeNl()
-                    writeSubNodes(node, out, indent + codeStyleRepo.tab)
-                    out.setIndent(indent).writeNlIfNotEmpty().write("}")
-                }
-                out.writeNl()
-            }
-            is ImportsBlock -> {
-                if (node.subs.size > 0) {
-                    out.writeNl()
-                    writeSubNodes(node, out, indent)
-                    out.writeNl()
-                }
+                super.writeNode(node, out, indent)
             }
             else -> super.writeNode(node, out, indent)
         }
@@ -74,8 +49,8 @@ class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
 
     override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
-            is ImportLeaf -> out.write("import ${leaf.name}").writeNl()
-            is NamespaceDeclaration -> out.write("package ${leaf.name}").writeNl()
+            is ImportLeaf -> out.write("import ${leaf.name}")
+            is NamespaceDeclaration -> out.write("package ${leaf.name}")
             else -> super.writeLeaf(leaf, out, indent)
         }
     }

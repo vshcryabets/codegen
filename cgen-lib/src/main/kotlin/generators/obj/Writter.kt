@@ -49,6 +49,9 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
             is Indent -> {
                 out.write(codeStyleRepo.tab)
             }
+            is Space -> {
+                out.write(" ")
+            }
             is NlSeparator -> {
                 if (leaf.name.isEmpty()) {
                     out.write(codeStyleRepo.newLine())

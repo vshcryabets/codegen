@@ -54,7 +54,7 @@ object Types {
         } + (if (type.canBeNull) "?" else "")
     }
 
-    fun toValue(classData: ClassData, type: DataType, value: DataValue) : String =
+    fun toValue(type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,

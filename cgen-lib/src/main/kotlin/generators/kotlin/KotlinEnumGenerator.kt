@@ -37,7 +37,7 @@ class KotlinEnumGenerator(
 
                         if (withRawValues) {
                             autoIncrement(it)
-                            addEnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})")
+                            addEnumLeaf("${it.name}(${Types.toValue(it.type, it.value)})")
                         } else {
                             addEnumLeaf("${it.name}")
                         }
