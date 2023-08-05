@@ -11,4 +11,5 @@ interface CodeStyleRepo {
     val tab: String
 
     fun spaceBeforeClass(): String
+    fun addSpaceBeforeRegion(): Boolean
 }

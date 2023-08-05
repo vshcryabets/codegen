@@ -1,7 +1,8 @@
 package ce.formatters
 
 import generators.obj.input.Leaf
+import generators.obj.input.Node
 
 interface CodeFormatterUseCase {
-    operator fun invoke(syntaxTree: Leaf): Leaf
+    operator fun invoke(syntaxTree: Node): Leaf
 }

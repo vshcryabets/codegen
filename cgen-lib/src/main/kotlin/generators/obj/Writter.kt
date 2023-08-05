@@ -37,20 +37,24 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
             }
             is RValue -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
-            is Keyword -> out.write(leaf.name + " ")
-            is Datatype -> out.write(leaf.name + " ")
+            is Keyword -> out.write(leaf.name)
+            is Datatype -> out.write(leaf.name)
             is VariableName -> out.write(leaf.name)
             is EnumLeaf -> {
                 out.write(leaf.name)
             }
             is FieldLeaf, is CommentLeaf -> {
-                out.write(leaf.name).writeNl()
+                out.write(leaf.name)
+            }
+            is Indent -> {
+                out.write(codeStyleRepo.tab)
             }
             is NlSeparator -> {
-                out.write(leaf.name).writeNl()
-            }
-            is BlockPreNewLines -> {
-                out.write(codeStyleRepo.spaceBeforeClass())
+                if (leaf.name.isEmpty()) {
+                    out.write(codeStyleRepo.newLine())
+                } else {
+                    out.write(leaf.name)
+                }
             }
             else -> out.write("=== UNKNOWN LEAF $leaf").writeNl()
         }
@@ -68,18 +72,18 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-            is ConstantLeaf -> writeSubNodes(node, out, "")
-            is ClassData -> writeSubNodes(node, out, indent)
-            is MultilineCommentsBlock -> {
-                out.write(indent)
-                out.write(codeStyleRepo.multilineCommentStart())
-                writeSubNodes(node, out, "$indent ")
-                out.write("$indent ")
-                out.write(codeStyleRepo.multilineCommentEnd())
-            }
-            is CommentsBlock -> {
-                writeSubNodes(node, out, indent)
-            }
+//            is ConstantLeaf -> writeSubNodes(node, out, "")
+//            is ClassData -> writeSubNodes(node, out, indent)
+//            is MultilineCommentsBlock -> {
+//                out.write(indent)
+//                out.write(codeStyleRepo.multilineCommentStart())
+//                writeSubNodes(node, out, "$indent ")
+//                out.write("$indent ")
+//                out.write(codeStyleRepo.multilineCommentEnd())
+//            }
+//            is CommentsBlock -> {
+//                writeSubNodes(node, out, indent)
+//            }
             else -> writeSubNodes(node, out, indent)
         }
 

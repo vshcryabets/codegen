@@ -84,7 +84,7 @@ fun <T : Node> T.addEnumLeaf(name: String) = addSub(EnumLeaf(name))
 fun <T : Node> T.addCommentLine(name: String) = addSub(CommentLeaf(name))
 
 fun <T : Node> T.addSeparator(name: String) = addSub(Separator(name))
-fun <T : Node> T.addSeparatorNewLine(name: String) = addSub(NlSeparator(name))
+fun <T : Node> T.addSeparatorNewLine(name: String = "") = addSub(NlSeparator(name))
 fun <T : Node> T.addKeyword(name: String) = addSub(Keyword(name))
 fun <T : Node> T.addDatatype(name: String) = addSub(Datatype(name))
 fun <T : Node> T.addVarName(name: String) = addSub(VariableName(name))

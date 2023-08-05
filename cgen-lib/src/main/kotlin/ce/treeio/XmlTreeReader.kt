@@ -109,7 +109,7 @@ class XmlTreeReader : TreeReader {
             FileData::class.java.simpleName -> FileDataImpl(name, parent)
             NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)
             KotlinClassData::class.java.simpleName -> KotlinClassData(name)
-            BlockPreNewLines::class.java.simpleName -> BlockPreNewLines()
+            Indent::class.java.simpleName -> Indent()
             OutBlock::class.java.simpleName -> OutBlock(name)
             OutBlockArguments::class.java.simpleName -> OutBlockArguments(name)
             EnumLeaf::class.java.simpleName -> EnumLeaf(name)

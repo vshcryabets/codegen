@@ -24,6 +24,7 @@ class CLikeCodestyleRepo(
     }
     override fun newLine(): String = "\n"
     override fun spaceBeforeClass(): String = spaceBeforeClass
+    override fun addSpaceBeforeRegion(): Boolean = (codeStyle.newLinesBeforeClass > 0)
     override fun multilineCommentStart(): String = "/**${newLine()}"
     override fun multilineCommentMid(): String = "*"
     override fun multilineCommentEnd(): String = "**/${newLine()}"

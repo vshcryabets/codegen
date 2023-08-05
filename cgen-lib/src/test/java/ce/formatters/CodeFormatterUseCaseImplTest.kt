@@ -2,8 +2,6 @@ package ce.formatters
 
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
-import generators.obj.input.Namespace
-import generators.obj.input.NamespaceImpl
 import generators.obj.input.addKeyword
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
@@ -12,20 +10,21 @@ import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class CodeFormatterUseCaseImplTest {
+    val codeStyle = CodeStyle(
+        newLinesBeforeClass = 0,
+        tabSize = 2,
+        preventEmptyBlocks = true,
+    )
+    val repo = CLikeCodestyleRepo(codeStyle)
+    val formatter = CodeFormatterUseCaseImpl(repo)
+
     @Test
     fun testRegion() {
-        val codeStyle = CodeStyle(
-            newLinesBeforeClass = 0,
-            tabSize = 2,
-            preventEmptyBlocks = true,
-        )
-        val repo = CLikeCodestyleRepo(codeStyle)
-        val formatter = CodeFormatterUseCaseImpl(repo)
-
-        val project = NamespaceBlock("ns1").apply {
+        val input = NamespaceBlock("ns1").apply {
             addSub(RegionImpl()).apply {
                 addSub(CommentsBlock()).apply {
                     addSub(CommentLeaf("Line 1"))
+                    addSub(CommentLeaf("Line 2"))
                 }
                 addSub(ConstantLeaf().apply {
                     addSub(Keyword("const"))
@@ -46,39 +45,69 @@ class CodeFormatterUseCaseImplTest {
             }
         }
 
-        val result = formatter(project) as NamespaceBlock
+        val output = formatter(input) as NamespaceBlock
         // expected result
-        // <NamespaceBlock> <{> <nl>
-        // <indent> <// CommentsBlock> <nl>
-        // <indent> constant1 <nl>
-        // <indent> constant2 <nl>
-        // <}> </NamespaceBlock>
-        Assert.assertEquals(12, result.subs.size)
+        // <NamespaceBlock>
+        //     <{> <nl>
+        //     // no region pre new lines - because of "newLinesBeforeClass = 0"
+        //     <Region>
+        //         <CommentBlock>
+        //             <indent> Line1 <nl>
+        //             <indent> Line2 <nl>
+        //         </CommentBlock>
+        //         <indent> constant1 <nl>
+        //         <indent> constant2 <nl>
+        //     </Region>
+        //     <}>
+        // </NamespaceBlock>
+        Assert.assertEquals(4, output.subs.size)
+        val region = output.subs[2] as Region
+        Assert.assertEquals(7, region.subs.size)
+        val commentBlock = region.subs[0] as CommentsBlock
+        Assert.assertEquals(6, commentBlock.subs.size)
     }
 
     @Test
     fun testCxxPragma() {
-        val codeStyle = CodeStyle(
-            newLinesBeforeClass = 1,
-            tabSize = 2,
-            preventEmptyBlocks = true,
-        )
-        val repo = CLikeCodestyleRepo(codeStyle)
-        val formatter = CodeFormatterUseCaseImpl(repo)
-
-        val project = CppHeaderFile("ns1").apply {
-            addSub(CommentsBlock("a"))
+        val input = CppHeaderFile("ns1").apply {
             addSub(NamespaceBlock("b"))
         }
 
-        val result = formatter(project) as CppHeaderFile
+        val output = formatter(input) as CppHeaderFile
         // expected result
         // <CppHeaderFile>
+        //    <pragama once> <nl>
+        //    <NamespaceBlock>
+        //       <{><nl>
+        //       <}>
+        //    </NamespaceBlock>
         //    <nl>
-        //    <CommentsBlock> <nl>
-        //    <NamespaceBlock> <{> <nl>
-        //    <}>
         // </CppHeaderFile>
-        Assert.assertEquals(7, result.subs.size) //  newline + namespace + newline
+        Assert.assertEquals(4, output.subs.size)
+        Assert.assertEquals(3, (output.subs[2] as NamespaceBlock).subs.size)
+    }
+
+    @Test
+    fun testConstantsLeaf() {
+        val input = ConstantLeaf().apply {
+            addSub(Keyword("const"))
+            addSub(Datatype("int32_t"))
+            addSub(VariableName("OREAD"))
+            addSub(Keyword("="))
+            addSub(RValue("0"))
+            addSub(Separator(";"))
+        }
+
+        val output = formatter(input) as ConstantLeaf
+        // expected result
+        // <ConstantLeaf>
+        //     <const> <SPACE>
+        //     <int32_t> <SPACE>
+        //     <OREAD> <SPACE>
+        //     <=> <SPACE>
+        //     <0>
+        //     <;>
+        // </ConstantLeaf>
+        Assert.assertEquals(10, output.subs.size)
     }
 }

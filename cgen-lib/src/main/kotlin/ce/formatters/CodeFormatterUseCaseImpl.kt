@@ -1,38 +1,37 @@
 package ce.formatters
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.addSeparatorNewLine
-import generators.obj.input.addSub
-import generators.obj.out.CommentLeaf
-import generators.obj.out.NlSeparator
-import generators.obj.out.Region
+import generators.cpp.CompilerDirective
+import generators.obj.input.*
+import generators.obj.out.*
 import javax.inject.Inject
 
 class CodeFormatterUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo
 ) : CodeFormatterUseCase {
-    override fun invoke(syntaxTree: Leaf): Leaf {
-        var res = if (syntaxTree is Node) {
-            processNode(syntaxTree, null)
-        } else {
-            processLeaf(syntaxTree, null)
-        }
-        return res
+    override fun invoke(syntaxTree: Node): Leaf {
+        return processNode(syntaxTree, null, 0)
     }
 
-    private fun processLeaf(syntaxTree: Leaf, parent: Node?): Leaf {
+    private fun processLeaf(input: Leaf, parent: Node?, indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
-        val res = when (syntaxTree) {
+        when (input) {
             is CommentLeaf -> {
-                val leaf = CommentLeaf(codeStyleRepo.singleComment() + syntaxTree.name)
+                val leaf = CommentLeaf(codeStyleRepo.singleComment() + input.name)
+                nodesToAdd.addAll(getIndents(indent))
                 nodesToAdd.add(leaf)
-                nodesToAdd.add(NlSeparator())
+                nodesToAdd.add(getNewLine())
+                leaf
+            }
+
+            is CompilerDirective -> {
+                val leaf = input.copyLeaf(parent = parent)
+                nodesToAdd.add(leaf)
+                nodesToAdd.add(getNewLine())
                 leaf
             }
 
             else -> {
-                val leaf = syntaxTree.copyLeaf(parent)
+                val leaf = input.copyLeaf(parent)
                 nodesToAdd.add(leaf)
                 leaf
             }
@@ -42,25 +41,73 @@ class CodeFormatterUseCaseImpl @Inject constructor(
                 addSub(it)
             }
         }
-        return res
     }
 
-    private fun processNode(syntaxTree: Node, parent: Node?): Leaf {
-        val res = when (syntaxTree) {
+    private fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
+
+    private fun processNode(input: Node, parent: Node?, indent: Int): Leaf {
+        return when (input) {
             is Region -> {
-                parent?.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
-                syntaxTree.copyLeaf(copySubs = false)
+                if (codeStyleRepo.addSpaceBeforeRegion()) {
+                    parent?.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
+                }
+                (input.copyLeaf(copySubs = false) as Region).apply {
+                    parent?.addSub(this)
+                    processSubs(input, this, indent)
+                }
             }
 
-            else -> syntaxTree.copyLeaf(copySubs = false)
-        } as Node
-        syntaxTree.subs.forEach {
-            if (it is Node) {
-                res.addSub(processNode(it, res))
-            } else {
-                processLeaf(it, res)
+            is ConstantLeaf -> {
+                input.copyLeaf(copySubs = false).apply {
+                    addIndents(parent, indent)
+                    parent?.addSub(this)
+                    processSubs(input, this, indent)
+                    parent?.addSeparatorNewLine()
+                }
+            }
+
+            is NamespaceBlock -> {
+                (input.copyLeaf(copySubs = false) as Node).apply {
+                    parent?.addSub(this)
+                    addKeyword("{")
+                    addSeparatorNewLine()
+                    processSubs(input, this, indent + 1)
+                    addKeyword("}")
+                    parent?.addSeparatorNewLine()
+                }
+            }
+
+            else -> {
+                val node = input.copyLeaf(copySubs = false) as Node
+                parent?.addSub(node)
+                processSubs(input, node, indent)
+                node
             }
         }
-        return res
+    }
+
+    private fun addIndents(parent: Node?, indent: Int) {
+        if (parent == null) {
+            return
+        }
+        if (indent > 0) {
+            parent.subs.addAll(getIndents(indent))
+        }
+    }
+
+    private fun getIndents(indent: Int): List<Indent> =
+        mutableListOf<Indent>().apply {
+            (0..indent - 1).forEach { add(Indent()) }
+        }
+
+
+    private fun processSubs(syntaxTree: Node, res: Node, indent: Int) {
+        syntaxTree.subs.forEach {
+            if (it is Node) {
+                processNode(it, res, indent)
+            } else {
+                processLeaf(it, res, indent)
+            }
+        }
     }
 }
