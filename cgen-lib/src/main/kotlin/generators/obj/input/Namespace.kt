@@ -51,7 +51,7 @@ data class NamespaceImpl(override val name: String = "",
     }
 
     override fun enum(name: String): ConstantsEnum {
-        return ConstantsEnum(name, this).apply {
+        return addSub(ConstantsEnum(name)).apply {
             putDefaults(this)
         }
     }

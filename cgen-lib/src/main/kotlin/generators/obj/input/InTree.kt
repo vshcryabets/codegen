@@ -26,7 +26,6 @@ fun <T: Leaf> T.getPath(): String {
     } else {
         name
     }
-
 }
 
 interface Leaf {

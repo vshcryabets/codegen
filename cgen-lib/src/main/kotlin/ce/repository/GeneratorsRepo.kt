@@ -76,7 +76,7 @@ class GeneratorsRepo(val project: Project) {
             val addBlockUseCase = addBlockDefaultsUseCases[it]!!
             val generators = when (it) {
                 Target.Kotlin -> mapOf(
-                    ConstantsEnum::class.java to KotlinEnumGenerator(fileGenerator, addBlockUseCase),
+                    ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase),
                     ConstantsBlock::class.java to KtConstantsGenerator(addBlockUseCase),
                     DataClass::class.java to KtDataClassGenerator(fileGenerator, addBlockUseCase),
                     InterfaceDescription::class.java to KotlinInterfaceGenerator(fileGenerator, addBlockUseCase)

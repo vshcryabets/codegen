@@ -14,7 +14,6 @@ import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 class LoadMetaFilesForTargetUseCase {
 
     operator fun invoke(project: Project, target : Target) : Namespace {
-        //val engine = ScriptEngineManager().getEngineByExtension("kts")
         val engine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
 
         println("Target $target")

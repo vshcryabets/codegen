@@ -9,7 +9,6 @@ import generators.obj.input.*
 import generators.obj.out.*
 
 class KotlinEnumGenerator(
-    fileGenerator: FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
@@ -20,9 +19,9 @@ class KotlinEnumGenerator(
         val autoIncrement = AutoincrementField()
         var needToAddComa = false
 
-        file.addSub(KotlinClassData(desc.name)).also { classData ->
-            addBlockDefaultsUseCase(desc, classData)
-            classData.addOutBlock("enum class ${desc.name}") {
+        file.addSub(RegionImpl(desc.name)).also { region ->
+            addBlockDefaultsUseCase(desc, region)
+            region.addOutBlock("enum class ${desc.name}") {
                 if (withRawValues) {
                     addOutBlockArguments {
                         addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
@@ -32,7 +31,7 @@ class KotlinEnumGenerator(
                     if (leaf is DataField) {
                         val it = leaf as DataField
                         if (needToAddComa) {
-                            addSeparatorNewLine(",")
+                            addSeparator(",")
                         }
 
                         if (withRawValues) {

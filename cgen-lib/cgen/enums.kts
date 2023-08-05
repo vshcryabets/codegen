@@ -1,7 +1,5 @@
 import ce.defs.*
 
-setOutputFileName("GoldEnums")
-
 namespace("ce.defs").apply {
 
     enum("Target").apply {

@@ -6,7 +6,7 @@ import ce.defs.NotDefined
 
 data class ConstantsEnum(
     override val name: String,
-    override var parent: Node?,
+    override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
     override var sourceFile: String = "",
     override var outputFile: String = "",
@@ -20,6 +20,8 @@ data class ConstantsEnum(
     fun add(name: String, value: Any = NotDefined) {
         addSub(DataField(name, defaultDataType, DataValue(value)))
     }
+
+    override fun toString(): String = "<ConstantsEnum $name>"
 
     override fun addBlockComment(value: String) {
         this.addBlockCommentExt(value)
