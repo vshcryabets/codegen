@@ -1,12 +1,5 @@
 package generators.obj.input
 
-import ce.defs.DataType
-import ce.defs.DataValue
-import ce.defs.NotDefined
-import ce.defs.NotDefinedValue
-import generators.obj.out.*
-import kotlin.reflect.KClass
-
 object TreeRoot : Node {
 
     override val subs: MutableList<Leaf> = mutableListOf()

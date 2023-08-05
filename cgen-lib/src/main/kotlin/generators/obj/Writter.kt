@@ -16,8 +16,6 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
     init {
         outFolder = File(outputFolderPath)
         outFolder.mkdirs()
-
-        val builder = StringBuilder()
     }
 
     open fun write(data: ProjectOutput) {
@@ -75,18 +73,6 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-//            is ConstantLeaf -> writeSubNodes(node, out, "")
-//            is ClassData -> writeSubNodes(node, out, indent)
-//            is MultilineCommentsBlock -> {
-//                out.write(indent)
-//                out.write(codeStyleRepo.multilineCommentStart())
-//                writeSubNodes(node, out, "$indent ")
-//                out.write("$indent ")
-//                out.write(codeStyleRepo.multilineCommentEnd())
-//            }
-//            is CommentsBlock -> {
-//                writeSubNodes(node, out, indent)
-//            }
             else -> writeSubNodes(node, out, indent)
         }
 
