@@ -8,8 +8,8 @@ import javax.inject.Inject
 class CodeFormatterUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
-    override fun invoke(syntaxTree: Node): Leaf {
-        return processNode(syntaxTree, null, 0)!!
+    override fun <T : Node> invoke(input: T): T {
+        return processNode(input, null, 0) as T
     }
 
     private fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
@@ -40,7 +40,7 @@ class CodeFormatterUseCaseImpl @Inject constructor(
 
     private fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
-    private fun processNode(input: Node, outputParent: Node?, indent: Int): Leaf? {
+    private fun processNode(input: Node, outputParent: Node?, indent: Int): Node? {
         if (input is FileData) {
             if (!input.isDirty) {
                 return null
@@ -98,7 +98,7 @@ class CodeFormatterUseCaseImpl @Inject constructor(
         }
     }
 
-    private fun formatConstantLeaf(input: ConstantLeaf, parent: Node?, indent: Int): Leaf {
+    private fun formatConstantLeaf(input: ConstantLeaf, parent: Node?, indent: Int): ConstantLeaf {
         val res = input.copyLeaf(copySubs = false).apply {
             addIndents(parent, indent)
             parent?.addSub(this)
@@ -137,4 +137,5 @@ class CodeFormatterUseCaseImpl @Inject constructor(
             }
         }
     }
+
 }

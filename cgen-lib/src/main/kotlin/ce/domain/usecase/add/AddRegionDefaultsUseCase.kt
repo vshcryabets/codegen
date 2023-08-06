@@ -13,27 +13,13 @@ interface AddRegionDefaultsUseCase {
 
 class AddRegionDefaultsUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo,
-): AddRegionDefaultsUseCase {
+) : AddRegionDefaultsUseCase {
     override fun invoke(desc: Block, result: Region) {
         if (desc.subs.size > 0) {
             val first = desc.subs[0]
+
             if (first is CommentsBlock) {
-                if (first.subs.size > 1) {
-                    // multiline
-                    result.addSub(MultilineCommentsBlock()).apply {
-                        first.subs.forEach {
-                            addSub(it)
-                        }
-                    }
-                } else {
-                    // singleline
-                    result.addSub(CommentsBlock()).apply {
-                        first.subs.forEach {
-                            addSub(it.copyLeaf(this, true))
-                        }
-                    }
-                }
-                desc.removeSub(first) // let's remove comments block because we already handle it
+                result.addSub(first.copyLeaf(result))
             }
         }
     }

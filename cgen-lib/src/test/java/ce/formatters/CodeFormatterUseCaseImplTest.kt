@@ -3,9 +3,7 @@ package ce.formatters
 import ce.defs.Target
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
-import generators.obj.input.addKeyword
-import generators.obj.input.addSeparator
-import generators.obj.input.addSub
+import generators.obj.input.*
 import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
@@ -132,7 +130,35 @@ class CodeFormatterUseCaseImplTest {
                 isDirty = false
             })
         }
-        val output = formatter(input) as ProjectOutput
+        val output = formatter(input)
         Assert.assertEquals(1, output.subs.size)
+    }
+
+    @Test
+    fun testSimpleEnumKotlin() {
+        val input = RegionImpl().apply {
+            addOutBlock("enum class ENUM") {
+                addEnumLeaf("A")
+                addEnumLeaf("B")
+                addEnumLeaf("C")
+                addEnumLeaf("D")
+            }
+        }
+        val output = formatter(input)
+        // expected result
+        // <Region>
+        //     <OutBlock>
+        //        <SPACE> <{> <nl>
+        //        <EnumLeaf A> <,> <nl>
+        //        <EnumLeaf B> <,> <nl>
+        //        <EnumLeaf C> <,> <nl>
+        //        <EnumLeaf D> <,> <nl>
+        //        <}>
+        //     </OutBlock>
+        //     <NL>
+        // </Region>
+        Assert.assertEquals(2, output.subs.size)
+        val outBlock = output.subs[0] as OutBlock
+        Assert.assertEquals(16, outBlock.subs.size)
     }
 }

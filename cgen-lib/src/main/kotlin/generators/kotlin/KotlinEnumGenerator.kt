@@ -29,7 +29,7 @@ class KotlinEnumGenerator(
                 }
                 desc.subs.forEach { leaf ->
                     if (leaf is DataField) {
-                        val it = leaf as DataField
+                        val it = leaf
                         if (needToAddComa) {
                             addSeparator(",")
                         }
