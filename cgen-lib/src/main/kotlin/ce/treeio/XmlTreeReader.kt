@@ -1,6 +1,7 @@
 package ce.treeio
 
 import ce.defs.Target
+import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
 import generators.obj.input.*
 import generators.obj.out.*
@@ -105,7 +106,7 @@ class XmlTreeReader : TreeReader {
             }
             // OUT TREE
             ProjectOutput::class.java.simpleName -> ProjectOutput(
-                Target.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
+                TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
             FileData::class.java.simpleName -> FileDataImpl(name, parent)
             NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)
             KotlinClassData::class.java.simpleName -> KotlinClassData(name)

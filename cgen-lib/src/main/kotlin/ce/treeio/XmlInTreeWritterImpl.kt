@@ -68,7 +68,7 @@ class XmlInTreeWritterImpl : TreeWritter {
                     element.setAttribute(KEY_VALUE, it)
                 }
             }
-            is ProjectOutput -> element.setAttribute(KEY_TARGET, node.target.strName)
+            is ProjectOutput -> element.setAttribute(KEY_TARGET, node.target.rawValue)
             else -> {}
         }
         if (node is Node) {

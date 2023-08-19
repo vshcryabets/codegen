@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.Target
+import ce.defs.TargetExt
 import ce.parsing.Digit
 import ce.parsing.Literal
 import ce.parsing.SourceBuffer
@@ -151,10 +152,10 @@ fun main(args: Array<String>) {
             """)
     }
     val inputFileName = args[0]
-    val target = Target.findByName(args[1])
+    val target = TargetExt.findByName(args[1])
 
     val dictionary = mutableMapOf<Int, Word>()
-    val dictionaryName = "./${target.strName}_dictionary.csv"
+    val dictionaryName = "./${target.rawValue}_dictionary.csv"
 
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working Directory = $path")
