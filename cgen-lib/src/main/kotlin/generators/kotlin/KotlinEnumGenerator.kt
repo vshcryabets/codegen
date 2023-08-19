@@ -17,7 +17,6 @@ class KotlinEnumGenerator(
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         val withRawValues = desc.defaultDataType != DataType.VOID
         val autoIncrement = AutoincrementField()
-        var needToAddComa = false
 
         file.addSub(RegionImpl(desc.name)).also { region ->
             addBlockDefaultsUseCase(desc, region)
@@ -30,9 +29,6 @@ class KotlinEnumGenerator(
                 desc.subs.forEach { leaf ->
                     if (leaf is DataField) {
                         val it = leaf
-                        if (needToAddComa) {
-                            addSeparator(",")
-                        }
 
                         if (withRawValues) {
                             autoIncrement(it)
@@ -40,7 +36,6 @@ class KotlinEnumGenerator(
                         } else {
                             addEnumLeaf("${it.name}")
                         }
-                        needToAddComa = true
                     }
                 }
             }

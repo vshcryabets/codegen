@@ -5,14 +5,14 @@ import generators.obj.input.*
 import generators.obj.out.*
 import javax.inject.Inject
 
-class CodeFormatterUseCaseImpl @Inject constructor(
+open class CodeFormatterUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun <T : Node> invoke(input: T): T {
         return processNode(input, null, 0) as T
     }
 
-    private fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
+    protected open fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
         when (input) {
             is CommentLeaf -> {
@@ -38,9 +38,9 @@ class CodeFormatterUseCaseImpl @Inject constructor(
         }
     }
 
-    private fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
+    protected fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
-    private fun processNode(input: Node, outputParent: Node?, indent: Int): Node? {
+    protected open fun processNode(input: Node, outputParent: Node?, indent: Int): Node? {
         if (input is FileData) {
             if (!input.isDirty) {
                 return null
@@ -122,13 +122,13 @@ class CodeFormatterUseCaseImpl @Inject constructor(
         }
     }
 
-    private fun getIndents(indent: Int): List<Indent> =
+    protected fun getIndents(indent: Int): List<Indent> =
         mutableListOf<Indent>().apply {
             (0..indent - 1).forEach { add(Indent()) }
         }
 
 
-    private fun processSubs(syntaxTree: Node, res: Node, indent: Int) {
+    protected open fun processSubs(syntaxTree: Node, res: Node, indent: Int) {
         syntaxTree.subs.forEach {
             if (it is Node) {
                 processNode(it, res, indent)

@@ -133,32 +133,4 @@ class CodeFormatterUseCaseImplTest {
         val output = formatter(input)
         Assert.assertEquals(1, output.subs.size)
     }
-
-    @Test
-    fun testSimpleEnumKotlin() {
-        val input = RegionImpl().apply {
-            addOutBlock("enum class ENUM") {
-                addEnumLeaf("A")
-                addEnumLeaf("B")
-                addEnumLeaf("C")
-                addEnumLeaf("D")
-            }
-        }
-        val output = formatter(input)
-        // expected result
-        // <Region>
-        //     <OutBlock>
-        //        <SPACE> <{> <nl>
-        //        <EnumLeaf A> <,> <nl>
-        //        <EnumLeaf B> <,> <nl>
-        //        <EnumLeaf C> <,> <nl>
-        //        <EnumLeaf D> <,> <nl>
-        //        <}>
-        //     </OutBlock>
-        //     <NL>
-        // </Region>
-        Assert.assertEquals(2, output.subs.size)
-        val outBlock = output.subs[0] as OutBlock
-        Assert.assertEquals(16, outBlock.subs.size)
-    }
 }

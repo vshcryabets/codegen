@@ -3,6 +3,7 @@ package ce.repository
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.Project
 import generators.cpp.CppConstantsBlockGenerator
@@ -34,7 +35,6 @@ class GeneratorsRepo(val project: Project) {
 
     init {
         val clikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
-        val defaultCodeFormatter = CodeFormatterUseCaseImpl(clikeCodeStyleRepo)
 
         val targets = listOf(
             Target.Kotlin,
@@ -53,6 +53,13 @@ class GeneratorsRepo(val project: Project) {
             it to clikeCodeStyleRepo
         }.toMap()
 
+        val codeFormatters = mapOf(
+            Target.Kotlin to CodeFormatterKotlinUseCaseImpl(clikeCodeStyleRepo),
+            Target.Cxx to CodeFormatterUseCaseImpl(clikeCodeStyleRepo),
+//            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
+//            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
+//            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),
+        )
 
         val writtersMap = mapOf(
             Target.Kotlin to KotlinWritter(codestylesMap[Target.Kotlin]!!, project.outputFolder),
@@ -102,7 +109,7 @@ class GeneratorsRepo(val project: Project) {
                 fileGenerator = fileGenerator,
                 generatorsMap = generators,
                 prepareFilesListUseCase = prepareFilesListUseCases[it]!!,
-                codeFormatter = defaultCodeFormatter,
+                codeFormatter = codeFormatters[it]!!,
             )
         }.toMap()
 
