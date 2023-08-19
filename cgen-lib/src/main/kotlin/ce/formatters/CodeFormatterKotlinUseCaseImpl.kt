@@ -33,7 +33,9 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     }
                     if (args != null) {
                         input.subs.remove(args)
+                        addKeyword("(")
                         addSub(args)
+                        addKeyword(")")
                     }
                     addSub(Space())
                     addKeyword("{")
