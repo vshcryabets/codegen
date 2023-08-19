@@ -9,7 +9,6 @@ import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class CppEnumGenerator(
-    fileGenerator: FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
