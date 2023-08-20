@@ -3,6 +3,7 @@ package ce.repository
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterCxxUseCaseImpl
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.Project
@@ -55,7 +56,7 @@ class GeneratorsRepo(val project: Project) {
 
         val codeFormatters = mapOf(
             Target.Kotlin to CodeFormatterKotlinUseCaseImpl(clikeCodeStyleRepo),
-            Target.Cxx to CodeFormatterUseCaseImpl(clikeCodeStyleRepo),
+            Target.Cxx to CodeFormatterCxxUseCaseImpl(clikeCodeStyleRepo),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
 //            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
 //            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),

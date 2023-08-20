@@ -2,7 +2,6 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.Target
-import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test
 class CppEnumGeneratorTest {
 
     @Test
-    fun test() {
+    fun testWithIntValues() {
         val codeStyle = CodeStyle(
             newLinesBeforeClass = 1,
             tabSize = 2,
@@ -40,13 +39,34 @@ class CppEnumGeneratorTest {
         Assert.assertFalse("Dirty flag should be false in .h before changes", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false in .cpp before changes", cxxFile.isDirty)
         item(files, block)
+
+        // expected result
+        // <CppHeaderFile>
+        //     <pragma once>
+        //     <namespace>
+        //        <region>
+        //          <CommentsBlock>...</CommentsBlock>
+        //          <OutBlock>
+        //              <EnumLeaf><A><=><1></<EnumLeaf>
+        //              <EnumLeaf><B><=><2></<EnumLeaf>
+        //              <EnumLeaf><C><=><33></<EnumLeaf>
+        //          </OutBlock>
+        //        </region>
+        //     </namespace>
+        // </CppHeaderFile>
+
+
         Assert.assertTrue("Dirty flag should be true", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
         Assert.assertEquals(1, outNamespace.subs.size)
-        val constantsBlock = outNamespace.findOrNull(RegionImpl::class.java)!!
-        Assert.assertEquals(4, constantsBlock.subs.size)
-        Assert.assertEquals(CommentsBlock::class.java, constantsBlock.subs[0]::class.java)
-        Assert.assertEquals("182TEST_COMMENT", (constantsBlock.subs[0] as CommentsBlock).subs[0].name)
+        val region = outNamespace.findOrNull(RegionImpl::class.java)!!
+        Assert.assertEquals(2, region.subs.size)
+        Assert.assertEquals(CommentsBlock::class.java, region.subs[0]::class.java)
+        Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)
+        Assert.assertEquals(OutBlock::class.java, region.subs[1]::class.java)
+        val outBlock = region.findOrNull(OutBlock::class.java)!!
+        Assert.assertEquals(3, outBlock.subs.size)
+
     }
 }

@@ -2,24 +2,70 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
-import generators.obj.FileGenerator
+import generators.kotlin.Types
+import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.addSub
-import generators.obj.out.FileData
+import generators.obj.input.*
+import generators.obj.out.*
 
 class CppEnumGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
     override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
-        val header = files.find { it is CppHeaderFile }
+        val headerFile = files.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
-        //        val definition = CppClassData(desc.name, header)
-        header.addSub(CppClassData(desc.name)).apply {
-            addBlockDefaultsUseCase(desc, this)
-            val withRawValues = desc.defaultDataType != DataType.VOID
+        val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
+        val region = namespace.addSub(RegionImpl(desc.name))
+        val withRawValues = desc.defaultDataType != DataType.VOID
+        val autoIncrement = AutoincrementField()
+
+        addBlockDefaultsUseCase(desc, region)
+        if (region.findOrNull(CommentsBlock::class.java) == null) {
+            // add default comments block
+            region.addSub(CommentsBlock()).apply {
+                addCommentLine("Enum ${desc.name}")
+            }
+        }
+
+        val outBLock = region.addOutBlock("enum ${desc.name}") {
+            desc.subs.forEach { leaf ->
+                if (leaf is DataField) {
+                    val it = leaf
+
+                    if (withRawValues) {
+                        addSub(EnumLeaf(it.name)).apply {
+                            autoIncrement(it)
+                            addVarName(it.name)
+                            addKeyword("=")
+                            addRValue(generators.cpp.Types.toValue(it.type, it.value))
+                        }
+                    } else {
+                        addEnumLeaf("${it.name}")
+                    }
+                }
+            }
+        }
+
+
+//
+//        desc.subs.forEach {
+//            if (it is ConstantDesc) {
+//                autoIncrement.invoke(it)
+//                region.addSub(
+//                    ConstantLeaf().apply {
+//                        addKeyword("const")
+//                        addDatatype(Types.typeTo(headerFile, it.type))
+//                        addVarName(it.name)
+//                        addKeyword("=")
+//                        addRValue(Types.toValue(it.type, it.value))
+//                        addKeyword(";")
+//                    }
+//                )
+//            }
+//        }
+
 
 //            classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
 //            val autoIncrement = AutoincrementField()
@@ -38,7 +84,6 @@ class CppEnumGenerator(
 //            }
 //            appendClassDefinition(this, "};");
 
-        }
     }
 
 }
