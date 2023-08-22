@@ -38,9 +38,6 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
             is Keyword -> out.write(leaf.name)
             is Datatype -> out.write(leaf.name)
             is VariableName -> out.write(leaf.name)
-            is EnumLeaf -> {
-                out.write(leaf.name)
-            }
             is FieldLeaf, is CommentLeaf -> {
                 out.write(leaf.name)
             }
@@ -73,6 +70,12 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
+            is EnumLeaf -> {
+                if (node.subs.size == 0)
+                    out.write(node.name)
+                else
+                    writeSubNodes(node, out, indent)
+            }
             else -> writeSubNodes(node, out, indent)
         }
 

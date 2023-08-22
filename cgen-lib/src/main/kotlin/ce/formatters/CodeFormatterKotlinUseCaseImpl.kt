@@ -8,21 +8,10 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
     CodeFormatterUseCaseImpl(codeStyleRepo) {
 
     override fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
-        val nodesToAdd = mutableListOf<Leaf>()
-        if (input is EnumLeaf) {
-            nodesToAdd.addAll(getIndents(indent))
-            nodesToAdd.add(input.copy())
-            nodesToAdd.add(Separator(","))
-            nodesToAdd.add(getNewLine())
-            nodesToAdd.forEach {
-                outputParent.addSub(it)
-            }
-            return
-        }
         super.processLeaf(input, outputParent, indent)
     }
 
-    override fun processNode(input: Node, outputParent: Node?, indent: Int): Node? {
+    override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
         return when (input) {
             is OutBlock -> {
                 (input.copyLeaf(copySubs = false) as OutBlock).apply {
@@ -45,7 +34,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     outputParent?.addSeparatorNewLine()
                 }
             }
-            else -> super.processNode(input, outputParent, indent)
+            else -> super.processNode(input, outputParent, indent, next)
         }
     }
 }

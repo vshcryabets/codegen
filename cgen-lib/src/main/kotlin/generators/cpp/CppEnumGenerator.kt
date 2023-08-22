@@ -29,20 +29,20 @@ class CppEnumGenerator(
             }
         }
 
-        val outBLock = region.addOutBlock("enum ${desc.name}") {
+        region.addOutBlock("enum ${desc.name}") {
             desc.subs.forEach { leaf ->
                 if (leaf is DataField) {
                     val it = leaf
 
                     if (withRawValues) {
-                        addSub(EnumLeaf(it.name)).apply {
+                        addEnumLeaf(it.name).apply {
                             autoIncrement(it)
                             addVarName(it.name)
                             addKeyword("=")
                             addRValue(generators.cpp.Types.toValue(it.type, it.value))
                         }
                     } else {
-                        addEnumLeaf("${it.name}")
+                        addEnumLeaf(it.name)
                     }
                 }
             }

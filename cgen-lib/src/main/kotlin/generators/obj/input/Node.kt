@@ -60,6 +60,14 @@ fun <R : Leaf, T : Node> T.addSub(leaf: R): R {
     return leaf
 }
 
+fun <R : Leaf, T : Node> T.addSubs(vararg leafs: R) {
+    leafs.forEach {
+        subs.add(it)
+        it.parent = this
+    }
+    (findParent(FileData::class) as FileData?)?.isDirty = true
+}
+
 fun <R : Leaf, T : Node> T.addSub2(leaf: R, fnc: R.() -> Unit) {
     subs.add(leaf)
     leaf.parent = this

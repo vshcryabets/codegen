@@ -9,7 +9,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
     private val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun <T : Node> invoke(input: T): T {
-        return processNode(input, null, 0) as T
+        return processNode(input, null, 0, null) as T
     }
 
     protected open fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
@@ -40,7 +40,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
     protected fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
-    protected open fun processNode(input: Node, outputParent: Node?, indent: Int): Node? {
+    protected open fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
         if (input is FileData) {
             if (!input.isDirty) {
                 return null
@@ -53,6 +53,19 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
 
         return when (input) {
+            is EnumLeaf -> {
+                input.copyLeaf(copySubs = false).also { output ->
+                    addIndents(outputParent, indent)
+                    outputParent?.also {parent ->
+                        parent.addSub(output)
+                        if (next != null && next is EnumLeaf) {
+                            parent.addSub(Separator(","))
+                        }
+                        parent.addSub(getNewLine())
+                    }
+                    processSubs(input, output, indent + 1)
+                }
+            }
 
             is ConstantLeaf -> {
                 formatConstantLeaf(input, outputParent, indent)
@@ -113,7 +126,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         return res
     }
 
-    private fun addIndents(parent: Node?, indent: Int) {
+    protected open fun addIndents(parent: Node?, indent: Int) {
         if (parent == null) {
             return
         }
@@ -128,12 +141,14 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
 
 
-    protected open fun processSubs(syntaxTree: Node, res: Node, indent: Int) {
-        syntaxTree.subs.forEach {
-            if (it is Node) {
-                processNode(it, res, indent)
+    protected open fun processSubs(input: Node, output: Node, indent: Int) {
+        for (i in 0..input.subs.size - 1) {
+            val current = input.subs[i]
+            val next = if (i < input.subs.size - 1) input.subs[i + 1] else null
+            if (current is Node) {
+                processNode(current, output, indent, next)
             } else {
-                processLeaf(it, res, indent)
+                processLeaf(current, output, indent)
             }
         }
     }

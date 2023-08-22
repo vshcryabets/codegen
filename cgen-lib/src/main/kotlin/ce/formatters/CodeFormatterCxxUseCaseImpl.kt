@@ -22,7 +22,7 @@ class CodeFormatterCxxUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRe
         super.processLeaf(input, outputParent, indent)
     }
 
-    override fun processNode(input: Node, outputParent: Node?, indent: Int): Node? {
+    override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
         return when (input) {
             is OutBlock -> {
                 (input.copyLeaf(copySubs = false) as OutBlock).apply {
@@ -45,7 +45,7 @@ class CodeFormatterCxxUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRe
                     outputParent?.addSeparatorNewLine()
                 }
             }
-            else -> super.processNode(input, outputParent, indent)
+            else -> super.processNode(input, outputParent, indent, next)
         }
     }
 }

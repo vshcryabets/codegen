@@ -91,6 +91,38 @@ class CodeFormatterCxxUseCaseImplTest {
         //        <Indent> <EnumLeaf A> <,> <nl>
         //        <Indent> <EnumLeaf B> <,> <nl>
         //        <Indent> <EnumLeaf C> <,> <nl>
+        //        <Indent> <EnumLeaf D> <nl>
+        //        <}>
+        //     </OutBlock>
+        //     <NL>
+        // </Region>
+        Assert.assertEquals(2, output.subs.size)
+        val outBlock = output.subs[0] as OutBlock
+        Assert.assertTrue(outBlock.subs[0] is Keyword)
+        Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
+        Assert.assertTrue(outBlock.subs[2] is Keyword)
+        Assert.assertEquals(22, outBlock.subs.size)
+    }
+
+    @Test
+    fun testNamespaceIndents() {
+        val input = NamespaceBlock("b").apply {
+            addSub(RegionImpl()).apply {
+                addOutBlock("enum ENUM") {
+                    addEnumLeaf("A")
+                    addEnumLeaf("B")
+                }
+            }
+        }
+        val output = formatter(input)
+        // expected result
+        // <Region>
+        //     <OutBlock>
+        //        <(> <OutBLockArguments> <)>
+        //        <SPACE> <{> <nl>
+        //        <Indent> <EnumLeaf A> <,> <nl>
+        //        <Indent> <EnumLeaf B> <,> <nl>
+        //        <Indent> <EnumLeaf C> <,> <nl>
         //        <Indent> <EnumLeaf D> <,> <nl>
         //        <}>
         //     </OutBlock>
