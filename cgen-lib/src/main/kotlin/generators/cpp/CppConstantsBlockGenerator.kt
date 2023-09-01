@@ -30,7 +30,7 @@ class CppConstantsBlockGenerator(
             if (it is ConstantDesc) {
                 autoIncrement.invoke(it)
                 outBlock.addSub(
-                    ConstantLeaf().apply {
+                    ConstantNode().apply {
                         addKeyword("const")
                         addDatatype(Types.typeTo(headerFile, it.type))
                         addVarName(it.name)

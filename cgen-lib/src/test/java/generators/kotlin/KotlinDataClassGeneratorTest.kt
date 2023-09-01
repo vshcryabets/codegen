@@ -1,0 +1,72 @@
+package generators.kotlin
+
+import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.Target
+import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
+import ce.formatters.CLikeCodestyleRepo
+import ce.settings.CodeStyle
+import generators.obj.input.*
+import generators.obj.out.*
+import org.gradle.internal.impldep.org.junit.Assert
+import org.jetbrains.kotlin.psi.KtFile
+import org.junit.jupiter.api.Test
+
+class KotlinDataClassGeneratorTest {
+
+    @Test
+    fun testSimpleDataClass() {
+        val codeStyle = CodeStyle(
+            newLinesBeforeClass = 1,
+            tabSize = 2,
+            preventEmptyBlocks = true,
+        )
+        val repo = CLikeCodestyleRepo(codeStyle)
+        val ktFileGenerator = KotlinFileGenerator()
+        val project = ProjectOutput(Target.Cxx)
+        val item = KtDataClassGenerator(
+            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
+        )
+
+        val namespace = NamespaceImpl("a", TreeRoot)
+        val block = namespace.addSub(DataClass("c", null)).apply {
+            addBlockComment("182TEST_COMMENT")
+            field("A", DataType.int32,  DataValue(1))
+            field("B", DataType.float64,  DataValue(0.5f))
+            field("C", DataType.string(true))
+        }
+
+        val projectOutput = ProjectOutput(Target.Kotlin)
+        val files = ktFileGenerator.createFile(projectOutput, "a", block)
+        val mainFile = files.first()
+        item(files, block)
+
+        // expected result
+        // <FileData>
+        //     <NamespaceDeclaration />
+        //     <ImportsBlock />
+        //     <region>
+        //        <CommentsBlock>...</CommentsBlock>
+        //        <OutBlock>
+        //           <OutBlockArguments>
+        //              <DataField><A><=><1></<EnumLeaf>
+        //              <DataField><B><=><2></<EnumLeaf>
+        //              <DataField><C><=><33></<EnumLeaf>
+        //           </OutBlockArguments>
+        //        </OutBlock>
+        //     </region>
+        // </FileData>
+
+
+        Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
+        Assert.assertEquals(3, mainFile.subs.size)
+        Assert.assertTrue(mainFile.subs[2] is RegionImpl)
+        val region = mainFile.subs[2] as Region
+        Assert.assertEquals(2, region.subs.size)
+        Assert.assertTrue(mainFile.subs[0] is CommentsBlock)
+        Assert.assertTrue(mainFile.subs[1] is OutBlock)
+        Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)
+        val outBlock = region.findOrNull(OutBlock::class.java)!!
+        Assert.assertEquals(3, outBlock.subs.size)
+    }
+}

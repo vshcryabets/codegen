@@ -2,7 +2,6 @@ package generators.kotlin
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
-import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
 import generators.obj.out.*
@@ -22,7 +21,7 @@ class KtConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantLeaf().apply {
+                        addSub(ConstantNode().apply {
                             addKeyword("const")
                             addKeyword("val")
                             addVarName(it.name)

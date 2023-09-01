@@ -4,7 +4,7 @@ import ce.settings.CodeStyle
 import generators.obj.input.Block
 import java.io.File
 
-abstract class CLikeFileGenerator(codeStyle: CodeStyle) : FileGenerator() {
+abstract class CLikeFileGenerator() : FileGenerator() {
 
     override fun getBlockFilePath(block: Block): String {
         var fileName = "${block.name}"

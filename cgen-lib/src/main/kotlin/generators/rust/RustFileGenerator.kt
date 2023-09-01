@@ -10,7 +10,7 @@ import generators.obj.out.FileDataImpl
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class RustFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
+class RustFileGenerator() : CLikeFileGenerator() {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
         return listOf(FileDataImpl(outputFile, project))
     }

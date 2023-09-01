@@ -32,7 +32,7 @@ class CodeFormatterUseCaseImplTest {
                     addSub(CommentLeaf("Line 1"))
                     addSub(CommentLeaf("Line 2"))
                 }
-                addSub(ConstantLeaf().apply {
+                addSub(ConstantNode().apply {
                     addSub(Keyword("const"))
                     addSub(Datatype("int32_t"))
                     addSub(VariableName("OREAD"))
@@ -40,7 +40,7 @@ class CodeFormatterUseCaseImplTest {
                     addSub(RValue("0"))
                     addSub(Separator(";"))
                 })
-                addSub(ConstantLeaf().apply {
+                addSub(ConstantNode().apply {
                     addKeyword("const")
                     addSub(Datatype("int32_t"))
                     addSub(VariableName("OWRITE"))
@@ -97,7 +97,7 @@ class CodeFormatterUseCaseImplTest {
 
     @Test
     fun testConstantsLeaf() {
-        val input = ConstantLeaf().apply {
+        val input = ConstantNode().apply {
             addSub(Keyword("const"))
             addSub(Datatype("int32_t"))
             addSub(VariableName("OREAD"))
@@ -106,7 +106,7 @@ class CodeFormatterUseCaseImplTest {
             addSub(Separator(";"))
         }
 
-        val output = formatter(input) as ConstantLeaf
+        val output = formatter(input) as ConstantNode
         // expected result
         // <ConstantLeaf>
         //     <const> <SPACE>

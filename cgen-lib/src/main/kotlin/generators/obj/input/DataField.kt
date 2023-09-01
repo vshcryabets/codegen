@@ -6,13 +6,6 @@ import ce.defs.NotDefinedValue
 import generators.cpp.CompilerDirective
 
 
-//open class DataField(
-//    override val name: String,
-//    val type: DataType,
-//    var value: DataValue = NotDefinedValue,
-//    override var parent: Node? = null,
-//) : Leaf
-
 interface Field : Leaf {
     val type: DataType
     var value: DataValue// = NotDefinedValue

@@ -63,7 +63,7 @@ data class FieldLeaf(
     override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
 }
 
-data class ConstantLeaf(
+data class ConstantNode(
     override val name: String = "",
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),

@@ -1,18 +1,13 @@
 package generators.kotlin
 
-import ce.settings.CodeStyle
 import generators.obj.CLikeFileGenerator
 import generators.obj.input.Block
 import generators.obj.input.addSub
 import generators.obj.input.getParentPath
-import generators.obj.out.FileData
-import generators.obj.out.FileDataImpl
-import generators.obj.out.ImportsBlock
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.ProjectOutput
+import generators.obj.out.*
 import java.io.File
 
-class KotlinFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
+class KotlinFileGenerator() : CLikeFileGenerator() {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
         return listOf(FileDataImpl(outputFile, project).apply {
             addSub(NamespaceDeclaration(block.getParentPath()))

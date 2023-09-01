@@ -1,6 +1,5 @@
 package ce.treeio
 
-import ce.defs.Target
 import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
 import generators.obj.input.*
@@ -116,7 +115,7 @@ class XmlTreeReader : TreeReader {
             EnumLeaf::class.java.simpleName -> EnumLeaf(name)
             Separator::class.java.simpleName -> Separator(name)
             NlSeparator::class.java.simpleName -> NlSeparator(name)
-            ConstantLeaf::class.java.simpleName -> ConstantLeaf()
+            ConstantNode::class.java.simpleName -> ConstantNode()
             Keyword::class.java.simpleName -> Keyword(name)
             Datatype::class.java.simpleName -> Datatype(name)
             RValue::class.java.simpleName -> RValue(name)

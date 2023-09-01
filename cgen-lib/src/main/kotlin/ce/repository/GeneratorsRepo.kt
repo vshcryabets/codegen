@@ -43,11 +43,11 @@ class GeneratorsRepo(val project: Project) {
         )
 
         val fileGeneratorsMap = mapOf(
-            Target.Kotlin to KotlinFileGenerator(project.codeStyle),
-            Target.Cxx to CppFileGenerator(project.codeStyle),
-            Target.Swift to SwiftFileGenerator(project.codeStyle),
-            Target.Rust to RustFileGenerator(project.codeStyle),
-            Target.Java to JavaFileGenerator(project.codeStyle),
+            Target.Kotlin to KotlinFileGenerator(),
+            Target.Cxx to CppFileGenerator(),
+            Target.Swift to SwiftFileGenerator(),
+            Target.Rust to RustFileGenerator(),
+            Target.Java to JavaFileGenerator(),
         )
 
         val codestylesMap = targets.map {
@@ -86,7 +86,7 @@ class GeneratorsRepo(val project: Project) {
                 Target.Kotlin -> mapOf(
                     ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase),
                     ConstantsBlock::class.java to KtConstantsGenerator(addBlockUseCase),
-                    DataClass::class.java to KtDataClassGenerator(fileGenerator, addBlockUseCase),
+                    DataClass::class.java to KtDataClassGenerator(addBlockUseCase),
                     InterfaceDescription::class.java to KotlinInterfaceGenerator(fileGenerator, addBlockUseCase)
                 )
 

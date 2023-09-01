@@ -13,4 +13,6 @@ data class KotlinClassData(
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)
         }
+
+    override fun toString(): String = "KotlinClassData $name"
 }

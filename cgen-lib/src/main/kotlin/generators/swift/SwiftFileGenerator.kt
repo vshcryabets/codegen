@@ -7,7 +7,7 @@ import generators.obj.out.FileData
 import generators.obj.out.FileDataImpl
 import generators.obj.out.ProjectOutput
 
-class SwiftFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
+class SwiftFileGenerator() : CLikeFileGenerator() {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
         return listOf(FileDataImpl(outputFile, project))
     }

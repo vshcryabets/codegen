@@ -11,7 +11,7 @@ import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.ProjectOutput
 import java.io.File
 
-class JavaFileGenerator(style: CodeStyle) : CLikeFileGenerator(style) {
+class JavaFileGenerator() : CLikeFileGenerator() {
     override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
         return listOf(FileDataImpl(outputFile, project).apply {
             addSub(NamespaceDeclaration(block.getParentPath()))
