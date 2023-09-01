@@ -116,23 +116,22 @@ class CodeFormatterCxxUseCaseImplTest {
         }
         val output = formatter(input)
         // expected result
-        // <Region>
-        //     <OutBlock>
-        //        <(> <OutBLockArguments> <)>
-        //        <SPACE> <{> <nl>
-        //        <Indent> <EnumLeaf A> <,> <nl>
-        //        <Indent> <EnumLeaf B> <,> <nl>
-        //        <Indent> <EnumLeaf C> <,> <nl>
-        //        <Indent> <EnumLeaf D> <,> <nl>
-        //        <}>
-        //     </OutBlock>
-        //     <NL>
-        // </Region>
-        Assert.assertEquals(2, output.subs.size)
-        val outBlock = output.subs[0] as OutBlock
-        Assert.assertTrue(outBlock.subs[0] is Keyword)
-        Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
-        Assert.assertTrue(outBlock.subs[2] is Keyword)
-        Assert.assertEquals(23, outBlock.subs.size)
+        // <NamespaceBlock>
+        //     <SPACE> <{> <NL>
+        //     <Region>
+        //          <Indent> <OutBlock>
+        //          </OutBlock>
+        //          <NL>
+        //     </Region>
+        //     <}>
+        // </NamespaceBlock>
+        Assert.assertEquals(5, output.subs.size)
+        val region = output.subs[3] as Region
+        Assert.assertEquals(3, region.subs.size)
+        Assert.assertTrue(region.subs[0] is Indent)
+        Assert.assertTrue(region.subs[1] is OutBlock)
+        Assert.assertTrue(region.subs[2] is NlSeparator)
+        val outblock = region.subs[1] as OutBlock
+        Assert.assertEquals(14, outblock.subs.size)
     }
 }

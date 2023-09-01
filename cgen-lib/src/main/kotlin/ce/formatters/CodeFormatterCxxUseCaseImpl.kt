@@ -24,27 +24,27 @@ class CodeFormatterCxxUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRe
 
     override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
         return when (input) {
-            is OutBlock -> {
-                (input.copyLeaf(copySubs = false) as OutBlock).apply {
-                    outputParent?.addSub(this)
-                    // find out block args
-                    val args = input.subs.findLast {
-                        it is OutBlockArguments
-                    }
-                    if (args != null) {
-                        input.subs.remove(args)
-                        addKeyword("(")
-                        addSub(args)
-                        addKeyword(")")
-                    }
-                    addSub(Space())
-                    addKeyword("{")
-                    addSeparatorNewLine()
-                    processSubs(input, this, indent + 1)
-                    addKeyword("}")
-                    outputParent?.addSeparatorNewLine()
-                }
-            }
+//            is OutBlock -> {
+//                (input.copyLeaf(copySubs = false) as OutBlock).apply {
+//                    outputParent?.addSub(this)
+//                    // find out block args
+//                    val args = input.subs.findLast {
+//                        it is OutBlockArguments
+//                    }
+//                    if (args != null) {
+//                        input.subs.remove(args)
+//                        addKeyword("(")
+//                        addSub(args)
+//                        addKeyword(")")
+//                    }
+//                    addSub(Space())
+//                    addKeyword("{")
+//                    addSeparatorNewLine()
+//                    processSubs(input, this, indent + 1)
+//                    addKeyword("}")
+//                    outputParent?.addSeparatorNewLine()
+//                }
+//            }
             else -> super.processNode(input, outputParent, indent, next)
         }
     }

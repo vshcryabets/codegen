@@ -5,9 +5,9 @@
 namespace enums {
 
     // Enum CryptoCurrency
-enum CryptoCurrency {
+    enum CryptoCurrency {
         BTC,
         ETH,
         BCH
-}
+    }
 }

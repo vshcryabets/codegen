@@ -73,11 +73,23 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
             is OutBlock -> {
                 (input.copyLeaf(copySubs = false) as OutBlock).apply {
+                    addIndents(outputParent, indent)
                     outputParent?.addSub(this)
+                    // find out block args
+                    val args = input.subs.findLast {
+                        it is OutBlockArguments
+                    }
+                    if (args != null) {
+                        input.subs.remove(args)
+                        addKeyword("(")
+                        addSub(args)
+                        addKeyword(")")
+                    }
                     addSub(Space())
                     addKeyword("{")
                     addSeparatorNewLine()
                     processSubs(input, this, indent + 1)
+                    addIndents(this, indent)
                     addKeyword("}")
                     outputParent?.addSeparatorNewLine()
                 }
