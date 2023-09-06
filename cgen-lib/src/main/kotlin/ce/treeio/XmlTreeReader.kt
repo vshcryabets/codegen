@@ -112,7 +112,7 @@ class XmlTreeReader : TreeReader {
             Indent::class.java.simpleName -> Indent()
             OutBlock::class.java.simpleName -> OutBlock(name)
             OutBlockArguments::class.java.simpleName -> OutBlockArguments(name)
-            EnumLeaf::class.java.simpleName -> EnumLeaf(name)
+            EnumNode::class.java.simpleName -> EnumNode(name)
             Separator::class.java.simpleName -> Separator(name)
             NlSeparator::class.java.simpleName -> NlSeparator(name)
             ConstantNode::class.java.simpleName -> ConstantNode()
@@ -121,7 +121,7 @@ class XmlTreeReader : TreeReader {
             RValue::class.java.simpleName -> RValue(name)
             VariableName::class.java.simpleName -> VariableName(name)
             ResultLeaf::class.java.simpleName -> ResultLeaf(name)
-            ArgumentLeaf::class.java.simpleName -> ArgumentLeaf(name)
+            ArgumentNode::class.java.simpleName -> ArgumentNode(name)
             MultilineCommentsBlock::class.java.simpleName -> MultilineCommentsBlock()
 
             else -> throw IllegalStateException("Unknown $tagName")

@@ -87,7 +87,7 @@ fun <T : Node> T.addDataField(name: String, dataType: DataType) = addSub(DataFie
 fun <T : Node> T.addClassField(name: String, type: DataType, value: DataValue = NotDefinedValue) =
     addSub(DataField(name, type, value))
 
-fun <T : Node> T.addEnumLeaf(name: String) = addSub(EnumLeaf(name))
+fun <T : Node> T.addEnumLeaf(name: String) = addSub(EnumNode(name))
 
 fun <T : Node> T.addCommentLine(name: String) = addSub(CommentLeaf(name))
 

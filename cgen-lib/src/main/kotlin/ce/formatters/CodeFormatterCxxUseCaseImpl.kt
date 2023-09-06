@@ -9,7 +9,7 @@ class CodeFormatterCxxUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRe
 
     override fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
-        if (input is EnumLeaf) {
+        if (input is EnumNode) {
             nodesToAdd.addAll(getIndents(indent))
             nodesToAdd.add(input.copy())
             nodesToAdd.add(Separator(","))

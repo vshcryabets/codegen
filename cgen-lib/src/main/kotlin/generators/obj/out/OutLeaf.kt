@@ -39,13 +39,13 @@ data class CommentLeaf(
     override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
 }
 
-data class ArgumentLeaf(
-    override val name: String,
-    override var parent: Node? = null
-) : Leaf {
-    override fun toString() = name
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
-}
+//data class ArgumentLeaf(
+//    override val name: String,
+//    override var parent: Node? = null
+//) : Leaf {
+//    override fun toString() = name
+//    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+//}
 
 data class ResultLeaf(
     override val name: String,
@@ -75,8 +75,20 @@ data class ConstantNode(
         }
 }
 
-data class EnumLeaf(
+data class EnumNode(
     override val name: String,
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+}
+
+data class ArgumentNode(
+    override val name: String = "",
     override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {

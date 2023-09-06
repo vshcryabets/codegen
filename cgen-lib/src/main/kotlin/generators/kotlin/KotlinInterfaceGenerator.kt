@@ -67,7 +67,7 @@ class KotlinInterfaceGenerator(
                         if (it is Input) {
                             if (needToAddComa) addSub(Separator(", "))
                             addSub(
-                                ArgumentLeaf(
+                                ArgumentNode(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
@@ -87,7 +87,7 @@ class KotlinInterfaceGenerator(
                         reusableResults.forEach {
                             if (needToAddComa) addSub(Separator(", "))
                             addSub(
-                                ArgumentLeaf(
+                                ArgumentNode(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {

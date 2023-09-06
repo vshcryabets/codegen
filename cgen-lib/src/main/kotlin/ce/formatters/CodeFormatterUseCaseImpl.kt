@@ -53,12 +53,12 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
 
         return when (input) {
-            is EnumLeaf -> {
+            is EnumNode -> {
                 input.copyLeaf(copySubs = false).also { output ->
                     addIndents(outputParent, indent)
                     outputParent?.also {parent ->
                         parent.addSub(output)
-                        if (next != null && next is EnumLeaf) {
+                        if (next != null && next is EnumNode) {
                             parent.addSub(Separator(","))
                         }
                         parent.addSub(getNewLine())

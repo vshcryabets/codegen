@@ -3,6 +3,7 @@ package generators.kotlin
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
+import generators.obj.out.ArgumentNode
 import generators.obj.out.FileData
 import generators.obj.out.RegionImpl
 
@@ -20,7 +21,7 @@ class KtDataClassGenerator(
                 addOutBlockArguments {
                     desc.subs.forEach { leaf ->
                         if (leaf is DataField) {
-                            addSub(DataField().apply {
+                            addSub(ArgumentNode().apply {
                                 addKeyword("val")
                                 addVarName(leaf.name)
                                 addKeyword(":")

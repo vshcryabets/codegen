@@ -2,7 +2,6 @@ package generators.obj
 
 import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
-import ce.settings.CodeStyle
 import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
@@ -30,7 +29,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
-            is ArgumentLeaf, is ResultLeaf, is Separator -> {
+            is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
             }
             is RValue -> out.write(leaf.name)
@@ -70,7 +69,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-            is EnumLeaf -> {
+            is EnumNode -> {
                 if (node.subs.size == 0)
                     out.write(node.name)
                 else
