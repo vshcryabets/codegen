@@ -12,7 +12,7 @@ class KtDataClassGenerator(
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
-        val file = blockFiles.find { it is FileData }
+        val file = blockFiles.firstOrNull()
             ?: throw IllegalStateException("Can't find Main file for Kotlin")
 
         file.addSub(RegionImpl()).apply {
@@ -29,13 +29,6 @@ class KtDataClassGenerator(
                                 addKeyword("=")
                                 addRValue(Types.toValue(leaf.type, leaf.value))
                             })
-
-                            addDataField(
-                                if (leaf.value.isDefined())
-                                    "val ${leaf.name}: ${Types.typeTo(file, leaf.type)} = ${Types.toValue(leaf.type, leaf.value)}"
-                                else
-                                    "val ${leaf.name}: ${Types.typeTo(file, leaf.type)}",
-                                leaf.type)
                         }
                     }
                 }

@@ -13,7 +13,7 @@ class KotlinEnumGenerator(
 ) : TransformBlockUseCase<ConstantsEnum> {
 
     override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
-        val file = files.find { it is FileData }
+        val file = files.firstOrNull()
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         val withRawValues = desc.defaultDataType != DataType.VOID
         val autoIncrement = AutoincrementField()
@@ -23,7 +23,15 @@ class KotlinEnumGenerator(
             region.addOutBlock("enum class ${desc.name}") {
                 if (withRawValues) {
                     addOutBlockArguments {
-                        addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
+                        addSub(ArgumentNode().apply {
+                            addKeyword("val")
+                            addVarName("rawValue")
+                            addKeyword(":")
+                            addDatatype(Types.typeTo(file, desc.defaultDataType))
+//                            addKeyword("=")
+//                            addRValue(Types.toValue(desc.type, desc.value))
+                        })
+//                        addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
                     }
                 }
                 desc.subs.forEach { leaf ->

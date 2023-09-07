@@ -4,6 +4,7 @@ import ce.defs.DataType
 import ce.defs.Target
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
+import generators.kotlin.Types
 import generators.obj.input.*
 import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
@@ -58,7 +59,12 @@ class CodeFormatterKotlinUseCaseImplTest {
         val input = RegionImpl().apply {
             addOutBlock("enum class ENUM") {
                 addSub(OutBlockArguments()).apply {
-                    addSub(DataField("name", DataType.int16))
+                    addSub(ArgumentNode().apply {
+                        addKeyword("val")
+                        addVarName("rawValue")
+                        addKeyword(":")
+                        addDatatype("int")
+                    })
                 }
                 addEnumLeaf("A(0)")
                 addEnumLeaf("B(1)")
@@ -70,7 +76,13 @@ class CodeFormatterKotlinUseCaseImplTest {
         // expected result
         // <Region>
         //     <OutBlock>
-        //        <(> <OutBLockArguments> <)>
+        //        <(>
+        //        <OutBlockArguments>
+        //          <ArgumentNode>
+        //              <val><SPACE><rawValue><:><SPACE><int>
+        //          </ArgumentNode>
+        //        </OutBLockArguments>
+        //        <)>
         //        <SPACE> <{> <nl>
         //        <Indent> <EnumLeaf A> <,> <nl>
         //        <Indent> <EnumLeaf B> <,> <nl>
@@ -86,5 +98,14 @@ class CodeFormatterKotlinUseCaseImplTest {
         Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
         Assert.assertTrue(outBlock.subs[2] is Keyword)
         Assert.assertEquals(22, outBlock.subs.size)
+
+        val outBlockArguments = outBlock.subs[1] as OutBlockArguments
+        Assert.assertEquals(1, outBlockArguments.subs.size)
+
+        Assert.assertTrue(outBlockArguments.subs[0] is ArgumentNode)
+        val argumentNode = outBlockArguments.subs[0] as ArgumentNode
+        Assert.assertTrue(argumentNode.subs[0] is Keyword)
+        Assert.assertEquals(6, argumentNode.subs.size)
+
     }
 }

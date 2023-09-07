@@ -49,9 +49,9 @@ class KotlinDataClassGeneratorTest {
         //        <CommentsBlock>...</CommentsBlock>
         //        <OutBlock>
         //           <OutBlockArguments>
-        //              <DataField><A><=><1></<EnumLeaf>
-        //              <DataField><B><=><2></<EnumLeaf>
-        //              <DataField><C><=><33></<EnumLeaf>
+        //              <ArgumentNode><val><A><:><int><=><1></<ArgumentNode>
+        //              <ArgumentNode><val><B><:><float><=><0.5f></<ArgumentNode>
+        //              <ArgumentNode><val><C><:><string></<ArgumentNode>
         //           </OutBlockArguments>
         //        </OutBlock>
         //     </region>
@@ -63,10 +63,12 @@ class KotlinDataClassGeneratorTest {
         Assert.assertTrue(mainFile.subs[2] is RegionImpl)
         val region = mainFile.subs[2] as Region
         Assert.assertEquals(2, region.subs.size)
-        Assert.assertTrue(mainFile.subs[0] is CommentsBlock)
-        Assert.assertTrue(mainFile.subs[1] is OutBlock)
+        Assert.assertTrue(region.subs[0] is CommentsBlock)
+        Assert.assertTrue(region.subs[1] is OutBlock)
         Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)
         val outBlock = region.findOrNull(OutBlock::class.java)!!
-        Assert.assertEquals(3, outBlock.subs.size)
+        Assert.assertEquals(1, outBlock.subs.size)
+        val outBlockArgs = outBlock.findOrNull(OutBlockArguments::class.java)!!
+        Assert.assertEquals(3, outBlockArgs.subs.size)
     }
 }

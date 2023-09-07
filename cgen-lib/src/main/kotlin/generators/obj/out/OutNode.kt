@@ -69,7 +69,10 @@ data class OutBlock(
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)
-        }}
+        }
+
+    override fun toString(): String = "OutBlock $name"
+}
 
 data class OutBlockArguments(
     override val name: String = "",
