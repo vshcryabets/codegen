@@ -63,14 +63,14 @@ data class NamespaceImpl(override val name: String = "",
     }
 
     override fun dataClass(name: String): DataClass {
-        return DataClass(name, this)
+        return addSub(DataClass(name, this))
             .apply {
                 putDefaults(this)
             }
     }
 
     override fun declareInterface(name: String): InterfaceDescription {
-        return InterfaceDescription(name, this)
+        return addSub(InterfaceDescription(name, this))
             .apply {
                 putDefaults(this)
             }

@@ -70,5 +70,14 @@ class KotlinDataClassGeneratorTest {
         Assert.assertEquals(1, outBlock.subs.size)
         val outBlockArgs = outBlock.findOrNull(OutBlockArguments::class.java)!!
         Assert.assertEquals(3, outBlockArgs.subs.size)
+
+        // check A rvalue
+        val aArgument = outBlockArgs.subs[0] as ArgumentNode
+        Assert.assertEquals(6, aArgument.subs.size)
+        Assert.assertEquals("1", aArgument.subs[5].name)
+
+        // check C rvalue
+        val cArgument = outBlockArgs.subs[2] as ArgumentNode
+        Assert.assertEquals(4, aArgument.subs.size)
     }
 }
