@@ -106,6 +106,120 @@ class CodeFormatterKotlinUseCaseImplTest {
         val argumentNode = outBlockArguments.subs[0] as ArgumentNode
         Assert.assertTrue(argumentNode.subs[0] is Keyword)
         Assert.assertEquals(6, argumentNode.subs.size)
+    }
 
+    @Test
+    fun testDataClassOneArgumentsFormatting() {
+        val input = RegionImpl().apply {
+            addOutBlock("data class TEST") {
+                addSub(OutBlockArguments()).apply {
+                    addSub(ArgumentNode().apply {
+                        addKeyword("val")
+                        addVarName("A")
+                        addKeyword(":")
+                        addDatatype("int")
+                        addKeyword("=")
+                        addRValue("1")
+                    })
+                }
+            }
+        }
+        val output = formatter(input)
+        // expected result
+        // <Region>
+        //     <OutBlock>
+        //        <(>
+        //        <OutBlockArguments>
+        //          <ArgumentNode>
+        //              <val><SPACE><A><:><SPACE><int><SPACE><=><1>
+        //          </ArgumentNode>
+        //        </OutBLockArguments>
+        //        <)>
+        //     </OutBlock>
+        //     <NL>
+        // </Region>
+        Assert.assertEquals(2, output.subs.size)
+        val outBlock = output.subs[0] as OutBlock
+        Assert.assertTrue(outBlock.subs[0] is Keyword)
+        Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
+        Assert.assertTrue(outBlock.subs[2] is Keyword)
+        Assert.assertEquals(3, outBlock.subs.size)
+
+        val outBlockArguments = outBlock.subs[1] as OutBlockArguments
+        Assert.assertEquals(1, outBlockArguments.subs.size)
+
+        Assert.assertTrue(outBlockArguments.subs[0] is ArgumentNode)
+        val argumentNode = outBlockArguments.subs[0] as ArgumentNode
+        Assert.assertTrue(argumentNode.subs[0] is Keyword)
+        Assert.assertEquals(9, argumentNode.subs.size)
+    }
+
+    @Test
+    fun testDataClassMultimpleArgumentsFormatting() {
+        val input = RegionImpl().apply {
+            addOutBlock("data class TEST") {
+                addSub(OutBlockArguments()).apply {
+                    addSub(ArgumentNode().apply {
+                        addKeyword("val")
+                        addVarName("A")
+                        addKeyword(":")
+                        addDatatype("int")
+                        addKeyword("=")
+                        addRValue("1")
+                    })
+                    addSub(ArgumentNode().apply {
+                        addKeyword("val")
+                        addVarName("B")
+                        addKeyword(":")
+                        addDatatype("float")
+                        addKeyword("=")
+                        addRValue("0.5f")
+                    })
+                    addSub(ArgumentNode().apply {
+                        addKeyword("val")
+                        addVarName("V")
+                        addKeyword(":")
+                        addDatatype("String?")
+                    })
+                }
+            }
+        }
+        val output = formatter(input)
+
+        // expected result
+        // <Region>
+        //     <OutBlock>
+        //        <(> <NL>
+        //        <OutBlockArguments>
+        //          <ArgumentNode>
+        //              <val><SPACE><A><:><SPACE><int><SPACE><=><1>
+        //          </ArgumentNode><,><NL>
+        //          <ArgumentNode>
+        //              <val><SPACE><B><:><SPACE><float><SPACE><=><0.5f>
+        //          </ArgumentNode><,><NL>
+        //          <ArgumentNode>
+        //              <val><SPACE><C><:><SPACE><String?><NL>
+        //          </ArgumentNode>
+        //        </OutBLockArguments>
+        //        <)>
+        //     </OutBlock>
+        //     <NL>
+        // </Region>
+        Assert.assertEquals(2, output.subs.size)
+        val outBlock = output.subs[0] as OutBlock
+        Assert.assertTrue(outBlock.subs[0] is Keyword)
+        Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
+        Assert.assertTrue(outBlock.subs[2] is Keyword)
+        Assert.assertEquals(4, outBlock.subs.size)
+
+        val outBlockArguments = outBlock.subs[1] as OutBlockArguments
+        Assert.assertEquals(7, outBlockArguments.subs.size)
+
+        Assert.assertTrue(outBlockArguments.subs[0] is ArgumentNode)
+        Assert.assertTrue(outBlockArguments.subs[1] is Separator)
+        Assert.assertTrue(outBlockArguments.subs[3] is NlSeparator)
+        val argumentNode = outBlockArguments.subs[0] as ArgumentNode
+        Assert.assertTrue(argumentNode.subs[0] is Keyword)
+        Assert.assertEquals(9, argumentNode.subs.size)
     }
 }
