@@ -31,8 +31,8 @@ class KotlinDataClassGeneratorTest {
         val namespace = NamespaceImpl("a", TreeRoot)
         val block = namespace.addSub(DataClass("c", null)).apply {
             addBlockComment("182TEST_COMMENT")
-            field("A", DataType.int32,  DataValue(1))
-            field("B", DataType.float64,  DataValue(0.5f))
+            field("A", DataType.int32,  1)
+            field("B", DataType.float64,  0.5f)
             field("C", DataType.string(true))
         }
 
@@ -78,6 +78,6 @@ class KotlinDataClassGeneratorTest {
 
         // check C rvalue
         val cArgument = outBlockArgs.subs[2] as ArgumentNode
-        Assert.assertEquals(4, aArgument.subs.size)
+        Assert.assertEquals(4, cArgument.subs.size)
     }
 }

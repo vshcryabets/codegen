@@ -26,8 +26,10 @@ class KtDataClassGenerator(
                                 addVarName(leaf.name)
                                 addKeyword(":")
                                 addDatatype(Types.typeTo(file, leaf.type))
-                                addKeyword("=")
-                                addRValue(Types.toValue(leaf.type, leaf.value))
+                                if (leaf.value.isDefined()) {
+                                    addKeyword("=")
+                                    addRValue(Types.toValue(leaf.type, leaf.value))
+                                }
                             })
                         }
                     }
