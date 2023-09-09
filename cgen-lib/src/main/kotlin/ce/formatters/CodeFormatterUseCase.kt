@@ -1,6 +1,5 @@
 package ce.formatters
 
-import generators.obj.input.Leaf
 import generators.obj.input.Node
 
 interface CodeFormatterUseCase {

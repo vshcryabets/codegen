@@ -2,6 +2,7 @@ package ce.formatters
 
 import generators.obj.input.*
 import generators.obj.out.*
+import org.apache.tools.ant.types.DataType
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
@@ -14,16 +15,19 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
     override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
         return when (input) {
             is OutBlock -> {
-                (input.copyLeaf(copySubs = false) as OutBlock).apply {
+                input.copyLeaf(copySubs = false).apply {
                     outputParent?.addSub(this)
                     // find out block args
                     val args = input.subs.findLast {
                         it is OutBlockArguments
-                    }
+                    } as OutBlockArguments?
                     if (args != null) {
                         input.subs.remove(args)
                         addKeyword("(")
-                        addSub(args)
+//                        addSub(args)
+
+                        processNode(args, this, indent, null)
+
                         addKeyword(")")
                     }
                     addSub(Space())
@@ -34,6 +38,30 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     outputParent?.addSeparatorNewLine()
                 }
             }
+
+            is ArgumentNode -> {
+                input.copyLeaf(copySubs = false).apply {
+                    outputParent?.addSub(this)
+                    // <val><NAME><:><int>
+                    if ((input.subs.size == 4) &&
+                        (input.subs[0] is Keyword) &&
+                        (input.subs[1] is VariableName) &&
+                        (input.subs[2] is Keyword) &&
+                        (input.subs[3] is Datatype)
+                    ) {
+                        // <val><SPACE><NAME><:><SPACE><int>
+                        addSub(input.subs[0].copyLeaf(this, true))
+                        addSub(Space())
+                        addSub(input.subs[1].copyLeaf(this, true))
+                        addSub(input.subs[2].copyLeaf(this, true))
+                        addSub(Space())
+                        addSub(input.subs[3].copyLeaf(this, true))
+                    } else {
+                        processSubs(input, this, indent)
+                    }
+                }
+            }
+
             else -> super.processNode(input, outputParent, indent, next)
         }
     }
