@@ -6,7 +6,7 @@ import generators.obj.out.*
 import javax.inject.Inject
 
 open class CodeFormatterUseCaseImpl @Inject constructor(
-    private val codeStyleRepo: CodeStyleRepo,
+    protected val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun <T : Node> invoke(input: T): T {
         return processNode(input, null, 0, null) as T

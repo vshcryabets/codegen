@@ -30,11 +30,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
 
                         addKeyword(")")
                     }
-                    addSub(Space())
-                    addKeyword("{")
-                    addSeparatorNewLine()
-                    processSubs(input, this, indent + 1)
-                    addKeyword("}")
+                    if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
+                        addSub(Space())
+                        addKeyword("{")
+                        addSeparatorNewLine()
+                        processSubs(input, this, indent + 1)
+                        addKeyword("}")
+                    }
                     outputParent?.addSeparatorNewLine()
                 }
             }
@@ -56,6 +58,25 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                         addSub(input.subs[2].copyLeaf(this, true))
                         addSub(Space())
                         addSub(input.subs[3].copyLeaf(this, true))
+                    } else if ((input.subs.size == 6) && // <val><NAME><:><int><=><RValue>
+                        (input.subs[0] is Keyword) &&
+                        (input.subs[1] is VariableName) &&
+                        (input.subs[2] is Keyword) &&
+                        (input.subs[3] is Datatype) &&
+                        (input.subs[4] is Keyword) &&
+                        (input.subs[5] is RValue)
+                    ) {
+                        // <val><SPACE><NAME><:><SPACE><int><SPACE><=><SPACE><RValue>
+                        addSub(input.subs[0].copyLeaf(this, true))
+                        addSub(Space())
+                        addSub(input.subs[1].copyLeaf(this, true))
+                        addSub(input.subs[2].copyLeaf(this, true))
+                        addSub(Space())
+                        addSub(input.subs[3].copyLeaf(this, true))
+                        addSub(Space())
+                        addSub(input.subs[4].copyLeaf(this, true))
+                        addSub(Space())
+                        addSub(input.subs[5].copyLeaf(this, true))
                     } else {
                         processSubs(input, this, indent)
                     }

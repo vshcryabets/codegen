@@ -131,7 +131,7 @@ class CodeFormatterKotlinUseCaseImplTest {
         //        <(>
         //        <OutBlockArguments>
         //          <ArgumentNode>
-        //              <val><SPACE><A><:><SPACE><int><SPACE><=><1>
+        //              <val><SPACE><A><:><SPACE><int><SPACE><=><SPACE><1>
         //          </ArgumentNode>
         //        </OutBLockArguments>
         //        <)>
@@ -151,7 +151,7 @@ class CodeFormatterKotlinUseCaseImplTest {
         Assert.assertTrue(outBlockArguments.subs[0] is ArgumentNode)
         val argumentNode = outBlockArguments.subs[0] as ArgumentNode
         Assert.assertTrue(argumentNode.subs[0] is Keyword)
-        Assert.assertEquals(9, argumentNode.subs.size)
+        Assert.assertEquals(10, argumentNode.subs.size)
     }
 
     @Test
