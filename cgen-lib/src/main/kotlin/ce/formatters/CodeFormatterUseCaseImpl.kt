@@ -9,7 +9,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
     protected val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun <T : Node> invoke(input: T): T {
-        return processNode(input, null, 0, null) as T
+        return processNode(input, null, 0, null, null) as T
     }
 
     protected open fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
@@ -40,7 +40,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
     protected fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
-    protected open fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
+    protected open fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node? {
         if (input is FileData) {
             if (!input.isDirty) {
                 return null
@@ -157,8 +157,9 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         for (i in 0..input.subs.size - 1) {
             val current = input.subs[i]
             val next = if (i < input.subs.size - 1) input.subs[i + 1] else null
+            val prev = if (i > 0) input.subs[i - 1] else null
             if (current is Node) {
-                processNode(current, output, indent, next)
+                processNode(current, output, indent, next, prev)
             } else {
                 processLeaf(current, output, indent)
             }

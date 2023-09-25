@@ -12,8 +12,22 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         super.processLeaf(input, outputParent, indent)
     }
 
-    override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?): Node? {
+    override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node? {
         return when (input) {
+            is OutBlockArguments -> {
+                if (input.subs.size > 1) {
+                    // multiple lines
+                    input.copyLeaf(copySubs = false).apply {
+                        outputParent?.addSub(NlSeparator())
+                        outputParent?.addSub(this)
+                        outputParent?.addSub(NlSeparator())
+                        processSubs(input, this, indent + 1)
+                    }
+                } else {
+                    // single argument
+                    super.processNode(input, outputParent, indent, next, prev)
+                }
+            }
             is OutBlock -> {
                 input.copyLeaf(copySubs = false).apply {
                     outputParent?.addSub(this)
@@ -24,10 +38,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     if (args != null) {
                         input.subs.remove(args)
                         addKeyword("(")
-//                        addSub(args)
-
-                        processNode(args, this, indent, null)
-
+                        processNode(args, this, indent, null, null)
                         addKeyword(")")
                     }
                     if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
@@ -43,7 +54,14 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
 
             is ArgumentNode -> {
                 input.copyLeaf(copySubs = false).apply {
+                    if (next is ArgumentNode || prev is ArgumentNode) {
+                        outputParent?.subs?.addAll(getIndents(indent))
+                    }
                     outputParent?.addSub(this)
+                    if (next is ArgumentNode) {
+                        outputParent?.addSub(Separator(","))
+                        outputParent?.addSub(NlSeparator())
+                    }
                     // <val><NAME><:><int>
                     if ((input.subs.size == 4) &&
                         (input.subs[0] is Keyword) &&
@@ -83,7 +101,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                 }
             }
 
-            else -> super.processNode(input, outputParent, indent, next)
+            else -> super.processNode(input, outputParent, indent, next, prev)
         }
     }
 }

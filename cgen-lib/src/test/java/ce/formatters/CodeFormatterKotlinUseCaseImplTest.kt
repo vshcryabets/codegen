@@ -191,35 +191,48 @@ class CodeFormatterKotlinUseCaseImplTest {
         //     <OutBlock>
         //        <(> <NL>
         //        <OutBlockArguments>
+        //          <TAB>
         //          <ArgumentNode>
-        //              <val><SPACE><A><:><SPACE><int><SPACE><=><1>
+        //              <val><SPACE><A><:><SPACE><int><SPACE><=><SPACE><1>
         //          </ArgumentNode><,><NL>
+        //          <TAB>
         //          <ArgumentNode>
-        //              <val><SPACE><B><:><SPACE><float><SPACE><=><0.5f>
+        //              <val><SPACE><B><:><SPACE><float><SPACE><=><SPACE><0.5f>
         //          </ArgumentNode><,><NL>
+        //          <TAB>
         //          <ArgumentNode>
         //              <val><SPACE><C><:><SPACE><String?><NL>
         //          </ArgumentNode>
-        //        </OutBLockArguments>
+        //        </OutBLockArguments><NL>
         //        <)>
         //     </OutBlock>
         //     <NL>
         // </Region>
         Assert.assertEquals(2, output.subs.size)
         val outBlock = output.subs[0] as OutBlock
+        Assert.assertEquals(5, outBlock.subs.size)
         Assert.assertTrue(outBlock.subs[0] is Keyword)
-        Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
-        Assert.assertTrue(outBlock.subs[2] is Keyword)
-        Assert.assertEquals(4, outBlock.subs.size)
+        Assert.assertTrue(outBlock.subs[1] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[2] is OutBlockArguments)
+        Assert.assertTrue(outBlock.subs[3] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[4] is Keyword)
 
-        val outBlockArguments = outBlock.subs[1] as OutBlockArguments
-        Assert.assertEquals(7, outBlockArguments.subs.size)
+        val outBlockArguments = outBlock.subs[2] as OutBlockArguments
+        Assert.assertEquals(10, outBlockArguments.subs.size)
 
-        Assert.assertTrue(outBlockArguments.subs[0] is ArgumentNode)
-        Assert.assertTrue(outBlockArguments.subs[1] is Separator)
+        Assert.assertTrue(outBlockArguments.subs[0] is Indent)
+        Assert.assertTrue(outBlockArguments.subs[1] is ArgumentNode)
+        Assert.assertTrue(outBlockArguments.subs[2] is Separator)
         Assert.assertTrue(outBlockArguments.subs[3] is NlSeparator)
-        val argumentNode = outBlockArguments.subs[0] as ArgumentNode
+        Assert.assertTrue(outBlockArguments.subs[4] is Indent)
+        Assert.assertTrue(outBlockArguments.subs[5] is ArgumentNode)
+        Assert.assertTrue(outBlockArguments.subs[6] is Separator)
+        Assert.assertTrue(outBlockArguments.subs[7] is NlSeparator)
+        Assert.assertTrue(outBlockArguments.subs[8] is Indent)
+        Assert.assertTrue(outBlockArguments.subs[9] is ArgumentNode)
+
+        val argumentNode = outBlockArguments.subs[1] as ArgumentNode
         Assert.assertTrue(argumentNode.subs[0] is Keyword)
-        Assert.assertEquals(9, argumentNode.subs.size)
+        Assert.assertEquals(10, argumentNode.subs.size)
     }
 }
