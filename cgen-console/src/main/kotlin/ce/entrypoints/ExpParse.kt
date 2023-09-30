@@ -30,13 +30,19 @@ fun loadDictionary(fileName: String, dictionary: MutableMap<Int, Word>) {
 
 fun storeDictionary(fileName: String, dictionary: Map<Int, Leaf>) {
     val dictionaryFile = File(fileName)
-    CSVWriter(FileWriter(dictionaryFile),
+    CSVWriter(
+        FileWriter(dictionaryFile),
         CSVWriter.DEFAULT_SEPARATOR,
         CSVWriter.NO_QUOTE_CHARACTER,
         CSVWriter.NO_ESCAPE_CHARACTER,
-        CSVWriter.DEFAULT_LINE_END).use {
+        CSVWriter.DEFAULT_LINE_END
+    ).use {
         dictionary.forEach { id, word ->
-            it.writeNext(arrayOf(id.toString(), "\"${word.name.replace("\n", "\\n")}\""))
+            if (word is Word) {
+                it.writeNext(arrayOf(id.toString(), "\"${word.name.replace("\n", "\\n")}\"", "\"${word.nextIsLiteral}\""))
+            } else {
+                it.writeNext(arrayOf(id.toString(), "\"${word.name.replace("\n", "\\n")}\""))
+            }
         }
     }
 }
@@ -44,14 +50,14 @@ fun storeDictionary(fileName: String, dictionary: Map<Int, Leaf>) {
 fun storeTokens(fileName: String, tokens: List<Int>) {
     val dictionaryFile = File(fileName)
     dictionaryFile.outputStream().use {
-        tokens.forEach {token ->
+        tokens.forEach { token ->
             it.write(token.toString().toByteArray())
             it.write(0x20)
         }
     }
 }
 
-fun readFileLineByLineUsingForEachLine(fileName: String) : StringBuilder {
+fun readFileLineByLineUsingForEachLine(fileName: String): StringBuilder {
     val result = StringBuilder()
     File(fileName).forEachLine {
         result.append(it)
@@ -61,16 +67,16 @@ fun readFileLineByLineUsingForEachLine(fileName: String) : StringBuilder {
 }
 
 data class ParseResult(
-    val wordsMap : Map<Int, Word> = emptyMap(),
-    val literalsMap : Map<Int, Literal> = emptyMap(),
-    val digits : Map<Int, Digit> = emptyMap(),
+    val wordsMap: Map<Int, Word> = emptyMap(),
+    val literalsMap: Map<Int, Literal> = emptyMap(),
+    val digits: Map<Int, Digit> = emptyMap(),
     val tokens: List<Int> = emptyList()
 )
 
-fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, Word>) : ParseResult {
+fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, Word>): ParseResult {
     println("buildLinear")
     val srcBuffer = SourceBuffer(buffer, inPos)
-    var counter = 0
+    var wordsCounter = 0
     var literalCounter = 1000000
     var digitCounter = 2000000
 
@@ -83,18 +89,19 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
 
     val wordsMapRevers = mutableMapOf<String, Int>().apply {
         putAll(dictionary
-            .onEach { if (it.key > counter) counter = it.key }
+            .onEach { if (it.key > wordsCounter) wordsCounter = it.key }
             .map { (key, value) ->
-            value.name to key
-        }.toMap())
+                value.name to key
+            }.toMap()
+        )
     }
-    counter++
+    wordsCounter++
 
 //    var pos = inPos
     do {
 
         val ch = srcBuffer.getNextChar()
-        println("Process ${srcBuffer.pos} ${buffer.length} $ch")
+//        println("Process ${srcBuffer.pos} ${buffer.length} $ch")
         // TODO support for // and /* */
         if (srcBuffer.nextIs("//")) {
             val literalPair = srcBuffer.readUntil("\n", false, true)
@@ -123,23 +130,28 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
             digitCounter++
         } else {
             val wordPair = srcBuffer.readWord()
-            if (prevWord.nextIsLiteral) {
-                literalsMap[literalCounter] = Literal(wordPair.first.name)
-                numbers.add(literalCounter)
-                println("Literal \"${wordPair.first.name}\" = $literalCounter")
-                literalCounter++
-                prevWord = Word("")
-            } else {
-                var id = counter
-                if (!wordsMapRevers.containsKey(wordPair.first.name)) {
-                    dictionary[id] = wordPair.first
-                    wordsMapRevers[wordPair.first.name] = id
-                    counter++
+
+
+            if (!wordsMapRevers.containsKey(wordPair.first.name)) {
+
+                if (prevWord.nextIsLiteral) {
+                    literalsMap[literalCounter] = Literal(wordPair.first.name)
+                    numbers.add(literalCounter)
+                    println("Literal \"${wordPair.first.name}\" = $literalCounter")
+                    literalCounter++
+                    prevWord = Word("")
                 } else {
-                    id = wordsMapRevers[wordPair.first.name]!!
-                    prevWord = dictionary[id]!!
+                    // add to dictionary
+                    dictionary[wordsCounter] = wordPair.first
+                    wordsMapRevers[wordPair.first.name] = wordsCounter
+                    numbers.add(wordsCounter)
+                    wordsCounter++
+                    prevWord = wordPair.first
                 }
+            } else {
+                var id = wordsMapRevers[wordPair.first.name]!!
                 numbers.add(id)
+                prevWord = dictionary[id]!!
             }
         }
     } while (!srcBuffer.end())
@@ -154,11 +166,13 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
 
 fun main(args: Array<String>) {
     if (args.size < 2) {
-        error("""
+        error(
+            """
             Please, specify: 
                 - input file
                 - input target [Cxx, kotlin, etc]
-            """)
+            """
+        )
     }
     val inputFileName = args[0]
     val target = TargetExt.findByName(args[1])
