@@ -52,56 +52,57 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                 }
             }
 
-            is ArgumentNode -> {
-                input.copyLeaf(copySubs = false).apply {
-                    if (next is ArgumentNode || prev is ArgumentNode) {
-                        outputParent?.subs?.addAll(getIndents(indent))
-                    }
-                    outputParent?.addSub(this)
-                    if (next is ArgumentNode) {
-                        outputParent?.addSub(Separator(","))
-                        outputParent?.addSub(NlSeparator())
-                    }
-                    // <val><NAME><:><int>
-                    if ((input.subs.size == 4) &&
-                        (input.subs[0] is Keyword) &&
-                        (input.subs[1] is VariableName) &&
-                        (input.subs[2] is Keyword) &&
-                        (input.subs[3] is Datatype)
-                    ) {
-                        // <val><SPACE><NAME><:><SPACE><int>
-                        addSub(input.subs[0].copyLeaf(this, true))
-                        addSub(Space())
-                        addSub(input.subs[1].copyLeaf(this, true))
-                        addSub(input.subs[2].copyLeaf(this, true))
-                        addSub(Space())
-                        addSub(input.subs[3].copyLeaf(this, true))
-                    } else if ((input.subs.size == 6) && // <val><NAME><:><int><=><RValue>
-                        (input.subs[0] is Keyword) &&
-                        (input.subs[1] is VariableName) &&
-                        (input.subs[2] is Keyword) &&
-                        (input.subs[3] is Datatype) &&
-                        (input.subs[4] is Keyword) &&
-                        (input.subs[5] is RValue)
-                    ) {
-                        // <val><SPACE><NAME><:><SPACE><int><SPACE><=><SPACE><RValue>
-                        addSub(input.subs[0].copyLeaf(this, true))
-                        addSub(Space())
-                        addSub(input.subs[1].copyLeaf(this, true))
-                        addSub(input.subs[2].copyLeaf(this, true))
-                        addSub(Space())
-                        addSub(input.subs[3].copyLeaf(this, true))
-                        addSub(Space())
-                        addSub(input.subs[4].copyLeaf(this, true))
-                        addSub(Space())
-                        addSub(input.subs[5].copyLeaf(this, true))
-                    } else {
-                        processSubs(input, this, indent)
-                    }
-                }
-            }
-
+            is ArgumentNode -> formatArgumentNode(input, outputParent, indent, next, prev)
             else -> super.processNode(input, outputParent, indent, next, prev)
+        }
+    }
+
+    private fun formatArgumentNode(input: ArgumentNode, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node {
+        return input.copyLeaf(copySubs = false).apply {
+            if (next is ArgumentNode || prev is ArgumentNode) {
+                outputParent?.subs?.addAll(getIndents(indent))
+            }
+            outputParent?.addSub(this)
+            if (next is ArgumentNode) {
+                outputParent?.addSub(Separator(","))
+                outputParent?.addSub(NlSeparator())
+            }
+            // <val><NAME><:><int>
+            if ((input.subs.size == 4) &&
+                (input.subs[0] is Keyword) &&
+                (input.subs[1] is VariableName) &&
+                (input.subs[2] is Keyword) &&
+                (input.subs[3] is Datatype)
+            ) {
+                // <val><SPACE><NAME><:><SPACE><int>
+                addSub(input.subs[0].copyLeaf(this, true))
+                addSub(Space())
+                addSub(input.subs[1].copyLeaf(this, true))
+                addSub(input.subs[2].copyLeaf(this, true))
+                addSub(Space())
+                addSub(input.subs[3].copyLeaf(this, true))
+            } else if ((input.subs.size == 6) && // <val><NAME><:><int><=><RValue>
+                (input.subs[0] is Keyword) &&
+                (input.subs[1] is VariableName) &&
+                (input.subs[2] is Keyword) &&
+                (input.subs[3] is Datatype) &&
+                (input.subs[4] is Keyword) &&
+                (input.subs[5] is RValue)
+            ) {
+                // <val><SPACE><NAME><:><SPACE><int><SPACE><=><SPACE><RValue>
+                addSub(input.subs[0].copyLeaf(this, true))
+                addSub(Space())
+                addSub(input.subs[1].copyLeaf(this, true))
+                addSub(input.subs[2].copyLeaf(this, true))
+                addSub(Space())
+                addSub(input.subs[3].copyLeaf(this, true))
+                addSub(Space())
+                addSub(input.subs[4].copyLeaf(this, true))
+                addSub(Space())
+                addSub(input.subs[5].copyLeaf(this, true))
+            } else {
+                processSubs(input, this, indent)
+            }
         }
     }
 }

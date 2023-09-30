@@ -123,7 +123,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
     }
 
-    private fun formatConstantLeaf(input: ConstantNode, parent: Node?, indent: Int): ConstantNode {
+    open fun formatConstantLeaf(input: ConstantNode, parent: Node?, indent: Int): ConstantNode {
         val res = input.copyLeaf(copySubs = false).apply {
             addIndents(parent, indent)
             parent?.addSub(this)
