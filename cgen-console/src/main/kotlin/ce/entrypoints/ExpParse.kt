@@ -1,6 +1,5 @@
 package ce.entrypoints
 
-import ce.defs.Target
 import ce.defs.TargetExt
 import ce.parsing.Digit
 import ce.parsing.Literal
@@ -13,7 +12,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
-import java.lang.Exception
 import java.nio.file.Paths
 
 fun loadDictionary(fileName: String, dictionary: MutableMap<Int, Word>) {
@@ -22,7 +20,7 @@ fun loadDictionary(fileName: String, dictionary: MutableMap<Int, Word>) {
         CSVReader(FileReader(dictionaryFile)).use { reader ->
             val r = reader.readAll()
             r.forEach {
-                dictionary[it[0].toInt()] = Word(it[1])
+                dictionary[it[0].toInt()] = Word(it[1], nextIsLiteral = it[2].toBoolean())
             }
         }
     } else {
@@ -81,6 +79,8 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
 
     val numbers = mutableListOf<Int>()
 
+    var prevWord = Word("")
+
     val wordsMapRevers = mutableMapOf<String, Int>().apply {
         putAll(dictionary
             .onEach { if (it.key > counter) counter = it.key }
@@ -123,15 +123,24 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
             digitCounter++
         } else {
             val wordPair = srcBuffer.readWord()
-            var id = counter
-            if (!wordsMapRevers.containsKey(wordPair.first.name)) {
-                dictionary[id] = wordPair.first
-                wordsMapRevers[wordPair.first.name] = id
-                counter++
+            if (prevWord.nextIsLiteral) {
+                literalsMap[literalCounter] = Literal(wordPair.first.name)
+                numbers.add(literalCounter)
+                println("Literal \"${wordPair.first.name}\" = $literalCounter")
+                literalCounter++
+                prevWord = Word("")
             } else {
-                id = wordsMapRevers[wordPair.first.name]!!
+                var id = counter
+                if (!wordsMapRevers.containsKey(wordPair.first.name)) {
+                    dictionary[id] = wordPair.first
+                    wordsMapRevers[wordPair.first.name] = id
+                    counter++
+                } else {
+                    id = wordsMapRevers[wordPair.first.name]!!
+                    prevWord = dictionary[id]!!
+                }
+                numbers.add(id)
             }
-            numbers.add(id)
         }
     } while (!srcBuffer.end())
     println(numbers.toString())

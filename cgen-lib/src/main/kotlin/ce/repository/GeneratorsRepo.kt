@@ -93,7 +93,7 @@ class GeneratorsRepo(val project: Project) {
                 Target.Cxx -> mapOf(
                     ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
                     ConstantsBlock::class.java to CppConstantsBlockGenerator(addBlockUseCase),
-                    DataClass::class.java to CppDataClassGenerator(clikeCodeStyleRepo, addBlockUseCase)
+                    DataClass::class.java to CppDataClassGenerator(addBlockUseCase)
                 )
 
                 Target.Swift -> mapOf(

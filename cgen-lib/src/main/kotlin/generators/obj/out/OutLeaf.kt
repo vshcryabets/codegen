@@ -55,12 +55,16 @@ data class ResultLeaf(
     override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
 }
 
-data class FieldLeaf(
-    override val name: String,
-    override var parent: Node? = null
-) : Leaf {
+data class FieldNode(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
 }
 
 data class ConstantNode(

@@ -3,8 +3,6 @@ package generators.obj.input
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefinedValue
-import generators.cpp.CompilerDirective
-
 
 interface Field : Leaf {
     val type: DataType

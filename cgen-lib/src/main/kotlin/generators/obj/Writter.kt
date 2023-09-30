@@ -37,7 +37,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
             is Keyword -> out.write(leaf.name)
             is Datatype -> out.write(leaf.name)
             is VariableName -> out.write(leaf.name)
-            is FieldLeaf, is CommentLeaf -> {
+            is CommentLeaf -> {
                 out.write(leaf.name)
             }
             is Indent -> {

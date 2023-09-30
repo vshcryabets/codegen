@@ -9,7 +9,7 @@ class Literal(override val name: String, override var parent: Node? = null) : Le
 class Name(override val name: String, override var parent: Node? = null) : Leaf {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = Name(name, parent)
 }
-class Word(override val name: String, override var parent: Node? = null) : Leaf {
+class Word(override val name: String, override var parent: Node? = null, val nextIsLiteral: Boolean = false) : Leaf {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = Word(name, parent)
 }
 class Digit(override val name: String, override var parent: Node? = null) : Leaf {
