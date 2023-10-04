@@ -115,7 +115,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("AngryCat").apply {
         addBlockComment("AngryCat constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -247,7 +247,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("NobleDog").apply {
         addBlockComment("NobleDog constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -378,7 +378,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("CloudyFish").apply {
         addBlockComment("CloudyFish constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -508,7 +508,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("WindyCake").apply {
         addBlockComment("WindyCake constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -637,7 +637,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("WiseDoor").apply {
         addBlockComment("WiseDoor constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -765,7 +765,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("TastyCar").apply {
         addBlockComment("TastyCar constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -892,7 +892,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("BrownLion").apply {
         addBlockComment("BrownLion constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -1018,7 +1018,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("RedPanther").apply {
         addBlockComment("RedPanther constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -1143,7 +1143,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("WildPlanet").apply {
         addBlockComment("WildPlanet constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)
@@ -1267,7 +1267,7 @@ namespace("com.goldman.dt1").apply {
 
     constantsBlock("SillySun").apply {
         addBlockComment("SillySun constants definition block")
-        defaultType(DataType.float128)
+        defaultType(DataType.float64)
         add("Grumpy", 23.751)
         add("Silly", 23.751)
         add("Wild", 23.751)

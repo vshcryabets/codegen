@@ -17,6 +17,7 @@ object Types {
             DataType.int16 -> "int16_t"
             DataType.int32 -> "int32_t"
             DataType.int64 -> "int64_t"
+            DataType.uint8 -> "uint8_t"
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
             DataType.uint64 -> "uint64_t"
@@ -31,8 +32,8 @@ object Types {
     fun toValue(type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
-            DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint8, DataType.uint16, DataType.uint32 -> value.value.toString()
+            DataType.int8, DataType.int16, DataType.int32, DataType.int64,
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
             is DataType.string -> {
