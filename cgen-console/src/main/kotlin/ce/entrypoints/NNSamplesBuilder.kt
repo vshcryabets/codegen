@@ -1,13 +1,14 @@
 package ce.entrypoints
 
-import ce.defs.DataType
+import java.io.File
 
 fun main(args: Array<String>) {
-    buildConstants()
+    buildConstants(args[0])
 }
 
-fun buildConstants() {
-    println("namespace(\"com.goldman.dt1\").apply {")
+fun buildConstants(basePath: String) {
+
+
     val nameA =
         listOf("Grumpy", "Silly", "Wild", "Red", "Brown", "Tasty", "Wise", "Windy", "Cloudy", "Noble", "Angry", "Crazy")
     val nameB = listOf("Cat", "Dog", "Fish", "Cake", "Door", "Car", "Lion", "Panther", "Planet", "Sun")
@@ -22,23 +23,37 @@ fun buildConstants() {
         Pair("uint64", 243),
         Pair("float32", 23.45f),
         Pair("float64", 23.91),
-        Pair("float128", 23.751)
+//        Pair("float128", 23.751)
     )
     nameB.forEachIndexed { index, mainName ->
         nameA.forEachIndexed { index2, secondName ->
+            val blockName = "$secondName$mainName"
+            val filename = "$blockName.kts"
+            val writter = File(basePath + File.separator + filename).printWriter()
+            println("\"constants/$filename\",")
+            writter.println("import ce.defs.*")
+            writter.println("import generators.obj.input.*")
+            writter.println("""
+                when (target()) {
+                    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
+                    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
+                    else -> {}
+                }
+            """.trimIndent())
+            writter.println("namespace(\"com.goldman.dt1\"). apply {")
             val idx = index + index2
             val count = idx % nameA.size + 1
-            val blockName = "$secondName$mainName"
-            println("\tconstantsBlock(\"$blockName\").apply {")
-            println("\t\taddBlockComment(\"$blockName constants definition block\")")
+            writter.println("\tconstantsBlock(\"$blockName\").apply {")
+            writter.println("\t\taddBlockComment(\"$blockName constants definition block\")")
             val type = dataTypes[idx % dataTypes.size]
-            println("\t\tdefaultType(DataType.${type.first})")
+            writter.println("\t\tdefaultType(DataType.${type.first})")
             for (i in 0..count - 1) {
-                print("\t\t")
-                println("add(\"${nameA[i]}\", ${type.second})")
+                writter.print("\t\t")
+                writter.println("add(\"${nameA[i]}\", ${type.second})")
             }
-            println("\t}\n")
+            writter.println("\t}\n")
+            writter.println("}")
+            writter.close()
         }
     }
-    println("}")
 }
