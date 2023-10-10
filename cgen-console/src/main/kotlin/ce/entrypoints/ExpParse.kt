@@ -1,32 +1,16 @@
 package ce.entrypoints
 
 import ce.defs.TargetExt
-import ce.parsing.Digit
-import ce.parsing.Literal
-import ce.parsing.SourceBuffer
-import ce.parsing.Word
-import com.opencsv.CSVReader
+import ce.parser.Digit
+import ce.parser.Literal
+import ce.parser.SourceBuffer
+import ce.parser.Word
+import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
 import com.opencsv.CSVWriter
 import generators.obj.input.Leaf
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileReader
 import java.io.FileWriter
 import java.nio.file.Paths
-
-fun loadDictionary(fileName: String, dictionary: MutableMap<Int, Word>) {
-    val dictionaryFile = File(fileName)
-    if (dictionaryFile.exists()) {
-        CSVReader(FileReader(dictionaryFile)).use { reader ->
-            val r = reader.readAll()
-            r.forEach {
-                dictionary[it[0].toInt()] = Word(it[1], nextIsLiteral = it[2].toBoolean())
-            }
-        }
-    } else {
-        throw FileNotFoundException("Dictionary $fileName not found")
-    }
-}
 
 fun storeDictionary(fileName: String, dictionary: Map<Int, Leaf>) {
     val dictionaryFile = File(fileName)
@@ -170,25 +154,22 @@ fun main(args: Array<String>) {
             """
             Please, specify: 
                 - input file
-                - input target [Cxx, kotlin, etc]
+                - input target [Cxx, kotlin, meta, etc]
             """
         )
     }
     val inputFileName = args[0]
     val target = TargetExt.findByName(args[1])
 
-    val dictionary = mutableMapOf<Int, Word>()
+    val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
+
     val dictionaryName = "./${target.rawValue}_dictionary.csv"
 
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working Directory = $path")
 
     println("Loading $dictionaryName")
-    try {
-        loadDictionary(dictionaryName, dictionary)
-    } catch (error: Exception) {
-        println("Error! $error")
-    }
+    val dictionary = loadDictionaryUseCase(File(dictionaryName))
 
     println("Loading $inputFileName")
     val buffer = readFileLineByLineUsingForEachLine(inputFileName)

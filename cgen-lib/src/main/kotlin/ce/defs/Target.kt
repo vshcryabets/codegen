@@ -1,6 +1,6 @@
 package ce.defs
 
-enum class Target(val rawValue : String) {
+enum class Target(val rawValue: String) {
     Other("other"),
     Kotlin("kotlin"),
     C("c"),
@@ -10,4 +10,5 @@ enum class Target(val rawValue : String) {
     Rust("rust"),
     Go("go"),
     Python("python"),
+    Meta("meta")
 }

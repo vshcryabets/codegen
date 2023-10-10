@@ -13,5 +13,6 @@ namespace("ce.defs").apply {
         add("Rust", "rust")
         add("Go", "go")
         add("Python", "python")
+        add("Meta", "meta")
     }
 }
