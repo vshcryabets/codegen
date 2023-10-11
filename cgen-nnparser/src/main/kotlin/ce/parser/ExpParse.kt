@@ -2,30 +2,13 @@ package ce.parser
 
 import ce.defs.TargetExt
 import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
+import ce.parser.domain.usecase.StoreDictionaryUseCaseImpl
+import ce.parser.domain.usecase.StoreWordDictionaryUseCaseImpl
 import com.opencsv.CSVWriter
 import generators.obj.input.Leaf
 import java.io.File
 import java.io.FileWriter
 import java.nio.file.Paths
-
-fun storeDictionary(fileName: String, dictionary: Map<Int, Leaf>) {
-    val dictionaryFile = File(fileName)
-    CSVWriter(
-        FileWriter(dictionaryFile),
-        CSVWriter.DEFAULT_SEPARATOR,
-        CSVWriter.NO_QUOTE_CHARACTER,
-        CSVWriter.NO_ESCAPE_CHARACTER,
-        CSVWriter.DEFAULT_LINE_END
-    ).use {
-        dictionary.forEach { id, word ->
-            if (word is Word) {
-                it.writeNext(arrayOf(id.toString(), "\"${word.name.replace("\n", "\\n")}\"", "\"${word.nextIsLiteral}\""))
-            } else {
-                it.writeNext(arrayOf(id.toString(), "\"${word.name.replace("\n", "\\n")}\""))
-            }
-        }
-    }
-}
 
 fun storeTokens(fileName: String, tokens: List<Int>) {
     val dictionaryFile = File(fileName)
@@ -158,6 +141,8 @@ fun main(args: Array<String>) {
     val target = TargetExt.findByName(args[1])
 
     val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
+    val storeDictionaryUseCase = StoreDictionaryUseCaseImpl()
+    val storeWordDictionaryUseCase = StoreWordDictionaryUseCaseImpl()
 
     val dictionaryName = "./${target.rawValue}_dictionary.csv"
 
@@ -174,8 +159,8 @@ fun main(args: Array<String>) {
     val result = buildLinear(buffer, 0, dictionary)
 
     println("Store updated dictionary")
-    storeDictionary(dictionaryName, result.wordsMap)
-    storeDictionary("./literals.csv", result.literalsMap)
-    storeDictionary("./digits.csv", result.digits)
+    storeWordDictionaryUseCase(File(dictionaryName), result.wordsMap)
+    storeDictionaryUseCase(File("./literals.csv"), result.literalsMap)
+    storeDictionaryUseCase(File("./digits.csv"), result.digits)
     storeTokens("./tokens.txt", result.tokens)
 }
