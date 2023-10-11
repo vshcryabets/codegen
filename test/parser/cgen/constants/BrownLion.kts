@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("BrownLion").apply {
 		addBlockComment("BrownLion constants definition block")
@@ -21,5 +14,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Noble", -23)
 		add("Angry", -23)
 	}
-
 }

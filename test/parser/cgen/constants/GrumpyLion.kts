@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("GrumpyLion").apply {
 		addBlockComment("GrumpyLion constants definition block")
@@ -17,5 +10,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Tasty", 128)
 		add("Wise", 128)
 	}
-
 }

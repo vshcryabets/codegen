@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("NoblePlanet").apply {
 		addBlockComment("NoblePlanet constants definition block")
@@ -16,5 +9,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Brown", 243)
 		add("Tasty", 243)
 	}
-
 }

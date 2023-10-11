@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("CloudyCake").apply {
 		addBlockComment("CloudyCake constants definition block")
@@ -22,5 +15,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Angry", -32)
 		add("Crazy", -32)
 	}
-
 }

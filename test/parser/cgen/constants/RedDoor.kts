@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("RedDoor").apply {
 		addBlockComment("RedDoor constants definition block")
@@ -18,5 +11,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Wise", 243)
 		add("Windy", 243)
 	}
-
 }

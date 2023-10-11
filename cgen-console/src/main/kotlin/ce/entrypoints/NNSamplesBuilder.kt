@@ -7,8 +7,6 @@ fun main(args: Array<String>) {
 }
 
 fun buildConstants(basePath: String) {
-
-
     val nameA =
         listOf("Grumpy", "Silly", "Wild", "Red", "Brown", "Tasty", "Wise", "Windy", "Cloudy", "Noble", "Angry", "Crazy")
     val nameB = listOf("Cat", "Dog", "Fish", "Cake", "Door", "Car", "Lion", "Panther", "Planet", "Sun")
@@ -31,15 +29,15 @@ fun buildConstants(basePath: String) {
             val filename = "$blockName.kts"
             val writter = File(basePath + File.separator + filename).printWriter()
             println("\"constants/$filename\",")
-            writter.println("import ce.defs.*")
-            writter.println("import generators.obj.input.*")
-            writter.println("""
-                when (target()) {
-                    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-                    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-                    else -> {}
-                }
-            """.trimIndent())
+//            writter.println("import ce.defs.*")
+//            writter.println("import generators.obj.input.*")
+//            writter.println("""
+//                when (target()) {
+//                    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
+//                    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
+//                    else -> {}
+//                }
+//            """.trimIndent())
             writter.println("namespace(\"com.goldman.dt1\"). apply {")
             val idx = index + index2
             val count = idx % nameA.size + 1
@@ -51,7 +49,7 @@ fun buildConstants(basePath: String) {
                 writter.print("\t\t")
                 writter.println("add(\"${nameA[i]}\", ${type.second})")
             }
-            writter.println("\t}\n")
+            writter.println("\t}")
             writter.println("}")
             writter.close()
         }

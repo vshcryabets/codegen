@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("CrazyCar").apply {
 		addBlockComment("CrazyCar constants definition block")
@@ -15,5 +8,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Red", 128)
 		add("Brown", 128)
 	}
-
 }

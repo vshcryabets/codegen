@@ -1,10 +1,6 @@
-package ce.entrypoints
+package ce.parser
 
 import ce.defs.TargetExt
-import ce.parser.Digit
-import ce.parser.Literal
-import ce.parser.SourceBuffer
-import ce.parser.Word
 import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
 import com.opencsv.CSVWriter
 import generators.obj.input.Leaf

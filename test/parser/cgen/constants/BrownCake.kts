@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("BrownCake").apply {
 		addBlockComment("BrownCake constants definition block")
@@ -18,5 +11,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Wise", 243)
 		add("Windy", 243)
 	}
-
 }

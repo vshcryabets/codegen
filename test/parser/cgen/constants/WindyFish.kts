@@ -1,10 +1,3 @@
-import ce.defs.*
-import generators.obj.input.*
-when (target()) {
-    ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-    ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
-    else -> {}
-}
 namespace("com.goldman.dt1"). apply {
 	constantsBlock("WindyFish").apply {
 		addBlockComment("WindyFish constants definition block")
@@ -20,5 +13,4 @@ namespace("com.goldman.dt1"). apply {
 		add("Cloudy", 23.91)
 		add("Noble", 23.91)
 	}
-
 }

@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="NNSamplesBuilderKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="ce.entrypoints.NNSamplesBuilderKt" />
+    <module name="codegen.cgen-console.main" />
+    <option name="PROGRAM_PARAMETERS" value="test/parser/cgen/constants/" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
