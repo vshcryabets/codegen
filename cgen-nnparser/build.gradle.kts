@@ -17,6 +17,10 @@ dependencies {
     implementation(project(":cgen-lib"))
 
     implementation("com.opencsv:opencsv:5.7.1")
+
+    // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-jsr223
+    implementation("org.codehaus.groovy:groovy-jsr223:3.0.17")
+
 }
 
 tasks.getByName<Test>("test") {

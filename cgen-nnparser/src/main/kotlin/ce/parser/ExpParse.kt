@@ -4,11 +4,10 @@ import ce.defs.TargetExt
 import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
 import ce.parser.domain.usecase.StoreDictionaryUseCaseImpl
 import ce.parser.domain.usecase.StoreWordDictionaryUseCaseImpl
-import com.opencsv.CSVWriter
-import generators.obj.input.Leaf
 import java.io.File
-import java.io.FileWriter
 import java.nio.file.Paths
+import javax.script.ScriptEngineManager
+
 
 fun storeTokens(fileName: String, tokens: List<Int>) {
     val dictionaryFile = File(fileName)
@@ -127,7 +126,23 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
     )
 }
 
+fun test(qwe: Int) {
+    println("Qwe=$qwe")
+}
+
 fun main(args: Array<String>) {
+    val factory = ScriptEngineManager()
+    val engine = factory.getEngineByName("groovy")
+    engine.eval("""
+        import ce.parser.*
+        
+        def q = new ce.parser.Literal('a', null)
+        def cfg = new ce.parser.ExpParserConfiguration(23)
+        System.out.println('Test groovy')
+        System.out.println(q)
+        ce.parser.ExpParseKt.test(23)
+    """.trimIndent())
+
     if (args.size < 2) {
         error(
             """
