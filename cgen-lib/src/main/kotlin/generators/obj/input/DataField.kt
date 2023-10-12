@@ -16,6 +16,8 @@ data class DataField(
     override var parent: Node? = null,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
+
+    override fun toString(): String = "$name:$type=$value"
 }
 
 data class Output(
