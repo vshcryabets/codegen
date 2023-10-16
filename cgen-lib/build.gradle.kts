@@ -24,6 +24,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.abego.treelayout/org.abego.treelayout.core
     implementation("org.abego.treelayout:org.abego.treelayout.core:1.0.3")
+
+    // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-jsr223
+    implementation("org.codehaus.groovy:groovy-jsr223:3.0.17")
+
 }
 
 tasks.getByName<Test>("test") {

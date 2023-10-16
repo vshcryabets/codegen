@@ -2,7 +2,7 @@
   <configuration default="false" name="ExpParseKt" type="JetRunConfigurationType" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="ce.parser.ExpParseKt" />
     <module name="codegen.cgen-console.main" />
-    <option name="PROGRAM_PARAMETERS" value="cxx/ModeType.h Cxx" />
+    <option name="PROGRAM_PARAMETERS" value="test1.groovy" />
     <shortenClasspath name="NONE" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test/parser" />
     <method v="2">

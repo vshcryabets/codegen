@@ -1,12 +1,14 @@
 package ce.parser
 
 import ce.defs.TargetExt
+import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
 import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
 import ce.parser.domain.usecase.StoreDictionaryUseCaseImpl
 import ce.parser.domain.usecase.StoreWordDictionaryUseCaseImpl
 import java.io.File
 import java.nio.file.Paths
 import javax.script.ScriptEngineManager
+import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 
 
 fun storeTokens(fileName: String, tokens: List<Int>) {
@@ -126,33 +128,40 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
     )
 }
 
-fun test(qwe: Int) {
-    println("Qwe=$qwe")
+data class 
+
+val globalSources = mutableListOf<String>()
+
+fun cleanSource() {
+    globalSources.clear()
+}
+
+fun addSource(fileName: String) {
+    globalSources.add(fileName)
 }
 
 fun main(args: Array<String>) {
     val factory = ScriptEngineManager()
-    val engine = factory.getEngineByName("groovy")
-    engine.eval("""
-        import ce.parser.*
-        
-        def q = new ce.parser.Literal('a', null)
-        def cfg = new ce.parser.ExpParserConfiguration(23)
-        System.out.println('Test groovy')
-        System.out.println(q)
-        ce.parser.ExpParseKt.test(23)
-    """.trimIndent())
+    val groovyEngine = factory.getEngineByName("groovy")
+    val ktsEngine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
 
-    if (args.size < 2) {
+    if (args.size < 1) {
         error(
             """
             Please, specify: 
-                - input file
-                - input target [Cxx, kotlin, meta, etc]
+                - input configuration file (.kts, .groovy)
             """
         )
     }
-    val inputFileName = args[0]
+    val executeScriptUseCase = ExecuteScriptByExtUseCaseImpl(
+        ktsScriptEngine = ktsEngine,
+        groovyScriptEngine = groovyEngine
+    )
+    val configFile = File(args[0])
+    executeScriptUseCase(configFile)
+    println(globalSources)
+
+    /*val inputFileName = args[0]
     val target = TargetExt.findByName(args[1])
 
     val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
@@ -177,5 +186,5 @@ fun main(args: Array<String>) {
     storeWordDictionaryUseCase(File(dictionaryName), result.wordsMap)
     storeDictionaryUseCase(File("./literals.csv"), result.literalsMap)
     storeDictionaryUseCase(File("./digits.csv"), result.digits)
-    storeTokens("./tokens.txt", result.tokens)
+    storeTokens("./tokens.txt", result.tokens)*/
 }
