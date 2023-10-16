@@ -1,124 +1,130 @@
 import static ce.parser.ExpParseKt.addSource as addSource
 
+def samples = [
+        "GrumpyCat",
+        "SillyCat",
+        "WildCat",
+        "RedCat",
+        "BrownCat",
+        "TastyCat",
+        "WiseCat",
+        "WindyCat",
+        "CloudyCat",
+        "NobleCat",
+        "AngryCat",
+        "CrazyCat",
+        "GrumpyDog",
+        "SillyDog",
+        "WildDog",
+        "RedDog",
+        "BrownDog",
+        "TastyDog",
+        "WiseDog",
+        "WindyDog",
+        "CloudyDog",
+        "NobleDog",
+        "AngryDog",
+        "CrazyDog",
+        "GrumpyFish",
+        "SillyFish",
+        "WildFish",
+        "RedFish",
+        "BrownFish",
+        "TastyFish",
+        "WiseFish",
+        "WindyFish",
+        "CloudyFish",
+        "NobleFish",
+        "AngryFish",
+        "CrazyFish",
+        "GrumpyCake",
+        "SillyCake",
+        "WildCake",
+        "RedCake",
+        "BrownCake",
+        "TastyCake",
+        "WiseCake",
+        "WindyCake",
+        "CloudyCake",
+        "NobleCake",
+        "AngryCake",
+        "CrazyCake",
+        "GrumpyDoor",
+        "SillyDoor",
+        "WildDoor",
+        "RedDoor",
+        "BrownDoor",
+        "TastyDoor",
+        "WiseDoor",
+        "WindyDoor",
+        "CloudyDoor",
+        "NobleDoor",
+        "AngryDoor",
+        "CrazyDoor",
+        "GrumpyCar",
+        "SillyCar",
+        "WildCar",
+        "RedCar",
+        "BrownCar",
+        "TastyCar",
+        "WiseCar",
+        "WindyCar",
+        "CloudyCar",
+        "NobleCar",
+        "AngryCar",
+        "CrazyCar",
+        "GrumpyLion",
+        "SillyLion",
+        "WildLion",
+        "RedLion",
+        "BrownLion",
+        "TastyLion",
+        "WiseLion",
+        "WindyLion",
+        "CloudyLion",
+        "NobleLion",
+        "AngryLion",
+        "CrazyLion",
+        "GrumpyPanther",
+        "SillyPanther",
+        "WildPanther",
+        "RedPanther",
+        "BrownPanther",
+        "TastyPanther",
+        "WisePanther",
+        "WindyPanther",
+        "CloudyPanther",
+        "NoblePanther",
+        "AngryPanther",
+        "CrazyPanther",
+        "GrumpyPlanet",
+        "SillyPlanet",
+        "WildPlanet",
+        "RedPlanet",
+        "BrownPlanet",
+        "TastyPlanet",
+        "WisePlanet",
+        "WindyPlanet",
+        "CloudyPlanet",
+        "NoblePlanet",
+        "AngryPlanet",
+        "CrazyPlanet",
+        "GrumpySun",
+        "SillySun",
+        "WildSun",
+        "RedSun",
+        "BrownSun",
+        "TastySun",
+        "WiseSun",
+        "WindySun",
+        "CloudySun",
+        "NobleSun",
+        "AngrySun",
+        "CrazySun"
+] as LinkedList
+
 def baseFolder = "cxx"
 
-addSource("$baseFolder/GrumpyCat.h")
-addSource("$baseFolder/SillyCat.h")
-addSource("$baseFolder/WildCat.h")
-addSource("$baseFolder/RedCat.h")
-addSource("$baseFolder/BrownCat.h")
-addSource("$baseFolder/TastyCat.h")
-addSource("$baseFolder/WiseCat.h")
-addSource("$baseFolder/WindyCat.h")
-addSource("$baseFolder/CloudyCat.h")
-addSource("$baseFolder/NobleCat.h")
-addSource("$baseFolder/AngryCat.h")
-addSource("$baseFolder/CrazyCat.h")
-addSource("$baseFolder/GrumpyDog.h")
-addSource("$baseFolder/SillyDog.h")
-addSource("$baseFolder/WildDog.h")
-addSource("$baseFolder/RedDog.h")
-addSource("$baseFolder/BrownDog.h")
-addSource("$baseFolder/TastyDog.h")
-addSource("$baseFolder/WiseDog.h")
-addSource("$baseFolder/WindyDog.h")
-addSource("$baseFolder/CloudyDog.h")
-addSource("$baseFolder/NobleDog.h")
-addSource("$baseFolder/AngryDog.h")
-addSource("$baseFolder/CrazyDog.h")
-addSource("$baseFolder/GrumpyFish.h")
-addSource("$baseFolder/SillyFish.h")
-addSource("$baseFolder/WildFish.h")
-addSource("$baseFolder/RedFish.h")
-addSource("$baseFolder/BrownFish.h")
-addSource("$baseFolder/TastyFish.h")
-addSource("$baseFolder/WiseFish.h")
-addSource("$baseFolder/WindyFish.h")
-addSource("$baseFolder/CloudyFish.h")
-addSource("$baseFolder/NobleFish.h")
-addSource("$baseFolder/AngryFish.h")
-addSource("$baseFolder/CrazyFish.h")
-addSource("$baseFolder/GrumpyCake.h")
-addSource("$baseFolder/SillyCake.h")
-addSource("$baseFolder/WildCake.h")
-addSource("$baseFolder/RedCake.h")
-addSource("$baseFolder/BrownCake.h")
-addSource("$baseFolder/TastyCake.h")
-addSource("$baseFolder/WiseCake.h")
-addSource("$baseFolder/WindyCake.h")
-addSource("$baseFolder/CloudyCake.h")
-addSource("$baseFolder/NobleCake.h")
-addSource("$baseFolder/AngryCake.h")
-addSource("$baseFolder/CrazyCake.h")
-addSource("$baseFolder/GrumpyDoor.h")
-addSource("$baseFolder/SillyDoor.h")
-addSource("$baseFolder/WildDoor.h")
-addSource("$baseFolder/RedDoor.h")
-addSource("$baseFolder/BrownDoor.h")
-addSource("$baseFolder/TastyDoor.h")
-addSource("$baseFolder/WiseDoor.h")
-addSource("$baseFolder/WindyDoor.h")
-addSource("$baseFolder/CloudyDoor.h")
-addSource("$baseFolder/NobleDoor.h")
-addSource("$baseFolder/AngryDoor.h")
-addSource("$baseFolder/CrazyDoor.h")
-addSource("$baseFolder/GrumpyCar.h")
-addSource("$baseFolder/SillyCar.h")
-addSource("$baseFolder/WildCar.h")
-addSource("$baseFolder/RedCar.h")
-addSource("$baseFolder/BrownCar.h")
-addSource("$baseFolder/TastyCar.h")
-addSource("$baseFolder/WiseCar.h")
-addSource("$baseFolder/WindyCar.h")
-addSource("$baseFolder/CloudyCar.h")
-addSource("$baseFolder/NobleCar.h")
-addSource("$baseFolder/AngryCar.h")
-addSource("$baseFolder/CrazyCar.h")
-addSource("$baseFolder/GrumpyLion.h")
-addSource("$baseFolder/SillyLion.h")
-addSource("$baseFolder/WildLion.h")
-addSource("$baseFolder/RedLion.h")
-addSource("$baseFolder/BrownLion.h")
-addSource("$baseFolder/TastyLion.h")
-addSource("$baseFolder/WiseLion.h")
-addSource("$baseFolder/WindyLion.h")
-addSource("$baseFolder/CloudyLion.h")
-addSource("$baseFolder/NobleLion.h")
-addSource("$baseFolder/AngryLion.h")
-addSource("$baseFolder/CrazyLion.h")
-addSource("$baseFolder/GrumpyPanther.h")
-addSource("$baseFolder/SillyPanther.h")
-addSource("$baseFolder/WildPanther.h")
-addSource("$baseFolder/RedPanther.h")
-addSource("$baseFolder/BrownPanther.h")
-addSource("$baseFolder/TastyPanther.h")
-addSource("$baseFolder/WisePanther.h")
-addSource("$baseFolder/WindyPanther.h")
-addSource("$baseFolder/CloudyPanther.h")
-addSource("$baseFolder/NoblePanther.h")
-addSource("$baseFolder/AngryPanther.h")
-addSource("$baseFolder/CrazyPanther.h")
-addSource("$baseFolder/GrumpyPlanet.h")
-addSource("$baseFolder/SillyPlanet.h")
-addSource("$baseFolder/WildPlanet.h")
-addSource("$baseFolder/RedPlanet.h")
-addSource("$baseFolder/BrownPlanet.h")
-addSource("$baseFolder/TastyPlanet.h")
-addSource("$baseFolder/WisePlanet.h")
-addSource("$baseFolder/WindyPlanet.h")
-addSource("$baseFolder/CloudyPlanet.h")
-addSource("$baseFolder/NoblePlanet.h")
-addSource("$baseFolder/AngryPlanet.h")
-addSource("$baseFolder/CrazyPlanet.h")
-addSource("$baseFolder/GrumpySun.h")
-addSource("$baseFolder/SillySun.h")
-addSource("$baseFolder/WildSun.h")
-addSource("$baseFolder/RedSun.h")
-addSource("$baseFolder/BrownSun.h")
-addSource("$baseFolder/TastySun.h")
-addSource("$baseFolder/WiseSun.h")
-addSource("$baseFolder/WindySun.h")
-addSource("$baseFolder/CloudySun.h")
-addSource("$baseFolder/NobleSun.h")
-addSource("$baseFolder/AngrySun.h")
-addSource("$baseFolder/CrazySun.h")
+samples.each { samplename ->
+    addSource(samplename, "$baseFolder/${samplename}.h", ce.defs.Target.Cxx, "cgen/constants/${samplename}.kts")
+}

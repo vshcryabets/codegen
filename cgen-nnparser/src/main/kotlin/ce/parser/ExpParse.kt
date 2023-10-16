@@ -1,5 +1,6 @@
 package ce.parser
 
+import ce.defs.Target
 import ce.defs.TargetExt
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
 import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
@@ -128,16 +129,27 @@ fun buildLinear(buffer: StringBuilder, inPos: Int, dictionary: MutableMap<Int, W
     )
 }
 
-data class 
+data class SampleData(
+    val sampleName: String,
+    val sourceFile: String,
+    val sourceTarget: Target,
+    val metaFile: String,
+    val metaTarget: Target = Target.Meta,
+    )
 
-val globalSources = mutableListOf<String>()
+val globalSources = mutableListOf<SampleData>()
 
 fun cleanSource() {
     globalSources.clear()
 }
 
-fun addSource(fileName: String) {
-    globalSources.add(fileName)
+fun addSource(sampleName: String, sourceName: String, sourceTarget: Target, metaFile: String) {
+    globalSources.add(SampleData(
+        sampleName = sampleName,
+        sourceFile = sourceName,
+        sourceTarget = sourceTarget,
+        metaFile = metaFile
+    ))
 }
 
 fun main(args: Array<String>) {
