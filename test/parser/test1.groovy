@@ -1,4 +1,4 @@
-import static ce.parser.ExpParseKt.addSource as addSource
+import static ce.parser.ExpParseKt.addSource
 
 def samples = [
         "GrumpyCat",
@@ -125,6 +125,8 @@ def samples = [
 
 def baseFolder = "cxx"
 
+ce.parser.ExpParseKt.globalOutputDirectory = "./out_constants/"
+ce.parser.ExpParseKt.dictinariesDirectory = "./dictionaries/"
 samples.each { samplename ->
     addSource(samplename, "$baseFolder/${samplename}.h", ce.defs.Target.Cxx, "cgen/constants/${samplename}.kts")
 }

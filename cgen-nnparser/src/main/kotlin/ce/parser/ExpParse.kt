@@ -138,6 +138,8 @@ data class SampleData(
     )
 
 val globalSources = mutableListOf<SampleData>()
+var globalOutputDirectory: String = "./expparse_out/"
+var dictinariesDirectory: String = "./dictionary/"
 
 fun cleanSource() {
     globalSources.clear()
@@ -171,7 +173,7 @@ fun main(args: Array<String>) {
     )
     val configFile = File(args[0])
     executeScriptUseCase(configFile)
-    println(globalSources)
+    println(dictinariesDirectory)
 
     /*val inputFileName = args[0]
     val target = TargetExt.findByName(args[1])
