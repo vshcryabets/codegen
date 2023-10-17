@@ -27,6 +27,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-jsr223
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.17")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
 }
 
