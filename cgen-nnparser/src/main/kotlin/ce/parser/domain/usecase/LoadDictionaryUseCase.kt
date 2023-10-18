@@ -3,7 +3,6 @@ package ce.parser.domain.usecase
 import ce.parser.Word
 import com.opencsv.CSVReader
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileReader
 
 interface LoadDictionaryUseCase {
@@ -20,8 +19,6 @@ class LoadDictionaryUseCaseImpl : LoadDictionaryUseCase {
                     dictionary[it[0].toInt()] = Word(it[1], nextIsLiteral = it[2].toBoolean())
                 }
             }
-        } else {
-            throw FileNotFoundException("Dictionary $file not found")
         }
         return dictionary
     }

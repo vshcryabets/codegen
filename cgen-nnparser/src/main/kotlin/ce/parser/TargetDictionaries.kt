@@ -1,8 +1,8 @@
 package ce.parser
 
-class TargetDictionaries {
-    val core = mutableMapOf<Int, Word>()
-    val stdlibs = mutableMapOf<Int, Word>()
-    val thirdlibs = mutableMapOf<Int, Word>()
-    val projectlibs = mutableMapOf<Int, Word>()
-}
+data class TargetDictionaries(
+    val core: Map<Int, Word>,
+    val stdlibs: Map<Int, Word>,
+    val thirdlibs: Map<Int, Word>,
+    val projectlibs: Map<Int, Word>,
+)

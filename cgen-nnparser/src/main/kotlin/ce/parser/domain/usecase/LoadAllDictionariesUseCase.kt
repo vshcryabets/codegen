@@ -1,35 +1,34 @@
 package ce.parser.domain.usecase
 
+import ce.defs.Target
 import ce.parser.TargetDictionaries
-import ce.parser.Word
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jetbrains.kotlin.javax.inject.Inject
-import java.io.File
 
 interface LoadAllDictionariesUseCase {
-    operator fun invoke(basePath: String): Map<Target, TargetDictionaries>
+    operator suspend fun invoke(basePath: String): Map<Target, TargetDictionaries>
 }
 
 class LoadAllDictionariesUseCaseImpl @Inject constructor(
     private val ioScope: CoroutineScope,
-    private val loadDictionaryUseCase: LoadDictionaryUseCase,
+    private val loadTargetDictionariesUseCase: LoadTargetDictionariesUseCase,
 ) : LoadAllDictionariesUseCase {
-    override fun invoke(basePath: String): Map<Target, TargetDictionaries> {
+    override suspend fun invoke(basePath: String): Map<Target, TargetDictionaries> {
+        val r2 = mutableMapOf<Target, TargetDictionaries>()
+        val results = mutableListOf<Deferred<Pair<Target, TargetDictionaries>>>()
         ioScope.launch {
-            val results = mutableListOf<Deferred<MutableMap<Int, Word>>>()
-            ce.defs.Target.values().forEach {
-                val file = File("$basePath/${it.rawValue}_core.csv")
-                if (file.exists()) {
-                    results.add(async { loadDictionaryUseCase(file) })
-                }
-            }
-            results.forEach {
-                it.await()
+            Target.values().forEach {
+                results.add(async { Pair(it, loadTargetDictionariesUseCase(basePath, it)) })
             }
         }
-        return emptyMap()
+        results.forEach {
+            val res = it.await()
+            r2[res.first] = res.second
+        }
+        return r2
     }
+
 }

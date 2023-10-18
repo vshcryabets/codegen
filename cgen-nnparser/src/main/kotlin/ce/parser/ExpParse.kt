@@ -4,8 +4,12 @@ import ce.defs.Target
 import ce.defs.TargetExt
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
 import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
+import ce.parser.domain.usecase.LoadTargetDictionariesUseCaseImpl
 import ce.parser.domain.usecase.StoreDictionaryUseCaseImpl
 import ce.parser.domain.usecase.StoreWordDictionaryUseCaseImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.io.File
 import java.nio.file.Paths
 import javax.script.ScriptEngineManager
@@ -171,9 +175,17 @@ fun main(args: Array<String>) {
         ktsScriptEngine = ktsEngine,
         groovyScriptEngine = groovyEngine
     )
+    val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
+    val loadTargetDictionaries = LoadTargetDictionariesUseCaseImpl(
+        loadDictionaryUseCase = loadDictionaryUseCase,
+        ioScope = ioScope
+    )
     val configFile = File(args[0])
     executeScriptUseCase(configFile)
     println(dictinariesDirectory)
+
+
 
     /*val inputFileName = args[0]
     val target = TargetExt.findByName(args[1])
