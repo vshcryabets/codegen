@@ -1,17 +1,13 @@
 package ce.parser
 
 import ce.defs.Target
-import ce.defs.TargetExt
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
-import ce.parser.domain.usecase.LoadDictionaryUseCaseImpl
-import ce.parser.domain.usecase.LoadTargetDictionariesUseCaseImpl
-import ce.parser.domain.usecase.StoreDictionaryUseCaseImpl
-import ce.parser.domain.usecase.StoreWordDictionaryUseCaseImpl
+import ce.parser.domain.usecase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.nio.file.Paths
 import javax.script.ScriptEngineManager
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 
@@ -24,15 +20,6 @@ fun storeTokens(fileName: String, tokens: List<Int>) {
             it.write(0x20)
         }
     }
-}
-
-fun readFileLineByLineUsingForEachLine(fileName: String): StringBuilder {
-    val result = StringBuilder()
-    File(fileName).forEachLine {
-        result.append(it)
-        result.append('\n')
-    }
-    return result
 }
 
 data class ParseResult(
@@ -144,6 +131,7 @@ data class SampleData(
 val globalSources = mutableListOf<SampleData>()
 var globalOutputDirectory: String = "./expparse_out/"
 var dictinariesDirectory: String = "./dictionary/"
+var globalDicts = emptyMap<Target, TargetDictionaries>()
 
 fun cleanSource() {
     globalSources.clear()
@@ -176,16 +164,29 @@ fun main(args: Array<String>) {
         groovyScriptEngine = groovyEngine
     )
     val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    val calcScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
+    val loadFileUseCase = LoadFileUseCaseImpl(ioScope)
     val loadTargetDictionaries = LoadTargetDictionariesUseCaseImpl(
         loadDictionaryUseCase = loadDictionaryUseCase,
         ioScope = ioScope
     )
+    val loadAllDictionariesUseCase = LoadAllDictionariesUseCaseImpl(
+        ioScope = ioScope,
+        loadTargetDictionariesUseCase = loadTargetDictionaries
+    )
+    val processSampleUseCase = ProcessSampleUseCaseImpl(calcScope, loadFileUseCase)
     val configFile = File(args[0])
+    println("Execute $configFile")
     executeScriptUseCase(configFile)
-    println(dictinariesDirectory)
-
-
+    runBlocking {
+        println("Load dictionaries from $dictinariesDirectory")
+        globalDicts = loadAllDictionariesUseCase(dictinariesDirectory)
+    }
+    runBlocking {
+        processSampleUseCase(globalSources.first(), globalOutputDirectory)
+    }
+    println("END")
 
     /*val inputFileName = args[0]
     val target = TargetExt.findByName(args[1])

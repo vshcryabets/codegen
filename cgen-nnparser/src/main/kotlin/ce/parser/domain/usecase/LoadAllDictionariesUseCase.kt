@@ -2,10 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.defs.Target
 import ce.parser.TargetDictionaries
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jetbrains.kotlin.javax.inject.Inject
 
 interface LoadAllDictionariesUseCase {
@@ -16,19 +13,18 @@ class LoadAllDictionariesUseCaseImpl @Inject constructor(
     private val ioScope: CoroutineScope,
     private val loadTargetDictionariesUseCase: LoadTargetDictionariesUseCase,
 ) : LoadAllDictionariesUseCase {
-    override suspend fun invoke(basePath: String): Map<Target, TargetDictionaries> {
-        val r2 = mutableMapOf<Target, TargetDictionaries>()
-        val results = mutableListOf<Deferred<Pair<Target, TargetDictionaries>>>()
-        ioScope.launch {
-            Target.values().forEach {
-                results.add(async { Pair(it, loadTargetDictionariesUseCase(basePath, it)) })
-            }
+    override suspend fun invoke(basePath: String): Map<Target, TargetDictionaries> =
+        withContext(ioScope.coroutineContext) {
+        val asyncs = mutableListOf<Deferred<Pair<Target, TargetDictionaries>>>()
+        Target.values().forEach {
+            asyncs.add(async { Pair(it, loadTargetDictionariesUseCase(basePath, it)) })
         }
-        results.forEach {
+        val result = mutableMapOf<Target, TargetDictionaries>()
+        asyncs.forEach {
             val res = it.await()
-            r2[res.first] = res.second
+            result[res.first] = res.second
         }
-        return r2
+        return@withContext result
     }
 
 }
