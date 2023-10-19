@@ -188,23 +188,13 @@ fun main(args: Array<String>) {
     }
     println("END")
 
-    /*val inputFileName = args[0]
-    val target = TargetExt.findByName(args[1])
-
+    /*
     val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
     val storeDictionaryUseCase = StoreDictionaryUseCaseImpl()
     val storeWordDictionaryUseCase = StoreWordDictionaryUseCaseImpl()
 
-    val dictionaryName = "./${target.rawValue}_dictionary.csv"
 
-    val path = Paths.get("").toAbsolutePath().toString()
-    println("Working Directory = $path")
 
-    println("Loading $dictionaryName")
-    val dictionary = loadDictionaryUseCase(File(dictionaryName))
-
-    println("Loading $inputFileName")
-    val buffer = readFileLineByLineUsingForEachLine(inputFileName)
     println("Parsing $inputFileName")
     println("Buffer size ${buffer.length}")
     val result = buildLinear(buffer, 0, dictionary)
