@@ -11,15 +11,12 @@ class BuildLinearUseCaseImpl @Inject constructor(): BuildLinearUseCase {
     override suspend fun invoke(buffer: StringBuilder, inPos: Int, dictionary: WordDictionary): LinearResult {
         println("buildLinear")
         val srcBuffer = SourceBuffer(buffer, inPos)
-        var wordsCounter = dictionary.maxId + 1
         var literalCounter = 1000000
         var digitCounter = 2000000
-
         val literalsMap = mutableMapOf<Int, Literal>()
         val digitisMap = mutableMapOf<Int, Digit>()
         val namesMap = mutableMapOf<Int, Name>()
         val numbers = mutableListOf<Int>()
-
         var prevWord = Word("")
 
         val wordsMapRevers = dictionary.reverse
@@ -53,7 +50,6 @@ class BuildLinearUseCaseImpl @Inject constructor(): BuildLinearUseCase {
             } else {
                 val wordPair = srcBuffer.readWord()
 
-
                 if (!wordsMapRevers.containsKey(wordPair.first.name)) {
 
                     if (prevWord.nextIsLiteral) {
@@ -64,10 +60,7 @@ class BuildLinearUseCaseImpl @Inject constructor(): BuildLinearUseCase {
                         prevWord = Word("")
                     } else {
                         // add to dictionary
-                        dictionary.dictionary[wordsCounter] = wordPair.first
-                        wordsMapRevers[wordPair.first.name] = wordsCounter
-                        numbers.add(wordsCounter)
-                        wordsCounter++
+                        numbers.add(dictionary.addWord(wordPair.first))
                         prevWord = wordPair.first
                     }
                 } else {

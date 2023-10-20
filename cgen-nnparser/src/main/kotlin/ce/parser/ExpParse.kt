@@ -175,7 +175,8 @@ fun main(args: Array<String>) {
         ioScope = ioScope,
         loadTargetDictionariesUseCase = loadTargetDictionaries
     )
-    val processSampleUseCase = ProcessSampleUseCaseImpl(calcScope, loadFileUseCase)
+    val buildLinearUseCase = BuildLinearUseCaseImpl()
+    val processSampleUseCase = ProcessSampleUseCaseImpl(calcScope, loadFileUseCase, buildLinearUseCase)
     val configFile = File(args[0])
     println("Execute $configFile")
     executeScriptUseCase(configFile)
@@ -184,7 +185,7 @@ fun main(args: Array<String>) {
         globalDicts = loadAllDictionariesUseCase(dictinariesDirectory)
     }
     runBlocking {
-        processSampleUseCase(globalSources.first(), globalOutputDirectory)
+        processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts)
     }
     println("END")
 
