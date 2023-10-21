@@ -1,6 +1,7 @@
 package ce.parser.nnparser
 
 enum class Type {
+    SPACES,
     OPERATOR,
     KEYWORD,
     NAME,
