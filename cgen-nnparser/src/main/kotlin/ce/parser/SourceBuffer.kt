@@ -109,4 +109,22 @@ class SourceBuffer(
         return Pair(wordBuffer.toString(), pos)
     }
 
+    fun findInDictionary(dict: WordDictionary): Pair<Name?, Word?> {
+        var name: Name? = null
+        var word: Word? = null
+
+        var cur = pos
+        while (cur < buffer.length) {
+            word = dict.sortedByLengthDict.find {
+                nextIs(it.name, false)
+            }
+            if (word != null) {
+                name =
+                break
+            }
+            cur++
+        }
+        return Pair(name, word)
+    }
+
 }

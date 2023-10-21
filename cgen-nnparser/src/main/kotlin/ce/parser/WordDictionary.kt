@@ -3,7 +3,7 @@ package ce.parser
 class WordDictionary(
     wordsList: List<Word>,
 ) {
-    private val sortedByLengthDict: List<Word>
+    val sortedByLengthDict: List<Word>
     val dictionary: MutableMap<Int, Word> = mutableMapOf()
     val reverse: MutableMap<String, Int> = mutableMapOf()
     var maxId: Int = 0
@@ -20,7 +20,7 @@ class WordDictionary(
     fun addWord(word: Word): Word {
         println("Add word $word")
         maxId++
-        val newWord = word.copy(id = maxId)
+        val newWord = Word(word.name, word.parent, word.nextIsLiteral, maxId)
         dictionary[maxId] = newWord
         reverse[word.name] = maxId
         return newWord

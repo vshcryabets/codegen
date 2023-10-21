@@ -7,7 +7,59 @@ interface BuildLinearUseCase {
     suspend operator fun invoke(buffer: StringBuilder, inPos: Int, dictionary: WordDictionary): LinearResult
 }
 
-class BuildLinearUseCaseImpl @Inject constructor(): BuildLinearUseCase {
+class BuildLinearUseCaseImpl2 @Inject constructor() : BuildLinearUseCase {
+    override suspend fun invoke(buffer: StringBuilder, inPos: Int, dictionary: WordDictionary): LinearResult {
+        println("buildLinear2")
+        val srcBuffer = SourceBuffer(buffer, inPos)
+        var literalCounter = 1000000
+        var digitCounter = 2000000
+        val literalsMap = mutableMapOf<Int, Literal>()
+        val digitisMap = mutableMapOf<Int, Digit>()
+        val namesMap = mutableMapOf<Int, Name>()
+        val numbers = mutableListOf<Int>()
+
+        do {
+            if (srcBuffer.nextIs("//")) {
+                val literalPair = srcBuffer.readUntil("\n", false, true)
+                literalsMap[literalCounter] = Literal(literalPair.first)
+                numbers.add(literalCounter)
+                println("Comment \"${literalPair.first}\" = $literalCounter")
+                literalCounter++
+            } else if (srcBuffer.nextIs("/*")) {
+                val strPair = srcBuffer.readUntil("*/", false, true)
+                literalsMap[literalCounter] = Literal(strPair.first)
+                numbers.add(literalCounter)
+                println("Comment multiline \"${strPair.first}\" = $literalCounter")
+                literalCounter++
+            } else if (srcBuffer.nextIs("\"")) {
+                val literalPair = srcBuffer.readLiteral()
+                literalsMap[literalCounter] = literalPair.first
+                numbers.add(literalCounter)
+                println("Literal \"${literalPair.first.name}\" = $literalCounter")
+                literalCounter++
+            } else if (srcBuffer.nextIn(SourceBuffer.spaces)) {
+                srcBuffer.skipChar()
+            } else if (srcBuffer.nextIn(SourceBuffer.digits)) {
+                val digit = srcBuffer.readDigit()
+                digitisMap[digitCounter] = digit.first
+                numbers.add(digitCounter)
+                digitCounter++
+            } else {
+                val wordOrName = srcBuffer.findInDictionary(dictionary)
+
+            }
+        } while (!srcBuffer.end())
+        return LinearResult(
+            wordsMap = dictionary.dictionary,
+            digits = digitisMap,
+            namesMap = namesMap,
+            literalsMap = literalsMap,
+            tokens = numbers,
+        )
+    }
+}
+
+class BuildLinearUseCaseImpl @Inject constructor() : BuildLinearUseCase {
     override suspend fun invoke(buffer: StringBuilder, inPos: Int, dictionary: WordDictionary): LinearResult {
         println("buildLinear")
         val srcBuffer = SourceBuffer(buffer, inPos)
@@ -71,7 +123,6 @@ class BuildLinearUseCaseImpl @Inject constructor(): BuildLinearUseCase {
                 }
             }
         } while (!srcBuffer.end())
-        println(numbers.toString())
         return LinearResult(
             wordsMap = dictionary.dictionary,
             digits = digitisMap,

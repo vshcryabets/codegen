@@ -13,12 +13,13 @@ class Name(override val name: String, override var parent: Node? = null) : Leaf 
     override fun toString(): String = name
 }
 
-data class Word(
-    val name: String,
+class Word(
+    override val name: String,
+    override var parent: Node? = null,
     val nextIsLiteral: Boolean = false,
     val id: Int = -1,
-    )  {
-//    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = Word(name, parent, nextIsLiteral, id)
+    ): Leaf  {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = Word(name, parent, nextIsLiteral, id)
     override fun toString(): String = name
 }
 
