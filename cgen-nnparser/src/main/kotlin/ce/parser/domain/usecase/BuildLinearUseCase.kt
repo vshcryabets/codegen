@@ -60,7 +60,8 @@ class BuildLinearUseCaseImpl @Inject constructor(): BuildLinearUseCase {
                         prevWord = Word("")
                     } else {
                         // add to dictionary
-                        numbers.add(dictionary.addWord(wordPair.first))
+                        val newWord = dictionary.addWord(wordPair.first)
+                        numbers.add(newWord.id)
                         prevWord = wordPair.first
                     }
                 } else {
