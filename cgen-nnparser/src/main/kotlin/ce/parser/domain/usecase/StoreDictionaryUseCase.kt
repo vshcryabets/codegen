@@ -1,6 +1,6 @@
 package ce.parser.domain.usecase
 
-import ce.parser.Word
+import ce.parser.nnparser.Word
 import com.opencsv.CSVWriter
 import generators.obj.input.Leaf
 import java.io.File

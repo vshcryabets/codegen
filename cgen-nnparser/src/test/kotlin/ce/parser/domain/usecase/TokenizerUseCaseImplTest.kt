@@ -1,30 +1,41 @@
 package ce.parser.domain.usecase
 
-import ce.parser.Name
-import ce.parser.Word
-import ce.parser.WordDictionary
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.*
+import ce.parser.nnparser.Type
+import ce.parser.nnparser.Word
+import ce.parser.nnparser.WordDictionary
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class TokenizerUseCaseImplTest {
-    val dict = WordDictionary(
-        listOf("max", "float", "(", ")", "=", "->",",")
-            .map {
-                Word(it)
-            }
+fun getDict(srings: List<String>, basiId: Int): WordDictionary {
+    var id = basiId
+    return WordDictionary(
+        srings.map {
+            Word(
+                name = it,
+                id = id++
+            )
+        }
     )
+}
+
+class TokenizerUseCaseImplTest {
+
+    val keywordDict = getDict(listOf("max", "float"), 100)
+    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">"), 200)
 
     @Test
     fun testTokenizer() {
         val tokenizer = TokenizerUseCaseImpl()
         // expected
         // <Name x><=><max><(><)>
-        val result = tokenizer.invoke("x=max()", dict)
+        val result = tokenizer.invoke(
+            buffer = "x=max()",
+            keywords = keywordDict,
+            operators = operatorsDict)
         assertEquals(5, result.size)
-        assertEquals(Name::class, result[0]::class)
+        assertEquals(Type.NAME, result[0].type)
         assertEquals("x", result[0].name)
-        assertEquals(Word::class, result[1]::class)
+        assertEquals(Type.OPERATOR, result[1].type)
         assertEquals("=", result[1].name)
 
         // tests

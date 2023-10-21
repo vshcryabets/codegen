@@ -1,4 +1,4 @@
-package ce.parser
+package ce.parser.nnparser
 
 class WordDictionary(
     wordsList: List<Word>,
@@ -20,7 +20,7 @@ class WordDictionary(
     fun addWord(word: Word): Word {
         println("Add word $word")
         maxId++
-        val newWord = Word(word.name, word.parent, word.nextIsLiteral, maxId)
+        val newWord = Word(word.name, word.nextIsLiteral, maxId)
         dictionary[maxId] = newWord
         reverse[word.name] = maxId
         return newWord

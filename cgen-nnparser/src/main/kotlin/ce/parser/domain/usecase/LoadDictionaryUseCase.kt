@@ -1,7 +1,7 @@
 package ce.parser.domain.usecase
 
-import ce.parser.Word
-import ce.parser.WordDictionary
+import ce.parser.nnparser.Word
+import ce.parser.nnparser.WordDictionary
 import com.opencsv.CSVReader
 import java.io.File
 import java.io.FileReader

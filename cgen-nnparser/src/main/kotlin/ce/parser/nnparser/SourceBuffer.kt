@@ -1,4 +1,4 @@
-package ce.parser
+package ce.parser.nnparser
 
 class SourceBuffer(
     private val buffer: StringBuilder,
@@ -15,7 +15,7 @@ class SourceBuffer(
 
     fun getNextChar(): Char = buffer.get(pos)
 
-    fun readLiteral(): Pair<Literal, Int> {
+    fun readLiteral(): Pair<Word, Int> {
         var logicPos = pos
         val left = buffer.length - logicPos
         if (left > 3) {
@@ -44,20 +44,20 @@ class SourceBuffer(
             logicPos++
         } while (logicPos < buffer.length)
         pos = logicPos
-        return Pair(Literal(literalBuffer.toString()), logicPos)
+        return Pair(Word(name = literalBuffer.toString(), type = Type.LITERAL), logicPos)
     }
 
     fun skipChar() {
         pos++
     }
 
-    fun readDigit(): Pair<Digit, Int> {
+    fun readDigit(): Pair<Word, Int> {
         val readBuffer = StringBuilder()
         while (getNextChar() in digits) {
             readBuffer.append(getNextChar())
             pos++
         }
-        return Pair(Digit(readBuffer.toString()), pos)
+        return Pair(Word(name = readBuffer.toString(), type= Type.DIGIT), pos)
     }
 
     fun readWord(): Pair<Word, Int> {
@@ -109,8 +109,8 @@ class SourceBuffer(
         return Pair(wordBuffer.toString(), pos)
     }
 
-    fun findInDictionary(dict: WordDictionary): Pair<Name?, Word?> {
-        var name: Name? = null
+    fun findInDictionary(dict: WordDictionary): Pair<Word?, Word?> {
+        var name: Word? = null
         var word: Word? = null
 
         var cur = pos
@@ -119,7 +119,7 @@ class SourceBuffer(
                 nextIs(it.name, false)
             }
             if (word != null) {
-                name =
+//                name =
                 break
             }
             cur++

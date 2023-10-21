@@ -1,6 +1,10 @@
 package ce.parser.domain.usecase
 
-import ce.parser.*
+import ce.parser.nnparser.LinearResult
+import ce.parser.nnparser.SourceBuffer
+import ce.parser.nnparser.Type
+import ce.parser.nnparser.Word
+import ce.parser.nnparser.WordDictionary
 import org.jetbrains.kotlin.javax.inject.Inject
 
 interface BuildLinearUseCase {
@@ -13,21 +17,21 @@ class BuildLinearUseCaseImpl2 @Inject constructor() : BuildLinearUseCase {
         val srcBuffer = SourceBuffer(buffer, inPos)
         var literalCounter = 1000000
         var digitCounter = 2000000
-        val literalsMap = mutableMapOf<Int, Literal>()
-        val digitisMap = mutableMapOf<Int, Digit>()
-        val namesMap = mutableMapOf<Int, Name>()
+        val literalsMap = mutableMapOf<Int, Word>()
+        val digitisMap = mutableMapOf<Int, Word>()
+        val namesMap = mutableMapOf<Int, Word>()
         val numbers = mutableListOf<Int>()
 
         do {
             if (srcBuffer.nextIs("//")) {
                 val literalPair = srcBuffer.readUntil("\n", false, true)
-                literalsMap[literalCounter] = Literal(literalPair.first)
+                literalsMap[literalCounter] = Word(name = literalPair.first, type = Type.LITERAL)
                 numbers.add(literalCounter)
                 println("Comment \"${literalPair.first}\" = $literalCounter")
                 literalCounter++
             } else if (srcBuffer.nextIs("/*")) {
                 val strPair = srcBuffer.readUntil("*/", false, true)
-                literalsMap[literalCounter] = Literal(strPair.first)
+                literalsMap[literalCounter] = Word(name = strPair.first, type = Type.LITERAL)
                 numbers.add(literalCounter)
                 println("Comment multiline \"${strPair.first}\" = $literalCounter")
                 literalCounter++
@@ -65,9 +69,9 @@ class BuildLinearUseCaseImpl @Inject constructor() : BuildLinearUseCase {
         val srcBuffer = SourceBuffer(buffer, inPos)
         var literalCounter = 1000000
         var digitCounter = 2000000
-        val literalsMap = mutableMapOf<Int, Literal>()
-        val digitisMap = mutableMapOf<Int, Digit>()
-        val namesMap = mutableMapOf<Int, Name>()
+        val literalsMap = mutableMapOf<Int, Word>()
+        val digitisMap = mutableMapOf<Int, Word>()
+        val namesMap = mutableMapOf<Int, Word>()
         val numbers = mutableListOf<Int>()
         var prevWord = Word("")
 
@@ -76,13 +80,13 @@ class BuildLinearUseCaseImpl @Inject constructor() : BuildLinearUseCase {
         do {
             if (srcBuffer.nextIs("//")) {
                 val literalPair = srcBuffer.readUntil("\n", false, true)
-                literalsMap[literalCounter] = Literal(literalPair.first)
+                literalsMap[literalCounter] = Word(name = literalPair.first, type = Type.LITERAL)
                 numbers.add(literalCounter)
                 println("Comment \"${literalPair.first}\" = $literalCounter")
                 literalCounter++
             } else if (srcBuffer.nextIs("/*")) {
                 val strPair = srcBuffer.readUntil("*/", false, true)
-                literalsMap[literalCounter] = Literal(strPair.first)
+                literalsMap[literalCounter] = Word(name = strPair.first, type = Type.LITERAL)
                 numbers.add(literalCounter)
                 println("Comment multiline \"${strPair.first}\" = $literalCounter")
                 literalCounter++
@@ -105,7 +109,7 @@ class BuildLinearUseCaseImpl @Inject constructor() : BuildLinearUseCase {
                 if (!wordsMapRevers.containsKey(wordPair.first.name)) {
 
                     if (prevWord.nextIsLiteral) {
-                        literalsMap[literalCounter] = Literal(wordPair.first.name)
+                        literalsMap[literalCounter] = Word(wordPair.first.name, type = Type.LITERAL)
                         numbers.add(literalCounter)
                         println("Literal \"${wordPair.first.name}\" = $literalCounter")
                         literalCounter++

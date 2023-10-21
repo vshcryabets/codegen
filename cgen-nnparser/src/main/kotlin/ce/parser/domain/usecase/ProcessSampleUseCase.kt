@@ -2,7 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.defs.Target
 import ce.parser.SampleData
-import ce.parser.TargetDictionaries
+import ce.parser.nnparser.TargetDictionaries
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import org.jetbrains.kotlin.javax.inject.Inject

@@ -3,6 +3,8 @@ package ce.parser
 import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
 import ce.parser.domain.usecase.*
+import ce.parser.nnparser.TargetDictionaries
+import ce.parser.nnparser.Word
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -23,9 +25,7 @@ fun storeTokens(fileName: String, tokens: List<Int>) {
 }
 
 data class ParseResult(
-    val wordsMap: Map<Int, Word> = emptyMap(),
-    val literalsMap: Map<Int, Literal> = emptyMap(),
-    val digits: Map<Int, Digit> = emptyMap(),
+    val tokensMap: Map<Int, Word> = emptyMap(),
     val tokens: List<Int> = emptyList()
 )
 
