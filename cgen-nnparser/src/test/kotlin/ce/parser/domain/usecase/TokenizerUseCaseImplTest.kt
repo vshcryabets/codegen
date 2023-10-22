@@ -24,6 +24,7 @@ class TokenizerUseCaseImplTest {
     val keywordDict = getDict(listOf("max", "float"), 100, Type.KEYWORD)
     val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+"), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
+    val comments = getDict(listOf("//"), 1000, Type.COMMENTS)
 
     @Test
     fun testSpaces() {
@@ -34,7 +35,8 @@ class TokenizerUseCaseImplTest {
             buffer = "\t  \t- ",
             keywords = keywordDict,
             operators = operatorsDict,
-            spaces = spaces
+            spaces = spaces,
+            comments = comments,
         )
         assertEquals(1, result1.size)
         assertEquals(Type.OPERATOR, result1[0].type)
@@ -46,7 +48,8 @@ class TokenizerUseCaseImplTest {
             buffer = "  max +",
             keywords = keywordDict,
             operators = operatorsDict,
-            spaces = spaces
+            spaces = spaces,
+            comments = comments,
         )
         assertEquals(2, result2.size)
         assertEquals(Type.KEYWORD, result2[0].type)
@@ -64,7 +67,9 @@ class TokenizerUseCaseImplTest {
             buffer = "x = max\n()",
             keywords = keywordDict,
             operators = operatorsDict,
-            spaces = spaces)
+            spaces = spaces,
+            comments = comments,
+        )
         assertEquals(5, result.size)
         assertEquals(Type.NAME, result[0].type)
         assertEquals("x", result[0].name)
@@ -81,17 +86,30 @@ class TokenizerUseCaseImplTest {
             buffer = "float max2=max()",
             keywords = keywordDict,
             operators = operatorsDict,
-            spaces = spaces)
+            spaces = spaces,
+            comments = comments,
+        )
         assertEquals(6, result.size)
-        assertEquals(Type.NAME, result[0].type)
-        assertEquals("x", result[0].name)
-        assertEquals(Type.OPERATOR, result[1].type)
-        assertEquals("=", result[1].name)
+        assertEquals(Type.KEYWORD, result[0].type)
+        assertEquals("float", result[0].name)
+        assertEquals(Type.NAME, result[1].type)
+        assertEquals("max2", result[1].name)
+        assertEquals(Type.OPERATOR, result[2].type)
+        assertEquals("=", result[2].name)
+        assertEquals(Type.KEYWORD, result[3].type)
+        assertEquals("max", result[3].name)
 
         // tests
+
         // float max2=max(1,2)
+
         // qwe->varX
+
         // qwe-varX
+
         // qwe>varX
+
+        // // comment
+        // a=max()
     }
 }

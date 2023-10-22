@@ -11,6 +11,7 @@ interface TokenizerUseCase {
         keywords: WordDictionary,
         dictionary: WordDictionary,
         spaces: WordDictionary,
+        comments: WordDictionary,
     ): List<Word>
 }
 
@@ -27,10 +28,20 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
     }
 
     fun nextToken(buffer: String,
-                  position: Int,
+                  startPosition: Int,
                   spaces: WordDictionary,
+                  comments: WordDictionary,
                   operators: WordDictionary): String {
-        return ""
+        var pos = startPosition
+        while (pos < buffer.length) {
+            if ((checkString(buffer, pos, spaces) != null) ||
+                (checkString(buffer, pos, comments) != null) ||
+                (checkString(buffer, pos, operators) != null)) {
+                break
+            }
+            pos++
+        }
+        return buffer.substring(startPosition, pos)
     }
 
     override operator fun invoke(
@@ -38,29 +49,31 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         keywords: WordDictionary,
         operators: WordDictionary,
         spaces: WordDictionary,
+        comments: WordDictionary,
     ): List<Word> {
         val result = mutableListOf<Word>()
         var pos = 0
         var markPos = 0
         while (pos < buffer.length) {
+            // TODO at fist place check for comment
             val space = checkString(buffer, pos, spaces)
             if (space != null) {
-                if (markPos != pos) {
-                    val name = buffer.substring(markPos, pos)
-                    result.add(Word(name = name, type = Type.NAME))
-                }
+//                if (markPos != pos) {
+//                    val name = buffer.substring(markPos, pos)
+//                    result.add(Word(name = name, type = Type.NAME))
+//                }
                 pos = pos + space.name.length
-                markPos = pos
+//                markPos = pos
                 continue
             }
             val operator = checkString(buffer, pos, operators)
             if (operator != null) {
-                if (markPos != pos) {
-                    val name = buffer.substring(markPos, pos)
-                    result.add(Word(name = name, type = Type.NAME))
-                }
+//                if (markPos != pos) {
+//                    val name = buffer.substring(markPos, pos)
+//                    result.add(Word(name = name, type = Type.NAME))
+//                }
                 pos = pos + operator.name.length
-                markPos = pos
+//                markPos = pos
                 result.add(operator)
                 continue
             }
@@ -68,24 +81,22 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
             // 1 get next token
             // 2 check it with keywords list, if it present - is a keyword
             // 3 otherwise it a name
-            val keyword = checkString(buffer, pos, keywords)
+            val nextToken = nextToken(buffer, pos, spaces, comments, operators)
+            val keyword = keywords.sortedByLengthDict.find {
+                it.name.equals(nextToken)
+            }
             if (keyword != null) {
-//                val nextCharPos = pos + keyword.name.length + 1
-//                if ((nextCharPos < buffer.length) && (buffer[nextCharPos].isLetterOrDigit())) {
-//                    // this is not a keyword, it a name
-//                    pos = pos + keyword.name.length
-//                    continue
+//                if (markPos != pos) {
+//                    val name = buffer.substring(markPos, pos)
+//                    result.add(Word(name = name, type = Type.NAME))
 //                }
-                if (markPos != pos) {
-                    val name = buffer.substring(markPos, pos)
-                    result.add(Word(name = name, type = Type.NAME))
-                }
                 pos = pos + keyword.name.length
-                markPos = pos
+//                markPos = pos
                 result.add(keyword)
                 continue
             }
-            pos++
+            result.add(Word(name = nextToken, type = Type.NAME))
+            pos = pos + nextToken.length
         }
         return result
     }

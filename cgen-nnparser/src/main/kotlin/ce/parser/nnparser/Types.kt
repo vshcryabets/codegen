@@ -2,6 +2,7 @@ package ce.parser.nnparser
 
 enum class Type {
     SPACES,
+    COMMENTS,
     OPERATOR,
     KEYWORD,
     NAME,
