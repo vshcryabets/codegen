@@ -27,8 +27,8 @@ class ProcessSampleUseCaseImpl @Inject constructor(
             val bufferMeta = loadFileUseCase(fileMeta)
             val dictSrc = dictionaries[sampleData.sourceTarget]!!
             val dictMeta = dictionaries[Target.Meta]!!
-            val srcLinearResult = buildLinearUseCase(bufferSrc, 0, dictSrc.core)
-            val metaLinearResult = buildLinearUseCase(bufferMeta, 0, dictMeta.core)
+            val srcLinearResult = buildLinearUseCase(bufferSrc, 0, dictSrc.keywords)
+            val metaLinearResult = buildLinearUseCase(bufferMeta, 0, dictMeta.keywords)
             println(srcLinearResult)
             println(metaLinearResult)
         }

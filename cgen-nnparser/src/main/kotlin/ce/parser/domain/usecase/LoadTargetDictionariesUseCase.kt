@@ -18,12 +18,18 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
 ) : LoadTargetDictionariesUseCase {
     override suspend fun invoke(baseDir: String, target: Target): TargetDictionaries =
         withContext(ioScope.coroutineContext) {
-            val coreDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_core.csv")) }
+            val keywordsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv")) }
+            val operatorsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_operators.csv")) }
+            val spacesDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_spaces.csv")) }
+            val commentsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_comments.csv")) }
             val stdlibsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_stdlibs.csv")) }
             val thirdDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_third.csv")) }
             val projectDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_project.csv")) }
             return@withContext TargetDictionaries(
-                core = coreDef.await(),
+                keywords = keywordsDef.await(),
+                operators = operatorsDef.await(),
+                spaces = spacesDef.await(),
+                comments = commentsDef.await(),
                 stdlibs = stdlibsDef.await(),
                 thirdlibs = thirdDef.await(),
                 projectlibs = projectDef.await()
