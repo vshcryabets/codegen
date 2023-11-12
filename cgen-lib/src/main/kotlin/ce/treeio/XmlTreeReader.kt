@@ -1,6 +1,6 @@
 package ce.treeio
 
-import ce.defs.Target
+import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
 import generators.obj.input.*
 import generators.obj.out.*
@@ -28,21 +28,41 @@ class XmlTreeReader : TreeReader {
         val tagName = node.tagName
         val name = node.getAttribute(XmlInTreeWritterImpl.KEY_NAME)
         return when (tagName) {
-            Namespace::class.java.simpleName -> Namespace(name, parent)
+            Namespace::class.java.simpleName -> NamespaceImpl(name, parent)
             ConstantsEnum::class.java.simpleName -> ConstantsEnum(
-                name, parent,
-                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
+                name = name,
+                parent = parent,
+                sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
+                objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
+                defaultDataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
             )
 
             CommentsBlock::class.java.simpleName -> CommentsBlock()
             CommentLeaf::class.java.simpleName -> CommentLeaf(name)
             "ConstantsBlock" -> ConstantsBlock(
-                name, parent,
-                dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
+                name = name,
+                parent = parent,
+                sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
+                objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
+                defaultDataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
             )
 
-            "DataClass" -> DataClass(name, parent)
-            "InterfaceDescription" -> InterfaceDescription(name, parent)
+            "DataClass" -> DataClass(
+                name = name,
+                parent = parent,
+                sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
+                objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
+                )
+            "InterfaceDescription" -> InterfaceDescription(
+                name = name,
+                parent = parent,
+                sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
+                objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
+                )
             "Method" -> Method(name)
             "OutputList" -> OutputList()
             "InputList" -> InputList()
@@ -76,28 +96,32 @@ class XmlTreeReader : TreeReader {
             "ConstantDesc" -> {
                 val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 ConstantDesc(
-                    name, parent, dataType,
+                    name = name,
+                    parent = parent,
+                    type = dataType,
+                    value =
                     dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
                 )
             }
             // OUT TREE
-            ProjectOutput::class.java.simpleName -> ProjectOutput(NamespaceMap(),
-                Target.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
-            FileData::class.java.simpleName -> FileData(name, parent)
+            ProjectOutput::class.java.simpleName -> ProjectOutput(
+                TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
+            FileData::class.java.simpleName -> FileDataImpl(name, parent)
             NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)
             KotlinClassData::class.java.simpleName -> KotlinClassData(name)
-            BlockPreNewLines::class.java.simpleName -> BlockPreNewLines()
+            Indent::class.java.simpleName -> Indent()
             OutBlock::class.java.simpleName -> OutBlock(name)
             OutBlockArguments::class.java.simpleName -> OutBlockArguments(name)
-            EnumLeaf::class.java.simpleName -> EnumLeaf(name)
+            EnumNode::class.java.simpleName -> EnumNode(name)
             Separator::class.java.simpleName -> Separator(name)
             NlSeparator::class.java.simpleName -> NlSeparator(name)
-            ConstantLeaf::class.java.simpleName -> ConstantLeaf()
+            ConstantNode::class.java.simpleName -> ConstantNode()
             Keyword::class.java.simpleName -> Keyword(name)
+            Datatype::class.java.simpleName -> Datatype(name)
             RValue::class.java.simpleName -> RValue(name)
             VariableName::class.java.simpleName -> VariableName(name)
             ResultLeaf::class.java.simpleName -> ResultLeaf(name)
-            ArgumentLeaf::class.java.simpleName -> ArgumentLeaf(name)
+            ArgumentNode::class.java.simpleName -> ArgumentNode(name)
             MultilineCommentsBlock::class.java.simpleName -> MultilineCommentsBlock()
 
             else -> throw IllegalStateException("Unknown $tagName")

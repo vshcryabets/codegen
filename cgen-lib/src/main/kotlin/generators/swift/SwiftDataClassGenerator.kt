@@ -2,20 +2,21 @@ package generators.swift
 
 import ce.settings.Project
 import generators.obj.FileGenerator
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataClass
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class SwiftDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass>(fileGenerator) {
+) : TransformBlockUseCase<DataClass> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): SwiftClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Swift")
 
-        return file.addSub(SwiftClassData(desc.name, file)).apply {
+        file.addSub(SwiftClassData(desc.name)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
 //            classDefinition.append("struct ${desc.name} {")

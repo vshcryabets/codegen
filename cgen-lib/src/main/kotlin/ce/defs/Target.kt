@@ -1,6 +1,6 @@
 package ce.defs
 
-enum class Target(val strName: String) {
+enum class Target(val rawValue: String) {
     Other("other"),
     Kotlin("kotlin"),
     C("c"),
@@ -9,10 +9,6 @@ enum class Target(val strName: String) {
     Java("java"),
     Rust("rust"),
     Go("go"),
-    Python("python"), ;
-
-    companion object {
-        fun findByName(name: String): Target =
-            Target.values().find {it.name.equals(name, true) } ?: Other
-    }
+    Python("python"),
+    Meta("meta")
 }

@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BuildProject Test" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="ce.entrypoints.BuildProjectKt" />
+    <module name="codegen.cgen-console.main" />
+    <option name="PROGRAM_PARAMETERS" value="--project ./test/project.json" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

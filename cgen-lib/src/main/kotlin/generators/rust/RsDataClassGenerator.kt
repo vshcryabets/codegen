@@ -2,21 +2,22 @@ package generators.rust
 
 import ce.settings.Project
 import generators.obj.FileGenerator
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.DataClass
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class RsDataClassGenerator(
     fileGenerator : FileGenerator,
     private val project: Project
-) : Generator<DataClass>(fileGenerator) {
+) : TransformBlockUseCase<DataClass> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: DataClass): RustClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
 
-        return file.addSub(RustClassData(desc.name, file)).apply {
+        file.addSub(RustClassData(desc.name)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
 
             desc.subs.forEach { leaf ->

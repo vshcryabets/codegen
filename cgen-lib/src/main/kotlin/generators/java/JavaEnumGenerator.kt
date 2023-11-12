@@ -1,21 +1,22 @@
 package generators.java
 
 import ce.defs.DataType
-import ce.settings.Project
-import generators.obj.Generator
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaEnumGenerator(
     fileGenerator: JavaFileGenerator,
-    private val project: Project
-) : Generator<ConstantsEnum>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): JavaClassData {
+    override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
-        return file.addSub(JavaClassData(desc.name, file)).apply {
-            addBlockDefaults(desc, this)
+        file.addSub(JavaClassData(desc.name)).apply {
+            addBlockDefaultsUseCase(desc, this)
             val withRawValues = desc.defaultDataType != DataType.VOID
 //            subs.add(BlockStart("enum class ${desc.name}", this))
 //            if (!withRawValues) {

@@ -2,21 +2,22 @@ package generators.rust
 
 import ce.defs.DataType
 import ce.settings.Project
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class RustEnumGenerator(
     fileGenerator: RustFileGenerator,
     private val project: Project
-) : Generator<ConstantsEnum>(fileGenerator) {
+) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsEnum): RustClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: ConstantsEnum) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Rust")
 
-        return file.addSub(RustClassData(desc.name, file)).apply {
+        file.addSub(RustClassData(desc.name)).apply {
 //            addMultilineCommentsBlock(desc.classComment.toString(), this)
             val withRawValues = !(desc.defaultDataType is DataType.VOID)
 //            if (withRawValues) {

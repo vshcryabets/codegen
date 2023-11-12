@@ -1,21 +1,22 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.settings.Project
-import generators.obj.Generator
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
+import generators.obj.FileGenerator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
 import generators.obj.out.*
 
 class KotlinInterfaceGenerator(
-    fileGenerator: KotlinFileGenerator,
-    private val project: Project
-) : Generator<InterfaceDescription>(fileGenerator) {
+    fileGenerator: FileGenerator,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+) : TransformBlockUseCase<InterfaceDescription> {
 
-    override fun processBlock(files: List<FileData>, desc: InterfaceDescription): KotlinClassData {
+    override fun invoke(files: List<FileData>, desc: InterfaceDescription) {
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
-        return file.addSub(KotlinClassData(desc.name)).let { kclass ->
-            addBlockDefaults(desc, kclass)
+        file.addSub(KotlinClassData(desc.name)).let { kclass ->
+            addBlockDefaultsUseCase(desc, kclass)
             kclass.addSub(OutBlock("interface ${desc.name}")).apply {
                 desc.subs.forEach { leaf ->
                     if (leaf is Method) {
@@ -66,12 +67,12 @@ class KotlinInterfaceGenerator(
                         if (it is Input) {
                             if (needToAddComa) addSub(Separator(", "))
                             addSub(
-                                ArgumentLeaf(
+                                ArgumentNode(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
                                         "${it.name}: ${Types.typeTo(file, it.type)} = " +
-                                                "${Types.toValue(itf, it.type, it.value)}"
+                                                "${Types.toValue(it.type, it.value)}"
                                     }
                                 )
                             )
@@ -86,12 +87,12 @@ class KotlinInterfaceGenerator(
                         reusableResults.forEach {
                             if (needToAddComa) addSub(Separator(", "))
                             addSub(
-                                ArgumentLeaf(
+                                ArgumentNode(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
                                         "${it.name}: ${Types.typeTo(file, it.type)} = " +
-                                                "${Types.toValue(itf, it.type, it.value)}"
+                                                "${Types.toValue(it.type, it.value)}"
                                     }
                                 )
                             )

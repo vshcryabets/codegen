@@ -1,20 +1,97 @@
 package generators.obj.out
 
-import generators.obj.input.Node
+import generators.obj.input.*
 
-typealias OutNode = Node
+data class CommentsBlock(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+}
 
-class CommentsBlock() : Node("", null)
-class MultilineCommentsBlock() : Node("", null)
+data class MultilineCommentsBlock(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
 
-class ImportsBlock() : Node("", null) {
+data class ImportsBlock(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Region {
+
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+
     fun addInclude(name: String) {
         addSub(ImportLeaf(name))
     }
 }
 
-// $name ($OutBlockArguments) {
+// Region sample
+// // some constants
+// const int a = 10;
+// const int b = 20;
+interface Region : Node
+
+data class RegionImpl(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Region {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
+
+// Outblock Sample (outblock has some prefix, then braces { }
+// $OutBlockName ($OutBlockArguments) {
 // ...
 // }
-open class OutBlock(name: String) : Node(name, null)
-open class OutBlockArguments(name: String) : Node(name, null)
+data class OutBlock(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+
+    override fun toString(): String = "OutBlock $name"
+}
+
+data class OutBlockArguments(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}
+
+// TODO think about it
+interface ClassData : Region
+data class ClassDataImpl(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf>
+) : ClassData {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }}

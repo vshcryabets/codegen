@@ -1,15 +1,14 @@
 package generators.obj
 
+import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
-import ce.settings.CodeStyle
 import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.out.*
 import java.io.File
 
-abstract class Writter(val fileGenerator: FileGenerator,
-                       val codeStyle: CodeStyle,
+abstract class Writter(val codeStyleRepo: CodeStyleRepo,
                        outputFolderPath: String) {
     val outFolder : File
 
@@ -30,24 +29,29 @@ abstract class Writter(val fileGenerator: FileGenerator,
 
     open fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
-            is ArgumentLeaf, is ResultLeaf, is Separator -> {
+            is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
             }
             is RValue -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
-            is Keyword -> out.write(leaf.name + " ")
+            is Keyword -> out.write(leaf.name)
+            is Datatype -> out.write(leaf.name)
             is VariableName -> out.write(leaf.name)
-            is EnumLeaf -> {
+            is CommentLeaf -> {
                 out.write(leaf.name)
             }
-            is FieldLeaf, is CommentLeaf -> {
-                out.write(leaf.name).writeNl()
+            is Indent -> {
+                out.write(codeStyleRepo.tab)
+            }
+            is Space -> {
+                out.write(" ")
             }
             is NlSeparator -> {
-                out.write(leaf.name).writeNl()
-            }
-            is BlockPreNewLines -> {
-                for (i in 0..codeStyle.newLinesBeforeClass - 1) out.writeNl()
+                if (leaf.name.isEmpty()) {
+                    out.write(codeStyleRepo.newLine())
+                } else {
+                    out.write(leaf.name)
+                }
             }
             else -> out.write("=== UNKNOWN LEAF $leaf").writeNl()
         }
@@ -65,17 +69,11 @@ abstract class Writter(val fileGenerator: FileGenerator,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-            is ConstantLeaf -> writeSubNodes(node, out, "")
-            is ClassData -> writeSubNodes(node, out, indent)
-            is MultilineCommentsBlock -> {
-                out.write(indent)
-                out.write(fileGenerator.multilineCommentStart())
-                writeSubNodes(node, out, "$indent ")
-                out.write("$indent ")
-                out.write(fileGenerator.multilineCommentEnd())
-            }
-            is CommentsBlock -> {
-                writeSubNodes(node, out, indent)
+            is EnumNode -> {
+                if (node.subs.size == 0)
+                    out.write(node.name)
+                else
+                    writeSubNodes(node, out, indent)
             }
             else -> writeSubNodes(node, out, indent)
         }

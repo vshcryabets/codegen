@@ -1,46 +1,49 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.settings.Project
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
-import generators.obj.Generator
+import generators.obj.FileGenerator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.*
 import generators.obj.out.*
 
 class KotlinEnumGenerator(
-    fileGenerator: KotlinFileGenerator,
-    private val project: Project
-) : Generator<ConstantsEnum>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun processBlock(files: List<FileData>, desc: ConstantsEnum): KotlinClassData {
-        val file = files.find { it is FileData }
+    override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
+        val file = files.firstOrNull()
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         val withRawValues = desc.defaultDataType != DataType.VOID
         val autoIncrement = AutoincrementField()
-        var needToAddComa = false
 
-        return file.addSub(KotlinClassData(desc.name)).also { classData ->
-            addBlockDefaults(desc, classData)
-            classData.addOutBlock("enum class ${desc.name}") {
+        file.addSub(RegionImpl(desc.name)).also { region ->
+            addBlockDefaultsUseCase(desc, region)
+            region.addOutBlock("enum class ${desc.name}") {
                 if (withRawValues) {
                     addOutBlockArguments {
-                        addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
+                        addSub(ArgumentNode().apply {
+                            addKeyword("val")
+                            addVarName("rawValue")
+                            addKeyword(":")
+                            addDatatype(Types.typeTo(file, desc.defaultDataType))
+//                            addKeyword("=")
+//                            addRValue(Types.toValue(desc.type, desc.value))
+                        })
+//                        addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
                     }
                 }
                 desc.subs.forEach { leaf ->
                     if (leaf is DataField) {
-                        val it = leaf as DataField
-                        if (needToAddComa) {
-                            addSeparatorNewLine(",")
-                        }
+                        val it = leaf
 
                         if (withRawValues) {
                             autoIncrement(it)
-                            addEnumLeaf("${it.name}(${Types.toValue(classData, it.type, it.value)})")
+                            addEnumLeaf("${it.name}(${Types.toValue(it.type, it.value)})")
                         } else {
                             addEnumLeaf("${it.name}")
                         }
-                        needToAddComa = true
                     }
                 }
             }

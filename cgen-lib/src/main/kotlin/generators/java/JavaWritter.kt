@@ -1,7 +1,9 @@
 package generators.java
 
+import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import ce.io.FileCodeWritter
+import ce.settings.CodeStyle
 import generators.obj.Writter
 import generators.obj.input.Leaf
 import generators.obj.input.Node
@@ -9,8 +11,8 @@ import generators.obj.out.*
 import java.io.BufferedWriter
 import java.io.File
 
-class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
-    : Writter(fileGenerator, fileGenerator.style, outputFolder) {
+class JavaWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
+    : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
         var outputFile = File(fileData.name + ".java")
@@ -18,7 +20,7 @@ class JavaWritter(fileGenerator: JavaFileGenerator, outputFolder: String)
         println("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
-            codeWritter.setNewLine(fileGenerator.newLine())
+            codeWritter.setNewLine(codeStyleRepo.newLine())
             writeNode(fileData, codeWritter, "")
         }
     }

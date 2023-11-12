@@ -21,11 +21,11 @@ class BuildProjectUseCase(
         val generatorsRepo = GeneratorsRepo(project)
 
         project.targets.forEach { target ->
-            val root = loadMetaFilesUseCase(project, target)
+            val inputTree = loadMetaFilesUseCase(project, target)
             if (writeInTree) {
-                storeInTreeUseCase(project.outputFolder + "input_tree_${target.name}.xml", root)
+                storeInTreeUseCase(project.outputFolder + "input_tree_${target.name}.xml", inputTree)
             }
-            val outTree = transformInTreeToOutTreeUseCase(root, generatorsRepo.get(target))
+            val outTree = transformInTreeToOutTreeUseCase(inputTree, generatorsRepo.get(target))
             if (writeOutTree) {
                 storeOutTreeUseCase(project.outputFolder + "output_tree_${target.name}.xml", outTree)
             }

@@ -1,20 +1,24 @@
 package generators.java
 
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import ce.settings.Project
-import generators.obj.Generator
+import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataField
 import generators.obj.input.InterfaceDescription
+import generators.obj.input.addSub
 import generators.obj.out.FileData
 
-class JavaInterfaceGenerator(fileGenerator: JavaFileGenerator,
-                             private val project: Project
-) : Generator<InterfaceDescription>(fileGenerator) {
+class JavaInterfaceGenerator(
+    fileGenerator: JavaFileGenerator,
+    private val project: Project,
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+) : TransformBlockUseCase<InterfaceDescription> {
 
-    override fun processBlock(files: List<FileData>, desc: InterfaceDescription): JavaClassData {
+    override fun invoke(files: List<FileData>, desc: InterfaceDescription) {
         val file = files.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
-        return file.addSub(JavaClassData(desc.name, file)).apply {
-            addBlockDefaults(desc, this)
+        file.addSub(JavaClassData(desc.name)).apply {
+            addBlockDefaultsUseCase(desc, this)
 //            subs.add(BlockStart("interface ${desc.name}", this))
 
             desc.subs.forEach { leaf ->

@@ -2,31 +2,169 @@ package generators.obj.out
 
 import generators.obj.input.Leaf
 import generators.obj.input.Node
+import generators.obj.input.copyLeafExt
 
 // package $name
-class NamespaceDeclaration(name : String) : Leaf(name)
-class NamespaceBlock(name : String) : Node(name, null)
+data class NamespaceDeclaration(override val name: String, override var parent: Node? = null) : Leaf {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class NamespaceBlock(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+
+    override fun toString() = name
+}
+
 //import $name
-class ImportLeaf(name : String) : Leaf(name)
+data class ImportLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
 
 // //$name
-class CommentLeaf(name : String) : Leaf(name)
+data class CommentLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
 
+//data class ArgumentLeaf(
+//    override val name: String,
+//    override var parent: Node? = null
+//) : Leaf {
+//    override fun toString() = name
+//    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+//}
 
-//class BlockStart(name : String) : Leaf(name, null)
-//class BlockEnd(name : String, parent : Node) : Leaf(name, parent)
+data class ResultLeaf(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
 
-class ArgumentLeaf(name : String) : Leaf(name)
-class ResultLeaf(name : String) : Leaf(name)
-class FieldLeaf(name : String, parent : Node) : Leaf(name, parent)
-class ConstantLeaf() : Node("", null)
-class EnumLeaf(name : String) : Leaf(name)
+data class FieldNode(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+}
 
-class RValue(name : String) : Leaf(name) // something after "="
-class Keyword(name : String) : Leaf(name)
-class VariableName(name : String) : Leaf(name)
+data class ConstantNode(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+}
+
+data class EnumNode(
+    override val name: String,
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+}
+
+data class ArgumentNode(
+    override val name: String = "",
+    override var parent: Node? = null,
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
+        this.copyLeafExt(parent, copySubs) {
+            this.copy(subs = mutableListOf(), parent = parent)
+        }
+}
+
+// something after "="
+data class RValue(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class Keyword(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class Datatype(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class VariableName(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
 
 // for example ",\n"
-class Separator(name : String) : Leaf(name)
-class NlSeparator(name : String = "") : Leaf(name)
-class BlockPreNewLines : Leaf("")
+data class Separator(
+    override val name: String,
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = name
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class NlSeparator(
+    override val name: String = "",
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = "<NL>"
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class Indent(
+    override val name: String = "",
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = "<TAB>"
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}
+
+data class Space(
+    override val name: String = "",
+    override var parent: Node? = null
+) : Leaf {
+    override fun toString() = "< >"
+    override fun copyLeaf(parent: Node?, copySubs: Boolean) = this.copy(parent = parent)
+}

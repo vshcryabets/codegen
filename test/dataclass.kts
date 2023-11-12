@@ -21,7 +21,7 @@ namespace("com.goldman").apply {
             field("blockCount", DataType.int32)
             field("lastBlockSize", DataType.int32, 10)
             // using direct method
-            addSub(DataField("blockSize", type = DataType.int32))
+            field("blockSize", DataType.int32)
         }
     }
 }

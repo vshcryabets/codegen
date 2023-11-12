@@ -2,6 +2,8 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import generators.obj.input.findOrCreateSub
+import generators.obj.input.getParentPath
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ImportLeaf
@@ -33,14 +35,17 @@ object Types {
                     .addInclude("${type.block.getParentPath()}.${type.block.name}");
             else -> {}
         }
+        val qwe: ULong
         return when (type) {
             DataType.VOID -> "void"
             DataType.int8 -> "Byte"
             DataType.int16 -> "Short"
             DataType.int32 -> "Int"
             DataType.int64 -> "Long"
-            DataType.uint16 -> "Int"
-            DataType.uint32 -> "Long"
+            DataType.uint8 -> "UByte"
+            DataType.uint16 -> "UShort"
+            DataType.uint32 -> "UInt"
+            DataType.uint64 -> "ULong"
             DataType.float32 -> "Float"
             DataType.float64 -> "Double"
             DataType.bool -> "Boolean"
@@ -52,11 +57,11 @@ object Types {
         } + (if (type.canBeNull) "?" else "")
     }
 
-    fun toValue(classData: ClassData, type: DataType, value: DataValue) : String =
+    fun toValue(type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
-            DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16, DataType.uint32 -> value.value.toString()
+            DataType.int8, DataType.int16, DataType.int32, DataType.int64,
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
             DataType.bool -> value.value.toString()

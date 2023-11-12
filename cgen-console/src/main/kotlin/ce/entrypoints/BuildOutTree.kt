@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.Target
+import ce.defs.TargetExt
 import ce.domain.usecase.entry.BuildOutTreeUseCase
 import ce.domain.usecase.load.LoadInTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
@@ -20,7 +21,7 @@ fun main(args: Array<String>) {
         )
     }
 
-    val target = Target.findByName(args[3])
+    val target = TargetExt.findByName(args[3])
     if (target == Target.Other) {
         error("Unknown target \"${args[3]}\"")
     }

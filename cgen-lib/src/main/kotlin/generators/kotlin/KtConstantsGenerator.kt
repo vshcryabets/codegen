@@ -1,38 +1,34 @@
 package generators.kotlin
 
-import ce.settings.Project
+import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
-import generators.obj.FileGenerator
-import generators.obj.Generator
-import generators.obj.input.ConstantDesc
-import generators.obj.input.ConstantsBlock
+import generators.obj.TransformBlockUseCase
+import generators.obj.input.*
 import generators.obj.out.*
 
 class KtConstantsGenerator(
-    fileGenerator : FileGenerator,
-    private val project: Project
-) : Generator<ConstantsBlock>(fileGenerator) {
+    private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+) : TransformBlockUseCase<ConstantsBlock> {
 
-    override fun processBlock(blockFiles: List<FileData>, desc: ConstantsBlock): KotlinClassData {
+    override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
         val file = blockFiles.find { it is FileData }
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
         val autoIncrement = AutoincrementField()
 
-        return file.addSub(KotlinClassData(desc.name)).also { classData ->
-            addBlockDefaults(desc, classData)
-            classData.addSub(OutBlock("object ${desc.name}")).apply {
+        file.addSub(RegionImpl()).apply {
+            addBlockDefaultsUseCase(desc, this)
+            addSub(OutBlock("object ${desc.name}")).apply {
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantLeaf().apply {
+                        addSub(ConstantNode().apply {
                             addKeyword("const")
                             addKeyword("val")
                             addVarName(it.name)
                             addKeyword(":")
-                            addKeyword(Types.typeTo(file, it.type))
+                            addDatatype(Types.typeTo(file, it.type))
                             addKeyword("=")
-                            addRValue(Types.toValue(classData, it.type, it.value))
-                            addSeparatorNewLine("")
+                            addRValue(Types.toValue(it.type, it.value))
                         })
                     }
                 }
