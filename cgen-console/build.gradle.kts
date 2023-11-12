@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.kapt.cli.main
+
 plugins {
     kotlin("jvm")
     `java-library`
@@ -49,4 +51,11 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+task("execute", JavaExec::class) {
+    mainClass.set(project.gradle.startParameter.projectProperties.get("classToExecute"))
+    group = "Run project"
+    classpath = sourceSets["main"].runtimeClasspath
+    setWorkingDir("../")
 }
