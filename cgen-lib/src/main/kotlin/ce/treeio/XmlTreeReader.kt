@@ -28,7 +28,7 @@ class XmlTreeReader : TreeReader {
         val tagName = node.tagName
         val name = node.getAttribute(XmlInTreeWritterImpl.KEY_NAME)
         return when (tagName) {
-            Namespace::class.java.simpleName -> NamespaceImpl(name, parent)
+            Namespace::class.java.simpleName, NamespaceImpl::class.java.simpleName -> NamespaceImpl(name, parent)
             ConstantsEnum::class.java.simpleName -> ConstantsEnum(
                 name = name,
                 parent = parent,

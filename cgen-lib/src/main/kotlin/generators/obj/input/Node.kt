@@ -123,6 +123,8 @@ data class Method(
 ) : Node {
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
         this.copyLeafExt(parent, copySubs) { return@copyLeafExt Method(name, parent, subs) }
+
+    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
 }
 
 data class OutputList(
@@ -142,6 +144,8 @@ data class OutputList(
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)
         }
+
+    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
 }
 
 data class InputList(
@@ -157,6 +161,8 @@ data class InputList(
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)
         }
+
+    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
 }
 
 data class InterfaceDescription(
@@ -182,4 +188,6 @@ data class InterfaceDescription(
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)
         }
+
+    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
 }

@@ -41,7 +41,7 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
         val gapBetweenLevels = 50.0
         val gapBetweenNodes = 10.0
         val configuration: DefaultConfiguration<Leaf> = DefaultConfiguration<Leaf>(gapBetweenLevels, gapBetweenNodes,
-            Configuration.Location.Right)
+            Configuration.Location.Top)
         val affinetransform = AffineTransform()
         val fontRenderContext = FontRenderContext(affinetransform, true, true)
 

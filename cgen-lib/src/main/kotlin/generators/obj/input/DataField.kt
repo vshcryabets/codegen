@@ -18,6 +18,7 @@ data class DataField(
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
 
     override fun toString(): String = "$name:$type=$value"
+    override fun hashCode(): Int = name.hashCode()
 }
 
 data class Output(
@@ -27,6 +28,7 @@ data class Output(
     override var parent: Node? = null,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
+    override fun hashCode(): Int = name.hashCode()
 }
 
 data class OutputReusable(
@@ -36,6 +38,7 @@ data class OutputReusable(
     override var parent: Node? = null,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
+    override fun hashCode(): Int = name.hashCode()
 }
 
 data class Input(
@@ -45,6 +48,7 @@ data class Input(
     override var parent: Node? = null,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copy(parent = parent)
+    override fun hashCode(): Int = name.hashCode()
 }
 
 data class ConstantDesc(

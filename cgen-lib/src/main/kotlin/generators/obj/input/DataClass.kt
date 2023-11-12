@@ -25,4 +25,6 @@ data class DataClass(
         this.copyLeafExt(parent, copySubs) {
             this.copy(subs = mutableListOf(), parent = parent)
         }
+
+    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
 }
