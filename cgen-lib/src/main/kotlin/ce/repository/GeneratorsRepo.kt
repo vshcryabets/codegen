@@ -87,7 +87,7 @@ class GeneratorsRepo(val project: Project) {
                     ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase),
                     ConstantsBlock::class.java to KtConstantsGenerator(addBlockUseCase),
                     DataClass::class.java to KtDataClassGenerator(addBlockUseCase),
-                    InterfaceDescription::class.java to KotlinInterfaceGenerator(fileGenerator, addBlockUseCase)
+                    InterfaceDescription::class.java to KotlinInterfaceGenerator(addBlockUseCase)
                 )
 
                 Target.Cxx -> mapOf(

@@ -25,10 +25,10 @@ class CppEnumGeneratorTest {
         val item = CppEnumGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )
-        val headerFile = CppHeaderFile("a", project)
-        val cxxFile = CppFileData("b", project)
+        val headerFile = CppHeaderFile("a").apply { setParent2(project) }
+        val cxxFile = CppFileData("b").apply { setParent2(project) }
         val files = listOf(headerFile, cxxFile)
-        val namespace = NamespaceImpl("a", TreeRoot)
+        val namespace = NamespaceImpl("a").apply { setParent2(TreeRoot) }
         val block = namespace.addSub(ConstantsEnum("c")).apply {
             addBlockComment("182TEST_COMMENT")
             defaultType(DataType.int32)

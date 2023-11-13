@@ -17,7 +17,7 @@ class JsonToDataClassUseCaseImpl @Inject constructor(): JsonToDataClassUseCase {
         val result = mutableListOf<Node>()
         val mapper = ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
         val node = mapper.readTree(json)
-        val dataClass = DataClass(preferedName, null)
+        val dataClass = DataClass(preferedName)
 
         node.fieldNames().forEach { childName ->
             val child = node.get(childName)

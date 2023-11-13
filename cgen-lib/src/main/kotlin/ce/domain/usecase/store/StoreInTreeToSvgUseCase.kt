@@ -6,7 +6,6 @@ import generators.obj.input.Namespace
 import generators.obj.input.Node
 import org.abego.treelayout.Configuration
 import org.abego.treelayout.NodeExtentProvider
-import org.abego.treelayout.TreeForTreeLayout
 import org.abego.treelayout.TreeLayout
 import org.abego.treelayout.util.DefaultConfiguration
 import org.abego.treelayout.util.DefaultTreeForTreeLayout
@@ -19,9 +18,14 @@ import java.awt.font.FontRenderContext
 import java.awt.geom.AffineTransform
 import java.awt.geom.Rectangle2D
 import java.io.FileOutputStream
+import java.util.concurrent.atomic.AtomicInteger
 
 interface StoreInTreeToSvgUseCase {
-    operator fun invoke(outputSvgFile : String, tree: Leaf)
+    enum class Location {
+        Top, Left, Bottom, Right
+    }
+
+    operator fun invoke(outputSvgFile : String, tree: Leaf, location: Location)
 }
 
 // Using https://treelayout.sourceforge.net/
@@ -31,42 +35,64 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
     private val FONT_SANS_REGULAR = Font("SansSerif", Font.PLAIN, 12)
     private val FONT_SANS_BOLD = Font("SansSerif", Font.BOLD, 12)
 
-    override operator fun invoke(outputSvgFile : String, root: Leaf)  {
-        val tree: TreeForTreeLayout<Leaf> = DefaultTreeForTreeLayout(root).apply {
-            // add subnodes
-            addSubnodes(this, null, root)
+
+    data class UiContainer(
+        val id: Int,
+        val leaf: Leaf
+    )
+
+    override operator fun invoke(outputSvgFile: String, root: Leaf, location: StoreInTreeToSvgUseCase.Location) {
+        val ids = AtomicInteger(1)
+        val uiRoot = UiContainer(ids.incrementAndGet(), root)
+        val tree = DefaultTreeForTreeLayout(uiRoot)
+        if (root is Node) {
+            root.subs.forEach {
+                addSubnodes(
+                    tree = tree,
+                    parent = uiRoot,
+                    leaf = it,
+                    ids = ids
+                )
+            }
         }
 
         val minWidth = 40.0
         val gapBetweenLevels = 50.0
         val gapBetweenNodes = 10.0
-        val configuration: DefaultConfiguration<Leaf> = DefaultConfiguration<Leaf>(gapBetweenLevels, gapBetweenNodes,
-            Configuration.Location.Top)
+        val configuration: DefaultConfiguration<UiContainer> = DefaultConfiguration<UiContainer>(gapBetweenLevels, gapBetweenNodes,
+            when (location) {
+                StoreInTreeToSvgUseCase.Location.Top -> Configuration.Location.Top
+                StoreInTreeToSvgUseCase.Location.Bottom -> Configuration.Location.Bottom
+                StoreInTreeToSvgUseCase.Location.Left -> Configuration.Location.Left
+                StoreInTreeToSvgUseCase.Location.Right -> Configuration.Location.Right
+            })
         val affinetransform = AffineTransform()
         val fontRenderContext = FontRenderContext(affinetransform, true, true)
 
-        val nodeExtentProvider = object : NodeExtentProvider<Leaf> {
-            override fun getWidth(treeNode: Leaf): Double {
-                val line1 = maxOf(minWidth, FONT_SANS_BOLD.getStringBounds(treeNode.toDisplayString(), fontRenderContext).width + 15.0)
+        val nodeExtentProvider = object : NodeExtentProvider<UiContainer> {
+            override fun getWidth(treeNode: UiContainer): Double {
+                val line1 = maxOf(minWidth,
+                    FONT_SANS_BOLD.getStringBounds(treeNode.leaf.toDisplayString(),
+                        fontRenderContext).width + 15.0)
                 val line2 = maxOf(minWidth,
-                    FONT_SANS_REGULAR.getStringBounds(treeNode.javaClass.simpleName, fontRenderContext).width + 15.0)
+                    FONT_SANS_REGULAR.getStringBounds(treeNode.leaf.javaClass.simpleName, fontRenderContext).width + 15.0)
                 return maxOf(line1, line2)
             }
 
-            override fun getHeight(treeNode: Leaf): Double {
+            override fun getHeight(treeNode: UiContainer): Double {
                 val height = FONT_SANS_REGULAR.size
                 return (height * 2 + 15).toDouble()
             }
         }
 
-        val treeLayout: TreeLayout<Leaf> = TreeLayout(tree, nodeExtentProvider, configuration)
+        val treeLayout: TreeLayout<UiContainer> = TreeLayout(tree, nodeExtentProvider, configuration)
         val size: Dimension = treeLayout.bounds.bounds.size
         val graphics = SVGGraphics2D(size.getWidth(), size.getHeight())
         graphics.font = FONT_SANS_REGULAR
 
         val boxStroke = BasicStroke(1.5f)
 
-        generateEdges(graphics, treeLayout, root, boxStroke)
+        generateEdges(graphics, treeLayout, uiRoot, boxStroke)
         for (textInBox in treeLayout.nodeBounds.keys) {
             generateBox(graphics, treeLayout, textInBox, boxStroke)
         }
@@ -76,18 +102,23 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
         }
     }
 
-    private fun addSubnodes(tree: DefaultTreeForTreeLayout<Leaf>, parent: Leaf?, leaf: Leaf) {
+    private fun addSubnodes(tree: DefaultTreeForTreeLayout<UiContainer>,
+                            parent: UiContainer?,
+                            leaf: Leaf,
+                            ids: AtomicInteger): UiContainer {
+        val uiContainer = UiContainer(ids.incrementAndGet(), leaf)
         if (parent != null) {
-            tree.addChild(parent, leaf)
+            tree.addChild(parent, uiContainer)
         }
         if (leaf is Node) {
             leaf.subs.forEach {
-                addSubnodes(tree, leaf, it)
+                addSubnodes(tree, uiContainer, it, ids)
             }
         }
+        return uiContainer
     }
 
-    private fun generateBox(g2: SVGGraphics2D, treeLayout: TreeLayout<Leaf>, leaf: Leaf, boxStroke: BasicStroke) {
+    private fun generateBox(g2: SVGGraphics2D, treeLayout: TreeLayout<UiContainer>, leaf: UiContainer, boxStroke: BasicStroke) {
         // draw the box in the background
         val box = treeLayout.nodeBounds[leaf]!!
         g2.setPaint(LIGHTBLUE)
@@ -102,12 +133,12 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
             10, 10)
 
         g2.font = FONT_SANS_REGULAR
-        g2.drawString(leaf.javaClass.simpleName, box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height + 1)
+        g2.drawString(leaf.leaf.javaClass.simpleName, box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height + 1)
         g2.font = FONT_SANS_BOLD
-        g2.drawString(leaf.toDisplayString(), box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height * 2 + 1)
+        g2.drawString(leaf.leaf.toDisplayString(), box.x.toInt() + 7, box.y.toInt() + g2.fontMetrics.height * 2 + 1)
     }
 
-    private fun generateEdges(g2: SVGGraphics2D, treeLayout: TreeLayout<Leaf>, parent: Leaf, boxStroke: BasicStroke) {
+    private fun generateEdges(g2: SVGGraphics2D, treeLayout: TreeLayout<UiContainer>, parent: UiContainer, boxStroke: BasicStroke) {
         g2.setPaint(Color.BLACK)
         if (!treeLayout.tree.isLeaf(parent)) {
             val b1: Rectangle2D.Double = treeLayout.nodeBounds[parent]!!

@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.domain.usecase.load.LoadInTreeUseCase
+import ce.domain.usecase.store.StoreInTreeToSvgUseCase
 import ce.domain.usecase.store.StoreInTreeToSvgUseCaseImpl
 
 fun main(args: Array<String>) {
@@ -12,5 +13,5 @@ fun main(args: Array<String>) {
 
     val tree = loadInTreeUseCase(args[0])
     val storeUseCase = StoreInTreeToSvgUseCaseImpl()
-    storeUseCase(args[1], tree)
+    storeUseCase(args[1], tree, StoreInTreeToSvgUseCase.Location.Left)
 }

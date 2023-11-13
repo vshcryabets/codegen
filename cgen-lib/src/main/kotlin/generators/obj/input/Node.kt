@@ -50,12 +50,12 @@ fun <T : Node> T.findParent(kClass: KClass<FileData>): Node? {
     if (kClass.isInstance(this)) {
         return this
     }
-    return parent?.findParent(kClass)
+    return getParent2()?.findParent(kClass)
 }
 
 fun <R : Leaf, T : Node> T.addSub(leaf: R): R {
     subs.add(leaf)
-    leaf.parent = this
+    leaf.setParent2(this)
     (findParent(FileData::class) as FileData?)?.isDirty = true
     return leaf
 }
@@ -63,14 +63,14 @@ fun <R : Leaf, T : Node> T.addSub(leaf: R): R {
 fun <R : Leaf, T : Node> T.addSubs(vararg leafs: R) {
     leafs.forEach {
         subs.add(it)
-        it.parent = this
+        it.setParent2(this)
     }
     (findParent(FileData::class) as FileData?)?.isDirty = true
 }
 
 fun <R : Leaf, T : Node> T.addSub2(leaf: R, fnc: R.() -> Unit) {
     subs.add(leaf)
-    leaf.parent = this
+    leaf.setParent2(this)
     (findParent(FileData::class) as FileData?)?.isDirty = true
     fnc(leaf)
 }
@@ -106,7 +106,12 @@ fun <T : Node> T.removeSub(leaf: Leaf) {
     subs.remove(leaf)
 }
 
-fun <T : Node> T.copyLeafExt(parent: Node?, copySubs: Boolean, fnc: () -> T): T = fnc().also { newCopy ->
+fun <T : Leaf> T.copyLeafExt(parent: Node?, fnc: () -> T): T = fnc().also { newCopy ->
+    newCopy.setParent2(parent)
+}
+
+fun <T : Node> T.copyNodeExt(parent: Node?, copySubs: Boolean, fnc: () -> T): T = fnc().also { newCopy ->
+    newCopy.setParent2(parent)
     if (copySubs)
         subs.forEach { newCopy.addSub(it.copyLeaf(this, copySubs)) }
 }
@@ -114,22 +119,22 @@ fun <T : Node> T.copyLeafExt(parent: Node?, copySubs: Boolean, fnc: () -> T): T 
 
 interface Node : Leaf {
     val subs: MutableList<Leaf>
+
+    override fun copyLeaf(parent: Node?, copySubs: Boolean ): Node
 }
 
 data class Method(
     override val name: String,
-    override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
-        this.copyLeafExt(parent, copySubs) { return@copyLeafExt Method(name, parent, subs) }
-
-    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Method = this.copyLeafExt(parent, {this.copy(subs = mutableListOf())})
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
 data class OutputList(
     override val name: String = "",
-    override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     fun output(name: String, type: DataType) {
@@ -140,34 +145,31 @@ data class OutputList(
         addSub(OutputReusable(name, type))
     }
 
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
-        this.copyLeafExt(parent, copySubs) {
-            this.copy(subs = mutableListOf(), parent = parent)
-        }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): OutputList =
+        this.copyLeafExt(parent, { this.copy(subs = mutableListOf()) })
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 
-    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
 }
 
 data class InputList(
     override val name: String = "",
-    override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     fun argument(name: String, type: DataType, value: Any? = NotDefined) {
         addSub(Input(name = name, type = type, value = DataValue(value)))
     }
 
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
-        this.copyLeafExt(parent, copySubs) {
-            this.copy(subs = mutableListOf(), parent = parent)
-        }
-
-    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): InputList =
+        this.copyLeafExt(parent, { this.copy(subs = mutableListOf()) })
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
 data class InterfaceDescription(
     override val name: String,
-    override var parent: Node?,
     override val subs: MutableList<Leaf> = mutableListOf(),
     override var sourceFile: String = "",
     override var outputFile: String = "",
@@ -184,10 +186,9 @@ data class InterfaceDescription(
         this.addBlockCommentExt(value)
     }
 
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
-        this.copyLeafExt(parent, copySubs) {
-            this.copy(subs = mutableListOf(), parent = parent)
-        }
-
-    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): InterfaceDescription =
+        this.copyLeafExt(parent, { this.copy(subs = mutableListOf()) })
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 }
