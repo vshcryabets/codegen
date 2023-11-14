@@ -13,5 +13,5 @@ fun main(args: Array<String>) {
 
     val tree = loadInTreeUseCase(args[0])
     val storeUseCase = StoreInTreeToSvgUseCaseImpl()
-    storeUseCase(args[1], tree, StoreInTreeToSvgUseCase.Location.Left)
+    storeUseCase(args[1], tree, StoreInTreeToSvgUseCase.Location.Top)
 }
