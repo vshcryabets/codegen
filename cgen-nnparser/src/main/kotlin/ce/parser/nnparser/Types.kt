@@ -10,9 +10,23 @@ enum class Type {
     LITERAL
 }
 
+interface WordItem {
+    val name: String
+    val type: Type
+    val id: Int
+}
+
+data class Comment(
+    override val name: String,
+    val oneLineComment: Boolean = true,
+    val multilineCommentEnd: String = "",
+    override val id: Int = -1,
+    override val type: Type = Type.OPERATOR
+) : WordItem
+
 data class Word(
-    val name: String,
+    override val name: String,
     val nextIsLiteral: Boolean = false,
-    val id: Int = -1,
-    val type: Type = Type.OPERATOR
-)
+    override val id: Int = -1,
+    override val type: Type = Type.OPERATOR
+) : WordItem

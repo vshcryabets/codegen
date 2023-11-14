@@ -1,10 +1,10 @@
 package ce.parser.nnparser
 
 class WordDictionary(
-    wordsList: List<Word>,
+    wordsList: List<WordItem>,
 ) {
-    val sortedByLengthDict: List<Word>
-    val dictionary: MutableMap<Int, Word> = mutableMapOf()
+    val sortedByLengthDict: List<WordItem>
+    val dictionary: MutableMap<Int, WordItem> = mutableMapOf()
     val reverse: MutableMap<String, Int> = mutableMapOf()
     var maxId: Int = 0
 
@@ -17,10 +17,12 @@ class WordDictionary(
         sortedByLengthDict = wordsList.sortedBy { it.name.length }
     }
 
-    fun addWord(word: Word): Word {
+    fun addWord(word: WordItem): WordItem {
         println("Add word $word")
         maxId++
-        val newWord = Word(word.name, word.nextIsLiteral, maxId)
+        val newWord = Word(
+            name = word.name,
+            id = maxId)
         dictionary[maxId] = newWord
         reverse[word.name] = maxId
         return newWord

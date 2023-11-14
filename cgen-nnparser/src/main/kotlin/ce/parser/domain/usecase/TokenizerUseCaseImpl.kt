@@ -1,5 +1,6 @@
 package ce.parser.domain.usecase
 
+import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
@@ -8,13 +9,13 @@ import org.jetbrains.kotlin.javax.inject.Inject
 
 interface TokenizerUseCase {
     operator fun invoke(
-        buffer: String,
+        buffer: SourceBuffer,
         dictinaries: TargetDictionaries,
     ): List<Word>
 }
 
 class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
-    fun checkString(buffer: String,
+    fun checkString(buffer: SourceBuffer,
                     position: Int,
                     dictionary: WordDictionary
                     ): Word? {
@@ -42,13 +43,28 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
     }
 
     override operator fun invoke(
-        buffer: String,
+        buffer: SourceBuffer,
         dictinaries: TargetDictionaries,
     ): List<Word> {
         val result = mutableListOf<Word>()
         var pos = 0
-        while (pos < buffer.length) {
+        while (!buffer.end()) {
             // TODO at fist place check for comment
+            val comment = checkString(buffer, pos, dictinaries.comments)
+            if (comment != null) {
+                var commentString: String
+                if (comment.oneLineComment) {
+                    commentString = buffer.readUntilEndLine()
+                } else {
+                    commentString = buffer.readUntil()
+                }
+                pos += pos + commentString.length
+                result.add(Word(
+                    name = commentString,
+                    type = Type.COMMENTS
+                ))
+                continue
+            }
             val space = checkString(buffer, pos, dictinaries.spaces)
             if (space != null) {
                 pos += space.name.length

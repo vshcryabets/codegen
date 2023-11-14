@@ -11,6 +11,8 @@ class SourceBuffer(
         const val digitsHex = "0123456789ABCDEF"
     }
 
+    val length: Int
+        get() = buffer.length
     var pos: Int = startPos
 
     fun getNextChar(): Char = buffer.get(pos)
@@ -125,6 +127,10 @@ class SourceBuffer(
             cur++
         }
         return Pair(name, word)
+    }
+
+    fun readUntilEndLine(): String {
+        TODO("Not yet implemented")
     }
 
 }
