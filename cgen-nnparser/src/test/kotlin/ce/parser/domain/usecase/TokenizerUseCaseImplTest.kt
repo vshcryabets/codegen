@@ -1,5 +1,6 @@
 package ce.parser.domain.usecase
 
+import ce.parser.nnparser.Comment
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
@@ -25,7 +26,10 @@ class TokenizerUseCaseImplTest {
     val keywordDict = getDict(listOf("max", "float"), 100, Type.KEYWORD)
     val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+"), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
-    val comments = getDict(listOf("//"), 1000, Type.COMMENTS)
+    val comments = WordDictionary(listOf(
+        Comment(name = "//", oneLineComment = true, id = 2000, type = Type.COMMENTS),
+        Comment(name = "/*", oneLineComment = false, multilineCommentEnd = "*/", id = 2000, type = Type.COMMENTS),
+    ))
     val dictionaries = TargetDictionaries(
         keywords = keywordDict,
         operators = operatorsDict,
@@ -42,7 +46,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <OP ->
         val result1 = tokenizer(
-            buffer = "\t  \t- ",
+            text = "\t  \t- ",
             dictinaries = dictionaries,
         )
         assertEquals(1, result1.size)
@@ -52,7 +56,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <KEY max><OP +>
         val result2 = tokenizer(
-            buffer = "  max +",
+            text = "  max +",
             dictinaries = dictionaries,
         )
         assertEquals(2, result2.size)
@@ -68,7 +72,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <Name x><=><max><(><)>
         val result = tokenizer(
-            buffer = "x = max\n()",
+            text = "x = max\n()",
             dictinaries = dictionaries,
         )
         assertEquals(5, result.size)
@@ -84,7 +88,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <KW float><Name max2><=><max><(><)>
         val result = tokenizer(
-            buffer = "float max2=max()",
+            text = "float max2=max()",
             dictinaries = dictionaries,
         )
         assertEquals(6, result.size)
@@ -114,7 +118,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <Comment comment><Name a><=><max><(><)>
         val result = tokenizer(
-            buffer = """
+            text = """
                 //1+comment
                 a=max()
             """.trimIndent(),
@@ -131,7 +135,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <Name a><=><max><(><)><Comment comment>
         val result = tokenizer(
-            buffer = """
+            text = """
                 a=max() //1+comment
             """.trimIndent(),
             dictinaries = dictionaries,

@@ -111,9 +111,28 @@ class SourceBuffer(
         return Pair(wordBuffer.toString(), pos)
     }
 
-    fun findInDictionary(dict: WordDictionary): Pair<Word?, Word?> {
+    fun readUntil2(end: String,
+                  ignoreCase: Boolean,
+                  includeEnd: Boolean): String {
+        val wordBuffer = StringBuilder()
+        do {
+            if (nextIs(end, ignoreCase)) {
+                if (includeEnd) {
+                    wordBuffer.append(end)
+                    pos += end.length
+                }
+                break
+            }
+            val ch = buffer.get(pos)
+            pos++
+            wordBuffer.append(ch)
+        } while (pos < buffer.length)
+        return wordBuffer.toString()
+    }
+
+    fun findInDictionary(dict: WordDictionary): Pair<Word?, WordItem?> {
         var name: Word? = null
-        var word: Word? = null
+        var word: WordItem? = null
 
         var cur = pos
         while (cur < buffer.length) {
@@ -129,8 +148,11 @@ class SourceBuffer(
         return Pair(name, word)
     }
 
-    fun readUntilEndLine(): String {
-        TODO("Not yet implemented")
+    fun readUntilEndLine(): String = readUntil2("\n", false, false)
+
+    fun movePosBy(delta: Int) {
+        pos += delta
     }
 
+    fun substring(startPosition: Int, endPosition: Int): String = buffer.substring(startPosition, endPosition)
 }

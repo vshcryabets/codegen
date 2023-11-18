@@ -5,6 +5,7 @@ import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 import ce.parser.nnparser.WordDictionary
+import ce.parser.nnparser.WordItem
 import org.jetbrains.kotlin.javax.inject.Inject
 
 interface BuildLinearUseCase {
@@ -73,7 +74,7 @@ class BuildLinearUseCaseImpl @Inject constructor() : BuildLinearUseCase {
         val digitisMap = mutableMapOf<Int, Word>()
         val namesMap = mutableMapOf<Int, Word>()
         val numbers = mutableListOf<Int>()
-        var prevWord = Word("")
+        var prevWord : Word = Word("")
 
         val wordsMapRevers = dictionary.reverse
 
@@ -123,7 +124,7 @@ class BuildLinearUseCaseImpl @Inject constructor() : BuildLinearUseCase {
                 } else {
                     var id = wordsMapRevers[wordPair.first.name]!!
                     numbers.add(id)
-                    prevWord = dictionary.dictionary[id]!!
+                    prevWord = dictionary.dictionary[id]!! as Word
                 }
             }
         } while (!srcBuffer.end())

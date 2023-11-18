@@ -1,92 +1,86 @@
 package ce.parser.domain.usecase
 
+import ce.parser.nnparser.Comment
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 import ce.parser.nnparser.WordDictionary
+import ce.parser.nnparser.WordItem
 import org.jetbrains.kotlin.javax.inject.Inject
+import java.lang.StringBuilder
 
 interface TokenizerUseCase {
     operator fun invoke(
-        buffer: SourceBuffer,
+        text: String,
         dictinaries: TargetDictionaries,
-    ): List<Word>
+    ): List<WordItem>
 }
 
 class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
     fun checkString(buffer: SourceBuffer,
-                    position: Int,
                     dictionary: WordDictionary
-                    ): Word? {
-        val substr = buffer.substring(position)
+                    ): WordItem? {
         val possibleWord = dictionary.sortedByLengthDict.find {
-            substr.startsWith(it.name)
+            buffer.nextIs(it.name, ignoreCase = false)
         }
         return possibleWord
     }
 
-    fun nextToken(buffer: String,
-                  startPosition: Int,
+    fun nextToken(buffer: SourceBuffer,
                   dictinaries: TargetDictionaries,
                   ): String {
-        var pos = startPosition
-        while (pos < buffer.length) {
-            if ((checkString(buffer, pos, dictinaries.spaces) != null) ||
-                (checkString(buffer, pos, dictinaries.comments) != null) ||
-                (checkString(buffer, pos, dictinaries.operators) != null)) {
+        val startPosition = buffer.pos
+        while (!buffer.end()) {
+            if ((checkString(buffer, dictinaries.spaces) != null) ||
+                (checkString(buffer, dictinaries.comments) != null) ||
+                (checkString(buffer, dictinaries.operators) != null)) {
                 break
             }
-            pos++
+            buffer.movePosBy(1)
         }
-        return buffer.substring(startPosition, pos)
+        return buffer.substring(startPosition, buffer.pos)
     }
 
     override operator fun invoke(
-        buffer: SourceBuffer,
+        text: String,
         dictinaries: TargetDictionaries,
-    ): List<Word> {
-        val result = mutableListOf<Word>()
-        var pos = 0
+    ): List<WordItem> {
+        val buffer = SourceBuffer(StringBuilder(text), 0)
+        val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
-            // TODO at fist place check for comment
-            val comment = checkString(buffer, pos, dictinaries.comments)
+            val comment = checkString(buffer, dictinaries.comments) as Comment?
             if (comment != null) {
-                var commentString: String
-                if (comment.oneLineComment) {
-                    commentString = buffer.readUntilEndLine()
-                } else {
-                    commentString = buffer.readUntil()
-                }
-                pos += pos + commentString.length
+                buffer.movePosBy(comment.name.length)
+                val end = if (comment.oneLineComment) "\n" else comment.multilineCommentEnd
+                val commentString = buffer.readUntil2(end, false, false)
+                buffer.movePosBy(end.length)
                 result.add(Word(
                     name = commentString,
                     type = Type.COMMENTS
                 ))
                 continue
             }
-            val space = checkString(buffer, pos, dictinaries.spaces)
+            val space = checkString(buffer, dictinaries.spaces)
             if (space != null) {
-                pos += space.name.length
+                buffer.movePosBy(space.name.length)
                 continue
             }
-            val operator = checkString(buffer, pos, dictinaries.operators)
+            val operator = checkString(buffer, dictinaries.operators)
             if (operator != null) {
-                pos += operator.name.length
+                buffer.movePosBy(operator.name.length)
                 result.add(operator)
                 continue
             }
-            val nextToken = nextToken(buffer, pos, dictinaries)
+            val nextToken = nextToken(buffer, dictinaries)
             val keyword = dictinaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)
             }
             if (keyword != null) {
-                pos += keyword.name.length
                 result.add(keyword)
                 continue
             }
             result.add(Word(name = nextToken, type = Type.NAME))
-            pos += nextToken.length
         }
         return result
     }
