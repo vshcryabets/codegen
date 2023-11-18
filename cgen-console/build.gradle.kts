@@ -1,6 +1,7 @@
+import org.jetbrains.kotlin.kapt.cli.main
+
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose")
     `java-library`
     `maven-publish`
     application
@@ -8,7 +9,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
@@ -19,8 +19,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     implementation("com.opencsv:opencsv:5.7.1")
-
-    implementation(compose.desktop.currentOs)
 }
 
 kotlin {
@@ -53,4 +51,11 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+task("execute", JavaExec::class) {
+    mainClass.set(project.gradle.startParameter.projectProperties.get("classToExecute"))
+    group = "Run project"
+    classpath = sourceSets["main"].runtimeClasspath
+    setWorkingDir("../")
 }

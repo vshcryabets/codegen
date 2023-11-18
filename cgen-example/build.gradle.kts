@@ -1,13 +1,6 @@
-import ce.domain.usecase.entry.BuildProjectUseCase
-import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
-import ce.domain.usecase.load.LoadProjectUseCase
-import ce.domain.usecase.store.StoreInTreeUseCase
-import ce.domain.usecase.store.StoreOutTreeUseCase
-import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
-
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose")
+//    id("org.jetbrains.compose")
     application
 }
 

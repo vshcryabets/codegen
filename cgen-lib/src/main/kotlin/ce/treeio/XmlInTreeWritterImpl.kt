@@ -56,6 +56,18 @@ class XmlInTreeWritterImpl : TreeWritter {
             element.setAttribute(KEY_BASE_FOLDER, node.objectBaseFolder)
         }
         when (node) {
+            is Input -> {
+                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
+                dataValueSerializer.stringValue(node.value)?.also {
+                    element.setAttribute(KEY_VALUE, it)
+                }
+            }
+            is Output -> {
+                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
+            }
+            is OutputReusable -> {
+                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
+            }
             is ConstantsEnum -> {
                 element.setAttribute(KEY_DEFAULT_TYPE, dataTypeSerializer.stringValue(node.defaultDataType))
             }
