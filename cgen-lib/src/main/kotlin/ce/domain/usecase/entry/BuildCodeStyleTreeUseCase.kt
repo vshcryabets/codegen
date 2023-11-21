@@ -1,22 +1,22 @@
 package ce.domain.usecase.entry
 
-import ce.defs.Target
-import ce.domain.usecase.load.LoadAstTreeUseCase
+import ce.domain.usecase.load.LoadOutTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreCodeStyleTreeUseCase
-import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import ce.domain.usecase.transform.TransformOutTreeToCodeStyleTreeUseCase
 import ce.repository.GeneratorsRepo
 
 class BuildCodeStyleTreeUseCase(
-    private val loadInTreeUseCase : LoadAstTreeUseCase,
-    private val getProjectUseCase : LoadProjectUseCase,
+    private val loadOutTreeUseCase : LoadOutTreeUseCase,
+    private val loadProjectUseCase : LoadProjectUseCase,
     private val storeCodeStyleTreeUseCase: StoreCodeStyleTreeUseCase,
-    private val transformInTreeToOutTreeUseCase : TransformInTreeToOutTreeUseCase,
+    private val transformOutTreeToCodeStyleTreeUseCase : TransformOutTreeToCodeStyleTreeUseCase,
 ) {
-    operator fun invoke(projectFile: String, inTreeFile: String, codeStyleTreeFile: String, target: Target) {
-        val generatorsRepo = GeneratorsRepo(getProjectUseCase(projectFile))
-        val outTree = loadInTreeUseCase(inTreeFile)
-        val codeStyleTree = transformInTreeToOutTreeUseCase(outTree, generatorsRepo.get(target))
+    operator fun invoke(projectFile: String, outTreeFile: String, codeStyleTreeFile: String) {
+        val project = loadProjectUseCase(projectFile)
+        val generatorsRepo = GeneratorsRepo(project)
+        val outTree = loadOutTreeUseCase(outTreeFile)
+        val codeStyleTree = transformOutTreeToCodeStyleTreeUseCase(outTree, generatorsRepo.get(outTree.target))
         storeCodeStyleTreeUseCase(codeStyleTreeFile, codeStyleTree)
     }
 }

@@ -124,6 +124,7 @@ class XmlTreeReader : TreeReader {
             MultilineCommentsBlock::class.java.simpleName -> MultilineCommentsBlock()
             ImportsBlock::class.java.simpleName -> ImportsBlock()
             RegionImpl::class.java.simpleName -> RegionImpl()
+            Space::class.java.simpleName -> Space(name)
 
             else -> throw IllegalStateException("Unknown $tagName")
         }.also {

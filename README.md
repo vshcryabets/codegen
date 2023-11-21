@@ -12,11 +12,19 @@ Build AST tree diagram:
 
 Prepare Output (Parse) tree:
 
-`./gradlew :cgen-console:execute -PclassToExecute=ce.entrypoints.BuildOutTreeKt --args='./generated/input_tree_Kotlin.xml ./docs/sample_project.json ./generated/output_tree_Kotlin.xml Kotlin'`
+`./gradlew :cgen-console:execute -PclassToExecute=ce.entrypoints.BuildOutTreeKt --args='./generated/ast_tree_Kotlin.xml ./docs/sample_project.json ./generated/output_tree_Kotlin.xml Kotlin'`
 
 Build output (Parse) tree diagram:
 
-`./gradlew :cgen-console:execute -PclassToExecute=ce.entrypoints.DrawOutTreeKt --args='./generated/output_tree_Kotlin.xml ./docs/kotling_output_tree.svg'`
+`./gradlew :cgen-console:execute -PclassToExecute=ce.entrypoints.DrawOutTreeKt --args='./generated/output_tree_Kotlin.xml ./docs/kotlin_output_tree.svg'`
+
+Prepare code styled output (Parse) tree:
+
+`./gradlew :cgen-console:execute -PclassToExecute=ce.entrypoints.BuildCodeStyleTreeKt --args='./generated/output_tree_Kotlin.xml ./docs/sample_project.json  ./generated/codestyle_output_tree_Kotlin.xml'`
+
+Build code styled output (Parse) tree:
+
+`./gradlew :cgen-console:execute -PclassToExecute=ce.entrypoints.DrawCodeStyleTreeKt --args='./generated/codestyle_output_tree_Kotlin.xml ./docs/kotlin_codestyle_tree.svg'`
 
 
 ## Run tests

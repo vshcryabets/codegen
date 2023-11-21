@@ -4,6 +4,7 @@ import ce.defs.Target
 import ce.formatters.CodeFormatterUseCase
 import generators.obj.input.Block
 import generators.obj.input.Node
+import generators.obj.input.addSub
 import generators.obj.out.CodeStyleOutputTree
 import generators.obj.out.FileData
 import generators.obj.out.OutputTree
@@ -46,7 +47,16 @@ open class MetaGenerator(
         return result
     }
 
-    fun prepareCodeStyleTree(projectOutput: OutputTree): CodeStyleOutputTree = codeFormatter(projectOutput) as CodeStyleOutputTree
+    fun prepareCodeStyleTree(projectOutput: OutputTree): CodeStyleOutputTree {
+        val tree = codeFormatter(projectOutput)
+        val result = CodeStyleOutputTree(
+            target = projectOutput.target
+        )
+        tree.subs.forEach {
+            result.addSub(it)
+        }
+        return result
+    }
 
     fun write(tree: CodeStyleOutputTree) {
         writter.write(tree)
