@@ -21,7 +21,7 @@ class CppEnumGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
 
-        val project = ProjectOutput(Target.Cxx)
+        val project = OutputTree(Target.Cxx)
         val item = CppEnumGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )

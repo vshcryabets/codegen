@@ -119,7 +119,6 @@ fun <T : Node> T.copyNodeExt(parent: Node?, copySubs: Boolean, fnc: () -> T): T 
 
 interface Node : Leaf {
     val subs: MutableList<Leaf>
-
     override fun copyLeaf(parent: Node?, copySubs: Boolean ): Node
 }
 

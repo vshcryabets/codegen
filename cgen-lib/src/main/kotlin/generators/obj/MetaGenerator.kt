@@ -2,15 +2,11 @@ package generators.obj
 
 import ce.defs.Target
 import ce.formatters.CodeFormatterUseCase
-import ce.formatters.CodeStyleRepo
-import ce.settings.Project
 import generators.obj.input.Block
 import generators.obj.input.Node
-import generators.obj.out.CommentsBlock
+import generators.obj.out.CodeStyleOutputTree
 import generators.obj.out.FileData
-import generators.obj.out.ProjectOutput
-import java.io.File
-import java.nio.file.Paths
+import generators.obj.out.OutputTree
 
 open class MetaGenerator(
     private val target: Target,
@@ -43,16 +39,16 @@ open class MetaGenerator(
         }
     }
 
-    fun translateToOutTree(intree: Node): ProjectOutput {
-        val result = ProjectOutput(target)
+    fun translateToOutTree(intree: Node): OutputTree {
+        val result = OutputTree(target)
         val files = prepareFilesListUseCase(intree, result)
         translateTree(intree, files)
         return result
     }
 
+    fun prepareCodeStyleTree(projectOutput: OutputTree): CodeStyleOutputTree = codeFormatter(projectOutput) as CodeStyleOutputTree
 
-    fun write(projectOutput: ProjectOutput) {
-        val formattedOutput = codeFormatter(projectOutput) as ProjectOutput
-        writter.write(formattedOutput)
+    fun write(tree: CodeStyleOutputTree) {
+        writter.write(tree)
     }
 }

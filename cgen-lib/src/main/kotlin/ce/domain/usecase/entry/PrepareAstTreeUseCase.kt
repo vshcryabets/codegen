@@ -2,12 +2,13 @@ package ce.domain.usecase.entry
 
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
-import ce.domain.usecase.store.StoreInTreeUseCase
+import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.settings.Project
+import generators.obj.out.AstTree
 
-class PrepareInTreeUseCase(
+class PrepareAstTreeUseCase(
     private val getProjectUseCase : LoadProjectUseCase,
-    private val storeInTreeUseCase : StoreInTreeUseCase,
+    private val storeInTreeUseCase : StoreAstTreeUseCase,
     private val loadMetaFilesUseCase : LoadMetaFilesForTargetUseCase,
 ) {
     operator fun invoke(projectFile: String) {
@@ -15,8 +16,12 @@ class PrepareInTreeUseCase(
         println("Processing $project")
 
         project.targets.forEach { target ->
-            val root = loadMetaFilesUseCase(project, target)
-            storeInTreeUseCase(project.outputFolder + "input_tree_${target.name}.xml", root)
+            val rootNameSpace = loadMetaFilesUseCase(project, target)
+            val astTree = AstTree(
+                target = target,
+                subs = mutableListOf(rootNameSpace)
+            )
+            storeInTreeUseCase(project.outputFolder + "ast_tree_${target.name}.xml", astTree)
         }
     }
 }

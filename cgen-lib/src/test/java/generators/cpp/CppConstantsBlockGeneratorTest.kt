@@ -2,7 +2,6 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.Target
-import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
@@ -22,7 +21,7 @@ class CppConstantsBlockGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
 
-        val project = ProjectOutput(Target.Cxx)
+        val project = OutputTree(Target.Cxx)
         val item = CppConstantsBlockGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )

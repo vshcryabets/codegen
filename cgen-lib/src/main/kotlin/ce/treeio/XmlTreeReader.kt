@@ -99,7 +99,11 @@ class XmlTreeReader : TreeReader {
                 )
             }
             // OUT TREE
-            ProjectOutput::class.java.simpleName -> ProjectOutput(
+            OutputTree::class.java.simpleName -> OutputTree(
+                TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
+            CodeStyleOutputTree::class.java.simpleName -> CodeStyleOutputTree(
+                TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
+            AstTree::class.java.simpleName -> AstTree(
                 TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
             FileData::class.java.simpleName, FileDataImpl::class.java.simpleName -> FileDataImpl(name)
             NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)

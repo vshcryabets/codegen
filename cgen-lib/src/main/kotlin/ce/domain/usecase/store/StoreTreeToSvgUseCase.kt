@@ -20,7 +20,7 @@ import java.awt.geom.Rectangle2D
 import java.io.FileOutputStream
 import java.util.concurrent.atomic.AtomicInteger
 
-interface StoreInTreeToSvgUseCase {
+interface StoreTreeToSvgUseCase {
     enum class Location {
         Top, Left, Bottom, Right
     }
@@ -29,7 +29,7 @@ interface StoreInTreeToSvgUseCase {
 }
 
 // Using https://treelayout.sourceforge.net/
-class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
+class StoreTreeToSvgUseCaseImpl : StoreTreeToSvgUseCase {
 
     private val LIGHTBLUE = Color(154,192,205)
     private val FONT_SANS_REGULAR = Font("SansSerif", Font.PLAIN, 12)
@@ -41,7 +41,7 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
         val leaf: Leaf
     )
 
-    override operator fun invoke(outputSvgFile: String, root: Leaf, location: StoreInTreeToSvgUseCase.Location) {
+    override operator fun invoke(outputSvgFile: String, root: Leaf, location: StoreTreeToSvgUseCase.Location) {
         val ids = AtomicInteger(1)
         val uiRoot = UiContainer(ids.incrementAndGet(), root)
         val tree = DefaultTreeForTreeLayout(uiRoot)
@@ -61,10 +61,10 @@ class StoreInTreeToSvgUseCaseImpl : StoreInTreeToSvgUseCase {
         val gapBetweenNodes = 10.0
         val configuration: DefaultConfiguration<UiContainer> = DefaultConfiguration<UiContainer>(gapBetweenLevels, gapBetweenNodes,
             when (location) {
-                StoreInTreeToSvgUseCase.Location.Top -> Configuration.Location.Top
-                StoreInTreeToSvgUseCase.Location.Bottom -> Configuration.Location.Bottom
-                StoreInTreeToSvgUseCase.Location.Left -> Configuration.Location.Left
-                StoreInTreeToSvgUseCase.Location.Right -> Configuration.Location.Right
+                StoreTreeToSvgUseCase.Location.Top -> Configuration.Location.Top
+                StoreTreeToSvgUseCase.Location.Bottom -> Configuration.Location.Bottom
+                StoreTreeToSvgUseCase.Location.Left -> Configuration.Location.Left
+                StoreTreeToSvgUseCase.Location.Right -> Configuration.Location.Right
             })
         val affinetransform = AffineTransform()
         val fontRenderContext = FontRenderContext(affinetransform, true, true)

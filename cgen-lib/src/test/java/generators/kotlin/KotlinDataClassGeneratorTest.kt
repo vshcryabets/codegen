@@ -1,7 +1,6 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
@@ -9,7 +8,6 @@ import ce.settings.CodeStyle
 import generators.obj.input.*
 import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
-import org.jetbrains.kotlin.psi.KtFile
 import org.junit.jupiter.api.Test
 
 class KotlinDataClassGeneratorTest {
@@ -35,7 +33,7 @@ class KotlinDataClassGeneratorTest {
             field("C", DataType.string(true))
         }
 
-        val projectOutput = ProjectOutput(Target.Kotlin)
+        val projectOutput = OutputTree(Target.Kotlin)
         val files = ktFileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
         item(files, block)

@@ -2,7 +2,7 @@ package ce.domain.usecase.entry
 
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
-import ce.domain.usecase.store.StoreInTreeUseCase
+import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 import ce.repository.GeneratorsRepo
@@ -10,7 +10,7 @@ import ce.settings.Project
 
 class BuildProjectUseCase(
     private val getProjectUseCase : LoadProjectUseCase,
-    private val storeInTreeUseCase : StoreInTreeUseCase,
+    private val storeInTreeUseCase : StoreAstTreeUseCase,
     private val loadMetaFilesUseCase : LoadMetaFilesForTargetUseCase,
     private val storeOutTreeUseCase : StoreOutTreeUseCase,
     private val transformInTreeToOutTreeUseCase : TransformInTreeToOutTreeUseCase,
@@ -29,8 +29,8 @@ class BuildProjectUseCase(
             if (writeOutTree) {
                 storeOutTreeUseCase(project.outputFolder + "output_tree_${target.name}.xml", outTree)
             }
-
-            generatorsRepo.get(outTree.target).write(outTree)
+            val codeStyleTree = generatorsRepo.get(outTree.target).prepareCodeStyleTree(outTree)
+            generatorsRepo.get(outTree.target).write(codeStyleTree)
         }
     }
 }
