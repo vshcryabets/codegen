@@ -30,7 +30,7 @@ class BuildProjectUseCase(
                 storeOutTreeUseCase(project.outputFolder + "output_tree_${target.name}.xml", outTree)
             }
             val codeStyleTree = generatorsRepo.get(outTree.target).prepareCodeStyleTree(outTree)
-            generatorsRepo.get(outTree.target).write(codeStyleTree)
+            generatorsRepo.getWritter(outTree.target).write(codeStyleTree)
         }
     }
 }

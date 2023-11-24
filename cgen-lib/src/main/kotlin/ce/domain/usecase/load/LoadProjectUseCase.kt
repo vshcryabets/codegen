@@ -9,9 +9,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import java.io.FileInputStream
+import java.net.URI
 
-class LoadProjectUseCase {
-    operator fun invoke(projectPath : String) : Project {
+interface LoadProjectUseCase {
+    operator fun invoke(projectPath: String): Project
+}
+
+class LoadProjectUseCaseImpl : LoadProjectUseCase {
+    override operator fun invoke(projectPath: String): Project {
         val mapper = ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
         val module = SimpleModule()
         module.addSerializer(DataType::class.java, DataTypeSerializer())
@@ -20,7 +25,7 @@ class LoadProjectUseCase {
 
         // load project file
         val projectJson = FileInputStream(projectPath)
-        val project : Project = mapper.readValue(projectJson, Project::class.java)
+        val project: Project = mapper.readValue(projectJson, Project::class.java)
         projectJson.close()
         return project
     }

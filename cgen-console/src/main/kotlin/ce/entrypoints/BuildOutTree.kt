@@ -3,8 +3,10 @@ package ce.entrypoints
 import ce.defs.Target
 import ce.defs.TargetExt
 import ce.domain.usecase.entry.BuildOutTreeUseCase
+import ce.domain.usecase.entry.BuildOutTreeUseCaseImpl
 import ce.domain.usecase.load.LoadAstTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 
@@ -24,9 +26,9 @@ fun main(args: Array<String>) {
         error("Unknown target \"${args[3]}\"")
     }
 
-    val buildOutTreeUseCase = BuildOutTreeUseCase(
+    val buildOutTreeUseCase = BuildOutTreeUseCaseImpl(
         LoadAstTreeUseCase(),
-        LoadProjectUseCase(),
+        LoadProjectUseCaseImpl(),
         StoreOutTreeUseCase(),
         TransformInTreeToOutTreeUseCase(),
     )

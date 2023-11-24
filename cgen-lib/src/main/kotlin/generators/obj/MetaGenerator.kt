@@ -13,7 +13,6 @@ open class MetaGenerator(
     private val target: Target,
     private val fileGenerator: FileGenerator,
     private val generatorsMap: Map<Class<out Block>, TransformBlockUseCase<out Block>>,
-    private val writter: Writter,
     private val prepareFilesListUseCase: PrepareFilesListUseCase,
     private val codeFormatter: CodeFormatterUseCase,
 ) {
@@ -24,13 +23,12 @@ open class MetaGenerator(
                 val outputFile = fileGenerator.getBlockFilePath(it)
                 val filesData = files[outputFile]!!
 
-//                val namespacePath = it.getParentPath()
                 println("Translating ${it.name}")
                 if (generatorsMap.contains(it::class.java)) {
                     val generator = generatorsMap.get(it::class.java)!! as TransformBlockUseCase<Block>
                     generator.invoke(filesData, it)
                 } else {
-                    throw IllegalStateException("${it::class.java} nto supported")
+                    throw IllegalStateException("${it::class.java} not supported")
                 }
             } else if (it is Node) {
                 translateTree(it, files)
@@ -56,9 +54,5 @@ open class MetaGenerator(
             result.addSub(it)
         }
         return result
-    }
-
-    fun write(tree: CodeStyleOutputTree) {
-        writter.write(tree)
     }
 }
