@@ -69,6 +69,5 @@ class CppDataClassGeneratorTest {
 
         val field1 = outBlock.subs[0] as FieldNode
         Assert.assertEquals(4, field1.subs.size)
-
     }
 }

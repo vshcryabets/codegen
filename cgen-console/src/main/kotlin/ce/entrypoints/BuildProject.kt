@@ -3,6 +3,7 @@ package ce.entrypoints
 import ce.domain.usecase.entry.BuildProjectUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
@@ -31,7 +32,7 @@ fun main(args: Array<String>) {
     }
 
     val buildProjectUseCase = BuildProjectUseCase(
-        getProjectUseCase = LoadProjectUseCase(),
+        getProjectUseCase = LoadProjectUseCaseImpl(),
         storeInTreeUseCase = StoreAstTreeUseCase(),
         loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(),
         storeOutTreeUseCase = StoreOutTreeUseCase(),

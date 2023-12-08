@@ -3,6 +3,7 @@ package ce.entrypoints
 import ce.domain.usecase.entry.PrepareAstTreeUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreAstTreeUseCase
 
 fun main(args: Array<String>) {
@@ -10,7 +11,7 @@ fun main(args: Array<String>) {
         error("Please specify project file!")
     }
     val prepareAstTreeUseCase = PrepareAstTreeUseCase(
-        LoadProjectUseCase(),
+        LoadProjectUseCaseImpl(),
         StoreAstTreeUseCase(),
         LoadMetaFilesForTargetUseCase()
     )

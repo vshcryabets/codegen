@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import java.io.FileInputStream
-import java.net.URI
 
 interface LoadProjectUseCase {
     operator fun invoke(projectPath: String): Project
@@ -17,6 +16,7 @@ interface LoadProjectUseCase {
 
 class LoadProjectUseCaseImpl : LoadProjectUseCase {
     override operator fun invoke(projectPath: String): Project {
+        println("Loading project $projectPath")
         val mapper = ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
         val module = SimpleModule()
         module.addSerializer(DataType::class.java, DataTypeSerializer())

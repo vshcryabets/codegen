@@ -1,16 +1,9 @@
 package ce.entrypoints
 
-import ce.defs.Target
-import ce.defs.TargetExt
 import ce.domain.usecase.entry.BuildCodeStyleTreeUseCase
-import ce.domain.usecase.entry.BuildOutTreeUseCase
-import ce.domain.usecase.load.LoadAstTreeUseCase
 import ce.domain.usecase.load.LoadOutTreeUseCase
-import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreCodeStyleTreeUseCase
-import ce.domain.usecase.store.StoreOutTreeUseCase
-import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 import ce.domain.usecase.transform.TransformOutTreeToCodeStyleTreeUseCase
 
 fun main(args: Array<String>) {
