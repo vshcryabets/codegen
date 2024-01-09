@@ -100,16 +100,6 @@ class TokenizerUseCaseImplTest {
         assertEquals("=", result[2].name)
         assertEquals(Type.KEYWORD, result[3].type)
         assertEquals("max", result[3].name)
-
-        // tests
-
-        // float max2=max(1,2)
-
-        // qwe->varX
-
-        // qwe-varX
-
-        // qwe>varX
     }
 
     @Test
@@ -144,4 +134,30 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.NAME, result[0].type)
         assertEquals("a", result[0].name)
     }
+
+    @Test
+    fun testVariableDeclaration() {
+        val tokenizer = TokenizerUseCaseImpl()
+        // expected
+        // <float><max2><=><max><(><1><,><2><)>
+        val result = tokenizer(
+            text = """
+                float max2=max(1,2)
+            """.trimIndent(),
+            dictinaries = dictionaries,
+        )
+        assertEquals(9, result.size)
+        assertEquals(Type.KEYWORD, result[0].type)
+        assertEquals(Type.NAME, result[1].type)
+        assertEquals(Type.OPERATOR, result[2].type)
+        assertEquals(Type.KEYWORD, result[3].type)
+        assertEquals(Type.DIGIT, result[5].type)
+        assertEquals(Type.DIGIT, result[7].type)
+    }
+
+    // tests
+//    float max2=max(1.23,2,0xFAB)
+    // qwe->varX
+    // qwe-varX
+    // qwe>varX
 }
