@@ -49,6 +49,16 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
+            if (buffer.nextIn("0123456789")) {
+                // we found a digit
+                val digitString = buffer.readWhile { it in "0123456789." }
+                result.add(Word(
+                    name = digitString,
+                    type = Type.DIGIT
+                ))
+                continue
+
+            }
             val comment = checkString(buffer, dictinaries.comments) as Comment?
             if (comment != null) {
                 buffer.movePosBy(comment.name.length)
@@ -72,6 +82,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 result.add(operator)
                 continue
             }
+            // name or keyword?
             val nextToken = nextToken(buffer, dictinaries)
             val keyword = dictinaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)

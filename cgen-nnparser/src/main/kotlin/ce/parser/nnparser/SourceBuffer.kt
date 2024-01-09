@@ -148,11 +148,22 @@ class SourceBuffer(
         return Pair(name, word)
     }
 
-    fun readUntilEndLine(): String = readUntil2("\n", false, false)
-
     fun movePosBy(delta: Int) {
         pos += delta
     }
 
     fun substring(startPosition: Int, endPosition: Int): String = buffer.substring(startPosition, endPosition)
+
+    fun readWhile(fnc: (Char) -> Boolean): String {
+        val wordBuffer = StringBuilder()
+        do {
+            val ch = buffer.get(pos)
+            if (!fnc(ch)) {
+                break
+            }
+            pos++
+            wordBuffer.append(ch)
+        } while (pos < buffer.length)
+        return wordBuffer.toString()
+    }
 }
