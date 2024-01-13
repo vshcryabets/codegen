@@ -171,8 +171,35 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.NAME, result[1].type)
         assertEquals(Type.OPERATOR, result[2].type)
         assertEquals(Type.KEYWORD, result[3].type)
+        assertEquals(Type.OPERATOR, result[4].type)
         assertEquals(Type.DIGIT, result[5].type)
+        assertEquals(Type.OPERATOR, result[6].type)
         assertEquals(Type.DIGIT, result[7].type)
+        assertEquals(Type.OPERATOR, result[8].type)
+    }
+
+    @Test
+    fun testDigitWithPointNegative() {
+        val tokenizer = TokenizerUseCaseImpl()
+        // expected
+        // <float><max2><=><max><(><1><,><-><2><)>
+        val result = tokenizer(
+            text = """
+                float max2=max(1.2,-2.341)
+            """.trimIndent(),
+            dictinaries = dictionaries,
+        )
+        assertEquals(10, result.size)
+        assertEquals(Type.KEYWORD, result[0].type)
+        assertEquals(Type.NAME, result[1].type)
+        assertEquals(Type.OPERATOR, result[2].type)
+        assertEquals(Type.KEYWORD, result[3].type)
+        assertEquals(Type.OPERATOR, result[4].type)
+        assertEquals(Type.DIGIT, result[5].type)
+        assertEquals(Type.OPERATOR, result[6].type)
+        assertEquals(Type.OPERATOR, result[7].type)
+        assertEquals(Type.DIGIT, result[8].type)
+        assertEquals(Type.OPERATOR, result[9].type)
     }
 
     // tests
