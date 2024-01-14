@@ -24,7 +24,7 @@ fun getDict(strings: List<String>, basiId: Int, type: Type): WordDictionary {
 
 class TokenizerUseCaseImplTest {
 
-    val keywordDict = getDict(listOf("max", "float"), 100, Type.KEYWORD)
+    val keywordDict = getDict(listOf("max", "float", "int"), 100, Type.KEYWORD)
     val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+"), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
     val comments = WordDictionary(listOf(
@@ -42,8 +42,10 @@ class TokenizerUseCaseImplTest {
             Type.COMMENTS to comments,
             Type.DIGIT to WordDictionary(
                 listOf(
-                    RegexWord(name = "\\d+\\.*\\d*f*", id = 3000, type = Type.DIGIT)
-                )
+                    RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT),
+                    RegexWord(name = "\\d+\\.*\\d*f*", id = 3001, type = Type.DIGIT)
+                ),
+                sortBySize = false
             )
         )
     )
@@ -210,8 +212,25 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.OPERATOR, result[9].type)
     }
 
+    @Test
+    fun testDigitHex() {
+        val tokenizer = TokenizerUseCaseImpl()
+        // expected
+        // <int><a><=><0x1234>
+        val result = tokenizer(
+            text = """
+                int a=0xFAB
+            """.trimIndent(),
+            dictinaries = dictionaries,
+        )
+        assertEquals(4, result.size)
+        assertEquals(Type.KEYWORD, result[0].type)
+        assertEquals(Type.NAME, result[1].type)
+        assertEquals(Type.OPERATOR, result[2].type)
+        assertEquals(Type.DIGIT, result[3].type)
+    }
+
     // tests
-//    float max2=max(1.23f,2,0xFAB)
     // float max2=max(1,-2)
     // float max2=max(.5,.25)
     // qwe->varX

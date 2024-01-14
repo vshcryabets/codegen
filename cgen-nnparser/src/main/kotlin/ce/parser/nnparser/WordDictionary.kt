@@ -2,6 +2,7 @@ package ce.parser.nnparser
 
 class WordDictionary(
     wordsList: List<WordItem>,
+    private val sortBySize: Boolean = true
 ) {
     val sortedByLengthDict: List<WordItem>
     val dictionary: MutableMap<Int, WordItem> = mutableMapOf()
@@ -14,7 +15,11 @@ class WordDictionary(
             dictionary[it.id] = it
             reverse[it.name] = it.id
         }
-        sortedByLengthDict = wordsList.sortedBy { it.name.length }
+        if (sortBySize) {
+            sortedByLengthDict = wordsList.sortedBy { it.name.length }
+        } else {
+            sortedByLengthDict = wordsList
+        }
     }
 
     fun addWord(word: WordItem): WordItem {
