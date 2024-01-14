@@ -1,6 +1,7 @@
 package ce.parser.domain.usecase
 
 import ce.parser.nnparser.Comment
+import ce.parser.nnparser.RegexWord
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
@@ -8,10 +9,10 @@ import ce.parser.nnparser.WordDictionary
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-fun getDict(srings: List<String>, basiId: Int, type: Type): WordDictionary {
+fun getDict(strings: List<String>, basiId: Int, type: Type): WordDictionary {
     var id = basiId
     return WordDictionary(
-        srings.map {
+        strings.map {
             Word(
                 name = it,
                 type = type,
@@ -28,16 +29,23 @@ class TokenizerUseCaseImplTest {
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
     val comments = WordDictionary(listOf(
         Comment(name = "//", oneLineComment = true, id = 2000, type = Type.COMMENTS),
-        Comment(name = "/*", oneLineComment = false, multilineCommentEnd = "*/", id = 2000, type = Type.COMMENTS),
+        Comment(name = "/*", oneLineComment = false, multilineCommentEnd = "*/", id = 2001, type = Type.COMMENTS),
     ))
     val dictionaries = TargetDictionaries(
         keywords = keywordDict,
         operators = operatorsDict,
-        spaces = spaces,
-        comments = comments,
         stdlibs = WordDictionary(emptyList()),
         projectlibs = WordDictionary(emptyList()),
         thirdlibs = WordDictionary(emptyList()),
+        map = mapOf(
+            Type.SPACES to spaces,
+            Type.COMMENTS to comments,
+            Type.DIGIT to WordDictionary(
+                listOf(
+                    RegexWord(name = "\\d+\\.*\\d*f*", id = 3000, type = Type.DIGIT)
+                )
+            )
+        )
     )
 
     @Test

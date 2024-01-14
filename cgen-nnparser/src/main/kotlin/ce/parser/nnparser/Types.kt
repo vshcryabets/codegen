@@ -28,5 +28,12 @@ data class Word(
     override val name: String,
     val nextIsLiteral: Boolean = false,
     override val id: Int = -1,
-    override val type: Type = Type.OPERATOR
+    override val type: Type = Type.OPERATOR,
+) : WordItem
+
+data class RegexWord(
+    override val name: String,
+    override val id: Int = -1,
+    override val type: Type = Type.OPERATOR,
+    val regexObj: Regex = Regex(name)
 ) : WordItem

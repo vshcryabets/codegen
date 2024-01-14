@@ -2,6 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.defs.Target
 import ce.parser.nnparser.TargetDictionaries
+import ce.parser.nnparser.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -28,11 +29,13 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
             return@withContext TargetDictionaries(
                 keywords = keywordsDef.await(),
                 operators = operatorsDef.await(),
-                spaces = spacesDef.await(),
-                comments = commentsDef.await(),
                 stdlibs = stdlibsDef.await(),
                 thirdlibs = thirdDef.await(),
-                projectlibs = projectDef.await()
+                projectlibs = projectDef.await(),
+                map = mapOf(
+                    Type.SPACES to spacesDef.await(),
+                    Type.COMMENTS to commentsDef.await()
+                )
             )
         }
 }

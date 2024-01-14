@@ -90,6 +90,16 @@ class SourceBuffer(
         return substr.equals(s, ignoreCase)
     }
 
+    fun nextIsRegexp(regexp: Regex): String? {
+        val result = regexp.find(buffer, pos)
+        if (result == null) {
+            return null
+        } else if (result.range.start != pos) {
+            return null
+        }
+        return result.value
+    }
+
     fun nextIn(variants: String): Boolean = buffer.get(pos) in variants
 
     fun readUntil(end: String,

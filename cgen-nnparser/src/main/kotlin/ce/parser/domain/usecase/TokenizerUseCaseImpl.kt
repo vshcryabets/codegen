@@ -1,6 +1,7 @@
 package ce.parser.domain.usecase
 
 import ce.parser.nnparser.Comment
+import ce.parser.nnparser.RegexWord
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
@@ -21,10 +22,21 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
     fun checkString(buffer: SourceBuffer,
                     dictionary: WordDictionary
                     ): WordItem? {
-        val possibleWord = dictionary.sortedByLengthDict.find {
-            buffer.nextIs(it.name, ignoreCase = false)
+        val iterator = dictionary.sortedByLengthDict.iterator()
+        while (iterator.hasNext()) {
+            val it = iterator.next()
+            if (it is RegexWord) {
+                val word = buffer.nextIsRegexp(it.regexObj)
+                if (word != null) {
+                    return it.copy(name = word)
+                }
+            } else {
+                if (buffer.nextIs(it.name, ignoreCase = false)) {
+                    return it
+                }
+            }
         }
-        return possibleWord
+        return null
     }
 
     fun nextToken(buffer: SourceBuffer,
@@ -32,8 +44,8 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                   ): String {
         val startPosition = buffer.pos
         while (!buffer.end()) {
-            if ((checkString(buffer, dictinaries.spaces) != null) ||
-                (checkString(buffer, dictinaries.comments) != null) ||
+            if ((checkString(buffer, dictinaries.map[Type.SPACES]!!) != null) ||
+                (checkString(buffer, dictinaries.map[Type.COMMENTS]!!) != null) ||
                 (checkString(buffer, dictinaries.operators) != null)) {
                 break
             }
@@ -49,17 +61,14 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
-            if (buffer.nextIn("0123456789")) {
-                // we found a digit
-                val digitString = buffer.readWhile { it in "0123456789." }
-                result.add(Word(
-                    name = digitString,
-                    type = Type.DIGIT
-                ))
+            // check digit
+            val digit = checkString(buffer, dictinaries.map[Type.DIGIT]!!) as RegexWord?
+            if (digit != null) {
+                buffer.movePosBy(digit.name.length)
+                result.add(digit)
                 continue
-
             }
-            val comment = checkString(buffer, dictinaries.comments) as Comment?
+            val comment = checkString(buffer, dictinaries.map[Type.COMMENTS]!!) as Comment?
             if (comment != null) {
                 buffer.movePosBy(comment.name.length)
                 val end = if (comment.oneLineComment) "\n" else comment.multilineCommentEnd
@@ -71,7 +80,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 ))
                 continue
             }
-            val space = checkString(buffer, dictinaries.spaces)
+            val space = checkString(buffer, dictinaries.map[Type.SPACES]!!)
             if (space != null) {
                 buffer.movePosBy(space.name.length)
                 continue
