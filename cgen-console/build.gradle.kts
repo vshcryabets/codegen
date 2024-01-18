@@ -63,3 +63,8 @@ task("execute", JavaExec::class) {
 tasks.withType(Tar::class.java).configureEach {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
+
+tasks.withType(Zip::class.java).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
