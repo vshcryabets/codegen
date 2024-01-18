@@ -17,7 +17,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
         outFolder.mkdirs()
     }
 
-    open fun write(data: ProjectOutput) {
+    open fun write(data: CodeStyleOutputTree) {
         data.subs.forEach {
             if (it is FileData) {
                 writeFile(it)

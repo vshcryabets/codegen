@@ -8,7 +8,6 @@ import generators.obj.input.*
 import generators.obj.out.*
 
 class KotlinInterfaceGenerator(
-    fileGenerator: FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<InterfaceDescription> {
 
@@ -29,7 +28,7 @@ class KotlinInterfaceGenerator(
     }
 
     private fun addMethod(outBlock: OutBlock, leaf: Method, file: FileData, itf: KotlinClassData) {
-        outBlock.addSub(Method("fun ${leaf.name}").apply {
+        outBlock.addSub(Method(leaf.name).apply {
             val outputList = leaf.findOrNull(OutputList::class.java)
 
             val simplestResults = outputList?.subs?.filter {
@@ -52,31 +51,27 @@ class KotlinInterfaceGenerator(
             if (simplestResults.size == 0) {
                addSub(ResultLeaf(""))
             } else if (simplestResults.size == 1) {
-                addSub(ResultLeaf(" : ${Types.typeTo(file, simplestResults[0].type)}"))
+                addSub(ResultLeaf(Types.typeTo(file, simplestResults[0].type)))
             } else {
                 throw IllegalStateException("Not supported more then 1 simple result")
             }
 
             val inputList = leaf.findOrNull(InputList::class.java)
-            var needToAddComa = false
-
 
             if (inputList != null && inputList.subs.isNotEmpty()) {
                 addSub(InputList()).apply {
                     inputList.subs.forEach {
                         if (it is Input) {
-                            if (needToAddComa) addSub(Separator(", "))
                             addSub(
                                 ArgumentNode(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
                                         "${it.name}: ${Types.typeTo(file, it.type)} = " +
-                                                "${Types.toValue(it.type, it.value)}"
+                                                Types.toValue(it.type, it.value)
                                     }
                                 )
                             )
-                            needToAddComa = true
                         }
                     }
                     // reusable vars
@@ -85,18 +80,16 @@ class KotlinInterfaceGenerator(
                             throw IllegalStateException("Primitives can't be reusable in kotlin")
                         }
                         reusableResults.forEach {
-                            if (needToAddComa) addSub(Separator(", "))
                             addSub(
                                 ArgumentNode(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${Types.typeTo(file, it.type)}"
                                     } else {
                                         "${it.name}: ${Types.typeTo(file, it.type)} = " +
-                                                "${Types.toValue(it.type, it.value)}"
+                                                Types.toValue(it.type, it.value)
                                     }
                                 )
                             )
-                            needToAddComa = true
                         }
                     }
                 }

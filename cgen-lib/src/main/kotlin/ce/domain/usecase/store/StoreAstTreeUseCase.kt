@@ -4,7 +4,7 @@ import ce.treeio.XmlInTreeWritterImpl
 import generators.obj.input.Node
 import java.io.File
 
-class StoreInTreeUseCase {
+class StoreAstTreeUseCase {
     operator fun invoke(outputFileName : String, tree: Node)  {
         val treeWritter = XmlInTreeWritterImpl()
         val outputFile = File(outputFileName)

@@ -3,7 +3,6 @@ package generators.obj.input
 import ce.defs.customBaseFolderPath
 import ce.defs.outputFile
 import ce.defs.sourceFile
-import generators.obj.out.OutBlock
 
 fun <T:Namespace> T.getNamespaceExt(name: String): Namespace {
     if (name.isEmpty()) {
@@ -27,7 +26,7 @@ fun <T:Namespace> T.getNamespaceExt(name: String): Namespace {
             }
         }
     }
-    return addSub(NamespaceImpl(searchName, this)).getNamespace(endPath)
+    return addSub(NamespaceImpl(searchName)).getNamespace(endPath)
 }
 interface Namespace: Node {
     fun getNamespace(name: String): Namespace
@@ -38,7 +37,6 @@ interface Namespace: Node {
 }
 
 data class NamespaceImpl(override val name: String = "",
-                         override var parent: Node? = null,
                          override val subs: MutableList<Leaf> = mutableListOf()
 ) : Namespace {
     override fun toString() = name
@@ -63,14 +61,14 @@ data class NamespaceImpl(override val name: String = "",
     }
 
     override fun dataClass(name: String): DataClass {
-        return addSub(DataClass(name, this))
+        return addSub(DataClass(name))
             .apply {
                 putDefaults(this)
             }
     }
 
     override fun declareInterface(name: String): InterfaceDescription {
-        return addSub(InterfaceDescription(name, this))
+        return addSub(InterfaceDescription(name))
             .apply {
                 putDefaults(this)
             }
@@ -78,10 +76,8 @@ data class NamespaceImpl(override val name: String = "",
 
     override fun getNamespace(name: String): Namespace = getNamespaceExt(name)
 
-    override fun copyLeaf(parent: Node?, copySubs: Boolean) =
-        this.copyLeafExt(parent, copySubs) {
-            this.copy(subs = mutableListOf(), parent = parent)
-        }
-
-    override fun hashCode(): Int = subs.hashCode() xor name.hashCode()
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): NamespaceImpl = this.copyLeafExt(parent, {this.copy()})
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 }

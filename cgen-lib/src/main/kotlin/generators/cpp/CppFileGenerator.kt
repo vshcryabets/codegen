@@ -1,16 +1,15 @@
 package generators.cpp
 
-import ce.settings.CodeStyle
 import generators.obj.CLikeFileGenerator
 import generators.obj.input.Block
 import generators.obj.out.FileData
-import generators.obj.out.ProjectOutput
+import generators.obj.out.OutputTree
 
 class CppFileGenerator() : CLikeFileGenerator() {
-    override fun createFile(project: ProjectOutput, outputFile: String, block: Block): List<FileData> {
+    override fun createFile(project: OutputTree, outputFile: String, block: Block): List<FileData> {
         return listOf(
-            CppFileData(outputFile + ".cpp", project),
-            CppHeaderFile(outputFile + ".h", project)
+            CppFileData(outputFile + ".cpp").apply { setParent2(project) },
+            CppHeaderFile(outputFile + ".h").apply { setParent2(project) }
         )
     }
 }
