@@ -59,3 +59,7 @@ task("execute", JavaExec::class) {
     classpath = sourceSets["main"].runtimeClasspath
     setWorkingDir("../")
 }
+
+tasks.withType(Tar::class.java).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
