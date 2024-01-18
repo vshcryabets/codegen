@@ -37,3 +37,10 @@ java {
         languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
     }
 }
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}
