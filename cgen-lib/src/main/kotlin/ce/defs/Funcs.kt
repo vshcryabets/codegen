@@ -2,7 +2,7 @@ package ce.defs
 
 import generators.obj.input.*
 
-val globRootNamespace = NamespaceImpl("", TreeRoot)
+val globRootNamespace = NamespaceImpl("").apply { setParent2(TreeRoot) }
 var currentTarget: Target = Target.Other
 var customBaseFolderPath = ""
 var sourceFile = ""

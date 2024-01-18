@@ -6,18 +6,17 @@ object TreeRoot : Node {
 
     override val name: String = "ROOT"
 
-    override var parent: Node? = null
-
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf {
-        TODO("Not yet implemented")
-    }
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Node = this
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
 
-fun <T: Leaf> T.getParentPath(): String = parent?.getPath() ?: ""
+fun <T: Leaf> T.getParentPath(): String = getParent2()?.getPath() ?: ""
 
 fun <T: Leaf> T.getPath(): String {
-    if (parent == null) {
+    if (getParent2() == null) {
         return ""
     }
     val parentPath = getParentPath()
@@ -30,7 +29,8 @@ fun <T: Leaf> T.getPath(): String {
 
 interface Leaf {
     val name: String
-    var parent: Node?
 
+    fun getParent2(): Node?
+    fun setParent2(parent:Node?)
     fun copyLeaf(parent: Node? = null, copySubs: Boolean = true): Leaf
 }

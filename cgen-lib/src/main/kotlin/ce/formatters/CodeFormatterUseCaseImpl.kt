@@ -67,9 +67,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 }
             }
 
-            is ConstantNode -> {
-                formatConstantLeaf(input, outputParent, indent)
-            }
+            is ConstantNode -> formatConstantNode(input, outputParent, indent, next, prev)
 
             is OutBlock -> {
                 (input.copyLeaf(copySubs = false) as OutBlock).apply {
@@ -123,7 +121,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
     }
 
-    open fun formatConstantLeaf(input: ConstantNode, parent: Node?, indent: Int): ConstantNode {
+    open fun formatConstantNode(input: ConstantNode, parent: Node?, indent: Int, next: Leaf?, prev: Leaf?): ConstantNode {
         val res = input.copyLeaf(copySubs = false).apply {
             addIndents(parent, indent)
             parent?.addSub(this)

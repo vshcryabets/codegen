@@ -2,10 +2,8 @@ package generators.rust
 
 import ce.formatters.CodeStyleRepo
 import ce.io.FileCodeWritter
-import ce.settings.CodeStyle
 import generators.obj.Writter
 import generators.obj.out.FileData
-import generators.obj.out.ProjectOutput
 import java.io.File
 
 class RustWritter(fileGenerator: RustFileGenerator, codeStyleRepo: CodeStyleRepo, outputFolder: String)

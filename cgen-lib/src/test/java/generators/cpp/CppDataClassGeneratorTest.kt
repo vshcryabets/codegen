@@ -21,15 +21,15 @@ class CppDataClassGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
 
-        val project = ProjectOutput(Target.Cxx)
+        val project = OutputTree(Target.Cxx)
         val item = CppDataClassGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )
-        val headerFile = CppHeaderFile("a", project)
-        val cxxFile = CppFileData("b", project)
+        val headerFile = CppHeaderFile("a").apply { setParent2(project) }
+        val cxxFile = CppFileData("b").apply { setParent2(project) }
         val files = listOf(headerFile, cxxFile)
-        val namespace = NamespaceImpl("a", TreeRoot)
-        val block = namespace.addSub(DataClass("c", null)).apply {
+        val namespace = NamespaceImpl("a").apply { setParent2(TreeRoot) }
+        val block = namespace.addSub(DataClass("c")).apply {
             addBlockComment("182TEST_COMMENT")
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
@@ -69,6 +69,5 @@ class CppDataClassGeneratorTest {
 
         val field1 = outBlock.subs[0] as FieldNode
         Assert.assertEquals(4, field1.subs.size)
-
     }
 }
