@@ -84,7 +84,7 @@ fun main(args: Array<String>) {
         ioScope = ioScope,
         loadTargetDictionariesUseCase = loadTargetDictionaries
     )
-    val buildLinearUseCase = BuildLinearUseCaseImpl2()
+    val buildLinearUseCase = TokenizerUseCaseImpl()
     val processSampleUseCase = ProcessSampleUseCaseImpl(calcScope, loadFileUseCase, buildLinearUseCase)
     val configFile = File(args[0])
     println("Execute $configFile")

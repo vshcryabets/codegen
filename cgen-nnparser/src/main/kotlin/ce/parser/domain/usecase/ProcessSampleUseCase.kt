@@ -17,7 +17,7 @@ class ProcessSampleUseCaseImpl @Inject constructor(
     @Named("default")
     private val calcScope: CoroutineScope,
     private val loadFileUseCase: LoadFileUseCase,
-    private val buildLinearUseCase: BuildLinearUseCase,
+    private val tokenizerUseCase: TokenizerUseCase,
 ) : ProcessSampleUseCase {
     override suspend fun invoke(sampleData: SampleData, outputDir: String, dictionaries: Map<Target, TargetDictionaries>) =
         withContext(calcScope.coroutineContext) {
@@ -27,8 +27,8 @@ class ProcessSampleUseCaseImpl @Inject constructor(
             val bufferMeta = loadFileUseCase(fileMeta)
             val dictSrc = dictionaries[sampleData.sourceTarget]!!
             val dictMeta = dictionaries[Target.Meta]!!
-            val srcLinearResult = buildLinearUseCase(bufferSrc, 0, dictSrc.keywords)
-            val metaLinearResult = buildLinearUseCase(bufferMeta, 0, dictMeta.keywords)
+            val srcLinearResult = tokenizerUseCase(bufferSrc.toString(), dictSrc)
+            val metaLinearResult = tokenizerUseCase(bufferMeta.toString(), dictMeta)
             println(srcLinearResult)
             println(metaLinearResult)
         }

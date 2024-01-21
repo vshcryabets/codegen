@@ -24,15 +24,14 @@ fun getDict(strings: List<String>, basiId: Int, type: Type): WordDictionary {
 
 class TokenizerUseCaseImplTest {
 
-    val keywordDict = getDict(listOf("max", "float", "int"), 100, Type.KEYWORD)
-    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+"), 200, Type.OPERATOR)
+    val keywordDict = getDict(listOf("max", "float", "int","pragma","once","namespace"), 100, Type.KEYWORD)
+    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+","#"), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
     val comments = WordDictionary(listOf(
         Comment(name = "//", oneLineComment = true, id = 2000, type = Type.COMMENTS),
         Comment(name = "/*", oneLineComment = false, multilineCommentEnd = "*/", id = 2001, type = Type.COMMENTS),
     ))
     val dictionaries = TargetDictionaries(
-        keywords = keywordDict,
         operators = operatorsDict,
         stdlibs = WordDictionary(emptyList()),
         projectlibs = WordDictionary(emptyList()),
@@ -40,6 +39,7 @@ class TokenizerUseCaseImplTest {
         map = mapOf(
             Type.SPACES to spaces,
             Type.COMMENTS to comments,
+            Type.KEYWORD to keywordDict,
             Type.DIGIT to WordDictionary(
                 listOf(
                     RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT),
@@ -228,6 +228,27 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.NAME, result[1].type)
         assertEquals(Type.OPERATOR, result[2].type)
         assertEquals(Type.DIGIT, result[3].type)
+    }
+
+    @Test
+    fun testMultiline() {
+        val tokenizer = TokenizerUseCaseImpl()
+        // expected
+        // <#><pragma><once><namecpase><name qwe>
+        val result = tokenizer(
+            text = """
+                #pragma once
+
+                namespace com
+            """.trimIndent(),
+            dictinaries = dictionaries,
+        )
+        assertEquals(5, result.size)
+        assertEquals(Type.OPERATOR, result[0].type)
+        assertEquals(Type.KEYWORD, result[1].type)
+        assertEquals(Type.KEYWORD, result[2].type)
+        assertEquals(Type.KEYWORD, result[3].type)
+        assertEquals(Type.NAME, result[4].type)
     }
 
     // tests

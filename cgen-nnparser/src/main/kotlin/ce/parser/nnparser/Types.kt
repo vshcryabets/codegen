@@ -7,7 +7,8 @@ enum class Type {
     KEYWORD,
     NAME,
     DIGIT,
-    LITERAL
+    LITERAL,
+    UNKNOWN
 }
 
 interface WordItem {
