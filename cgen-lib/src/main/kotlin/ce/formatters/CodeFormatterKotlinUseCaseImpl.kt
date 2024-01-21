@@ -2,7 +2,6 @@ package ce.formatters
 
 import generators.obj.input.*
 import generators.obj.out.*
-import org.apache.tools.ant.types.DataType
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
@@ -57,7 +56,20 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         }
     }
 
-    private fun formatArgumentNode(input: ArgumentNode, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node {
+    override fun formatConstantNode(
+        input: ConstantNode,
+        parent: Node?,
+        indent: Int,
+        next: Leaf?,
+        prev: Leaf?
+    ): ConstantNode {
+        addIndents(parent, indent)
+        val result = formatArgumentNode(input, parent, indent, next, prev) as ConstantNode
+        parent?.addSeparatorNewLine()
+        return result
+    }
+
+    private fun formatArgumentNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node {
         return input.copyLeaf(copySubs = false).apply {
             if (next is ArgumentNode || prev is ArgumentNode) {
                 outputParent?.subs?.addAll(getIndents(indent))

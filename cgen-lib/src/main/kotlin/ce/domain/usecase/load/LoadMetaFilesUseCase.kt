@@ -33,7 +33,7 @@ class LoadMetaFilesForTargetUseCase {
             }
             catch (error: ScriptException) {
                 error("Error in file ${fileObject.absoluteFile}:${error.message}")
-                System.exit(0)
+                throw error
             }
 
             reader.close()

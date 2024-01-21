@@ -1,7 +1,7 @@
 package ce.treeio
 
 import generators.obj.input.*
-import generators.obj.out.ProjectOutput
+import generators.obj.out.OutputTree
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -80,7 +80,7 @@ class XmlInTreeWritterImpl : TreeWritter {
                     element.setAttribute(KEY_VALUE, it)
                 }
             }
-            is ProjectOutput -> element.setAttribute(KEY_TARGET, node.target.rawValue)
+            is OutputTree -> element.setAttribute(KEY_TARGET, node.target.rawValue)
             else -> {}
         }
         if (node is Node) {

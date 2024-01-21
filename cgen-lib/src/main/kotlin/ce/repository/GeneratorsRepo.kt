@@ -5,7 +5,6 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterCxxUseCaseImpl
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
-import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.Project
 import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppDataClassGenerator
@@ -21,6 +20,7 @@ import generators.kotlin.KtConstantsGenerator
 import generators.kotlin.KtDataClassGenerator
 import generators.obj.MetaGenerator
 import generators.obj.PrepareFilesListUseCaseImpl
+import generators.obj.Writter
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.ConstantsEnum
 import generators.obj.input.DataClass
@@ -33,9 +33,10 @@ import generators.swift.SwiftFileGenerator
 
 class GeneratorsRepo(val project: Project) {
     val supportedMeta: Map<Target, MetaGenerator>
+    val writtersMap: Map<Target, Writter>
 
     init {
-        val clikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
+        val cLikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
 
         val targets = listOf(
             Target.Kotlin,
@@ -51,18 +52,18 @@ class GeneratorsRepo(val project: Project) {
         )
 
         val codestylesMap = targets.map {
-            it to clikeCodeStyleRepo
+            it to cLikeCodeStyleRepo
         }.toMap()
 
         val codeFormatters = mapOf(
-            Target.Kotlin to CodeFormatterKotlinUseCaseImpl(clikeCodeStyleRepo),
-            Target.Cxx to CodeFormatterCxxUseCaseImpl(clikeCodeStyleRepo),
+            Target.Kotlin to CodeFormatterKotlinUseCaseImpl(cLikeCodeStyleRepo),
+            Target.Cxx to CodeFormatterCxxUseCaseImpl(cLikeCodeStyleRepo),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
 //            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
 //            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),
         )
 
-        val writtersMap = mapOf(
+        writtersMap = mapOf(
             Target.Kotlin to KotlinWritter(codestylesMap[Target.Kotlin]!!, project.outputFolder),
             Target.Cxx to CppWritter(codestylesMap[Target.Cxx]!!, project.outputFolder),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
@@ -78,7 +79,6 @@ class GeneratorsRepo(val project: Project) {
             it to PrepareFilesListUseCaseImpl(project, fileGeneratorsMap[it]!!)
         }.toMap()
 
-
         supportedMeta = targets.map {
             val fileGenerator = fileGeneratorsMap[it]!!
             val addBlockUseCase = addBlockDefaultsUseCases[it]!!
@@ -87,7 +87,7 @@ class GeneratorsRepo(val project: Project) {
                     ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase),
                     ConstantsBlock::class.java to KtConstantsGenerator(addBlockUseCase),
                     DataClass::class.java to KtDataClassGenerator(addBlockUseCase),
-                    InterfaceDescription::class.java to KotlinInterfaceGenerator(fileGenerator, addBlockUseCase)
+                    InterfaceDescription::class.java to KotlinInterfaceGenerator(addBlockUseCase)
                 )
 
                 Target.Cxx -> mapOf(
@@ -106,14 +106,12 @@ class GeneratorsRepo(val project: Project) {
             }
             it to MetaGenerator(
                 target = it,
-                writter = writtersMap[it]!!,
                 fileGenerator = fileGenerator,
                 generatorsMap = generators,
                 prepareFilesListUseCase = prepareFilesListUseCases[it]!!,
                 codeFormatter = codeFormatters[it]!!,
             )
         }.toMap()
-
 
 
 //        val rustGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
@@ -148,4 +146,6 @@ class GeneratorsRepo(val project: Project) {
     fun get(target: Target): MetaGenerator {
         return supportedMeta[target]!!
     }
+
+    fun getWritter(target: Target): Writter = writtersMap[target]!!
 }

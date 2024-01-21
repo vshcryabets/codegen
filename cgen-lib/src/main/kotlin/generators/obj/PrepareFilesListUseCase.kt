@@ -4,26 +4,26 @@ import ce.settings.Project
 import generators.obj.input.*
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
-import generators.obj.out.ProjectOutput
+import generators.obj.out.OutputTree
 import java.io.File
 import java.nio.file.Paths
 import javax.inject.Inject
 
 interface PrepareFilesListUseCase {
-    operator fun invoke(root: Node, projectOut: ProjectOutput): Map<String, List<FileData>>
+    operator fun invoke(root: Node, projectOut: OutputTree): Map<String, List<FileData>>
 }
 
 class PrepareFilesListUseCaseImpl @Inject constructor(
     private val project: Project,
     private val fileGenerator: FileGenerator,
 ) : PrepareFilesListUseCase {
-    override fun invoke(root: Node, projectOut: ProjectOutput): Map<String, List<FileData>> {
+    override fun invoke(root: Node, projectOut: OutputTree): Map<String, List<FileData>> {
         val files = mutableMapOf<String, List<FileData>>()
         prepareFilesByTree(projectOut, root, files)
         return files
     }
 
-    private fun prepareFilesByTree(projectOut: ProjectOutput, root: Node, files: MutableMap<String, List<FileData>>) {
+    private fun prepareFilesByTree(projectOut: OutputTree, root: Node, files: MutableMap<String, List<FileData>>) {
         root.subs.forEach {
             if (it is Block) {
                 val outputFile = fileGenerator.getBlockFilePath(it)

@@ -6,7 +6,6 @@ import ce.defs.NotDefined
 
 data class ConstantsEnum(
     override val name: String,
-    override var parent: Node? = null,
     override val subs: MutableList<Leaf> = mutableListOf(),
     override var sourceFile: String = "",
     override var outputFile: String = "",
@@ -28,7 +27,11 @@ data class ConstantsEnum(
     }
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
-        this.copyLeafExt(parent, copySubs) {
-            this.copy(subs = mutableListOf(), parent = parent)
+        this.copyNodeExt(parent, copySubs) {
+            this.copy(subs = mutableListOf())
         }
+
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
 }

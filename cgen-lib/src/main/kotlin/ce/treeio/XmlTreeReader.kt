@@ -28,10 +28,9 @@ class XmlTreeReader : TreeReader {
         val tagName = node.tagName
         val name = node.getAttribute(XmlInTreeWritterImpl.KEY_NAME)
         return when (tagName) {
-            Namespace::class.java.simpleName, NamespaceImpl::class.java.simpleName -> NamespaceImpl(name, parent)
+            Namespace::class.java.simpleName, NamespaceImpl::class.java.simpleName -> NamespaceImpl(name)
             ConstantsEnum::class.java.simpleName -> ConstantsEnum(
                 name = name,
-                parent = parent,
                 sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
                 outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                 objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
@@ -42,7 +41,6 @@ class XmlTreeReader : TreeReader {
             CommentLeaf::class.java.simpleName -> CommentLeaf(name)
             "ConstantsBlock" -> ConstantsBlock(
                 name = name,
-                parent = parent,
                 sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
                 outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                 objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
@@ -51,14 +49,12 @@ class XmlTreeReader : TreeReader {
 
             "DataClass" -> DataClass(
                 name = name,
-                parent = parent,
                 sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
                 outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                 objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
                 )
             "InterfaceDescription" -> InterfaceDescription(
                 name = name,
-                parent = parent,
                 sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
                 outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                 objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
@@ -97,16 +93,19 @@ class XmlTreeReader : TreeReader {
                 val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 ConstantDesc(
                     name = name,
-                    parent = parent,
                     type = dataType,
                     value =
                     dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
                 )
             }
             // OUT TREE
-            ProjectOutput::class.java.simpleName -> ProjectOutput(
+            OutputTree::class.java.simpleName -> OutputTree(
                 TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
-            FileData::class.java.simpleName -> FileDataImpl(name, parent)
+            CodeStyleOutputTree::class.java.simpleName -> CodeStyleOutputTree(
+                TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
+            AstTree::class.java.simpleName -> AstTree(
+                TargetExt.findByName(node.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
+            FileData::class.java.simpleName, FileDataImpl::class.java.simpleName -> FileDataImpl(name)
             NamespaceDeclaration::class.java.simpleName -> NamespaceDeclaration(name)
             KotlinClassData::class.java.simpleName -> KotlinClassData(name)
             Indent::class.java.simpleName -> Indent()
@@ -123,9 +122,13 @@ class XmlTreeReader : TreeReader {
             ResultLeaf::class.java.simpleName -> ResultLeaf(name)
             ArgumentNode::class.java.simpleName -> ArgumentNode(name)
             MultilineCommentsBlock::class.java.simpleName -> MultilineCommentsBlock()
+            ImportsBlock::class.java.simpleName -> ImportsBlock()
+            RegionImpl::class.java.simpleName -> RegionImpl()
+            Space::class.java.simpleName -> Space(name)
 
             else -> throw IllegalStateException("Unknown $tagName")
         }.also {
+            it.setParent2(parent)
             if (it is Block) {
                 it.sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE)
                 it.outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE)

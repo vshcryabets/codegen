@@ -1,7 +1,6 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
@@ -9,7 +8,6 @@ import ce.settings.CodeStyle
 import generators.obj.input.*
 import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
-import org.jetbrains.kotlin.psi.KtFile
 import org.junit.jupiter.api.Test
 
 class KotlinDataClassGeneratorTest {
@@ -23,20 +21,19 @@ class KotlinDataClassGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
         val ktFileGenerator = KotlinFileGenerator()
-        val project = ProjectOutput(Target.Cxx)
         val item = KtDataClassGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )
 
-        val namespace = NamespaceImpl("a", TreeRoot)
-        val block = namespace.addSub(DataClass("c", null)).apply {
+        val namespace = NamespaceImpl("a").apply { setParent2(TreeRoot) }
+        val block = namespace.addSub(DataClass("c")).apply {
             addBlockComment("182TEST_COMMENT")
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
             field("C", DataType.string(true))
         }
 
-        val projectOutput = ProjectOutput(Target.Kotlin)
+        val projectOutput = OutputTree(Target.Kotlin)
         val files = ktFileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
         item(files, block)

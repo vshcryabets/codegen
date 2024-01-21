@@ -3,12 +3,12 @@ package ce.entrypoints
 import ce.defs.Target
 import ce.defs.TargetExt
 import ce.domain.usecase.entry.BuildOutTreeUseCase
-import ce.domain.usecase.load.LoadInTreeUseCase
+import ce.domain.usecase.entry.BuildOutTreeUseCaseImpl
+import ce.domain.usecase.load.LoadAstTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
+import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
-import ce.repository.GeneratorsRepo
-import generators.obj.input.Node
 
 fun main(args: Array<String>) {
     if (args.size < 4) {
@@ -26,9 +26,9 @@ fun main(args: Array<String>) {
         error("Unknown target \"${args[3]}\"")
     }
 
-    val buildOutTreeUseCase = BuildOutTreeUseCase(
-        LoadInTreeUseCase(),
-        LoadProjectUseCase(),
+    val buildOutTreeUseCase = BuildOutTreeUseCaseImpl(
+        LoadAstTreeUseCase(),
+        LoadProjectUseCaseImpl(),
         StoreOutTreeUseCase(),
         TransformInTreeToOutTreeUseCase(),
     )

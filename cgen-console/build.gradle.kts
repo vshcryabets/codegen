@@ -34,24 +34,31 @@ java {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
 publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/vshcryabets/codegen")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-            }
-        }
-    }
     publications {
-        register<MavenPublication>("gpr") {
+        create<MavenPublication>("maven") {
             from(components["java"])
         }
     }
 }
+//
+//publishing {
+//    repositories {
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/vshcryabets/codegen")
+//            credentials {
+//                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+//                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+//            }
+//        }
+//    }
+//    publications {
+//        register<MavenPublication>("gpr") {
+//            from(components["java"])
+//        }
+//    }
+//}
 
 task("execute", JavaExec::class) {
     mainClass.set(project.gradle.startParameter.projectProperties.get("classToExecute"))
@@ -59,3 +66,12 @@ task("execute", JavaExec::class) {
     classpath = sourceSets["main"].runtimeClasspath
     setWorkingDir("../")
 }
+
+tasks.withType(Tar::class.java).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.withType(Zip::class.java).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+

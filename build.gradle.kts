@@ -1,6 +1,6 @@
 allprojects {
-    version = "0.1.2-SNAPSHOT"
-    group = "ce"
+    version = "0.1.3-SNAPSHOT"
+    group = "com.github.vshcryabets.codegen"
 
     repositories {
         mavenCentral()

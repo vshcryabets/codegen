@@ -12,10 +12,6 @@ class CppDataClassGenerator(
     override fun invoke(files: List<FileData>, desc: DataClass) {
         val header = files.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
-//        val definition = files.find { it is CppFileData }
-//            ?: throw java.lang.IllegalStateException("Can't find Definition file for C++")
-
-//        definition.findOrCreateSub(ImportsBlock::class.java).addInclude(header.name)
         header.findOrCreateSub(ImportsBlock::class.java)
 
         val namespace = header.addSub(NamespaceBlock(desc.getParentPath()))
