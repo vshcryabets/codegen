@@ -9,13 +9,18 @@ import ce.parser.nnparser.Word
 import ce.parser.nnparser.WordDictionary
 import ce.parser.nnparser.WordItem
 import org.jetbrains.kotlin.javax.inject.Inject
-import java.lang.StringBuilder
+import kotlin.text.StringBuilder
 
 interface TokenizerUseCase {
+    data class Result(
+        val wordIds: List<WordItem>,
+        val debugFindings: StringBuilder,
+    )
     operator fun invoke(
         text: String,
         dictinaries: TargetDictionaries,
-    ): List<WordItem>
+        debugFindings: Boolean = false
+    ): Result
 }
 
 class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
@@ -57,7 +62,9 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
     override operator fun invoke(
         text: String,
         dictinaries: TargetDictionaries,
-    ): List<WordItem> {
+        debugFindings: Boolean
+    ): TokenizerUseCase.Result {
+        val debugFindigs = StringBuilder()
         val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
@@ -102,6 +109,9 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
             }
             result.add(Word(name = nextToken, type = Type.NAME))
         }
-        return result
+        return TokenizerUseCase.Result(
+            wordIds = result,
+            debugFindings = debugFindigs
+        )
     }
 }

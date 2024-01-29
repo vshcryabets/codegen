@@ -19,25 +19,20 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
 ) : LoadTargetDictionariesUseCase {
     override suspend fun invoke(baseDir: String, target: Target): TargetDictionaries =
         withContext(ioScope.coroutineContext) {
-            val keywordsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv"), Type.KEYWORD) }
             val operatorsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_operators.csv"), Type.OPERATOR) }
             val commentsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_comments.csv"), Type.COMMENTS) }
-            val stdlibsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_stdlibs.csv"), Type.UNKNOWN) }
-            val thirdDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_third.csv"), Type.UNKNOWN) }
-            val projectDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_project.csv"), Type.UNKNOWN) }
             val digitsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_digits.csv"), Type.DIGIT) }
             return@withContext TargetDictionaries(
-                operators = operatorsDef.await(),
-                stdlibs = stdlibsDef.await(),
-                thirdlibs = thirdDef.await(),
-                projectlibs = projectDef.await(),
                 map = mapOf(
                     Type.SPACES to async {
                         loadDictionaryUseCase(File("$baseDir/${target.rawValue}_spaces.csv"), Type.SPACES)
                     }.await(),
                     Type.COMMENTS to commentsDef.await(),
                     Type.DIGIT to digitsDef.await(),
-                    Type.KEYWORD to keywordsDef.await()
+                    Type.KEYWORD to async {
+                        loadDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv"), Type.KEYWORD)
+                    }.await(),
+                    Type.OPERATOR to operatorsDef.await()
                 )
             )
         }
