@@ -19,7 +19,9 @@ interface TokenizerUseCase {
     operator fun invoke(
         text: String,
         dictinaries: TargetDictionaries,
-        debugFindings: Boolean = false
+        nameBase: Int,
+        digitBase: Int,
+        debugFindings: Boolean = false,
     ): Result
 }
 
@@ -62,6 +64,8 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
     override operator fun invoke(
         text: String,
         dictinaries: TargetDictionaries,
+        nameBase: Int,
+        digitBase: Int,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
         val debugFindigs = StringBuilder()
@@ -99,7 +103,9 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 continue
             }
             // name or keyword?
+            println("ASD A11")
             val nextToken = nextToken(buffer, dictinaries)
+            println("ASD A12 $nextToken")
             val keyword = dictinaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)
             }
@@ -107,7 +113,8 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 result.add(keyword)
                 continue
             }
-            result.add(Word(name = nextToken, type = Type.NAME))
+            println("ASD word")
+            result.add(Word(name = nextToken, type = Type.NAME, id = 254))
         }
         return TokenizerUseCase.Result(
             wordIds = result,

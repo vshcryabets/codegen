@@ -41,6 +41,8 @@ val globalSources = mutableListOf<SampleData>()
 var globalOutputDirectory: String = "./expparse_out/"
 var dictinariesDirectory: String = "./dictionary/"
 var globalDicts = emptyMap<Target, TargetDictionaries>()
+var globalNameBase = 1000000
+var globalDigitBase = globalNameBase * 2
 
 fun cleanSource() {
     globalSources.clear()
@@ -94,7 +96,9 @@ fun main(args: Array<String>) {
         globalDicts = loadAllDictionariesUseCase(dictinariesDirectory)
     }
     runBlocking {
-        processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts)
+        processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts,
+            nameBase = globalNameBase,
+            digitBase = globalDigitBase)
     }
     println("END")
 

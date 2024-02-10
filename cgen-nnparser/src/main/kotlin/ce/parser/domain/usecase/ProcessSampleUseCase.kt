@@ -10,7 +10,13 @@ import org.jetbrains.kotlin.javax.inject.Named
 import java.io.File
 
 interface ProcessSampleUseCase {
-    suspend operator fun invoke(sampleData: SampleData, outputDir: String, dictionaries: Map<Target, TargetDictionaries>)
+    suspend operator fun invoke(
+        sampleData: SampleData,
+        outputDir: String,
+        dictionaries: Map<Target, TargetDictionaries>,
+        nameBase: Int,
+        digitBase: Int,
+    )
 }
 
 class ProcessSampleUseCaseImpl @Inject constructor(
@@ -19,7 +25,13 @@ class ProcessSampleUseCaseImpl @Inject constructor(
     private val loadFileUseCase: LoadFileUseCase,
     private val tokenizerUseCase: TokenizerUseCase,
 ) : ProcessSampleUseCase {
-    override suspend fun invoke(sampleData: SampleData, outputDir: String, dictionaries: Map<Target, TargetDictionaries>) =
+    override suspend fun invoke(
+        sampleData: SampleData,
+        outputDir: String,
+        dictionaries: Map<Target, TargetDictionaries>,
+        nameBase: Int,
+        digitBase: Int,
+        ) =
         withContext(calcScope.coroutineContext) {
             val fileSrc = File(sampleData.sourceFile)
             val fileMeta = File(sampleData.metaFile)
@@ -27,8 +39,12 @@ class ProcessSampleUseCaseImpl @Inject constructor(
             val bufferMeta = loadFileUseCase(fileMeta)
             val dictSrc = dictionaries[sampleData.sourceTarget]!!
             val dictMeta = dictionaries[Target.Meta]!!
-            val srcLinearResult = tokenizerUseCase(bufferSrc.toString(), dictSrc)
-            val metaLinearResult = tokenizerUseCase(bufferMeta.toString(), dictMeta)
+            val srcLinearResult = tokenizerUseCase(bufferSrc.toString(), dictSrc,
+                nameBase = nameBase,
+                digitBase = digitBase)
+            val metaLinearResult = tokenizerUseCase(bufferMeta.toString(), dictMeta,
+                nameBase = nameBase,
+                digitBase = digitBase)
             println(srcLinearResult)
             println(metaLinearResult)
         }

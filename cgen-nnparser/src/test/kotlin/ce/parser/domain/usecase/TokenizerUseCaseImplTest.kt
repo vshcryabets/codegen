@@ -46,6 +46,8 @@ class TokenizerUseCaseImplTest {
             Type.OPERATOR to operatorsDict
         )
     )
+    val DIGIT_BASE = 3000
+    val NAME_BASE = 4000
 
     @Test
     fun testSpaces() {
@@ -55,24 +57,31 @@ class TokenizerUseCaseImplTest {
         val result = tokenizer(
             text = "\t  \t- ",
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(1, wordIds.size)
         assertEquals(Type.OPERATOR, wordIds[0].type)
         assertEquals("-", wordIds[0].name)
+        assertEquals(205, wordIds[0].id)
 
         // expected
         // <KEY max><OP +>
         val result2 = tokenizer(
             text = "  max +",
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds2 = result2.wordIds
         assertEquals(2, wordIds2.size)
         assertEquals(Type.KEYWORD, wordIds2[0].type)
         assertEquals("max", wordIds2[0].name)
+        assertEquals(100, wordIds2[0].id)
         assertEquals(Type.OPERATOR, wordIds2[1].type)
         assertEquals("+", wordIds2[1].name)
+        assertEquals(207, wordIds2[1].id)
     }
 
     @Test
@@ -83,13 +92,16 @@ class TokenizerUseCaseImplTest {
         val result = tokenizer(
             text = "x = max\n()",
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(5, wordIds.size)
         assertEquals(Type.NAME, wordIds[0].type)
         assertEquals("x", wordIds[0].name)
+        assertEquals(NAME_BASE + 0, wordIds[0].id)
         assertEquals(Type.OPERATOR, wordIds[1].type)
-        assertEquals("=", wordIds[1].name)
+        assertEquals(202, wordIds[1].id)
     }
 
     @Test
@@ -100,6 +112,8 @@ class TokenizerUseCaseImplTest {
         val result = tokenizer(
             text = "float max2=max()",
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(6, wordIds.size)
@@ -124,6 +138,8 @@ class TokenizerUseCaseImplTest {
                 a=max()
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(6, wordIds.size)
@@ -141,6 +157,8 @@ class TokenizerUseCaseImplTest {
                 a=max() //1+comment
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(6, wordIds.size)
@@ -158,6 +176,8 @@ class TokenizerUseCaseImplTest {
                 float max2=max(1,2)
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(9, wordIds.size)
@@ -179,6 +199,8 @@ class TokenizerUseCaseImplTest {
                 float max2=max(1.2,2.341)
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(9, wordIds.size)
@@ -203,6 +225,8 @@ class TokenizerUseCaseImplTest {
                 float max2=max(1.2,-2.341)
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(10, wordIds.size)
@@ -228,6 +252,8 @@ class TokenizerUseCaseImplTest {
                 int a=0xFAB
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(4, wordIds.size)
@@ -249,6 +275,8 @@ class TokenizerUseCaseImplTest {
                 namespace com
             """.trimIndent(),
             dictinaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
         )
         val wordIds = result.wordIds
         assertEquals(5, wordIds.size)
