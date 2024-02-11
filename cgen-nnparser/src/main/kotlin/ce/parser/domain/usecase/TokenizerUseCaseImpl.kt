@@ -1,5 +1,6 @@
 package ce.parser.domain.usecase
 
+import ce.parser.domain.NamesDictionaryRepo
 import ce.parser.nnparser.Comment
 import ce.parser.nnparser.RegexWord
 import ce.parser.nnparser.SourceBuffer
@@ -13,8 +14,9 @@ import kotlin.text.StringBuilder
 
 interface TokenizerUseCase {
     data class Result(
-        val wordIds: List<WordItem>,
+        val words: List<WordItem>,
         val debugFindings: StringBuilder,
+        val namesDictionary: List<Word>
     )
     operator fun invoke(
         text: String,
@@ -68,6 +70,12 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         digitBase: Int,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
+        val namesDictionary = NamesDictionaryRepo(
+            startId = nameBase
+        )
+        val digitsDictionary = NamesDictionaryRepo(
+            startId = digitBase
+        )
         val debugFindigs = StringBuilder()
         val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
@@ -103,9 +111,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 continue
             }
             // name or keyword?
-            println("ASD A11")
             val nextToken = nextToken(buffer, dictinaries)
-            println("ASD A12 $nextToken")
             val keyword = dictinaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)
             }
@@ -113,12 +119,13 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 result.add(keyword)
                 continue
             }
-            println("ASD word")
-            result.add(Word(name = nextToken, type = Type.NAME, id = 254))
+            // Word(name = nextToken, type = Type.NAME, id = 254)
+            result.add(namesDictionary.search(nextToken))
         }
         return TokenizerUseCase.Result(
-            wordIds = result,
-            debugFindings = debugFindigs
+            words = result,
+            debugFindings = debugFindigs,
+            namesDictionary = namesDictionary.exportToWordsList()
         )
     }
 }
