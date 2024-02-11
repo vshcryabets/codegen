@@ -78,6 +78,9 @@ fun main(args: Array<String>) {
     val calcScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
     val loadFileUseCase = LoadFileUseCaseImpl(ioScope)
+    val writeResultsUseCase = WriteResultsUseCaseImpl(
+        ioScope = ioScope
+    )
     val loadTargetDictionaries = LoadTargetDictionariesUseCaseImpl(
         loadDictionaryUseCase = loadDictionaryUseCase,
         ioScope = ioScope
@@ -87,7 +90,11 @@ fun main(args: Array<String>) {
         loadTargetDictionariesUseCase = loadTargetDictionaries
     )
     val buildLinearUseCase = TokenizerUseCaseImpl()
-    val processSampleUseCase = ProcessSampleUseCaseImpl(calcScope, loadFileUseCase, buildLinearUseCase)
+    val processSampleUseCase = ProcessSampleUseCaseImpl(
+        calcScope = calcScope,
+        loadFileUseCase =  loadFileUseCase,
+        tokenizerUseCase = buildLinearUseCase,
+        writeResultsUseCase = writeResultsUseCase)
     val configFile = File(args[0])
     println("Execute $configFile")
     executeScriptUseCase(configFile)
