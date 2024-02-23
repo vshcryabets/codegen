@@ -56,7 +56,7 @@ class TokenizerUseCaseImplTest {
         // <OP ->
         val result = tokenizer(
             text = "\t  \t- ",
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -70,7 +70,7 @@ class TokenizerUseCaseImplTest {
         // <KEY max><OP +>
         val result2 = tokenizer(
             text = "  max +",
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -91,7 +91,7 @@ class TokenizerUseCaseImplTest {
         // <Name x><=><max><(><)>
         val result = tokenizer(
             text = "x = max\n()",
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -118,7 +118,7 @@ class TokenizerUseCaseImplTest {
         // <KW float><Name max2><=><max><(><)>
         val result = tokenizer(
             text = "float max2=max()",
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -144,7 +144,7 @@ class TokenizerUseCaseImplTest {
                 //1+comment
                 a=max()
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -163,7 +163,7 @@ class TokenizerUseCaseImplTest {
             text = """
                 a=max() //1+comment
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -182,7 +182,7 @@ class TokenizerUseCaseImplTest {
             text = """
                 float max2=max(1,2)
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -205,7 +205,7 @@ class TokenizerUseCaseImplTest {
             text = """
                 float max2=max(1.2,2.341)
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -231,7 +231,7 @@ class TokenizerUseCaseImplTest {
             text = """
                 float max2=max(1.2,-2.341)
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -258,7 +258,7 @@ class TokenizerUseCaseImplTest {
             text = """
                 int a=0xFAB
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -281,7 +281,7 @@ class TokenizerUseCaseImplTest {
 
                 namespace com
             """.trimIndent(),
-            dictinaries = dictionaries,
+            dictionaries = dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )

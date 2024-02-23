@@ -65,7 +65,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
 
     override operator fun invoke(
         text: String,
-        dictinaries: TargetDictionaries,
+        dictionaries: TargetDictionaries,
         nameBase: Int,
         digitBase: Int,
         debugFindings: Boolean
@@ -77,17 +77,21 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
             startId = digitBase
         )
         val debugFindigs = StringBuilder()
+        val debugLine1= StringBuilder()
+        val debugLine2 = StringBuilder()
         val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
             // check digit
-            val digit = checkString(buffer, dictinaries.map[Type.DIGIT]!!) as RegexWord?
+            val digit = checkString(buffer, dictionaries.map[Type.DIGIT]!!) as RegexWord?
             if (digit != null) {
                 buffer.movePosBy(digit.name.length)
                 result.add(digit)
+                debugLine1.append(digit.name).append(" ")
+                debugLine2.append(digit.id).append(", ")
                 continue
             }
-            val comment = checkString(buffer, dictinaries.map[Type.COMMENTS]!!) as Comment?
+            val comment = checkString(buffer, dictionaries.map[Type.COMMENTS]!!) as Comment?
             if (comment != null) {
                 buffer.movePosBy(comment.name.length)
                 val end = if (comment.oneLineComment) "\n" else comment.multilineCommentEnd
@@ -99,28 +103,43 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 ))
                 continue
             }
-            val space = checkString(buffer, dictinaries.map[Type.SPACES]!!)
+            val space = checkString(buffer, dictionaries.map[Type.SPACES]!!)
             if (space != null) {
                 buffer.movePosBy(space.name.length)
+                if (space.name == "\n") {
+                    debugFindigs.append(debugLine1)
+                    debugFindigs.append("\n")
+                    debugFindigs.append(debugLine2)
+                    debugFindigs.append("\n")
+                    debugLine1.clear()
+                    debugLine2.clear()
+                }
                 continue
             }
-            val operator = checkString(buffer, dictinaries.operators)
+            val operator = checkString(buffer, dictionaries.operators)
             if (operator != null) {
                 buffer.movePosBy(operator.name.length)
                 result.add(operator)
+                debugLine1.append(operator.name).append(" ")
+                debugLine2.append(operator.id).append(", ")
                 continue
             }
             // name or keyword?
-            val nextToken = nextToken(buffer, dictinaries)
-            val keyword = dictinaries.keywords.sortedByLengthDict.find {
+            val nextToken = nextToken(buffer, dictionaries)
+            val keyword = dictionaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)
             }
             if (keyword != null) {
                 result.add(keyword)
+                debugLine1.append(keyword.name).append(" ")
+                debugLine2.append(keyword.id).append(", ")
                 continue
             }
             // Word(name = nextToken, type = Type.NAME, id = 254)
-            result.add(namesDictionary.search(nextToken))
+            val nameToken = namesDictionary.search(nextToken)
+            debugLine1.append(nameToken.name).append(" ")
+            debugLine2.append(nameToken.id).append(", ")
+            result.add(nameToken)
         }
         return TokenizerUseCase.Result(
             words = result,

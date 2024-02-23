@@ -43,6 +43,20 @@ class WriteResultsUseCaseImpl(
                     addComa = true
                 }
             }
+            val names = File(base, "${sampleName}_${sampleTraget}_names.csv")
+            println("Write names to ${names.absolutePath}")
+            names.printWriter().use { writter ->
+                results.namesDictionary.forEach {
+                    writter.println("${it.id},${it.name}")
+                }
+            }
+            if (results.debugFindings.isNotEmpty()) {
+                val debug = File(base, "${sampleName}_${sampleTraget}_debug.csv")
+                println("Write debug to ${debug.absolutePath}")
+                debug.printWriter().use { writter ->
+                    writter.print(results.debugFindings)
+                }
+            }
         }
     }
 }

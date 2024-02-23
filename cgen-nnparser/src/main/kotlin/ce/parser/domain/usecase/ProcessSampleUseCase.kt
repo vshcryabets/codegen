@@ -45,17 +45,17 @@ class ProcessSampleUseCaseImpl @Inject constructor(
                 nameBase = nameBase,
                 digitBase = digitBase
             )
-            val metaLinearResult = tokenizerUseCase(
-                bufferMeta.toString(), dictMeta,
-                nameBase = nameBase,
-                digitBase = digitBase
-            )
             // write stc results
             writeResultsUseCase.invoke(
                 outBasePath = outputDir,
                 results = srcLinearResult,
                 sampleName = sampleData.sampleName,
                 sampleTraget = sampleData.sourceTarget
+            )
+            val metaLinearResult = tokenizerUseCase(
+                bufferMeta.toString(), dictMeta,
+                nameBase = nameBase,
+                digitBase = digitBase
             )
             // write meta results
             writeResultsUseCase.invoke(
