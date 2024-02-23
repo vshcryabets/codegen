@@ -44,9 +44,24 @@ open class DataType(
     object float64 : DataType()
     object float128 : DataType()
 
+    object int8Nullable : DataType(canBeNull = true)
+    object int16Nullable : DataType(canBeNull = true)
+    object int32Nullable : DataType(canBeNull = true)
+    object int64Nullable : DataType(canBeNull = true)
+
+    object uint8Nullable : DataType(canBeNull = true)
+    object uint16Nullable : DataType(canBeNull = true)
+    object uint32Nullable : DataType(canBeNull = true)
+    object uint64Nullable : DataType(canBeNull = true)
+
+    object float32Nullable : DataType(canBeNull = true)
+    object float64Nullable : DataType(canBeNull = true)
+    object float128Nullable : DataType(canBeNull = true)
+
     class string(canBeNull: Boolean = false) : DataType(canBeNull)
     object bool : DataType()
-    class pointer(val subType: DataType) : DataType()
+    object boolNullable : DataType(canBeNull = true)
+    class pointer(val subType: DataType) : DataType(canBeNull = true)
     class array(val elementDataType: DataType, nullable : Boolean = false) : DataType(nullable)
     class promise(val elementDataType: DataType) : DataType()
     class custom(val block: Block, nullable : Boolean = false) : DataType(nullable)
