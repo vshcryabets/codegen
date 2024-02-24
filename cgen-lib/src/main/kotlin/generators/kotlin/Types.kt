@@ -38,17 +38,17 @@ object Types {
         val qwe: ULong
         return when (type) {
             DataType.VOID -> "void"
-            DataType.int8 -> "Byte"
-            DataType.int16 -> "Short"
-            DataType.int32 -> "Int"
-            DataType.int64 -> "Long"
-            DataType.uint8 -> "UByte"
-            DataType.uint16 -> "UShort"
-            DataType.uint32 -> "UInt"
-            DataType.uint64 -> "ULong"
-            DataType.float32 -> "Float"
-            DataType.float64 -> "Double"
-            DataType.bool -> "Boolean"
+            DataType.int8,DataType.int8Nullable -> "Byte"
+            DataType.int16,DataType.int16Nullable -> "Short"
+            DataType.int32,DataType.int32Nullable -> "Int"
+            DataType.int64,DataType.int64Nullable -> "Long"
+            DataType.uint8,DataType.uint8Nullable -> "UByte"
+            DataType.uint16,DataType.uint16Nullable -> "UShort"
+            DataType.uint32,DataType.uint32Nullable -> "UInt"
+            DataType.uint64,DataType.uint64Nullable -> "ULong"
+            DataType.float32,DataType.float32Nullable -> "Float"
+            DataType.float64,DataType.float64Nullable -> "Double"
+            DataType.bool,DataType.boolNullable -> "Boolean"
             is DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
