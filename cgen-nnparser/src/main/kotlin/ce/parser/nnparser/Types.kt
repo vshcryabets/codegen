@@ -27,7 +27,6 @@ data class Comment(
 
 data class Word(
     override val name: String,
-    val nextIsLiteral: Boolean = false,
     override val id: Int = -1,
     override val type: Type = Type.OPERATOR,
 ) : WordItem

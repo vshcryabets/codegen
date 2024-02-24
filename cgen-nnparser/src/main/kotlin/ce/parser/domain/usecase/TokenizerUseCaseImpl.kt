@@ -107,6 +107,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
             if (space != null) {
                 buffer.movePosBy(space.name.length)
                 if (space.name == "\n") {
+                    debugFindigs.append("> ")
                     debugFindigs.append(debugLine1)
                     debugFindigs.append("\n")
                     debugFindigs.append(debugLine2)

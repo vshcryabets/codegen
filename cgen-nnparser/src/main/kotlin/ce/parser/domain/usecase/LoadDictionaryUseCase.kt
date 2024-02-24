@@ -20,7 +20,6 @@ class LoadDictionaryUseCaseImpl : LoadDictionaryUseCase {
                 allRecords.forEach {
                     val word = Word(
                         name = it[1],
-                        nextIsLiteral = it[2].toBoolean(),
                         id = it[0].toInt(),
                         type = type
                     )
