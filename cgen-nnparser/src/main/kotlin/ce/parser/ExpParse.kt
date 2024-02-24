@@ -76,13 +76,17 @@ fun main(args: Array<String>) {
     )
     val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     val calcScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
+    val loadDictionaryUseCase = LoadCsvDictionaryUseCaseImpl()
+    val loadGroovyDictUseCase = LoadGroovyDictionaryUseCaseImpl(
+        groovyScriptEngine = groovyEngine
+    )
     val loadFileUseCase = LoadFileUseCaseImpl(ioScope)
     val writeResultsUseCase = WriteResultsUseCaseImpl(
         ioScope = ioScope
     )
     val loadTargetDictionaries = LoadTargetDictionariesUseCaseImpl(
-        loadDictionaryUseCase = loadDictionaryUseCase,
+        loadCsvDictionaryUseCase = loadDictionaryUseCase,
+        loadGroovyDictionaryUseCase = loadGroovyDictUseCase,
         ioScope = ioScope
     )
     val loadAllDictionariesUseCase = LoadAllDictionariesUseCaseImpl(

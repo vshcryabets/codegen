@@ -15,22 +15,23 @@ interface LoadTargetDictionariesUseCase {
 
 class LoadTargetDictionariesUseCaseImpl @Inject constructor(
     private val ioScope: CoroutineScope,
-    private val loadDictionaryUseCase: LoadDictionaryUseCase,
+    private val loadCsvDictionaryUseCase: LoadDictionaryUseCase,
+    private val loadGroovyDictionaryUseCase: LoadDictionaryUseCase,
 ) : LoadTargetDictionariesUseCase {
     override suspend fun invoke(baseDir: String, target: Target): TargetDictionaries =
         withContext(ioScope.coroutineContext) {
-            val operatorsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_operators.csv"), Type.OPERATOR) }
-            val commentsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_comments.csv"), Type.COMMENTS) }
-            val digitsDef = async { loadDictionaryUseCase(File("$baseDir/${target.rawValue}_digits.csv"), Type.DIGIT) }
+            val operatorsDef = async { loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_operators.csv"), Type.OPERATOR) }
+            val commentsDef = async { loadGroovyDictionaryUseCase(File("$baseDir/${target.rawValue}_comments.groovy"), Type.COMMENTS) }
+            val digitsDef = async { loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_digits.csv"), Type.DIGIT) }
             return@withContext TargetDictionaries(
                 map = mapOf(
                     Type.SPACES to async {
-                        loadDictionaryUseCase(File("$baseDir/${target.rawValue}_spaces.csv"), Type.SPACES)
+                        loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_spaces.csv"), Type.SPACES)
                     }.await(),
                     Type.COMMENTS to commentsDef.await(),
                     Type.DIGIT to digitsDef.await(),
                     Type.KEYWORD to async {
-                        loadDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv"), Type.KEYWORD)
+                        loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv"), Type.KEYWORD)
                     }.await(),
                     Type.OPERATOR to operatorsDef.await()
                 )
