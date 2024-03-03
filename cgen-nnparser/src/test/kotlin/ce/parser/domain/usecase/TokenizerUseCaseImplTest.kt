@@ -25,7 +25,7 @@ fun getDict(strings: List<String>, basiId: Int, type: Type): WordDictionary {
 class TokenizerUseCaseImplTest {
 
     val keywordDict = getDict(listOf("max", "float", "int","pragma","once","namespace"), 100, Type.KEYWORD)
-    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+","#"), 200, Type.OPERATOR)
+    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+","#",":","::"), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
     val comments = WordDictionary(listOf(
         Comment(name = "//", oneLineComment = true, id = 2000, type = Type.COMMENTS),
@@ -274,7 +274,7 @@ class TokenizerUseCaseImplTest {
     fun testMultiline() {
         val tokenizer = TokenizerUseCaseImpl()
         // expected
-        // <#><pragma><once><namecpase><name qwe>
+        // <#><pragma><once><namespace><name qwe>
         val result = tokenizer(
             text = """
                 #pragma once
@@ -292,6 +292,24 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.KEYWORD, wordIds[2].type)
         assertEquals(Type.KEYWORD, wordIds[3].type)
         assertEquals(Type.NAME, wordIds[4].type)
+    }
+
+    @Test
+    fun testParseDoubleColon() {
+        val tokenizer = TokenizerUseCaseImpl()
+        // expected
+        // <namespace><name qwe><operator ::><name goldman><operator ::><name dt1>
+        val result = tokenizer(
+            text = """
+                namespace com::goldman::dt1
+            """.trimIndent(),
+            dictionaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
+        )
+        val wordIds = result.words
+        assertEquals(6, wordIds.size, "Wrong word ids number")
+
     }
 
     // tests

@@ -81,6 +81,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         val debugLine2 = StringBuilder()
         val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
+        val operators = dictionaries.operators
         while (!buffer.end()) {
             // check digit
             val digit = checkString(buffer, dictionaries.map[Type.DIGIT]!!) as RegexWord?
@@ -117,7 +118,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
                 }
                 continue
             }
-            val operator = checkString(buffer, dictionaries.operators)
+            val operator = checkString(buffer, operators)
             if (operator != null) {
                 buffer.movePosBy(operator.name.length)
                 result.add(operator)
