@@ -20,7 +20,7 @@ interface TokenizerUseCase {
     )
     operator fun invoke(
         text: String,
-        dictinaries: TargetDictionaries,
+        dictionaries: TargetDictionaries,
         nameBase: Int,
         digitBase: Int,
         debugFindings: Boolean = false,
@@ -73,9 +73,9 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         val namesDictionary = NamesDictionaryRepo(
             startId = nameBase
         )
-        val digitsDictionary = NamesDictionaryRepo(
-            startId = digitBase
-        )
+//        val digitsDictionary = NamesDictionaryRepo(
+//            startId = digitBase
+//        )
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()
         val debugLine2 = StringBuilder()

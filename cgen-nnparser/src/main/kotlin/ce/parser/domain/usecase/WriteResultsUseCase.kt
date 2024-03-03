@@ -31,7 +31,7 @@ class WriteResultsUseCaseImpl(
         withContext(ioScope.coroutineContext) {
             val base = File(outBasePath)
             base.createDirectory()
-            val linearIds = File(base, "${sampleName}_${sampleTraget}_ids")
+            val linearIds = File(base, "${sampleName}_${sampleTraget}_ids.data")
             println("Write results to ${linearIds.absolutePath}")
             linearIds.printWriter().use { printWriter ->
                 var addComa = false
@@ -51,11 +51,13 @@ class WriteResultsUseCaseImpl(
                 }
             }
             if (results.debugFindings.isNotEmpty()) {
-                val debug = File(base, "${sampleName}_${sampleTraget}_debug.csv")
+                val debug = File(base, "${sampleName}_${sampleTraget}_debug.txt")
                 println("Write debug to ${debug.absolutePath}")
                 debug.printWriter().use { writter ->
                     writter.print(results.debugFindings)
                 }
+            } else {
+                println("Debug information is empty")
             }
         }
     }
