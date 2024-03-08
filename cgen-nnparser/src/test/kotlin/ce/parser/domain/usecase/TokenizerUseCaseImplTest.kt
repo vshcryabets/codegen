@@ -25,7 +25,7 @@ fun getDict(strings: List<String>, basiId: Int, type: Type): WordDictionary {
 class TokenizerUseCaseImplTest {
 
     val keywordDict = getDict(listOf("max", "float", "int","pragma","once","namespace"), 100, Type.KEYWORD)
-    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+","#",":","::"), 200, Type.OPERATOR)
+    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+","#",":","::",";"), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
     val comments = WordDictionary(listOf(
         Comment(name = "//", oneLineComment = true, id = 2000, type = Type.COMMENTS),
@@ -309,7 +309,23 @@ class TokenizerUseCaseImplTest {
         )
         val wordIds = result.words
         assertEquals(6, wordIds.size, "Wrong word ids number")
+    }
 
+    @Test
+    fun testParseStringAssignement() {
+        val tokenizer = TokenizerUseCaseImpl()
+        // expected
+        // <name a><operator =><literal ><operator ;>
+        val result = tokenizer(
+            text = """
+                a = "Simple string";
+            """.trimIndent(),
+            dictionaries = dictionaries,
+            nameBase = NAME_BASE,
+            digitBase = DIGIT_BASE,
+        )
+        val wordIds = result.words
+        assertEquals(4, wordIds.size, "Wrong word ids number")
     }
 
     // tests

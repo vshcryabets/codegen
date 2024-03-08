@@ -8,7 +8,8 @@ enum class Type {
     NAME,
     DIGIT,
     LITERAL,
-    UNKNOWN
+    UNKNOWN,
+    STRING_LITERAL
 }
 
 interface WordItem {
