@@ -1,7 +1,7 @@
 package ce.parser.nnparser
 
 class SourceBuffer(
-    private val buffer: StringBuilder,
+    val buffer: StringBuilder,
     startPos: Int
 ) {
     companion object {
@@ -14,71 +14,9 @@ class SourceBuffer(
     val length: Int
         get() = buffer.length
     var pos: Int = startPos
-
-    fun getNextChar(): Char = buffer.get(pos)
-
-    fun readLiteral(): Pair<Word, Int> {
-        var logicPos = pos
-        val left = buffer.length - logicPos
-        if (left > 3) {
-            if (buffer.get(logicPos) == '"' && buffer.get(logicPos + 1) == '"' && buffer.get(logicPos + 2) == '"') {
-                // start """ literal
-                TODO()
-            }
+        private set(value) {
+            field = value
         }
-        if (buffer[logicPos] != '"') {
-            throw IllegalStateException("Wrong literal start at $logicPos")
-        }
-        logicPos++
-        var screenChar = false
-        val literalBuffer = StringBuilder()
-        do {
-            val ch = buffer.get(logicPos)
-            if (ch == '"' && !screenChar) {
-                logicPos++
-                break
-            }
-            screenChar = false
-            literalBuffer.append(ch)
-            if (ch == '\\') {
-                screenChar = true
-            }
-            logicPos++
-        } while (logicPos < buffer.length)
-        pos = logicPos
-        return Pair(Word(name = literalBuffer.toString(), type = Type.LITERAL), logicPos)
-    }
-
-    fun skipChar() {
-        pos++
-    }
-
-    fun readDigit(): Pair<Word, Int> {
-        val readBuffer = StringBuilder()
-        while (getNextChar() in digits) {
-            readBuffer.append(getNextChar())
-            pos++
-        }
-        return Pair(Word(name = readBuffer.toString(), type= Type.DIGIT), pos)
-    }
-
-    fun readWord(): Pair<Word, Int> {
-        var ch = buffer.get(pos)
-        if (ch in operators) {
-            pos++
-            return Pair(Word(ch.toString()), pos)
-        }
-        val wordBuffer = StringBuilder()
-        do {
-            ch = buffer.get(pos)
-            if (ch in operators || ch in spaces) {
-                break
-            }
-            wordBuffer.append(ch)
-            pos++
-        } while (pos < buffer.length)
-        return Pair(Word(wordBuffer.toString()), pos)
-    }
 
     fun end(): Boolean = pos >= buffer.length
     fun nextIs(s: String, ignoreCase: Boolean = false): Boolean {
@@ -90,8 +28,18 @@ class SourceBuffer(
         return substr.equals(s, ignoreCase)
     }
 
-    fun nextIsRegexp(regexp: Regex): String? {
-        val result = regexp.find(buffer, pos)
+//    fun nextIsRegexp(regexp: Regex): String? {
+//        val result = regexp.find(buffer, pos)
+//        if (result == null) {
+//            return null
+//        } else if (result.range.start != pos) {
+//            return null
+//        }
+//        return result.value
+//    }
+
+    fun nextIsFnc(checkFnc: (StringBuilder, Int)-> MatchResult?): String? {
+        val result = checkFnc(buffer, pos)
         if (result == null) {
             return null
         } else if (result.range.start != pos) {
@@ -100,28 +48,7 @@ class SourceBuffer(
         return result.value
     }
 
-    fun nextIn(variants: String): Boolean = buffer.get(pos) in variants
-
     fun readUntil(end: String,
-                  ignoreCase: Boolean,
-                  includeEnd: Boolean): Pair<String, Int> {
-        val wordBuffer = StringBuilder()
-        do {
-            if (nextIs(end, ignoreCase)) {
-                if (includeEnd) {
-                    wordBuffer.append(end)
-                    pos += end.length
-                }
-                break
-            }
-            val ch = buffer.get(pos)
-            pos++
-            wordBuffer.append(ch)
-        } while (pos < buffer.length)
-        return Pair(wordBuffer.toString(), pos)
-    }
-
-    fun readUntil2(end: String,
                   ignoreCase: Boolean,
                   includeEnd: Boolean): String {
         val wordBuffer = StringBuilder()
@@ -140,40 +67,10 @@ class SourceBuffer(
         return wordBuffer.toString()
     }
 
-    fun findInDictionary(dict: WordDictionary): Pair<Word?, WordItem?> {
-        var name: Word? = null
-        var word: WordItem? = null
-
-        var cur = pos
-        while (cur < buffer.length) {
-            word = dict.sortedByLengthDict.find {
-                nextIs(it.name, false)
-            }
-            if (word != null) {
-//                name =
-                break
-            }
-            cur++
-        }
-        return Pair(name, word)
-    }
-
     fun movePosBy(delta: Int) {
         pos += delta
     }
 
     fun substring(startPosition: Int, endPosition: Int): String = buffer.substring(startPosition, endPosition)
 
-    fun readWhile(fnc: (Char) -> Boolean): String {
-        val wordBuffer = StringBuilder()
-        do {
-            val ch = buffer.get(pos)
-            if (!fnc(ch)) {
-                break
-            }
-            pos++
-            wordBuffer.append(ch)
-        } while (pos < buffer.length)
-        return wordBuffer.toString()
-    }
 }

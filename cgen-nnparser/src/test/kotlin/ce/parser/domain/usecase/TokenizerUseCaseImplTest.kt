@@ -1,5 +1,6 @@
 package ce.parser.domain.usecase
 
+import ce.parser.domain.TestDictionary
 import ce.parser.nnparser.Comment
 import ce.parser.nnparser.RegexWord
 import ce.parser.nnparser.TargetDictionaries
@@ -9,54 +10,28 @@ import ce.parser.nnparser.WordDictionary
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-fun getDict(strings: List<String>, basiId: Int, type: Type): WordDictionary {
-    var id = basiId
-    return WordDictionary(
-        strings.map {
-            Word(
-                name = it,
-                type = type,
-                id = id++
-            )
-        }
-    )
-}
+
 
 class TokenizerUseCaseImplTest {
 
-    val keywordDict = getDict(listOf("max", "float", "int","pragma","once","namespace"), 100, Type.KEYWORD)
-    val operatorsDict = getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+","#",":","::",";"), 200, Type.OPERATOR)
-    val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)
-    val comments = WordDictionary(listOf(
-        Comment(name = "//", oneLineComment = true, id = 2000, type = Type.COMMENTS),
-        Comment(name = "/*", oneLineComment = false, multilineCommentEnd = "*/", id = 2001, type = Type.COMMENTS),
-    ))
-    val dictionaries = TargetDictionaries(
-        map = mapOf(
-            Type.SPACES to spaces,
-            Type.COMMENTS to comments,
-            Type.KEYWORD to keywordDict,
-            Type.DIGIT to WordDictionary(
-                listOf(
-                    RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT),
-                    RegexWord(name = "\\d+\\.*\\d*f*", id = 3001, type = Type.DIGIT)
-                ),
-                sortBySize = false
-            ),
-            Type.OPERATOR to operatorsDict
-        )
-    )
     val DIGIT_BASE = 3000
     val NAME_BASE = 4000
 
+    fun prepareTokenizer(): TokenizerUseCaseImpl {
+        val checkStringInDictionary = CheckStringInDictionaryImpl()
+        return TokenizerUseCaseImpl(
+            checkString = checkStringInDictionary
+        )
+    }
+
     @Test
     fun testSpaces() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <OP ->
         val result = tokenizer(
             text = "\t  \t- ",
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -70,7 +45,7 @@ class TokenizerUseCaseImplTest {
         // <KEY max><OP +>
         val result2 = tokenizer(
             text = "  max +",
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -86,12 +61,12 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testName() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <Name x><=><max><(><)>
         val result = tokenizer(
             text = "x = max\n()",
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -113,12 +88,12 @@ class TokenizerUseCaseImplTest {
     // TODO add name ids check below
     @Test
     fun testName2() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <KW float><Name max2><=><max><(><)>
         val result = tokenizer(
             text = "float max2=max()",
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -136,7 +111,7 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testCommentLine() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <Comment comment><Name a><=><max><(><)>
         val result = tokenizer(
@@ -144,7 +119,7 @@ class TokenizerUseCaseImplTest {
                 //1+comment
                 a=max()
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -156,14 +131,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testCommentLine2() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <Name a><=><max><(><)><Comment comment>
         val result = tokenizer(
             text = """
                 a=max() //1+comment
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -175,14 +150,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testVariableDeclaration() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <float><max2><=><max><(><1><,><2><)>
         val result = tokenizer(
             text = """
                 float max2=max(1,2)
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -198,14 +173,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testDigitWithPoint() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <float><max2><=><max><(><1><,><2><)>
         val result = tokenizer(
             text = """
                 float max2=max(1.2,2.341)
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -224,14 +199,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testDigitWithPointNegative() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <float><max2><=><max><(><1><,><-><2><)>
         val result = tokenizer(
             text = """
                 float max2=max(1.2,-2.341)
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -251,14 +226,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testDigitHex() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <int><a><=><0x1234>
         val result = tokenizer(
             text = """
                 int a=0xFAB
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -272,7 +247,7 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testMultiline() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <#><pragma><once><namespace><name qwe>
         val result = tokenizer(
@@ -281,7 +256,7 @@ class TokenizerUseCaseImplTest {
 
                 namespace com
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -296,14 +271,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testParseDoubleColon() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
         // <namespace><name qwe><operator ::><name goldman><operator ::><name dt1>
         val result = tokenizer(
             text = """
                 namespace com::goldman::dt1
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -313,14 +288,14 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testParseStringAssignement() {
-        val tokenizer = TokenizerUseCaseImpl()
+        val tokenizer = prepareTokenizer()
         // expected
-        // <name a><operator =><literal ><operator ;>
+        // <name a><operator =><literal "Simple string"><operator ;>
         val result = tokenizer(
             text = """
                 a = "Simple string";
             """.trimIndent(),
-            dictionaries = dictionaries,
+            dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
         )
@@ -329,6 +304,10 @@ class TokenizerUseCaseImplTest {
     }
 
     // tests
+    // // comment line
+    // /*
+    // comment multiline
+    // */
     // check ids
     // check debugFindings
     // float max2=max(1,-2)
@@ -336,5 +315,5 @@ class TokenizerUseCaseImplTest {
     // qwe->varX
     // qwe-varX
     // qwe>varX
-    // abc = "String literal"
+    // b=max();a = "Simple string max()";
 }

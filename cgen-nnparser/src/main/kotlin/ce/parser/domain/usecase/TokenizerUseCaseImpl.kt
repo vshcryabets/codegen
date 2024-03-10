@@ -7,7 +7,6 @@ import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
-import ce.parser.nnparser.WordDictionary
 import ce.parser.nnparser.WordItem
 import org.jetbrains.kotlin.javax.inject.Inject
 import kotlin.text.StringBuilder
@@ -27,26 +26,9 @@ interface TokenizerUseCase {
     ): Result
 }
 
-class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
-    fun checkString(buffer: SourceBuffer,
-                    dictionary: WordDictionary
-                    ): WordItem? {
-        val iterator = dictionary.sortedByLengthDict.iterator()
-        while (iterator.hasNext()) {
-            val it = iterator.next()
-            if (it is RegexWord) {
-                val word = buffer.nextIsRegexp(it.regexObj)
-                if (word != null) {
-                    return it.copy(name = word)
-                }
-            } else {
-                if (buffer.nextIs(it.name, ignoreCase = false)) {
-                    return it
-                }
-            }
-        }
-        return null
-    }
+class TokenizerUseCaseImpl @Inject constructor(
+    private val checkString: CheckStringInDictionaryUseCase
+) : TokenizerUseCase {
 
     fun nextToken(buffer: SourceBuffer,
                   dictinaries: TargetDictionaries,
@@ -73,9 +55,6 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         val namesDictionary = NamesDictionaryRepo(
             startId = nameBase
         )
-//        val digitsDictionary = NamesDictionaryRepo(
-//            startId = digitBase
-//        )
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()
         val debugLine2 = StringBuilder()
@@ -84,7 +63,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
         val operators = dictionaries.operators
         while (!buffer.end()) {
             // check digit
-            val digit = checkString(buffer, dictionaries.map[Type.DIGIT]!!) as RegexWord?
+            val digit = checkString(buffer, dictionaries.map[Type.DIGIT]!!)
             if (digit != null) {
                 buffer.movePosBy(digit.name.length)
                 result.add(digit)
@@ -96,7 +75,7 @@ class TokenizerUseCaseImpl @Inject constructor() : TokenizerUseCase {
             if (comment != null) {
                 buffer.movePosBy(comment.name.length)
                 val end = if (comment.oneLineComment) "\n" else comment.multilineCommentEnd
-                val commentString = buffer.readUntil2(end, false, false)
+                val commentString = buffer.readUntil(end, false, false)
                 buffer.movePosBy(end.length)
                 result.add(Word(
                     name = commentString,

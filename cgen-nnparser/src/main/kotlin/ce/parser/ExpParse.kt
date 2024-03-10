@@ -93,7 +93,10 @@ fun main(args: Array<String>) {
         ioScope = ioScope,
         loadTargetDictionariesUseCase = loadTargetDictionaries
     )
-    val buildLinearUseCase = TokenizerUseCaseImpl()
+    val checkStringInDictionary = CheckStringInDictionaryImpl();
+    val buildLinearUseCase = TokenizerUseCaseImpl(
+        checkString = checkStringInDictionary
+    )
     val processSampleUseCase = ProcessSampleUseCaseImpl(
         calcScope = calcScope,
         loadFileUseCase =  loadFileUseCase,
