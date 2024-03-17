@@ -1,5 +1,7 @@
 package ce.parser.nnparser
 
+import kotlin.math.min
+
 class SourceBuffer(
     val buffer: StringBuilder,
     val startPos: Int = 0,
@@ -13,6 +15,16 @@ class SourceBuffer(
         private set(value) {
             field = value
         }
+
+    constructor(
+        text: String,
+        startPos: Int = 0,
+        endPos: Int = text.length,
+    ) : this(
+        buffer = StringBuilder(text),
+        startPos = startPos,
+        endPos = endPos
+    )
 
     fun end(): Boolean = pos >= endPos
     fun nextIs(s: String, ignoreCase: Boolean = false): Boolean {
@@ -44,7 +56,7 @@ class SourceBuffer(
     }
 
     fun movePosBy(delta: Int) {
-        pos += delta
+        pos = min(endPos, pos + delta)
     }
 
     fun substring(startPosition: Int, endPosition: Int): String = buffer.substring(startPosition, endPosition)
@@ -54,4 +66,11 @@ class SourceBuffer(
         startPos = pos,
         endPos = endPosition
     )
+
+    override fun toString(): String {
+        val lpreview = substring(maxOf(pos - 10, startPos), minOf(pos, endPos))
+        val cpreview = substring(minOf(maxOf(pos, startPos), endPos), minOf(pos + 1, endPos))
+        val rpreview = substring(minOf(maxOf(pos + 1, startPos), endPos), minOf(pos + 10, endPos))
+        return "$startPos:$pos:$endPos >>$lpreview|$cpreview|$rpreview<<"
+    }
 }

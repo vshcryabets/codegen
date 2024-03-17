@@ -8,4 +8,10 @@ data class TargetDictionaries(
 
     val operators: WordDictionary
         get() = map[Type.OPERATOR]!!
+
+    val digits: WordDictionary
+        get() = map[Type.DIGIT]!!
+
+    val comments: WordDictionary
+        get() = map[Type.COMMENTS]!!
 }

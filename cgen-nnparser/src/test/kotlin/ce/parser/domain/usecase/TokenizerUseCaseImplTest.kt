@@ -1,15 +1,10 @@
 package ce.parser.domain.usecase
 
 import ce.parser.domain.TestDictionary
-import ce.parser.nnparser.Comment
-import ce.parser.nnparser.RegexWord
-import ce.parser.nnparser.TargetDictionaries
+import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.Type
-import ce.parser.nnparser.Word
-import ce.parser.nnparser.WordDictionary
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
 
 
 class TokenizerUseCaseImplTest {
@@ -30,7 +25,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <OP ->
         val result = tokenizer(
-            text = "\t  \t- ",
+            buffer = SourceBuffer("\t  \t- "),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -44,7 +39,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <KEY max><OP +>
         val result2 = tokenizer(
-            text = "  max +",
+            buffer = SourceBuffer("  max +"),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -65,7 +60,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <Name x><=><max><(><)>
         val result = tokenizer(
-            text = "x = max\n()",
+            buffer = SourceBuffer("x = max\n()"),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -92,7 +87,7 @@ class TokenizerUseCaseImplTest {
         // expected
         // <KW float><Name max2><=><max><(><)>
         val result = tokenizer(
-            text = "float max2=max()",
+            buffer = SourceBuffer("float max2=max()"),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -115,10 +110,12 @@ class TokenizerUseCaseImplTest {
         // expected
         // <Comment comment><Name a><=><max><(><)>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 //1+comment
                 a=max()
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -135,9 +132,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <Name a><=><max><(><)><Comment comment>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 a=max() //1+comment
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -154,9 +153,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <float><max2><=><max><(><1><,><2><)>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 float max2=max(1,2)
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -177,9 +178,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <float><max2><=><max><(><1><,><2><)>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 float max2=max(1.2,2.341)
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -203,9 +206,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <float><max2><=><max><(><1><,><-><2><)>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 float max2=max(1.2,-2.341)
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -230,9 +235,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <int><a><=><0x1234>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 int a=0xFAB
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -251,11 +258,13 @@ class TokenizerUseCaseImplTest {
         // expected
         // <#><pragma><once><namespace><name qwe>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 #pragma once
 
                 namespace com
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -275,9 +284,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <namespace><name qwe><operator ::><name goldman><operator ::><name dt1>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 namespace com::goldman::dt1
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,
@@ -292,9 +303,11 @@ class TokenizerUseCaseImplTest {
         // expected
         // <name a><operator =><literal "Simple string"><operator ;>
         val result = tokenizer(
-            text = """
+            buffer = SourceBuffer(
+                """
                 a = "Simple string";
-            """.trimIndent(),
+            """.trimIndent()
+            ),
             dictionaries = TestDictionary.dictionaries,
             nameBase = NAME_BASE,
             digitBase = DIGIT_BASE,

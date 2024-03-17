@@ -52,11 +52,11 @@ class CheckStringInDictionaryImplTest {
     @Test
     fun testProgrammableWord() {
         val useCase = getUseCase()
-        val result = useCase.invoke(
-            buffer = SourceBuffer(StringBuilder("12345"), 0),
+        val emptyResult = useCase.invoke(
+            buffer = SourceBuffer("12345"),
             dictionary = WordDictionary(
                 listOf(
-                    ProgrammableWordImpl(name = "P1", id = 3000, type = Type.DIGIT,
+                    ProgrammableWordImpl(name = "NOT", id = 3000, type = Type.DIGIT,
                         checkFnc = { buffer ->
                             CheckStringInDictionaryUseCase.EMPTY_RESULT
                         })
@@ -64,6 +64,27 @@ class CheckStringInDictionaryImplTest {
                 sortBySize = false
             )
         )
-        assertNotEquals(CheckStringInDictionaryUseCase.EMPTY_RESULT, result)
+        val oneResult = useCase.invoke(
+            buffer = SourceBuffer("12345"),
+            dictionary = WordDictionary(
+                listOf(
+                    ProgrammableWordImpl(name = "NOT", id = 3000, type = Type.DIGIT,
+                        checkFnc = { buffer ->
+                            CheckStringInDictionaryUseCase.EMPTY_RESULT
+                        }),
+                    ProgrammableWordImpl(
+                        name = "TRUE", id = 3000, type = Type.DIGIT,
+                        checkFnc = { buffer ->
+                            CheckStringInDictionaryUseCase.Result(
+                                results = listOf(Word(name = "name")),
+                                lengthInChars = buffer.length
+                            )
+                        })
+                ),
+                sortBySize = false
+            )
+        )
+        assertEquals(CheckStringInDictionaryUseCase.EMPTY_RESULT, emptyResult)
+        assertEquals(1, oneResult.results.size)
     }
 }

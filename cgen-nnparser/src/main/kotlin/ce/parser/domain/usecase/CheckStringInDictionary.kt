@@ -1,6 +1,9 @@
 package ce.parser.domain.usecase
 
-import ce.parser.nnparser.*
+import ce.parser.nnparser.ProgrammableWord
+import ce.parser.nnparser.SourceBuffer
+import ce.parser.nnparser.WordDictionary
+import ce.parser.nnparser.WordItem
 
 interface CheckStringInDictionaryUseCase {
     data class Result(
@@ -29,7 +32,10 @@ class CheckStringInDictionaryImpl: CheckStringInDictionaryUseCase {
         while (iterator.hasNext()) {
             val it = iterator.next()
             if (it is ProgrammableWord) {
-                return it.checkFnc(buffer)
+                val checkResult = it.checkFnc(buffer)
+                if (!checkResult.isEmpty()) {
+                    return checkResult
+                }
             } else {
                 if (buffer.nextIs(it.name, ignoreCase = false)) {
                     return CheckStringInDictionaryUseCase.Result(

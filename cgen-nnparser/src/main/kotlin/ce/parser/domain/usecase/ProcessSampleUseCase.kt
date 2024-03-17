@@ -2,6 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.defs.Target
 import ce.parser.SampleData
+import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.TargetDictionaries
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
@@ -41,7 +42,7 @@ class ProcessSampleUseCaseImpl @Inject constructor(
             val dictSrc = dictionaries[sampleData.sourceTarget]!!
             val dictMeta = dictionaries[Target.Meta]!!
             val srcLinearResult = tokenizerUseCase(
-                bufferSrc.toString(), dictSrc,
+                SourceBuffer(bufferSrc), dictSrc,
                 nameBase = nameBase,
                 digitBase = digitBase,
                 debugFindings = true
@@ -54,7 +55,7 @@ class ProcessSampleUseCaseImpl @Inject constructor(
                 sampleTraget = sampleData.sourceTarget
             )
             val metaLinearResult = tokenizerUseCase(
-                bufferMeta.toString(), dictMeta,
+                SourceBuffer(bufferMeta), dictMeta,
                 nameBase = nameBase,
                 digitBase = digitBase,
                 debugFindings = true

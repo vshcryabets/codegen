@@ -1,15 +1,8 @@
 package ce.parser.domain.usecase
 
 import ce.parser.domain.NamesDictionaryRepo
-import ce.parser.nnparser.Comment
-import ce.parser.nnparser.RegexWord
-import ce.parser.nnparser.SourceBuffer
-import ce.parser.nnparser.TargetDictionaries
-import ce.parser.nnparser.Type
-import ce.parser.nnparser.Word
-import ce.parser.nnparser.WordItem
+import ce.parser.nnparser.*
 import org.jetbrains.kotlin.javax.inject.Inject
-import kotlin.text.StringBuilder
 
 interface TokenizerUseCase {
     data class Result(
@@ -18,7 +11,7 @@ interface TokenizerUseCase {
         val namesDictionary: List<Word>
     )
     operator fun invoke(
-        text: String,
+        buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
         nameBase: Int,
         digitBase: Int,
@@ -46,8 +39,28 @@ class TokenizerUseCaseImpl @Inject constructor(
         return buffer.substring(startPosition, buffer.pos)
     }
 
+    fun findInDictionary(
+        buffer: SourceBuffer,
+        dictionary: WordDictionary,
+        resultsList: MutableList<WordItem>,
+        debugLine1: StringBuilder,
+        debugLine2: StringBuilder,
+    ): Boolean {
+        val searchResult = checkString(buffer, dictionary)
+        if (!searchResult.isEmpty()) {
+            val debugLine = buffer.substring(buffer.pos, buffer.pos + searchResult.lengthInChars)
+            buffer.movePosBy(searchResult.lengthInChars)
+            resultsList.addAll(searchResult.results)
+            debugLine1.append(debugLine).append(" ")
+            debugLine2.append(searchResult.results.map {
+                it.id
+            }.joinToString(separator = ", ")).append(", ")
+        }
+        return !searchResult.isEmpty()
+    }
+
     override operator fun invoke(
-        text: String,
+        buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
         nameBase: Int,
         digitBase: Int,
@@ -59,31 +72,14 @@ class TokenizerUseCaseImpl @Inject constructor(
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()
         val debugLine2 = StringBuilder()
-        val buffer = SourceBuffer(StringBuilder(text), 0)
         val result = mutableListOf<WordItem>()
-        val operators = dictionaries.operators
         while (!buffer.end()) {
             // check digit
-            val digit = checkString(buffer, dictionaries.map[Type.DIGIT]!!)
-            if (!digit.isEmpty()) {
-                val debugLine = buffer.substring(buffer.pos, buffer.pos + digit.lengthInChars)
-                buffer.movePosBy(digit.lengthInChars)
-                result.addAll(digit.results)
-                debugLine1.append(debugLine).append(" ")
-                debugLine2.append(digit.results.map {
-                    it.id
-                }.joinToString(separator = ", ")).append(", ")
+            if (findInDictionary(buffer, dictionaries.digits, result, debugLine1, debugLine2)) {
                 continue
             }
-            val comment = checkString(buffer, dictionaries.map[Type.COMMENTS]!!)
-            if (!comment.isEmpty()) {
-                val debugLine = buffer.substring(buffer.pos, buffer.pos + comment.lengthInChars)
-                buffer.movePosBy(comment.lengthInChars)
-                result.addAll(digit.results)
-                debugLine1.append(debugLine).append(" ")
-                debugLine2.append(comment.results.map {
-                    it.id
-                }.joinToString(separator = ", ")).append(", ")
+
+            if (findInDictionary(buffer, dictionaries.comments, result, debugLine1, debugLine2)) {
                 continue
             }
             val space = checkString(buffer, dictionaries.map[Type.SPACES]!!)
@@ -102,17 +98,10 @@ class TokenizerUseCaseImpl @Inject constructor(
                 }
                 continue
             }
-            val operator = checkString(buffer, operators)
-            if (!operator.isEmpty()) {
-                val debugLine = buffer.substring(buffer.pos, buffer.pos + operator.lengthInChars)
-                buffer.movePosBy(operator.lengthInChars)
-                result.addAll(operator.results)
-                debugLine1.append(debugLine).append(" ")
-                debugLine2.append(operator.results.map {
-                    it.id
-                }.joinToString(separator = ", ")).append(", ")
+            if (findInDictionary(buffer, dictionaries.operators, result, debugLine1, debugLine2)) {
                 continue
             }
+
             // name or keyword?
             val nextToken = nextToken(buffer, dictionaries)
             // TOD
