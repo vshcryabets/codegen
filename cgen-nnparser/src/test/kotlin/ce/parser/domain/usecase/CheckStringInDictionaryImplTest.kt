@@ -19,6 +19,22 @@ class CheckStringInDictionaryImplTest {
     }
 
     @Test
+    fun testIsEmpty() {
+        val useCase = getUseCase()
+        val result = useCase.invoke(
+            buffer = SourceBuffer(StringBuilder("AAAA"), 0),
+            dictionary = WordDictionary(
+                listOf(
+                    Word(name = "BBBB", id = 3000, type = Type.DIGIT)
+                ),
+                sortBySize = false
+            )
+        )
+        assertNotNull(result)
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
     fun testRegexpWord() {
         val useCase = getUseCase()
         val result = useCase.invoke(
@@ -42,12 +58,12 @@ class CheckStringInDictionaryImplTest {
                 listOf(
                     ProgrammableWordImpl(name = "P1", id = 3000, type = Type.DIGIT,
                         checkFnc = { buffer ->
-                            null
+                            CheckStringInDictionaryUseCase.EMPTY_RESULT
                         })
                 ),
                 sortBySize = false
             )
         )
-        assertNotNull(result)
+        assertNotEquals(CheckStringInDictionaryUseCase.EMPTY_RESULT, result)
     }
 }

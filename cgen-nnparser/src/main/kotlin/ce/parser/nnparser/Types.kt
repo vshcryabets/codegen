@@ -1,5 +1,7 @@
 package ce.parser.nnparser
 
+import ce.parser.domain.usecase.CheckStringInDictionaryUseCase
+
 enum class Type {
     SPACES,
     COMMENTS,
@@ -19,7 +21,7 @@ interface WordItem {
 }
 
 interface ProgrammableWord: WordItem {
-    val checkFnc: (SourceBuffer)-> MatchResult?
+    val checkFnc: (SourceBuffer)-> CheckStringInDictionaryUseCase.Result
 }
 
 data class Comment(
@@ -40,15 +42,18 @@ data class RegexWord(
     override val name: String,
     override val id: Int = -1,
     override val type: Type = Type.OPERATOR,
-    val regexObj: Regex = Regex(name),
-    override val checkFnc: (SourceBuffer) -> MatchResult? = { buffer ->
-        val result = regexObj.find(buffer.buffer, buffer.pos)
+    val regexObj: Regex = name.toRegex(),
+    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
+        val result = regexObj.matchAt(buffer.buffer, buffer.pos)
         if (result == null) {
-            null
+            CheckStringInDictionaryUseCase.EMPTY_RESULT
         } else if (result.range.start != buffer.pos) {
-            null
+            CheckStringInDictionaryUseCase.EMPTY_RESULT
         } else {
-            result
+            CheckStringInDictionaryUseCase.Result(
+                results = listOf( Word(name = result.value, id = id, type = type)),
+                lengthInChars = result.value.length
+            )
         }
     }
 ) : ProgrammableWord
@@ -57,5 +62,5 @@ data class ProgrammableWordImpl(
     override val name: String,
     override val id: Int = -1,
     override val type: Type = Type.OPERATOR,
-    override val checkFnc: (SourceBuffer)-> MatchResult?
+    override val checkFnc: (SourceBuffer)-> CheckStringInDictionaryUseCase.Result
 ) : ProgrammableWord

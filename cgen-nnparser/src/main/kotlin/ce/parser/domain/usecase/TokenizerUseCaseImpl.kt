@@ -34,10 +34,11 @@ class TokenizerUseCaseImpl @Inject constructor(
                   dictinaries: TargetDictionaries,
                   ): String {
         val startPosition = buffer.pos
+        val empty =  CheckStringInDictionaryUseCase.EMPTY_RESULT
         while (!buffer.end()) {
-            if ((checkString(buffer, dictinaries.map[Type.SPACES]!!) != null) ||
-                (checkString(buffer, dictinaries.map[Type.COMMENTS]!!) != null) ||
-                (checkString(buffer, dictinaries.operators) != null)) {
+            if ((checkString(buffer, dictinaries.map[Type.SPACES]!!) != empty) ||
+                (checkString(buffer, dictinaries.map[Type.COMMENTS]!!) != empty) ||
+                (checkString(buffer, dictinaries.operators) != empty)) {
                 break
             }
             buffer.movePosBy(1)
@@ -64,49 +65,57 @@ class TokenizerUseCaseImpl @Inject constructor(
         while (!buffer.end()) {
             // check digit
             val digit = checkString(buffer, dictionaries.map[Type.DIGIT]!!)
-            if (digit != null) {
-                buffer.movePosBy(digit.name.length)
-                result.add(digit)
-                debugLine1.append(digit.name).append(" ")
-                debugLine2.append(digit.id).append(", ")
+            if (!digit.isEmpty()) {
+                val debugLine = buffer.substring(buffer.pos, buffer.pos + digit.lengthInChars)
+                buffer.movePosBy(digit.lengthInChars)
+                result.addAll(digit.results)
+                debugLine1.append(debugLine).append(" ")
+                debugLine2.append(digit.results.map {
+                    it.id
+                }.joinToString(separator = ", ")).append(", ")
                 continue
             }
-            val comment = checkString(buffer, dictionaries.map[Type.COMMENTS]!!) as Comment?
-            if (comment != null) {
-                buffer.movePosBy(comment.name.length)
-                val end = if (comment.oneLineComment) "\n" else comment.multilineCommentEnd
-                val commentString = buffer.readUntil(end, false, false)
-                buffer.movePosBy(end.length)
-                result.add(Word(
-                    name = commentString,
-                    type = Type.COMMENTS
-                ))
+            val comment = checkString(buffer, dictionaries.map[Type.COMMENTS]!!)
+            if (!comment.isEmpty()) {
+                val debugLine = buffer.substring(buffer.pos, buffer.pos + comment.lengthInChars)
+                buffer.movePosBy(comment.lengthInChars)
+                result.addAll(digit.results)
+                debugLine1.append(debugLine).append(" ")
+                debugLine2.append(comment.results.map {
+                    it.id
+                }.joinToString(separator = ", ")).append(", ")
                 continue
             }
             val space = checkString(buffer, dictionaries.map[Type.SPACES]!!)
-            if (space != null) {
-                buffer.movePosBy(space.name.length)
-                if (space.name == "\n") {
-                    debugFindigs.append("> ")
-                    debugFindigs.append(debugLine1)
-                    debugFindigs.append("\n")
-                    debugFindigs.append(debugLine2)
-                    debugFindigs.append("\n")
-                    debugLine1.clear()
-                    debugLine2.clear()
+            if (!space.isEmpty()) {
+                buffer.movePosBy(space.lengthInChars)
+                space.results.forEach {
+                    if (it.name == "\n") {
+                        debugFindigs.append("> ")
+                        debugFindigs.append(debugLine1)
+                        debugFindigs.append("\n")
+                        debugFindigs.append(debugLine2)
+                        debugFindigs.append("\n")
+                        debugLine1.clear()
+                        debugLine2.clear()
+                    }
                 }
                 continue
             }
             val operator = checkString(buffer, operators)
-            if (operator != null) {
-                buffer.movePosBy(operator.name.length)
-                result.add(operator)
-                debugLine1.append(operator.name).append(" ")
-                debugLine2.append(operator.id).append(", ")
+            if (!operator.isEmpty()) {
+                val debugLine = buffer.substring(buffer.pos, buffer.pos + operator.lengthInChars)
+                buffer.movePosBy(operator.lengthInChars)
+                result.addAll(operator.results)
+                debugLine1.append(debugLine).append(" ")
+                debugLine2.append(operator.results.map {
+                    it.id
+                }.joinToString(separator = ", ")).append(", ")
                 continue
             }
             // name or keyword?
             val nextToken = nextToken(buffer, dictionaries)
+            // TOD
             val keyword = dictionaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)
             }

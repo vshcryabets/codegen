@@ -2,50 +2,26 @@ package ce.parser.nnparser
 
 class SourceBuffer(
     val buffer: StringBuilder,
-    startPos: Int
+    val startPos: Int = 0,
+    val endPos: Int = buffer.length
 ) {
-    companion object {
-        const val operators = "({}[].+-/*^%$#@!<>,;"
-        const val spaces = " \n\r\t "
-        const val digits = "0123456789"
-        const val digitsHex = "0123456789ABCDEF"
-    }
 
     val length: Int
-        get() = buffer.length
+        get() = endPos - startPos
+
     var pos: Int = startPos
         private set(value) {
             field = value
         }
 
-    fun end(): Boolean = pos >= buffer.length
+    fun end(): Boolean = pos >= endPos
     fun nextIs(s: String, ignoreCase: Boolean = false): Boolean {
-        if (pos + s.length > buffer.length) {
+        if (pos + s.length > endPos) {
             // out of buffer size
             return false
         }
         val substr = buffer.subSequence(pos, pos + s.length).toString()
         return substr.equals(s, ignoreCase)
-    }
-
-//    fun nextIsRegexp(regexp: Regex): String? {
-//        val result = regexp.find(buffer, pos)
-//        if (result == null) {
-//            return null
-//        } else if (result.range.start != pos) {
-//            return null
-//        }
-//        return result.value
-//    }
-
-    fun nextIsFnc(checkFnc: (StringBuilder, Int)-> MatchResult?): String? {
-        val result = checkFnc(buffer, pos)
-        if (result == null) {
-            return null
-        } else if (result.range.start != pos) {
-            return null
-        }
-        return result.value
     }
 
     fun readUntil(end: String,
@@ -63,7 +39,7 @@ class SourceBuffer(
             val ch = buffer.get(pos)
             pos++
             wordBuffer.append(ch)
-        } while (pos < buffer.length)
+        } while (pos < endPos)
         return wordBuffer.toString()
     }
 
@@ -73,4 +49,9 @@ class SourceBuffer(
 
     fun substring(startPosition: Int, endPosition: Int): String = buffer.substring(startPosition, endPosition)
 
+    fun subbuffer(endPosition: Int) = SourceBuffer(
+        buffer = buffer,
+        startPos = pos,
+        endPos = endPosition
+    )
 }
