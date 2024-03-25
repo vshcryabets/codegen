@@ -24,13 +24,16 @@ interface ProgrammableWord: WordItem {
     val checkFnc: (SourceBuffer)-> CheckStringInDictionaryUseCase.Result
 }
 
-data class Comment(
-    override val name: String,
-    val oneLineComment: Boolean = true,
-    val multilineCommentEnd: String = "",
-    override val id: Int = -1,
-    override val type: Type = Type.OPERATOR
-) : WordItem
+//data class Comment(
+//    override val name: String,
+//    val oneLineComment: Boolean = true,
+//    val multilineCommentEnd: String = "",
+//    override val id: Int = -1,
+//    override val type: Type = Type.OPERATOR,
+//    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
+//
+//    }
+//) : ProgrammableWord
 
 data class Word(
     override val name: String,
@@ -51,7 +54,12 @@ data class RegexWord(
             CheckStringInDictionaryUseCase.EMPTY_RESULT
         } else {
             CheckStringInDictionaryUseCase.Result(
-                results = listOf( Word(name = result.value, id = id, type = type)),
+                results = listOf(
+                    Word(
+                        name = if (result.groups.size > 1) result.groups[1]!!.value else result.value,
+                        id = id, type = type
+                    )
+                ),
                 lengthInChars = result.value.length
             )
         }

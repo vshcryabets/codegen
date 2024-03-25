@@ -317,7 +317,6 @@ class TokenizerUseCaseImplTest {
     }
 
     // tests
-    // // comment line
     // /*
     // comment multiline
     // */
