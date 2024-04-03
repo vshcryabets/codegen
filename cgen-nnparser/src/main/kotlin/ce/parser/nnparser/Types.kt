@@ -72,3 +72,27 @@ data class ProgrammableWordImpl(
     override val type: Type = Type.OPERATOR,
     override val checkFnc: (SourceBuffer)-> CheckStringInDictionaryUseCase.Result
 ) : ProgrammableWord
+
+data class ClikeLiteralWord(
+    override val name: String,
+    override val id: Int = -1,
+    override val type: Type = Type.LITERAL,
+    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
+        if (buffer.nextIs("\"")) {
+            buffer.readUntil("\"", ignoreCase = true, includeEnd = true)
+            CheckStringInDictionaryUseCase.EMPTY_RESULT
+        } else {
+            CheckStringInDictionaryUseCase.EMPTY_RESULT
+        }
+//            CheckStringInDictionaryUseCase.Result(
+//                results = listOf(
+//                    Word(
+//                        name = if (result.groups.size > 1) result.groups[1]!!.value else result.value,
+//                        id = id, type = type
+//                    )
+//                ),
+//                lengthInChars = result.value.length
+//            )
+//        }
+    }
+) : ProgrammableWord

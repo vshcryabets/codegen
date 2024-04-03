@@ -41,7 +41,13 @@ object TestDictionary {
                 ),
                 sortBySize = false
             ),
-            Type.OPERATOR to operatorsDict
+            Type.OPERATOR to operatorsDict,
+            Type.LITERAL to WordDictionary(
+                listOf(
+                    RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT)
+                ),
+                sortBySize = false
+            )
         )
     )
 

@@ -73,4 +73,14 @@ class SourceBuffer(
         val rpreview = substring(minOf(maxOf(pos + 1, startPos), endPos), minOf(pos + 10, endPos))
         return "$startPos:$pos:$endPos >>$lpreview|$cpreview|$rpreview<<"
     }
+
+    fun readUntil(checkFnc: (Int, Int, Int, StringBuilder) -> Boolean): String? {
+        for (current in pos..endPos - 1) {
+            println("pso=$pos current=$current")
+            val check = checkFnc(pos, current, endPos, buffer)
+            if (check)
+                return substring(pos, current)
+        }
+        return null
+    }
 }

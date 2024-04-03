@@ -36,9 +36,50 @@ class SourceBufferTest {
 
     @Test
     fun substring() {
+        val buffer = SourceBuffer(text = "54A134216547")
+        assertEquals("54A13421", buffer.substring(0,7))
     }
 
     @Test
     fun subbuffer() {
+    }
+
+    @Test
+    fun readUntilTest() {
+        val buffer = SourceBuffer(text = "54A134216547")
+        val res = buffer.readUntil { start, pos, end, buffer ->
+            if (buffer[pos] == '1' && pos > start && buffer[pos - 1] != 'A') {
+                true
+            } else {
+                false
+            }
+        }
+        assertEquals("54A13421", res)
+    }
+
+    @Test
+    fun readUntilTest2() {
+        val buffer = SourceBuffer(text = "A1A1")
+        val res = buffer.readUntil { start, pos, end, buffer ->
+            if (buffer[pos] == '1' && pos > start && buffer[pos - 1] != 'A') {
+                true
+            } else {
+                false
+            }
+        }
+        assertEquals(null, res)
+    }
+
+    @Test
+    fun readUntilTest3() {
+        val buffer = SourceBuffer(text = "A1A11")
+        val res = buffer.readUntil { start, pos, end, buffer ->
+            if (buffer[pos] == '1' && pos > start && buffer[pos - 1] != 'A') {
+                true
+            } else {
+                false
+            }
+        }
+        assertEquals("A1A11", res)
     }
 }
