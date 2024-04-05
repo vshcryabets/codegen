@@ -1,5 +1,6 @@
 package ce.parser.nnparser
 
+import kotlin.math.max
 import kotlin.math.min
 
 class SourceBuffer(
@@ -56,7 +57,7 @@ class SourceBuffer(
     }
 
     fun movePosBy(delta: Int) {
-        pos = min(endPos, pos + delta)
+        pos = max(startPos, min(endPos, pos + delta))
     }
 
     fun substring(startPosition: Int, endPosition: Int): String = buffer.substring(startPosition, endPosition)
@@ -76,7 +77,6 @@ class SourceBuffer(
 
     fun readUntil(checkFnc: (Int, Int, Int, StringBuilder) -> Boolean): String? {
         for (current in pos..endPos - 1) {
-            println("pso=$pos current=$current")
             val check = checkFnc(pos, current, endPos, buffer)
             if (check)
                 return substring(pos, current)

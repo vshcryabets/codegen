@@ -20,8 +20,8 @@ interface WordItem {
     val id: Int
 }
 
-interface ProgrammableWord: WordItem {
-    val checkFnc: (SourceBuffer)-> CheckStringInDictionaryUseCase.Result
+interface ProgrammableWord : WordItem {
+    val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result
 }
 
 //data class Comment(
@@ -70,7 +70,7 @@ data class ProgrammableWordImpl(
     override val name: String,
     override val id: Int = -1,
     override val type: Type = Type.OPERATOR,
-    override val checkFnc: (SourceBuffer)-> CheckStringInDictionaryUseCase.Result
+    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result
 ) : ProgrammableWord
 
 data class ClikeLiteralWord(
@@ -79,20 +79,27 @@ data class ClikeLiteralWord(
     override val type: Type = Type.LITERAL,
     override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
         if (buffer.nextIs("\"")) {
-            buffer.readUntil("\"", ignoreCase = true, includeEnd = true)
-            CheckStringInDictionaryUseCase.EMPTY_RESULT
+            buffer.movePosBy(1)
+            val findLiteral = buffer.readUntil { start, pos, end, buffer ->
+                return@readUntil (buffer[pos] == '"' && pos > start && buffer[pos - 1] != '\\')
+            }
+            buffer.movePosBy(-1)
+            if (findLiteral == null) {
+                CheckStringInDictionaryUseCase.EMPTY_RESULT
+            } else {
+                CheckStringInDictionaryUseCase.Result(
+                    results = listOf(
+                        Word(
+                            name = "\"$findLiteral\"",
+                            id = id, type = type
+                        )
+                    ),
+                    lengthInChars = findLiteral.length + 2
+                )
+            }
         } else {
             CheckStringInDictionaryUseCase.EMPTY_RESULT
         }
-//            CheckStringInDictionaryUseCase.Result(
-//                results = listOf(
-//                    Word(
-//                        name = if (result.groups.size > 1) result.groups[1]!!.value else result.value,
-//                        id = id, type = type
-//                    )
-//                ),
-//                lengthInChars = result.value.length
-//            )
-//        }
+
     }
 ) : ProgrammableWord
