@@ -43,6 +43,7 @@ var dictinariesDirectory: String = "./dictionary/"
 var globalDicts = emptyMap<Target, TargetDictionaries>()
 var globalNameBase = 1000000
 var globalDigitBase = globalNameBase * 2
+var globalStringLiteralsBase = globalNameBase * 3
 
 fun cleanSource() {
     globalSources.clear()
@@ -112,7 +113,8 @@ fun main(args: Array<String>) {
     runBlocking {
         processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts,
             nameBase = globalNameBase,
-            digitBase = globalDigitBase)
+            digitBase = globalDigitBase,
+            stringLiteralsBase = globalStringLiteralsBase)
     }
     println("END")
 

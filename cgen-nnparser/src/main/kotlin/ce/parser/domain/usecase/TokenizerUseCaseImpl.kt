@@ -8,13 +8,16 @@ interface TokenizerUseCase {
     data class Result(
         val words: List<WordItem>,
         val debugFindings: StringBuilder,
-        val namesDictionary: List<Word>
+        val namesDictionary: List<Word>,
+        val digitsDictionary: List<Word>,
+        val stringsDictionary: List<Word>,
     )
     operator fun invoke(
         buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
         nameBase: Int,
         digitBase: Int,
+        stringLiteralsBase: Int,
         debugFindings: Boolean = false,
     ): Result
 }
@@ -64,16 +67,22 @@ class TokenizerUseCaseImpl @Inject constructor(
         dictionaries: TargetDictionaries,
         nameBase: Int,
         digitBase: Int,
+        stringLiteralsBase: Int,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
-        val namesDictionary = NamesDictionaryRepo(
-            startId = nameBase
-        )
+        val namesDictionary = NamesDictionaryRepo(startId = nameBase)
+        val digitsDictionary = NamesDictionaryRepo(startId = nameBase)
+        val stringLiteralsDictionary = NamesDictionaryRepo(startId = nameBase)
+
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()
         val debugLine2 = StringBuilder()
         val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
+            // check string literal
+            if (findInDictionary(buffer, dictionaries.stringLiterals, result, debugLine1, debugLine2)) {
+                continue
+            }
             // check digit
             if (findInDictionary(buffer, dictionaries.digits, result, debugLine1, debugLine2)) {
                 continue
@@ -123,7 +132,9 @@ class TokenizerUseCaseImpl @Inject constructor(
         return TokenizerUseCase.Result(
             words = result,
             debugFindings = debugFindigs,
-            namesDictionary = namesDictionary.exportToWordsList()
+            namesDictionary = namesDictionary.exportToWordsList(),
+            digitsDictionary = digitsDictionary.exportToWordsList(),
+            stringsDictionary = stringLiteralsDictionary.exportToWordsList()
         )
     }
 }

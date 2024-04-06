@@ -9,7 +9,6 @@ enum class Type {
     KEYWORD,
     NAME,
     DIGIT,
-    LITERAL,
     UNKNOWN,
     STRING_LITERAL
 }
@@ -76,7 +75,7 @@ data class ProgrammableWordImpl(
 data class ClikeLiteralWord(
     override val name: String,
     override val id: Int = -1,
-    override val type: Type = Type.LITERAL,
+    override val type: Type = Type.STRING_LITERAL,
     override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
         if (buffer.nextIs("\"")) {
             buffer.movePosBy(1)

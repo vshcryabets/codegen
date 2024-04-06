@@ -14,4 +14,7 @@ data class TargetDictionaries(
 
     val comments: WordDictionary
         get() = map[Type.COMMENTS]!!
+
+    val stringLiterals: WordDictionary
+        get() = map[Type.STRING_LITERAL]!!
 }

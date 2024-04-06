@@ -17,6 +17,7 @@ interface ProcessSampleUseCase {
         dictionaries: Map<Target, TargetDictionaries>,
         nameBase: Int,
         digitBase: Int,
+        stringLiteralsBase: Int,
     )
 }
 
@@ -33,6 +34,7 @@ class ProcessSampleUseCaseImpl @Inject constructor(
         dictionaries: Map<Target, TargetDictionaries>,
         nameBase: Int,
         digitBase: Int,
+        stringLiteralsBase: Int,
     ) {
         withContext(calcScope.coroutineContext) {
             val fileSrc = File(sampleData.sourceFile)
@@ -45,7 +47,8 @@ class ProcessSampleUseCaseImpl @Inject constructor(
                 SourceBuffer(bufferSrc), dictSrc,
                 nameBase = nameBase,
                 digitBase = digitBase,
-                debugFindings = true
+                debugFindings = true,
+                stringLiteralsBase = stringLiteralsBase,
             )
             // write stc results
             writeResultsUseCase.invoke(
@@ -58,7 +61,8 @@ class ProcessSampleUseCaseImpl @Inject constructor(
                 SourceBuffer(bufferMeta), dictMeta,
                 nameBase = nameBase,
                 digitBase = digitBase,
-                debugFindings = true
+                debugFindings = true,
+                stringLiteralsBase = stringLiteralsBase,
             )
             // write meta results
             writeResultsUseCase.invoke(

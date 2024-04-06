@@ -42,9 +42,9 @@ object TestDictionary {
                 sortBySize = false
             ),
             Type.OPERATOR to operatorsDict,
-            Type.LITERAL to WordDictionary(
+            Type.STRING_LITERAL to WordDictionary(
                 listOf(
-                    RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT)
+                    ClikeLiteralWord(name = "SimpleString", id = 4000, type = Type.STRING_LITERAL)
                 ),
                 sortBySize = false
             )
