@@ -23,14 +23,14 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
-        classpath("com.github.vshcryabets:codegen:43ed923e5d")
+        classpath("com.github.vshcryabets:codegen:cafbd0e2b3")
     }
 }
 
 dependencies {
 //    api(project(":cgen-lib"))
 //    api(project(":cgen-console"))
-    implementation("com.github.vshcryabets:codegen:43ed923e5d")
+    implementation("com.github.vshcryabets:codegen:cafbd0e2b3")
 }
 
 kotlin {
