@@ -7,14 +7,17 @@ import javax.inject.Inject
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
     CodeFormatterUseCaseImpl(codeStyleRepo) {
 
-    override fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
-        super.processLeaf(input, outputParent, indent)
-    }
-
-    override fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node? {
+    override fun processNode(
+        inputQueue: MutableList<Leaf>,
+        outputParent: Node?,
+        indent: Int,
+        prev: Leaf?
+    ): Node? {
+        val input = inputQueue.first()
         return when (input) {
             is OutBlockArguments -> {
                 if (input.subs.size > 1) {
+                    inputQueue.removeFirst()
                     // multiple lines
                     input.copyLeaf(copySubs = false).apply {
                         outputParent?.addSub(NlSeparator())
@@ -24,10 +27,11 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     }
                 } else {
                     // single argument
-                    super.processNode(input, outputParent, indent, next, prev)
+                    super.processNode(inputQueue, outputParent, indent, prev)
                 }
             }
             is OutBlock -> {
+                inputQueue.removeFirst()
                 input.copyLeaf(copySubs = false).apply {
                     outputParent?.addSub(this)
                     // find out block args
@@ -37,7 +41,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     if (args != null) {
                         input.subs.remove(args)
                         addKeyword("(")
-                        processNode(args, this, indent, null, null)
+                        processNode(mutableListOf(args), this, indent, null)
                         addKeyword(")")
                     }
                     if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
@@ -51,8 +55,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                 }
             }
 
-            is ArgumentNode -> formatArgumentNode(input, outputParent, indent, next, prev)
-            else -> super.processNode(input, outputParent, indent, next, prev)
+            is ArgumentNode -> {
+                inputQueue.removeFirst()
+                val next = inputQueue.firstOrNull()
+                formatArgumentNode(input, outputParent, indent, next, prev)
+            }
+
+            else -> super.processNode(inputQueue, outputParent, indent, prev)
         }
     }
 
@@ -69,7 +78,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         return result
     }
 
-    private fun formatArgumentNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node {
+    private fun formatArgumentNode(
+        input: Node,
+        outputParent: Node?,
+        indent: Int,
+        next: Leaf?,
+        prev: Leaf?
+    ): Node {
         return input.copyLeaf(copySubs = false).apply {
             if (next is ArgumentNode || prev is ArgumentNode) {
                 outputParent?.subs?.addAll(getIndents(indent))
