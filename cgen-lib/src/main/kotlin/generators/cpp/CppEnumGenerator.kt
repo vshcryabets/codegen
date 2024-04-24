@@ -47,6 +47,7 @@ class CppEnumGenerator(
                 }
             }
         }
+        region.addSeparator(";")
 
 
 //

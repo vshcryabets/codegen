@@ -51,6 +51,7 @@ class CppEnumGeneratorTest {
         //              <EnumLeaf><B><=><2></<EnumLeaf>
         //              <EnumLeaf><C><=><33></<EnumLeaf>
         //          </OutBlock>
+        //          <;>
         //        </region>
         //     </namespace>
         // </CppHeaderFile>
@@ -61,12 +62,14 @@ class CppEnumGeneratorTest {
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
         Assert.assertEquals(1, outNamespace.subs.size)
         val region = outNamespace.findOrNull(RegionImpl::class.java)!!
-        Assert.assertEquals(2, region.subs.size)
+        Assert.assertEquals(3, region.subs.size)
         Assert.assertEquals(CommentsBlock::class.java, region.subs[0]::class.java)
         Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)
         Assert.assertEquals(OutBlock::class.java, region.subs[1]::class.java)
         val outBlock = region.findOrNull(OutBlock::class.java)!!
         Assert.assertEquals(3, outBlock.subs.size)
+
+        Assert.assertEquals(Separator::class.java, region.subs[2]::class.java)
 
     }
 }

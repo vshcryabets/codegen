@@ -9,11 +9,12 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
     protected val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun <T : Node> invoke(input: T): T {
-        return processNode(input, null, 0, null, null) as T
+        return processNode(mutableListOf(input), null, 0, null) as T
     }
 
-    protected open fun processLeaf(input: Leaf, outputParent: Node, indent: Int) {
+    protected open fun processLeaf(inputQueue: MutableList<Leaf>, outputParent: Node, indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
+        val input = inputQueue.first()
         when (input) {
             is CommentLeaf -> {
                 val leaf = CommentLeaf(codeStyleRepo.singleComment() + input.name)
@@ -36,11 +37,58 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         nodesToAdd.forEach {
             outputParent.addSub(it)
         }
+        inputQueue.removeFirst()
     }
 
     protected fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
-    protected open fun processNode(input: Node, outputParent: Node?, indent: Int, next: Leaf?, prev: Leaf?): Node? {
+    protected open fun processOutBlock(
+        input: OutBlock,
+        outputParent: Node,
+        indent: Int,
+        prev: Leaf?,
+        inputQueue: MutableList<Leaf>
+    ): OutBlock =
+        input.copyLeaf(copySubs = false).apply {
+            addIndents(outputParent, indent)
+            outputParent.addSub(this)
+            // find out block args
+            val args = input.subs.findLast {
+                it is OutBlockArguments
+            }
+            if (args != null) {
+                input.subs.remove(args)
+                addKeyword("(")
+                addSub(args)
+                addKeyword(")")
+            }
+            addSub(Space())
+            addKeyword("{")
+            addSeparatorNewLine()
+            processSubs(input, this, indent + 1)
+            addIndents(this, indent)
+            addKeyword("}")
+            val next = inputQueue.firstOrNull()
+            if (next != null && next is Separator)
+                processSeparatorAfterOutBlock(inputQueue, outputParent)
+            outputParent.addSeparatorNewLine()
+        }
+
+    protected open fun processSeparatorAfterOutBlock(
+        inputQueue: MutableList<Leaf>,
+        outputParent: Node
+    ) {
+    }
+
+    protected open fun processNode(
+        inputQueue: MutableList<Leaf>,
+        outputParent: Node?,
+        indent: Int,
+        prev: Leaf?
+    ): Node? {
+        val input = inputQueue.first()
+        inputQueue.removeFirst()
+        val next = inputQueue.firstOrNull()
         if (input is FileData) {
             if (!input.isDirty) {
                 return null
@@ -69,32 +117,10 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
             is ConstantNode -> formatConstantNode(input, outputParent, indent, next, prev)
 
-            is OutBlock -> {
-                (input.copyLeaf(copySubs = false) as OutBlock).apply {
-                    addIndents(outputParent, indent)
-                    outputParent?.addSub(this)
-                    // find out block args
-                    val args = input.subs.findLast {
-                        it is OutBlockArguments
-                    }
-                    if (args != null) {
-                        input.subs.remove(args)
-                        addKeyword("(")
-                        addSub(args)
-                        addKeyword(")")
-                    }
-                    addSub(Space())
-                    addKeyword("{")
-                    addSeparatorNewLine()
-                    processSubs(input, this, indent + 1)
-                    addIndents(this, indent)
-                    addKeyword("}")
-                    outputParent?.addSeparatorNewLine()
-                }
-            }
+            is OutBlock -> processOutBlock(input, outputParent!!, indent, prev, inputQueue)
 
             is NamespaceBlock -> {
-                (input.copyLeaf(copySubs = false) as Node).apply {
+                input.copyLeaf(copySubs = false).apply {
                     outputParent?.addSub(this)
                     addSub(Space())
                     addKeyword("{")
@@ -115,19 +141,27 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             else -> {
                 val node = input.copyLeaf(copySubs = false) as Node
                 outputParent?.addSub(node)
-                processSubs(input, node, indent)
+                processSubs(input as Node, node, indent)
                 node
             }
         }
     }
 
-    open fun formatConstantNode(input: ConstantNode, parent: Node?, indent: Int, next: Leaf?, prev: Leaf?): ConstantNode {
+    open fun formatConstantNode(
+        input: ConstantNode,
+        parent: Node?,
+        indent: Int,
+        next: Leaf?,
+        prev: Leaf?
+    ): ConstantNode {
         val res = input.copyLeaf(copySubs = false).apply {
             addIndents(parent, indent)
             parent?.addSub(this)
-            input.subs.forEach {
-                processLeaf(it, this, indent)
-                if ((it !is RValue) and (it !is Separator)) {
+            val queue = input.subs.toMutableList()
+            while (queue.isNotEmpty()) {
+                val first = queue.first()
+                processLeaf(queue, this, indent)
+                if ((first !is RValue) and (first !is Separator)) {
                     this.addSub(Space())
                 }
             }
@@ -152,15 +186,16 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
 
     protected open fun processSubs(input: Node, output: Node, indent: Int) {
-        for (i in 0..input.subs.size - 1) {
-            val current = input.subs[i]
-            val next = if (i < input.subs.size - 1) input.subs[i + 1] else null
-            val prev = if (i > 0) input.subs[i - 1] else null
+        val subsQueue = input.subs.toMutableList()
+        var prev: Leaf? = null
+        while (subsQueue.isNotEmpty()) {
+            val current = subsQueue.first()
             if (current is Node) {
-                processNode(current, output, indent, next, prev)
+                processNode(subsQueue, output, indent, prev)
             } else {
-                processLeaf(current, output, indent)
+                processLeaf(subsQueue, output, indent)
             }
+            prev = current
         }
     }
 

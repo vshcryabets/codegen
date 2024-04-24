@@ -34,6 +34,7 @@ class CodeFormatterCxxUseCaseImplTest {
                 addEnumLeaf("C")
                 addEnumLeaf("D")
             }
+            addSeparator(";")
         }
         val output = formatter(input)
         // expected result
@@ -46,11 +47,13 @@ class CodeFormatterCxxUseCaseImplTest {
         //        <Indent> <EnumLeaf D> <nl>
         //        <}>
         //     </OutBlock>
+        //     <;>
         //     <NL>
         // </Region>
-        Assert.assertEquals(2, output.subs.size)
+        Assert.assertEquals(3, output.subs.size)
         val outBlock = output.subs[0] as OutBlock
         Assert.assertEquals(19, outBlock.subs.size)
+        Assert.assertEquals(Separator::class.java, output.subs[1]::class.java)
     }
 
     @Test
@@ -81,6 +84,7 @@ class CodeFormatterCxxUseCaseImplTest {
                     addRValue("3")
                 }
             }
+            addSeparator(";")
         }
         val output = formatter(input)
         // expected result
@@ -94,14 +98,16 @@ class CodeFormatterCxxUseCaseImplTest {
         //        <Indent> <EnumLeaf D> <nl>
         //        <}>
         //     </OutBlock>
+        //     <;>
         //     <NL>
         // </Region>
-        Assert.assertEquals(2, output.subs.size)
+        Assert.assertEquals(3, output.subs.size)
         val outBlock = output.subs[0] as OutBlock
         Assert.assertTrue(outBlock.subs[0] is Keyword)
         Assert.assertTrue(outBlock.subs[1] is OutBlockArguments)
         Assert.assertTrue(outBlock.subs[2] is Keyword)
         Assert.assertEquals(22, outBlock.subs.size)
+        Assert.assertEquals(Separator::class.java, output.subs[1]::class.java)
     }
 
     @Test
