@@ -226,7 +226,7 @@ class TokenizerUseCaseImplTest {
         val result = tokenizer(
             buffer = SourceBuffer(
                 """
-                float max2=max(1.2,-2.341)
+                float max2=max(1.2,-2.341,1.2)
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
@@ -235,7 +235,7 @@ class TokenizerUseCaseImplTest {
             stringLiteralsBase = STRINGS_BASE,
         )
         val wordIds = result.words
-        assertEquals(10, wordIds.size)
+        assertEquals(12, wordIds.size)
         assertEquals(Type.KEYWORD, wordIds[0].type)
         assertEquals(Type.NAME, wordIds[1].type)
         assertEquals(Type.OPERATOR, wordIds[2].type)
@@ -274,7 +274,7 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.DIGIT, wordIds[3].type)
         assertEquals(DIGIT_BASE, wordIds[3].id)
 
-        assertEquals(2, result.digitsDictionary.size)
+        assertEquals(1, result.digitsDictionary.size)
         assertEquals("0xFAB", result.digitsDictionary[0].name)
     }
 
@@ -334,7 +334,6 @@ class TokenizerUseCaseImplTest {
             buffer = SourceBuffer(
                 """
                 a = "Simple string";
-                b = 10;
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,

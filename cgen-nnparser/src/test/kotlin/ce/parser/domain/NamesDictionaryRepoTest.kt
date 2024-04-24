@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class NamesDictionaryRepoTest {
     @Test
     fun testGetName() {
-        val dictionary = NamesDictionaryRepo(432)
+        val dictionary = NamesDictionaryRepo(432, type = Type.NAME)
         // expected Word(id=432, type=Name)
         val res1 = dictionary.search("A")
         assertEquals(432, res1.id)
@@ -27,7 +27,7 @@ class NamesDictionaryRepoTest {
 
     @Test
     fun testExportWordsList() {
-        val dictionary = NamesDictionaryRepo(2221)
+        val dictionary = NamesDictionaryRepo(2221, type = Type.NAME)
         dictionary.search("A")
         dictionary.search("B")
         dictionary.search("C")

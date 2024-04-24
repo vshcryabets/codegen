@@ -4,7 +4,8 @@ import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 
 class NamesDictionaryRepo(
-    startId: Int
+    startId: Int,
+    private val type: Type
 ) {
     var currentId: Int = startId
     val knownWords = mutableMapOf<String, Word>()
@@ -13,7 +14,7 @@ class NamesDictionaryRepo(
         if (knownWords.containsKey(name)) {
             return knownWords[name]!!
         } else {
-            val result = Word(name = name, type = Type.NAME, id = currentId)
+            val result = Word(name = name, type = type, id = currentId)
             currentId++
             knownWords[name] = result
             return result

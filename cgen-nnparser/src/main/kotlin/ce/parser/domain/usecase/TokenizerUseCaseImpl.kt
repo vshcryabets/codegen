@@ -70,9 +70,9 @@ class TokenizerUseCaseImpl @Inject constructor(
         stringLiteralsBase: Int,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
-        val namesDictionary = NamesDictionaryRepo(startId = nameBase)
-        val digitsDictionary = NamesDictionaryRepo(startId = nameBase)
-        val stringLiteralsDictionary = NamesDictionaryRepo(startId = nameBase)
+        val namesDictionary = NamesDictionaryRepo(startId = nameBase, type = Type.NAME)
+        val digitsDictionary = NamesDictionaryRepo(startId = digitBase, type = Type.DIGIT)
+        val stringLiteralsDictionary = NamesDictionaryRepo(startId = stringLiteralsBase, type = Type.STRING_LITERAL)
 
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()
@@ -129,8 +129,16 @@ class TokenizerUseCaseImpl @Inject constructor(
             debugLine2.append(nameToken.id).append(", ")
             result.add(nameToken)
         }
+        // put digit id's
+        val resultWithDigits = result.map {
+            when (it.type) {
+                Type.DIGIT -> digitsDictionary.search(it.name)
+                Type.STRING_LITERAL -> stringLiteralsDictionary.search(it.name)
+                else -> it
+            }
+        }
         return TokenizerUseCase.Result(
-            words = result,
+            words = resultWithDigits,
             debugFindings = debugFindigs,
             namesDictionary = namesDictionary.exportToWordsList(),
             digitsDictionary = digitsDictionary.exportToWordsList(),
