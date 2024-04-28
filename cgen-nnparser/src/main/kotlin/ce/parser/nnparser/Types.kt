@@ -57,13 +57,6 @@ data class RegexWord(
     }
 }
 
-//data class ProgrammableWordImpl(
-//    override val name: String,
-//    override val id: Int = -1,
-//    override val type: Type = Type.OPERATOR,
-//    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result
-//) : ProgrammableWord
-
 data class ClikeLiteralWord(
     override val name: String,
     override val id: Int = -1,

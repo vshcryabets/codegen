@@ -15,9 +15,9 @@ interface TokenizerUseCase {
     operator fun invoke(
         buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
-        nameBase: Int,
-        digitBase: Int,
-        stringLiteralsBase: Int,
+        namesDictionary: NamesDictionaryRepo,
+        digitsDictionary: NamesDictionaryRepo,
+        stringLiteralsDictionary: NamesDictionaryRepo,
         debugFindings: Boolean = false,
     ): Result
 }
@@ -65,14 +65,20 @@ class TokenizerUseCaseImpl @Inject constructor(
     override operator fun invoke(
         buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
-        nameBase: Int,
-        digitBase: Int,
-        stringLiteralsBase: Int,
+        namesDictionary: NamesDictionaryRepo,
+        digitsDictionary: NamesDictionaryRepo,
+        stringLiteralsDictionary: NamesDictionaryRepo,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
-        val namesDictionary = NamesDictionaryRepo(startId = nameBase, type = Type.NAME)
-        val digitsDictionary = NamesDictionaryRepo(startId = digitBase, type = Type.DIGIT)
-        val stringLiteralsDictionary = NamesDictionaryRepo(startId = stringLiteralsBase, type = Type.STRING_LITERAL)
+//        val namesDictionary = NamesDictionaryRepo(
+//            startId = nameBase,
+//            type = Type.NAME)
+//        val digitsDictionary = NamesDictionaryRepo(
+//            startId = digitBase,
+//            type = Type.DIGIT)
+//        val stringLiteralsDictionary = NamesDictionaryRepo(
+//            startId = stringLiteralsBase,
+//            type = Type.STRING_LITERAL)
 
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()

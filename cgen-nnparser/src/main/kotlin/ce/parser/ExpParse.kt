@@ -2,8 +2,10 @@ package ce.parser
 
 import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
+import ce.parser.domain.NamesDictionaryRepo
 import ce.parser.domain.usecase.*
 import ce.parser.nnparser.TargetDictionaries
+import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,15 +43,22 @@ val globalSources = mutableListOf<SampleData>()
 var globalOutputDirectory: String = "./expparse_out/"
 var dictinariesDirectory: String = "./dictionary/"
 var globalDicts = emptyMap<Target, TargetDictionaries>()
+const val defaultCapacity = 1000000
 var globalNameBase = 1000000
-var globalDigitBase = globalNameBase * 2
-var globalStringLiteralsBase = globalNameBase * 3
+var globalNameMax = globalNameBase + defaultCapacity
+var globalDigitBase = globalNameMax
+var globalDigitMax = globalDigitBase + defaultCapacity
+var globalStringLiteralsBase = globalDigitMax
+var globalStringLiteralsmax = globalStringLiteralsBase + defaultCapacity
 
 fun cleanSource() {
     globalSources.clear()
 }
 
-fun addSource(sampleName: String, sourceName: String, sourceTarget: Target, metaFile: String) {
+fun addSource(sampleName: String,
+              sourceName: String,
+              sourceTarget: Target,
+              metaFile: String) {
     globalSources.add(SampleData(
         sampleName = sampleName,
         sourceFile = sourceName,
@@ -110,11 +119,26 @@ fun main(args: Array<String>) {
         println("Load dictionaries from $dictinariesDirectory")
         globalDicts = loadAllDictionariesUseCase(dictinariesDirectory)
     }
+    val namesDictionary = NamesDictionaryRepo(
+        startId = globalNameBase,
+        maxId = globalNameMax,
+        type = Type.NAME
+    )
+    val digitsDictionary = NamesDictionaryRepo(
+        startId = globalDigitBase,
+        maxId = globalDigitMax,
+        type = Type.DIGIT
+    )
+    val stringLiteralsDictionary = NamesDictionaryRepo(
+        startId = globalDigitBase,
+        maxId = globalDigitMax,
+        type = Type.DIGIT
+    )
     runBlocking {
         processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts,
-            nameBase = globalNameBase,
-            digitBase = globalDigitBase,
-            stringLiteralsBase = globalStringLiteralsBase)
+            namesDictionary = namesDictionary,
+            digitsDictionary = digitsDictionary,
+            stringLiteralsDictionary = stringLiteralsDictionary)
     }
     println("END")
 

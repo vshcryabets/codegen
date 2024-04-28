@@ -20,9 +20,14 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
 ) : LoadTargetDictionariesUseCase {
     override suspend fun invoke(baseDir: String, target: Target): TargetDictionaries =
         withContext(ioScope.coroutineContext) {
-            val operatorsDef = async { loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_operators.csv"), Type.OPERATOR) }
-            val commentsDef = async { loadGroovyDictionaryUseCase(File("$baseDir/${target.rawValue}_comments.groovy"), Type.COMMENTS) }
-            val digitsDef = async { loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_digits.csv"), Type.DIGIT) }
+            val operatorsDef = async { loadCsvDictionaryUseCase(
+                File("$baseDir/${target.rawValue}_operators.csv"), Type.OPERATOR) }
+            val commentsDef = async { loadGroovyDictionaryUseCase(
+                File("$baseDir/${target.rawValue}_comments.groovy"), Type.COMMENTS) }
+            val digitsDef = async { loadGroovyDictionaryUseCase(
+                File("$baseDir/${target.rawValue}_digits.groovy"), Type.DIGIT) }
+            val stringLiteralsDef = async { loadGroovyDictionaryUseCase(
+                File("$baseDir/${target.rawValue}_strings.groovy"), Type.COMMENTS) }
             return@withContext TargetDictionaries(
                 map = mapOf(
                     Type.SPACES to async {
@@ -33,7 +38,8 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
                     Type.KEYWORD to async {
                         loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv"), Type.KEYWORD)
                     }.await(),
-                    Type.OPERATOR to operatorsDef.await()
+                    Type.OPERATOR to operatorsDef.await(),
+                    Type.STRING_LITERAL to stringLiteralsDef.await()
                 )
             )
         }

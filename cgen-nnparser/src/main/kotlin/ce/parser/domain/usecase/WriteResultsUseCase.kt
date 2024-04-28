@@ -50,6 +50,20 @@ class WriteResultsUseCaseImpl(
                     writter.println("${it.id},${it.name}")
                 }
             }
+            val digits = File(base, "${sampleName}_${sampleTraget}_digits.csv")
+            println("Write digits to ${digits.absolutePath}")
+            digits.printWriter().use { writter ->
+                results.digitsDictionary.forEach {
+                    writter.println("${it.id},${it.name}")
+                }
+            }
+            val strings = File(base, "${sampleName}_${sampleTraget}_strings.csv")
+            println("Write strings to ${strings.absolutePath}")
+            strings.printWriter().use { writter ->
+                results.digitsDictionary.forEach {
+                    writter.println("${it.id},${it.name}")
+                }
+            }
             if (results.debugFindings.isNotEmpty()) {
                 val debug = File(base, "${sampleName}_${sampleTraget}_debug.txt")
                 println("Write debug to ${debug.absolutePath}")

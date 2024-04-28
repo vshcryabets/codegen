@@ -2,6 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.defs.Target
 import ce.parser.SampleData
+import ce.parser.domain.NamesDictionaryRepo
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.TargetDictionaries
 import kotlinx.coroutines.CoroutineScope
@@ -15,9 +16,9 @@ interface ProcessSampleUseCase {
         sampleData: SampleData,
         outputDir: String,
         dictionaries: Map<Target, TargetDictionaries>,
-        nameBase: Int,
-        digitBase: Int,
-        stringLiteralsBase: Int,
+        namesDictionary: NamesDictionaryRepo,
+        digitsDictionary: NamesDictionaryRepo,
+        stringLiteralsDictionary: NamesDictionaryRepo,
     )
 }
 
@@ -32,9 +33,9 @@ class ProcessSampleUseCaseImpl @Inject constructor(
         sampleData: SampleData,
         outputDir: String,
         dictionaries: Map<Target, TargetDictionaries>,
-        nameBase: Int,
-        digitBase: Int,
-        stringLiteralsBase: Int,
+        namesDictionary: NamesDictionaryRepo,
+        digitsDictionary: NamesDictionaryRepo,
+        stringLiteralsDictionary: NamesDictionaryRepo,
     ) {
         withContext(calcScope.coroutineContext) {
             val fileSrc = File(sampleData.sourceFile)
@@ -45,10 +46,10 @@ class ProcessSampleUseCaseImpl @Inject constructor(
             val dictMeta = dictionaries[Target.Meta]!!
             val srcLinearResult = tokenizerUseCase(
                 SourceBuffer(bufferSrc), dictSrc,
-                nameBase = nameBase,
-                digitBase = digitBase,
+                namesDictionary = namesDictionary,
+                digitsDictionary = digitsDictionary,
+                stringLiteralsDictionary = stringLiteralsDictionary,
                 debugFindings = true,
-                stringLiteralsBase = stringLiteralsBase,
             )
             // write stc results
             writeResultsUseCase.invoke(
@@ -59,10 +60,10 @@ class ProcessSampleUseCaseImpl @Inject constructor(
             )
             val metaLinearResult = tokenizerUseCase(
                 SourceBuffer(bufferMeta), dictMeta,
-                nameBase = nameBase,
-                digitBase = digitBase,
+                namesDictionary = namesDictionary,
+                digitsDictionary = digitsDictionary,
+                stringLiteralsDictionary = stringLiteralsDictionary,
                 debugFindings = true,
-                stringLiteralsBase = stringLiteralsBase,
             )
             // write meta results
             writeResultsUseCase.invoke(

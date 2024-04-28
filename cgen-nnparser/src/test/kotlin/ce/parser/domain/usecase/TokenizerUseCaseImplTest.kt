@@ -1,11 +1,18 @@
 package ce.parser.domain.usecase
 
+import ce.parser.domain.NamesDictionaryRepo
 import ce.parser.domain.TestDictionary
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.Type
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+data class PreparedEnv(
+    val tokenizer: TokenizerUseCaseImpl,
+    val namesDictionaryRepo: NamesDictionaryRepo,
+    val digitsDictionaryRepo: NamesDictionaryRepo,
+    val stringLiteralsDictionaryRepo: NamesDictionaryRepo,
+)
 
 class TokenizerUseCaseImplTest {
 
@@ -13,24 +20,41 @@ class TokenizerUseCaseImplTest {
     val NAME_BASE = 14000
     val STRINGS_BASE = 15000
 
-    fun prepareTokenizer(): TokenizerUseCaseImpl {
+    fun prepareTokenizer(): PreparedEnv {
         val checkStringInDictionary = CheckStringInDictionaryImpl()
-        return TokenizerUseCaseImpl(
-            checkString = checkStringInDictionary
+        return PreparedEnv(
+            tokenizer = TokenizerUseCaseImpl(
+                checkString = checkStringInDictionary
+            ),
+            digitsDictionaryRepo = NamesDictionaryRepo(
+                startId = DIGIT_BASE,
+                maxId = NAME_BASE,
+                type = Type.DIGIT
+            ),
+            namesDictionaryRepo = NamesDictionaryRepo(
+                startId = NAME_BASE,
+                maxId = STRINGS_BASE,
+                type = Type.NAME
+            ),
+            stringLiteralsDictionaryRepo = NamesDictionaryRepo(
+                startId = STRINGS_BASE,
+                maxId = STRINGS_BASE + 1000,
+                type = Type.STRING_LITERAL
+            )
         )
     }
 
     @Test
     fun testSpaces() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <OP ->
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer("\t  \t- "),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(1, wordIds.size)
@@ -40,12 +64,12 @@ class TokenizerUseCaseImplTest {
 
         // expected
         // <KEY max><OP +>
-        val result2 = tokenizer(
+        val result2 = env.tokenizer(
             buffer = SourceBuffer("  max +"),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds2 = result2.words
         assertEquals(2, wordIds2.size)
@@ -59,15 +83,15 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testName() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <Name x><=><max><(><)>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer("x = max\n()"),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val words = result.words
         assertEquals(5, words.size)
@@ -87,15 +111,15 @@ class TokenizerUseCaseImplTest {
     // TODO add name ids check below
     @Test
     fun testName2() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <KW float><Name max2><=><max><(><)>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer("float max2=max()"),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(6, wordIds.size)
@@ -112,10 +136,10 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testCommentLine() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <Comment comment><Name a><=><max><(><)>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 //1+comment
@@ -123,9 +147,9 @@ class TokenizerUseCaseImplTest {
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(6, wordIds.size)
@@ -136,19 +160,19 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testCommentLine2() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <Name a><=><max><(><)><Comment comment>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 a=max() //1+comment
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(6, wordIds.size)
@@ -159,19 +183,19 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testVariableDeclaration() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <float><max2><=><max><(><1><,><2><)>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 float max2=max(1,2)
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(9, wordIds.size)
@@ -189,19 +213,19 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testDigitWithPoint() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <float><max2><=><max><(><1><,><2><)>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 float max2=max(1.2,2.341)
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(9, wordIds.size)
@@ -220,19 +244,19 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testDigitWithPointNegative() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <float><max2><=><max><(><1><,><-><2.341><)>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 float max2=max(1.2,-2.341,1.2)
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(12, wordIds.size)
@@ -252,19 +276,19 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testDigitHex() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <int><a><=><0x1234>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 int a=0xFAB
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(4, wordIds.size)
@@ -280,10 +304,10 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testMultiline() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <#><pragma><once><namespace><name qwe>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 #pragma once
@@ -292,9 +316,9 @@ class TokenizerUseCaseImplTest {
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(5, wordIds.size)
@@ -307,19 +331,19 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testParseDoubleColon() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <namespace><name qwe><operator ::><name goldman><operator ::><name dt1>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 namespace com::goldman::dt1
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(6, wordIds.size, "Wrong word ids number")
@@ -327,26 +351,26 @@ class TokenizerUseCaseImplTest {
 
     @Test
     fun testParseStringAssignement() {
-        val tokenizer = prepareTokenizer()
+        val env = prepareTokenizer()
         // expected
         // <name a><operator =><literal "Simple string"><operator ;>
-        val result = tokenizer(
+        val result = env.tokenizer(
             buffer = SourceBuffer(
                 """
                 a = "Simple string";
             """.trimIndent()
             ),
             dictionaries = TestDictionary.dictionaries,
-            nameBase = NAME_BASE,
-            digitBase = DIGIT_BASE,
-            stringLiteralsBase = STRINGS_BASE,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
         )
         val wordIds = result.words
         assertEquals(4, wordIds.size, "Wrong word ids number")
-        assertEquals( Type.NAME, wordIds[0].type)
-        assertEquals( Type.OPERATOR, wordIds[1].type)
-        assertEquals( Type.STRING_LITERAL, wordIds[2].type)
-        assertEquals( STRINGS_BASE, wordIds[2].id)
+        assertEquals(Type.NAME, wordIds[0].type)
+        assertEquals(Type.OPERATOR, wordIds[1].type)
+        assertEquals(Type.STRING_LITERAL, wordIds[2].type)
+        assertEquals(STRINGS_BASE, wordIds[2].id)
     }
 
     // next test

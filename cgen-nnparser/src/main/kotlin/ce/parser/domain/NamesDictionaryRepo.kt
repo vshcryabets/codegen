@@ -5,6 +5,7 @@ import ce.parser.nnparser.Word
 
 class NamesDictionaryRepo(
     startId: Int,
+    private val maxId: Int,
     private val type: Type
 ) {
     var currentId: Int = startId
@@ -16,6 +17,9 @@ class NamesDictionaryRepo(
         } else {
             val result = Word(name = name, type = type, id = currentId)
             currentId++
+            if (currentId > maxId) {
+                throw IllegalStateException("Not enough dictionary capacity. currentId= $currentId, maxId =$maxId")
+            }
             knownWords[name] = result
             return result
         }
