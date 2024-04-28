@@ -56,10 +56,12 @@ class CheckStringInDictionaryImplTest {
             buffer = SourceBuffer("12345"),
             dictionary = WordDictionary(
                 listOf(
-                    ProgrammableWordImpl(name = "NOT", id = 3000, type = Type.DIGIT,
-                        checkFnc = { buffer ->
-                            CheckStringInDictionaryUseCase.EMPTY_RESULT
-                        })
+                    object: ProgrammableWord {
+                        override val name = "NOT"
+                        override val id = 3000
+                        override val type = Type.DIGIT
+                        override fun check(buffer: SourceBuffer) = CheckStringInDictionaryUseCase.EMPTY_RESULT
+                    }
                 ),
                 sortBySize = false
             )
@@ -68,18 +70,22 @@ class CheckStringInDictionaryImplTest {
             buffer = SourceBuffer("12345"),
             dictionary = WordDictionary(
                 listOf(
-                    ProgrammableWordImpl(name = "NOT", id = 3000, type = Type.DIGIT,
-                        checkFnc = { buffer ->
-                            CheckStringInDictionaryUseCase.EMPTY_RESULT
-                        }),
-                    ProgrammableWordImpl(
-                        name = "TRUE", id = 3000, type = Type.DIGIT,
-                        checkFnc = { buffer ->
+                    object: ProgrammableWord {
+                        override val name = "NOT"
+                        override val id = 3000
+                        override val type = Type.DIGIT
+                        override fun check(buffer: SourceBuffer) = CheckStringInDictionaryUseCase.EMPTY_RESULT
+                    },
+                    object: ProgrammableWord {
+                        override val name = "TRUE"
+                        override val id = 3000
+                        override val type = Type.DIGIT
+                        override fun check(buffer: SourceBuffer) =
                             CheckStringInDictionaryUseCase.Result(
                                 results = listOf(Word(name = "name")),
                                 lengthInChars = buffer.length
                             )
-                        })
+                    }
                 ),
                 sortBySize = false
             )

@@ -20,7 +20,7 @@ interface WordItem {
 }
 
 interface ProgrammableWord : WordItem {
-    val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result
+    fun check(buffer: SourceBuffer): CheckStringInDictionaryUseCase.Result
 }
 
 data class Word(
@@ -33,10 +33,13 @@ data class RegexWord(
     override val name: String,
     override val id: Int = -1,
     override val type: Type = Type.OPERATOR,
-    val regexObj: Regex = name.toRegex(),
-    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
+
+) : ProgrammableWord {
+    private val regexObj: Regex = name.toRegex()
+
+    override fun check(buffer:SourceBuffer):CheckStringInDictionaryUseCase.Result {
         val result = regexObj.matchAt(buffer.buffer, buffer.pos)
-        if (result == null) {
+        return if (result == null) {
             CheckStringInDictionaryUseCase.EMPTY_RESULT
         } else if (result.range.start != buffer.pos) {
             CheckStringInDictionaryUseCase.EMPTY_RESULT
@@ -52,20 +55,21 @@ data class RegexWord(
             )
         }
     }
-) : ProgrammableWord
+}
 
-data class ProgrammableWordImpl(
-    override val name: String,
-    override val id: Int = -1,
-    override val type: Type = Type.OPERATOR,
-    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result
-) : ProgrammableWord
+//data class ProgrammableWordImpl(
+//    override val name: String,
+//    override val id: Int = -1,
+//    override val type: Type = Type.OPERATOR,
+//    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result
+//) : ProgrammableWord
 
 data class ClikeLiteralWord(
     override val name: String,
     override val id: Int = -1,
-    override val type: Type = Type.STRING_LITERAL,
-    override val checkFnc: (SourceBuffer) -> CheckStringInDictionaryUseCase.Result = { buffer ->
+    override val type: Type = Type.STRING_LITERAL
+) : ProgrammableWord {
+    override fun check(buffer: SourceBuffer): CheckStringInDictionaryUseCase.Result =
         if (buffer.nextIs("\"")) {
             buffer.movePosBy(1)
             val findLiteral = buffer.readUntil { start, pos, end, buffer ->
@@ -89,5 +93,4 @@ data class ClikeLiteralWord(
             CheckStringInDictionaryUseCase.EMPTY_RESULT
         }
 
-    }
-) : ProgrammableWord
+}

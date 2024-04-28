@@ -32,7 +32,7 @@ class CheckStringInDictionaryImpl: CheckStringInDictionaryUseCase {
         while (iterator.hasNext()) {
             val it = iterator.next()
             if (it is ProgrammableWord) {
-                val checkResult = it.checkFnc(buffer)
+                val checkResult = it.check(buffer)
                 if (!checkResult.isEmpty()) {
                     return checkResult
                 }

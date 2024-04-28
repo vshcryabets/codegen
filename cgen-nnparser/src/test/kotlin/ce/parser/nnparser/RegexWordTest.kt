@@ -8,7 +8,7 @@ class RegexWordTest {
     @Test
     fun testOneLineComment() {
         val wordCheck = TestDictionary.comments.sortedByLengthDict[0]
-        val result = (wordCheck as RegexWord).checkFnc(SourceBuffer("//123456"))
+        val result = (wordCheck as RegexWord).check(SourceBuffer("//123456"))
         assertFalse(result.isEmpty())
         assertEquals(8,  result.lengthInChars)
         assertEquals(1, result.results.size)

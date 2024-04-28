@@ -10,14 +10,14 @@ class ClikeLiteralWordTest {
     fun testNotString() {
         val item = ClikeLiteralWord(name = "CString", id =1)
         assertEquals(CheckStringInDictionaryUseCase.EMPTY_RESULT,
-            item.checkFnc(SourceBuffer("1234567")))
+            item.check(SourceBuffer("1234567")))
     }
 
     @Test
     fun testNotStringInPosition() {
         val item = ClikeLiteralWord(name = "CString", id =1)
         assertEquals(CheckStringInDictionaryUseCase.EMPTY_RESULT,
-            item.checkFnc(SourceBuffer("a = \"AAA\"")))
+            item.check(SourceBuffer("a = \"AAA\"")))
     }
 
     @Test
@@ -25,14 +25,14 @@ class ClikeLiteralWordTest {
         val item = ClikeLiteralWord(name = "CString", id = 1)
         assertEquals(
             CheckStringInDictionaryUseCase.EMPTY_RESULT,
-            item.checkFnc(SourceBuffer("\"AAA"))
+            item.check(SourceBuffer("\"AAA"))
         )
     }
 
     @Test
     fun testStringInPosition() {
         val item = ClikeLiteralWord(name = "CString", id =1)
-        val result = item.checkFnc(SourceBuffer("\"AAA\"; //comment"))
+        val result = item.check(SourceBuffer("\"AAA\"; //comment"))
         assertEquals(5, result.lengthInChars)
         assertEquals(1, result.results.size)
         assertEquals(1, result.results[0].id)
