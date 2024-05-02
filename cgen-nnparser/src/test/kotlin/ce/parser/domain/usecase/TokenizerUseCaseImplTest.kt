@@ -373,6 +373,47 @@ class TokenizerUseCaseImplTest {
         assertEquals(STRINGS_BASE, wordIds[2].id)
     }
 
+    @Test
+    fun testAllDictionaries() {
+        val env = prepareTokenizer()
+        // expected
+        // <name a><operator =><keyword max>(operator (><digit 10><op ,><literal "qwe"><op ,><name b><op )>
+        val result = env.tokenizer(
+            buffer = SourceBuffer(
+                """
+                a = max(10,"qwe",b)
+            """.trimIndent()
+            ),
+            dictionaries = TestDictionary.dictionaries,
+            namesDictionary = env.namesDictionaryRepo,
+            digitsDictionary = env.digitsDictionaryRepo,
+            stringLiteralsDictionary = env.stringLiteralsDictionaryRepo,
+        )
+        val wordIds = result.words
+        assertEquals(10, wordIds.size, "Wrong word ids number")
+        assertEquals(Type.NAME, wordIds[0].type)
+        assertEquals(Type.OPERATOR, wordIds[1].type)
+        assertEquals(Type.KEYWORD, wordIds[2].type)
+        assertEquals(Type.OPERATOR, wordIds[3].type)
+        assertEquals(Type.DIGIT, wordIds[4].type)
+        assertEquals(DIGIT_BASE, wordIds[4].id)
+        assertEquals(Type.OPERATOR, wordIds[5].type)
+        assertEquals(Type.STRING_LITERAL, wordIds[6].type)
+        assertEquals(STRINGS_BASE, wordIds[6].id)
+        assertEquals(Type.OPERATOR, wordIds[7].type)
+        assertEquals(Type.NAME, wordIds[8].type)
+        assertEquals(NAME_BASE, wordIds[8].id)
+        assertEquals(Type.OPERATOR, wordIds[9].type)
+        // check dictionaries
+        assertEquals(1, result.stringsDictionary.size)
+        assertEquals(1, result.digitsDictionary.size)
+        assertEquals(1, result.namesDictionary.size)
+        // check ids
+        assertEquals(STRINGS_BASE, result.stringsDictionary[0].id)
+        assertEquals(DIGIT_BASE, result.digitsDictionary[0].id)
+        assertEquals(NAME_BASE, result.namesDictionary[0].id)
+    }
+
     // next test
 //    a = "Simple string";
 //    b = 10;
