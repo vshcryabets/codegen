@@ -3,6 +3,7 @@ package ce.parser.domain.usecase
 import ce.defs.Target
 import ce.parser.SampleData
 import ce.parser.nnparser.TargetDictionaries
+import ce.parser.nnparser.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import org.jetbrains.kotlin.incremental.createDirectory
@@ -60,9 +61,20 @@ class WriteResultsUseCaseImpl(
             val strings = File(base, "${sampleName}_${sampleTraget}_strings.csv")
             println("Write strings to ${strings.absolutePath}")
             strings.printWriter().use { writter ->
-                results.digitsDictionary.forEach {
+                results.stringsDictionary.forEach {
                     writter.println("${it.id},${it.name}")
                 }
+            }
+            val comments = File(base, "${sampleName}_${sampleTraget}_commentss.csv")
+            println("Write comments to ${comments.absolutePath}")
+            comments.printWriter().use { writter ->
+                results.words
+                    .filter {
+                        it.type == Type.COMMENTS
+                    }
+                    .forEach {
+                        writter.println("${it.id},${it.name}")
+                    }
             }
             if (results.debugFindings.isNotEmpty()) {
                 val debug = File(base, "${sampleName}_${sampleTraget}_debug.txt")
