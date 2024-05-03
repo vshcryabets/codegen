@@ -4,6 +4,7 @@ import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
 import ce.parser.domain.NamesDictionaryRepo
 import ce.parser.domain.usecase.*
+import ce.parser.nnparser.DynamicDictionariesImpl
 import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
@@ -134,11 +135,12 @@ fun main(args: Array<String>) {
         maxId = globalStringLiteralsMax,
         type = Type.DIGIT
     )
+    val dynamiDictionaries = DynamicDictionariesImpl(namesDictionary, digitsDictionary, stringLiteralsDictionary)
     runBlocking {
-        processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts,
-            namesDictionary = namesDictionary,
-            digitsDictionary = digitsDictionary,
-            stringLiteralsDictionary = stringLiteralsDictionary)
+        processSampleUseCase(
+            globalSources.first(), globalOutputDirectory, globalDicts,
+            dynamicDictionaries = dynamiDictionaries,
+        )
     }
     println("END")
 

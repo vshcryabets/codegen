@@ -1,6 +1,5 @@
 package ce.parser.domain.usecase
 
-import ce.parser.domain.NamesDictionaryRepo
 import ce.parser.nnparser.*
 import org.jetbrains.kotlin.javax.inject.Inject
 
@@ -15,9 +14,7 @@ interface TokenizerUseCase {
     operator fun invoke(
         buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
-        namesDictionary: NamesDictionaryRepo,
-        digitsDictionary: NamesDictionaryRepo,
-        stringLiteralsDictionary: NamesDictionaryRepo,
+        dynamicDictionaries: DynamicDictionaries,
         debugFindings: Boolean = false,
     ): Result
 }
@@ -65,9 +62,7 @@ class TokenizerUseCaseImpl @Inject constructor(
     override operator fun invoke(
         buffer: SourceBuffer,
         dictionaries: TargetDictionaries,
-        namesDictionary: NamesDictionaryRepo,
-        digitsDictionary: NamesDictionaryRepo,
-        stringLiteralsDictionary: NamesDictionaryRepo,
+        dynamicDictionaries: DynamicDictionaries,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
         val debugFindigs = StringBuilder()
@@ -119,7 +114,7 @@ class TokenizerUseCaseImpl @Inject constructor(
                 continue
             }
             // Word(name = nextToken, type = Type.NAME, id = 254)
-            val nameToken = namesDictionary.search(nextToken)
+            val nameToken = dynamicDictionaries.getNamesDictionary().search(nextToken)
             debugLine1.append(nameToken.name).append(" ")
             debugLine2.append(nameToken.id).append(", ")
             result.add(nameToken)
@@ -127,17 +122,17 @@ class TokenizerUseCaseImpl @Inject constructor(
         // put digit id's
         val resultWithDigits = result.map {
             when (it.type) {
-                Type.DIGIT -> digitsDictionary.search(it.name)
-                Type.STRING_LITERAL -> stringLiteralsDictionary.search(it.name)
+                Type.DIGIT -> dynamicDictionaries.getDigitsDictionary().search(it.name)
+                Type.STRING_LITERAL -> dynamicDictionaries.getStringDictionary().search(it.name)
                 else -> it
             }
         }
         return TokenizerUseCase.Result(
             words = resultWithDigits,
             debugFindings = debugFindigs,
-            namesDictionary = namesDictionary.exportToWordsList(),
-            digitsDictionary = digitsDictionary.exportToWordsList(),
-            stringsDictionary = stringLiteralsDictionary.exportToWordsList()
+            namesDictionary = dynamicDictionaries.getNamesDictionary().exportToWordsList(),
+            digitsDictionary = dynamicDictionaries.getDigitsDictionary().exportToWordsList(),
+            stringsDictionary = dynamicDictionaries.getStringDictionary().exportToWordsList()
         )
     }
 }
