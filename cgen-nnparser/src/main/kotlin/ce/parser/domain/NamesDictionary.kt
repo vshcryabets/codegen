@@ -3,8 +3,8 @@ package ce.parser.domain
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 
-class NamesDictionaryRepo(
-    startId: Int,
+class NamesDictionary(
+    private val startId: Int,
     private val maxId: Int,
     private val type: Type
 ) {
@@ -26,4 +26,9 @@ class NamesDictionaryRepo(
     }
 
     fun exportToWordsList(): List<Word> = knownWords.values.toList()
+
+    fun clear() {
+        currentId = startId
+        knownWords.clear()
+    }
 }

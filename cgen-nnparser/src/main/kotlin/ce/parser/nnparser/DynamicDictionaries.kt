@@ -1,22 +1,22 @@
 package ce.parser.nnparser
 
-import ce.parser.domain.NamesDictionaryRepo
+import ce.parser.domain.NamesDictionary
 import org.jetbrains.kotlin.javax.inject.Inject
 
 interface DynamicDictionaries {
-    fun getNamesDictionary(): NamesDictionaryRepo
-    fun getDigitsDictionary(): NamesDictionaryRepo
-    fun getStringDictionary(): NamesDictionaryRepo
+    fun getNamesDictionary(): NamesDictionary
+    fun getDigitsDictionary(): NamesDictionary
+    fun getStringDictionary(): NamesDictionary
 }
 
 class DynamicDictionariesImpl @Inject constructor(
-    private val namesDictionary: NamesDictionaryRepo,
-    private val digitsDictionary: NamesDictionaryRepo,
-    private val stringLiteralsDictionary: NamesDictionaryRepo
+    private val namesDictionary: NamesDictionary,
+    private val digitsDictionary: NamesDictionary,
+    private val stringLiteralsDictionary: NamesDictionary
 ) : DynamicDictionaries {
-    override fun getNamesDictionary(): NamesDictionaryRepo = namesDictionary
+    override fun getNamesDictionary(): NamesDictionary = namesDictionary
 
-    override fun getDigitsDictionary(): NamesDictionaryRepo = digitsDictionary
+    override fun getDigitsDictionary(): NamesDictionary = digitsDictionary
 
-    override fun getStringDictionary(): NamesDictionaryRepo = stringLiteralsDictionary
+    override fun getStringDictionary(): NamesDictionary = stringLiteralsDictionary
 }

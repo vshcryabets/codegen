@@ -1,13 +1,14 @@
 package ce.parser.domain
 
 import ce.parser.nnparser.Type
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class NamesDictionaryRepoTest {
+class NamesDictionaryTest {
     @Test
     fun testGetName() {
-        val dictionary = NamesDictionaryRepo(432, 500, type = Type.NAME)
+        val dictionary = NamesDictionary(432, 500, type = Type.NAME)
         // expected Word(id=432, type=Name)
         val res1 = dictionary.search("A")
         assertEquals(432, res1.id)
@@ -27,7 +28,7 @@ class NamesDictionaryRepoTest {
 
     @Test
     fun testExportWordsList() {
-        val dictionary = NamesDictionaryRepo(2221, 3000, type = Type.NAME)
+        val dictionary = NamesDictionary(2221, 3000, type = Type.NAME)
         dictionary.search("A")
         dictionary.search("B")
         dictionary.search("C")
@@ -41,7 +42,7 @@ class NamesDictionaryRepoTest {
 
     @Test
     fun testMaxCapacity() {
-        val dict = NamesDictionaryRepo(
+        val dict = NamesDictionary(
             startId = 10,
             maxId = 13,
             type = Type.DIGIT
@@ -58,5 +59,14 @@ class NamesDictionaryRepoTest {
         }
         assertTrue(exception)
         assertEquals(3, dict.exportToWordsList().size)
+    }
+
+    @Test
+    fun testClear() {
+        val dictionary = NamesDictionary(2221, 3000, type = Type.NAME)
+        dictionary.search("A")
+        assertEquals(1, dictionary.knownWords.size)
+        dictionary.clear()
+        assertTrue(dictionary.knownWords.isEmpty())
     }
 }

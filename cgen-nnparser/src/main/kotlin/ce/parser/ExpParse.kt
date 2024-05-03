@@ -2,7 +2,7 @@ package ce.parser
 
 import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
-import ce.parser.domain.NamesDictionaryRepo
+import ce.parser.domain.NamesDictionary
 import ce.parser.domain.usecase.*
 import ce.parser.nnparser.DynamicDictionariesImpl
 import ce.parser.nnparser.TargetDictionaries
@@ -120,17 +120,17 @@ fun main(args: Array<String>) {
         println("Load dictionaries from $dictinariesDirectory")
         globalDicts = loadAllDictionariesUseCase(dictinariesDirectory)
     }
-    val namesDictionary = NamesDictionaryRepo(
+    val namesDictionary = NamesDictionary(
         startId = globalNameBase,
         maxId = globalNameMax,
         type = Type.NAME
     )
-    val digitsDictionary = NamesDictionaryRepo(
+    val digitsDictionary = NamesDictionary(
         startId = globalDigitBase,
         maxId = globalDigitMax,
         type = Type.DIGIT
     )
-    val stringLiteralsDictionary = NamesDictionaryRepo(
+    val stringLiteralsDictionary = NamesDictionary(
         startId = globalStringLiteralsBase,
         maxId = globalStringLiteralsMax,
         type = Type.DIGIT

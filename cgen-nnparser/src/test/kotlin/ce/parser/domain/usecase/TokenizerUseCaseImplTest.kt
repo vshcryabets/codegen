@@ -1,6 +1,6 @@
 package ce.parser.domain.usecase
 
-import ce.parser.domain.NamesDictionaryRepo
+import ce.parser.domain.NamesDictionary
 import ce.parser.domain.TestDictionary
 import ce.parser.nnparser.DynamicDictionaries
 import ce.parser.nnparser.DynamicDictionariesImpl
@@ -27,17 +27,17 @@ class TokenizerUseCaseImplTest {
                 checkString = checkStringInDictionary
             ),
             dynamicDictionaries = DynamicDictionariesImpl(
-                digitsDictionary = NamesDictionaryRepo(
+                digitsDictionary = NamesDictionary(
                     startId = DIGIT_BASE,
                     maxId = NAME_BASE,
                     type = Type.DIGIT
                 ),
-                namesDictionary = NamesDictionaryRepo(
+                namesDictionary = NamesDictionary(
                     startId = NAME_BASE,
                     maxId = STRINGS_BASE,
                     type = Type.NAME
                 ),
-                stringLiteralsDictionary = NamesDictionaryRepo(
+                stringLiteralsDictionary = NamesDictionary(
                     startId = STRINGS_BASE,
                     maxId = STRINGS_BASE + 1000,
                     type = Type.STRING_LITERAL
