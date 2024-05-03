@@ -392,6 +392,7 @@ class TokenizerUseCaseImplTest {
         val wordIds = result.words
         assertEquals(10, wordIds.size, "Wrong word ids number")
         assertEquals(Type.NAME, wordIds[0].type)
+        assertEquals(NAME_BASE, wordIds[0].id)
         assertEquals(Type.OPERATOR, wordIds[1].type)
         assertEquals(Type.KEYWORD, wordIds[2].type)
         assertEquals(Type.OPERATOR, wordIds[3].type)
@@ -402,12 +403,12 @@ class TokenizerUseCaseImplTest {
         assertEquals(STRINGS_BASE, wordIds[6].id)
         assertEquals(Type.OPERATOR, wordIds[7].type)
         assertEquals(Type.NAME, wordIds[8].type)
-        assertEquals(NAME_BASE, wordIds[8].id)
+        assertEquals(NAME_BASE + 1, wordIds[8].id)
         assertEquals(Type.OPERATOR, wordIds[9].type)
         // check dictionaries
         assertEquals(1, result.stringsDictionary.size)
         assertEquals(1, result.digitsDictionary.size)
-        assertEquals(1, result.namesDictionary.size)
+        assertEquals(2, result.namesDictionary.size)
         // check ids
         assertEquals(STRINGS_BASE, result.stringsDictionary[0].id)
         assertEquals(DIGIT_BASE, result.digitsDictionary[0].id)

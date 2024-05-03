@@ -70,16 +70,6 @@ class TokenizerUseCaseImpl @Inject constructor(
         stringLiteralsDictionary: NamesDictionaryRepo,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
-//        val namesDictionary = NamesDictionaryRepo(
-//            startId = nameBase,
-//            type = Type.NAME)
-//        val digitsDictionary = NamesDictionaryRepo(
-//            startId = digitBase,
-//            type = Type.DIGIT)
-//        val stringLiteralsDictionary = NamesDictionaryRepo(
-//            startId = stringLiteralsBase,
-//            type = Type.STRING_LITERAL)
-
         val debugFindigs = StringBuilder()
         val debugLine1= StringBuilder()
         val debugLine2 = StringBuilder()
@@ -119,7 +109,6 @@ class TokenizerUseCaseImpl @Inject constructor(
 
             // name or keyword?
             val nextToken = nextToken(buffer, dictionaries)
-            // TOD
             val keyword = dictionaries.keywords.sortedByLengthDict.find {
                 it.name.equals(nextToken)
             }

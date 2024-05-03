@@ -49,7 +49,7 @@ var globalNameMax = globalNameBase + defaultCapacity
 var globalDigitBase = globalNameMax
 var globalDigitMax = globalDigitBase + defaultCapacity
 var globalStringLiteralsBase = globalDigitMax
-var globalStringLiteralsmax = globalStringLiteralsBase + defaultCapacity
+var globalStringLiteralsMax = globalStringLiteralsBase + defaultCapacity
 
 fun cleanSource() {
     globalSources.clear()
@@ -130,8 +130,8 @@ fun main(args: Array<String>) {
         type = Type.DIGIT
     )
     val stringLiteralsDictionary = NamesDictionaryRepo(
-        startId = globalDigitBase,
-        maxId = globalDigitMax,
+        startId = globalStringLiteralsBase,
+        maxId = globalStringLiteralsMax,
         type = Type.DIGIT
     )
     runBlocking {
