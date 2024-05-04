@@ -1,6 +1,5 @@
-package ce.parser.nnparser
+package ce.parser.domain.dictionaries
 
-import ce.parser.domain.NamesDictionary
 import org.jetbrains.kotlin.javax.inject.Inject
 
 interface DynamicDictionaries {

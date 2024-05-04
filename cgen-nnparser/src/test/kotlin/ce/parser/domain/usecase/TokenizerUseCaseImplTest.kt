@@ -1,9 +1,7 @@
 package ce.parser.domain.usecase
 
-import ce.parser.domain.NamesDictionary
 import ce.parser.domain.TestDictionary
-import ce.parser.nnparser.DynamicDictionaries
-import ce.parser.nnparser.DynamicDictionariesImpl
+import ce.parser.domain.dictionaries.DynamicDictionaries
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.Type
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,33 +14,13 @@ data class PreparedEnv(
 
 class TokenizerUseCaseImplTest {
 
-    val DIGIT_BASE = 13000
-    val NAME_BASE = 14000
-    val STRINGS_BASE = 15000
-
     fun prepareTokenizer(): PreparedEnv {
         val checkStringInDictionary = CheckStringInDictionaryImpl()
         return PreparedEnv(
             tokenizer = TokenizerUseCaseImpl(
                 checkString = checkStringInDictionary
             ),
-            dynamicDictionaries = DynamicDictionariesImpl(
-                digitsDictionary = NamesDictionary(
-                    startId = DIGIT_BASE,
-                    maxId = NAME_BASE,
-                    type = Type.DIGIT
-                ),
-                namesDictionary = NamesDictionary(
-                    startId = NAME_BASE,
-                    maxId = STRINGS_BASE,
-                    type = Type.NAME
-                ),
-                stringLiteralsDictionary = NamesDictionary(
-                    startId = STRINGS_BASE,
-                    maxId = STRINGS_BASE + 1000,
-                    type = Type.STRING_LITERAL
-                ),
-            )
+            dynamicDictionaries = TestDictionary.prepareDynamicDictionaries()
         )
     }
 
@@ -53,7 +31,7 @@ class TokenizerUseCaseImplTest {
         // <OP ->
         val result = env.tokenizer(
             buffer = SourceBuffer("\t  \t- "),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -66,7 +44,7 @@ class TokenizerUseCaseImplTest {
         // <KEY max><OP +>
         val result2 = env.tokenizer(
             buffer = SourceBuffer("  max +"),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds2 = result2.words
@@ -86,14 +64,14 @@ class TokenizerUseCaseImplTest {
         // <Name x><=><max><(><)>
         val result = env.tokenizer(
             buffer = SourceBuffer("x = max\n()"),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val words = result.words
         assertEquals(5, words.size)
         assertEquals(Type.NAME, words[0].type)
         assertEquals("x", words[0].name)
-        assertEquals(NAME_BASE + 0, words[0].id)
+        assertEquals(TestDictionary.NAME_BASE + 0, words[0].id)
         assertEquals(Type.OPERATOR, words[1].type)
         assertEquals(202, words[1].id)
         // check names words list
@@ -101,7 +79,7 @@ class TokenizerUseCaseImplTest {
         val name1 = result.namesDictionary[0]
         assertEquals(Type.NAME, name1.type)
         assertEquals("x", name1.name)
-        assertEquals(NAME_BASE + 0, name1.id)
+        assertEquals(TestDictionary.NAME_BASE + 0, name1.id)
     }
 
     // TODO add name ids check below
@@ -112,7 +90,7 @@ class TokenizerUseCaseImplTest {
         // <KW float><Name max2><=><max><(><)>
         val result = env.tokenizer(
             buffer = SourceBuffer("float max2=max()"),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -140,7 +118,7 @@ class TokenizerUseCaseImplTest {
                 a=max()
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -161,7 +139,7 @@ class TokenizerUseCaseImplTest {
                 a=max() //1+comment
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -182,7 +160,7 @@ class TokenizerUseCaseImplTest {
                 float max2=max(1,2)
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -210,7 +188,7 @@ class TokenizerUseCaseImplTest {
                 float max2=max(1.2,2.341)
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -239,7 +217,7 @@ class TokenizerUseCaseImplTest {
                 float max2=max(1.2,-2.341,1.2)
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -269,7 +247,7 @@ class TokenizerUseCaseImplTest {
                 int a=0xFAB
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -278,7 +256,7 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.NAME, wordIds[1].type)
         assertEquals(Type.OPERATOR, wordIds[2].type)
         assertEquals(Type.DIGIT, wordIds[3].type)
-        assertEquals(DIGIT_BASE, wordIds[3].id)
+        assertEquals(TestDictionary.DIGIT_BASE, wordIds[3].id)
 
         assertEquals(1, result.digitsDictionary.size)
         assertEquals("0xFAB", result.digitsDictionary[0].name)
@@ -297,7 +275,7 @@ class TokenizerUseCaseImplTest {
                 namespace com
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -320,7 +298,7 @@ class TokenizerUseCaseImplTest {
                 namespace com::goldman::dt1
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -338,7 +316,7 @@ class TokenizerUseCaseImplTest {
                 a = "Simple string";
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
@@ -346,7 +324,7 @@ class TokenizerUseCaseImplTest {
         assertEquals(Type.NAME, wordIds[0].type)
         assertEquals(Type.OPERATOR, wordIds[1].type)
         assertEquals(Type.STRING_LITERAL, wordIds[2].type)
-        assertEquals(STRINGS_BASE, wordIds[2].id)
+        assertEquals(TestDictionary.STRINGS_BASE, wordIds[2].id)
     }
 
     @Test
@@ -360,33 +338,33 @@ class TokenizerUseCaseImplTest {
                 a = max(10,"qwe",b)
             """.trimIndent()
             ),
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             dynamicDictionaries = env.dynamicDictionaries,
         )
         val wordIds = result.words
         assertEquals(10, wordIds.size, "Wrong word ids number")
         assertEquals(Type.NAME, wordIds[0].type)
-        assertEquals(NAME_BASE, wordIds[0].id)
+        assertEquals(TestDictionary.NAME_BASE, wordIds[0].id)
         assertEquals(Type.OPERATOR, wordIds[1].type)
         assertEquals(Type.KEYWORD, wordIds[2].type)
         assertEquals(Type.OPERATOR, wordIds[3].type)
         assertEquals(Type.DIGIT, wordIds[4].type)
-        assertEquals(DIGIT_BASE, wordIds[4].id)
+        assertEquals(TestDictionary.DIGIT_BASE, wordIds[4].id)
         assertEquals(Type.OPERATOR, wordIds[5].type)
         assertEquals(Type.STRING_LITERAL, wordIds[6].type)
-        assertEquals(STRINGS_BASE, wordIds[6].id)
+        assertEquals(TestDictionary.STRINGS_BASE, wordIds[6].id)
         assertEquals(Type.OPERATOR, wordIds[7].type)
         assertEquals(Type.NAME, wordIds[8].type)
-        assertEquals(NAME_BASE + 1, wordIds[8].id)
+        assertEquals(TestDictionary.NAME_BASE + 1, wordIds[8].id)
         assertEquals(Type.OPERATOR, wordIds[9].type)
         // check dictionaries
         assertEquals(1, result.stringsDictionary.size)
         assertEquals(1, result.digitsDictionary.size)
         assertEquals(2, result.namesDictionary.size)
         // check ids
-        assertEquals(STRINGS_BASE, result.stringsDictionary[0].id)
-        assertEquals(DIGIT_BASE, result.digitsDictionary[0].id)
-        assertEquals(NAME_BASE, result.namesDictionary[0].id)
+        assertEquals(TestDictionary.STRINGS_BASE, result.stringsDictionary[0].id)
+        assertEquals(TestDictionary.DIGIT_BASE, result.digitsDictionary[0].id)
+        assertEquals(TestDictionary.NAME_BASE, result.namesDictionary[0].id)
     }
 
     // next test

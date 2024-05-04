@@ -2,7 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.parser.nnparser.ProgrammableWord
 import ce.parser.nnparser.SourceBuffer
-import ce.parser.nnparser.WordDictionary
+import ce.parser.domain.dictionaries.StaticDictionary
 import ce.parser.nnparser.WordItem
 
 interface CheckStringInDictionaryUseCase {
@@ -20,13 +20,13 @@ interface CheckStringInDictionaryUseCase {
         )
     }
     operator fun invoke(buffer: SourceBuffer,
-                        dictionary: WordDictionary
+                        dictionary: StaticDictionary
     ): Result
 }
 
 class CheckStringInDictionaryImpl: CheckStringInDictionaryUseCase {
     override operator fun invoke(buffer: SourceBuffer,
-                                 dictionary: WordDictionary
+                                 dictionary: StaticDictionary
     ): CheckStringInDictionaryUseCase.Result {
         val iterator = dictionary.sortedByLengthDict.iterator()
         while (iterator.hasNext()) {

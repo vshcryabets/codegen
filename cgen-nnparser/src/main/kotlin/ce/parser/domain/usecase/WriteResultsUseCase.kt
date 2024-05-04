@@ -1,16 +1,12 @@
 package ce.parser.domain.usecase
 
 import ce.defs.Target
-import ce.parser.SampleData
-import ce.parser.nnparser.TargetDictionaries
 import ce.parser.nnparser.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import org.jetbrains.kotlin.incremental.createDirectory
 import org.jetbrains.kotlin.javax.inject.Named
 import java.io.File
-import java.io.PrintWriter
-import java.nio.charset.Charset
 
 interface WriteResultsUseCase {
     operator suspend fun invoke(outBasePath: String,

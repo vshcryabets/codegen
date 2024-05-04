@@ -1,5 +1,6 @@
 package ce.parser.domain
 
+import ce.parser.domain.dictionaries.NamesDictionary
 import ce.parser.nnparser.Type
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

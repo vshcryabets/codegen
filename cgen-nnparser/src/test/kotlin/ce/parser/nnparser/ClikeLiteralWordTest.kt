@@ -38,4 +38,14 @@ class ClikeLiteralWordTest {
         assertEquals(1, result.results[0].id)
         assertEquals("\"AAA\"", result.results[0].name)
     }
+
+    @Test
+    fun testSplashQuoteString() {
+        val item = ClikeLiteralWord(name = "CString", id =1)
+        val result = item.check(SourceBuffer("\"asd\\\"qwe\"; //comment"))
+        assertEquals(10, result.lengthInChars)
+        assertEquals(1, result.results.size)
+        assertEquals(1, result.results[0].id)
+        assertEquals("\"asd\\\"qwe\"", result.results[0].name)
+    }
 }

@@ -2,7 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
-import ce.parser.nnparser.WordDictionary
+import ce.parser.domain.dictionaries.StaticDictionary
 import com.opencsv.CSVReader
 import org.jetbrains.kotlin.javax.inject.Inject
 import java.io.File
@@ -17,11 +17,11 @@ import javax.script.SimpleBindings
 
 
 interface LoadDictionaryUseCase {
-    operator fun invoke(file: File, type: Type): WordDictionary
+    operator fun invoke(file: File, type: Type): StaticDictionary
 }
 
 class LoadCsvDictionaryUseCaseImpl : LoadDictionaryUseCase {
-    override fun invoke(file: File, type: Type): WordDictionary {
+    override fun invoke(file: File, type: Type): StaticDictionary {
         val wordsList = mutableListOf<Word>()
         if (file.exists()) {
             CSVReader(FileReader(file)).use { reader ->
@@ -36,7 +36,7 @@ class LoadCsvDictionaryUseCaseImpl : LoadDictionaryUseCase {
                 }
             }
         }
-        return WordDictionary(
+        return StaticDictionary(
             wordsList = wordsList
         )
     }
@@ -45,7 +45,7 @@ class LoadCsvDictionaryUseCaseImpl : LoadDictionaryUseCase {
 class LoadGroovyDictionaryUseCaseImpl @Inject constructor(
     private val groovyScriptEngine: ScriptEngine,
 ) : LoadDictionaryUseCase {
-    override fun invoke(file: File, type: Type): WordDictionary {
+    override fun invoke(file: File, type: Type): StaticDictionary {
         val wordsList = mutableListOf<Word>()
         if (file.exists()) {
             val reader = InputStreamReader(FileInputStream(file))
@@ -61,7 +61,7 @@ class LoadGroovyDictionaryUseCaseImpl @Inject constructor(
                 throw error
             }
         }
-        return WordDictionary(
+        return StaticDictionary(
             wordsList = wordsList
         )
     }

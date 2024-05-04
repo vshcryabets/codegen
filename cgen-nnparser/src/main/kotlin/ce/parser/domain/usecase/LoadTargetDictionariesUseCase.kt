@@ -1,7 +1,8 @@
 package ce.parser.domain.usecase
 
 import ce.defs.Target
-import ce.parser.nnparser.TargetDictionaries
+import ce.parser.domain.dictionaries.StaticDictionaries
+import ce.parser.domain.dictionaries.StaticDictionariesImpl
 import ce.parser.nnparser.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -10,7 +11,7 @@ import org.jetbrains.kotlin.javax.inject.Inject
 import java.io.File
 
 interface LoadTargetDictionariesUseCase {
-    operator suspend fun invoke(baseDir: String, target: Target): TargetDictionaries
+    operator suspend fun invoke(baseDir: String, target: Target): StaticDictionaries
 }
 
 class LoadTargetDictionariesUseCaseImpl @Inject constructor(
@@ -18,7 +19,7 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
     private val loadCsvDictionaryUseCase: LoadDictionaryUseCase,
     private val loadGroovyDictionaryUseCase: LoadDictionaryUseCase,
 ) : LoadTargetDictionariesUseCase {
-    override suspend fun invoke(baseDir: String, target: Target): TargetDictionaries =
+    override suspend fun invoke(baseDir: String, target: Target): StaticDictionaries =
         withContext(ioScope.coroutineContext) {
             val operatorsDef = async { loadCsvDictionaryUseCase(
                 File("$baseDir/${target.rawValue}_operators.csv"), Type.OPERATOR) }
@@ -28,19 +29,17 @@ class LoadTargetDictionariesUseCaseImpl @Inject constructor(
                 File("$baseDir/${target.rawValue}_digits.groovy"), Type.DIGIT) }
             val stringLiteralsDef = async { loadGroovyDictionaryUseCase(
                 File("$baseDir/${target.rawValue}_strings.groovy"), Type.COMMENTS) }
-            return@withContext TargetDictionaries(
-                map = mapOf(
-                    Type.SPACES to async {
+            return@withContext StaticDictionariesImpl(
+                spaces = async {
                         loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_spaces.csv"), Type.SPACES)
                     }.await(),
-                    Type.COMMENTS to commentsDef.await(),
-                    Type.DIGIT to digitsDef.await(),
-                    Type.KEYWORD to async {
+                comments =  commentsDef.await(),
+                digits =  digitsDef.await(),
+                keywords = async {
                         loadCsvDictionaryUseCase(File("$baseDir/${target.rawValue}_keywords.csv"), Type.KEYWORD)
                     }.await(),
-                    Type.OPERATOR to operatorsDef.await(),
-                    Type.STRING_LITERAL to stringLiteralsDef.await()
-                )
+                operators = operatorsDef.await(),
+                strings = stringLiteralsDef.await()
             )
         }
 }

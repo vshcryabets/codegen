@@ -1,5 +1,8 @@
 package ce.parser.domain.usecase
 
+import ce.parser.domain.dictionaries.DynamicDictionaries
+import ce.parser.domain.dictionaries.StaticDictionaries
+import ce.parser.domain.dictionaries.StaticDictionary
 import ce.parser.nnparser.*
 import org.jetbrains.kotlin.javax.inject.Inject
 
@@ -7,31 +10,31 @@ interface TokenizerUseCase {
     data class Result(
         val words: List<WordItem>,
         val debugFindings: StringBuilder,
-        val namesDictionary: List<Word>,
-        val digitsDictionary: List<Word>,
-        val stringsDictionary: List<Word>,
+        val namesDictionary: List<WordItem>,
+        val digitsDictionary: List<WordItem>,
+        val stringsDictionary: List<WordItem>,
     )
     operator fun invoke(
         buffer: SourceBuffer,
-        dictionaries: TargetDictionaries,
+        dictionaries: StaticDictionaries,
         dynamicDictionaries: DynamicDictionaries,
         debugFindings: Boolean = false,
     ): Result
 }
 
-class TokenizerUseCaseImpl @Inject constructor(
+open class TokenizerUseCaseImpl @Inject constructor(
     private val checkString: CheckStringInDictionaryUseCase
 ) : TokenizerUseCase {
 
     fun nextToken(buffer: SourceBuffer,
-                  dictinaries: TargetDictionaries,
+                  staticDictionaries: StaticDictionaries,
                   ): String {
         val startPosition = buffer.pos
         val empty =  CheckStringInDictionaryUseCase.EMPTY_RESULT
         while (!buffer.end()) {
-            if ((checkString(buffer, dictinaries.map[Type.SPACES]!!) != empty) ||
-                (checkString(buffer, dictinaries.map[Type.COMMENTS]!!) != empty) ||
-                (checkString(buffer, dictinaries.operators) != empty)) {
+            if ((checkString(buffer, staticDictionaries.getSpaces()) != empty) ||
+                (checkString(buffer, staticDictionaries.getComments()) != empty) ||
+                (checkString(buffer, staticDictionaries.getOperators()) != empty)) {
                 break
             }
             buffer.movePosBy(1)
@@ -41,7 +44,7 @@ class TokenizerUseCaseImpl @Inject constructor(
 
     fun findInDictionary(
         buffer: SourceBuffer,
-        dictionary: WordDictionary,
+        dictionary: StaticDictionary,
         resultsList: MutableList<WordItem>,
         debugLine1: StringBuilder,
         debugLine2: StringBuilder,
@@ -61,7 +64,7 @@ class TokenizerUseCaseImpl @Inject constructor(
 
     override operator fun invoke(
         buffer: SourceBuffer,
-        dictionaries: TargetDictionaries,
+        staticDictionaries: StaticDictionaries,
         dynamicDictionaries: DynamicDictionaries,
         debugFindings: Boolean
     ): TokenizerUseCase.Result {
@@ -70,43 +73,22 @@ class TokenizerUseCaseImpl @Inject constructor(
         val debugLine2 = StringBuilder()
         val result = mutableListOf<WordItem>()
         while (!buffer.end()) {
-            // check string literal
-            if (findInDictionary(buffer, dictionaries.stringLiterals, result, debugLine1, debugLine2)) {
+            if (checkSpace(buffer,
+                staticDictionaries,
+                debugLine1,
+                debugLine2,
+                debugFindigs
+                )) {
                 continue
             }
-            // check digit
-            if (findInDictionary(buffer, dictionaries.digits, result, debugLine1, debugLine2)) {
-                continue
-            }
-
-            if (findInDictionary(buffer, dictionaries.comments, result, debugLine1, debugLine2)) {
-                continue
-            }
-            val space = checkString(buffer, dictionaries.map[Type.SPACES]!!)
-            if (!space.isEmpty()) {
-                buffer.movePosBy(space.lengthInChars)
-                space.results.forEach {
-                    if (it.name == "\n") {
-                        debugFindigs.append("> ")
-                        debugFindigs.append(debugLine1)
-                        debugFindigs.append("\n")
-                        debugFindigs.append(debugLine2)
-                        debugFindigs.append("\n")
-                        debugLine1.clear()
-                        debugLine2.clear()
-                    }
-                }
-                continue
-            }
-            if (findInDictionary(buffer, dictionaries.operators, result, debugLine1, debugLine2)) {
+            if (lookInStaticDictionaries(buffer, result,
+                    debugLine1, debugLine2, staticDictionaries)) {
                 continue
             }
 
             // name or keyword?
-            val nextToken = nextToken(buffer, dictionaries)
-            val keyword = dictionaries.keywords.sortedByLengthDict.find {
-                it.name.equals(nextToken)
-            }
+            val nextToken = nextToken(buffer, staticDictionaries)
+            val keyword = staticDictionaries.getKeywords().search(nextToken)
             if (keyword != null) {
                 result.add(keyword)
                 debugLine1.append(keyword.name).append(" ")
@@ -134,5 +116,56 @@ class TokenizerUseCaseImpl @Inject constructor(
             digitsDictionary = dynamicDictionaries.getDigitsDictionary().exportToWordsList(),
             stringsDictionary = dynamicDictionaries.getStringDictionary().exportToWordsList()
         )
+    }
+
+    open protected fun checkSpace(buffer: SourceBuffer,
+                                  staticDictionaries: StaticDictionaries,
+                                  debugLine1: StringBuilder,
+                                  debugLine2: StringBuilder,
+                                  debugFindings: StringBuilder): Boolean {
+        val space = checkString(buffer, staticDictionaries.getSpaces())
+        if (!space.isEmpty()) {
+            buffer.movePosBy(space.lengthInChars)
+            space.results.forEach {
+                if (it.name == "\n") {
+                    debugFindings.append("> ")
+                    debugFindings.append(debugLine1)
+                    debugFindings.append("\n")
+                    debugFindings.append(debugLine2)
+                    debugFindings.append("\n")
+                    debugLine1.clear()
+                    debugLine2.clear()
+                }
+            }
+            return true
+        }
+        return false
+    }
+
+    open protected fun lookInStaticDictionaries(
+        buffer: SourceBuffer,
+        result: MutableList<WordItem>,
+        debugLine1: StringBuilder,
+        debugLine2: StringBuilder,
+        staticDictionaries: StaticDictionaries
+    ): Boolean {
+        if (findInDictionary(buffer, staticDictionaries.getStringLiterals(),
+                result, debugLine1, debugLine2)) {
+            return true
+        }
+        // check digit
+        if (findInDictionary(buffer, staticDictionaries.getDigits(),
+                result, debugLine1, debugLine2)) {
+            return true
+        }
+        if (findInDictionary(buffer, staticDictionaries.getComments(),
+                result, debugLine1, debugLine2)) {
+            return true
+        }
+        if (findInDictionary(buffer, staticDictionaries.getOperators(),
+                result, debugLine1, debugLine2)) {
+            return true
+        }
+        return false
     }
 }

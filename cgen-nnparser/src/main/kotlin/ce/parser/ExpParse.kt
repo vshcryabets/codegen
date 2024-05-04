@@ -2,10 +2,10 @@ package ce.parser
 
 import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
-import ce.parser.domain.NamesDictionary
+import ce.parser.domain.dictionaries.NamesDictionary
 import ce.parser.domain.usecase.*
-import ce.parser.nnparser.DynamicDictionariesImpl
-import ce.parser.nnparser.TargetDictionaries
+import ce.parser.domain.dictionaries.DynamicDictionariesImpl
+import ce.parser.domain.dictionaries.StaticDictionaries
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +43,7 @@ data class SampleData(
 val globalSources = mutableListOf<SampleData>()
 var globalOutputDirectory: String = "./expparse_out/"
 var dictinariesDirectory: String = "./dictionary/"
-var globalDicts = emptyMap<Target, TargetDictionaries>()
+var globalDicts = emptyMap<Target, StaticDictionaries>()
 const val defaultCapacity = 1000000
 var globalNameBase = 1000000
 var globalNameMax = globalNameBase + defaultCapacity
@@ -105,13 +105,17 @@ fun main(args: Array<String>) {
         loadTargetDictionariesUseCase = loadTargetDictionaries
     )
     val checkStringInDictionary = CheckStringInDictionaryImpl();
-    val buildLinearUseCase = TokenizerUseCaseImpl(
+    val tokenizer = TokenizerUseCaseImpl(
         checkString = checkStringInDictionary
+    )
+    val metaTokenizer = MetaTokenizerUseCaseImpl(
+        checkStringInDictionaryUseCase = checkStringInDictionary
     )
     val processSampleUseCase = ProcessSampleUseCaseImpl(
         calcScope = calcScope,
         loadFileUseCase =  loadFileUseCase,
-        tokenizerUseCase = buildLinearUseCase,
+        tokenizerUseCase = tokenizer,
+        metaTokenizerUseCase = metaTokenizer,
         writeResultsUseCase = writeResultsUseCase)
     val configFile = File(args[0])
     println("Execute $configFile")

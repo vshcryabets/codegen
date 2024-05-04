@@ -1,6 +1,9 @@
-package ce.parser.nnparser
+package ce.parser.domain.dictionaries
 
-class WordDictionary(
+import ce.parser.nnparser.Word
+import ce.parser.nnparser.WordItem
+
+class StaticDictionary(
     wordsList: List<WordItem>,
     sortBySize: Boolean = true
 ) {
@@ -13,4 +16,9 @@ class WordDictionary(
             sortedByLengthDict = wordsList
         }
     }
+
+    fun search(name: String): WordItem? =
+        sortedByLengthDict.firstOrNull {
+            it.name.equals(name)
+        }
 }

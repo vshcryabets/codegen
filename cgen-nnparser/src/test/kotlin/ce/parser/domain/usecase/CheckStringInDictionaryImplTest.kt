@@ -1,6 +1,7 @@
 package ce.parser.domain.usecase
 
 import ce.parser.domain.TestDictionary
+import ce.parser.domain.dictionaries.StaticDictionary
 import ce.parser.nnparser.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -23,7 +24,7 @@ class CheckStringInDictionaryImplTest {
         val useCase = getUseCase()
         val result = useCase.invoke(
             buffer = SourceBuffer(StringBuilder("AAAA"), 0),
-            dictionary = WordDictionary(
+            dictionary = StaticDictionary(
                 listOf(
                     Word(name = "BBBB", id = 3000, type = Type.DIGIT)
                 ),
@@ -39,7 +40,7 @@ class CheckStringInDictionaryImplTest {
         val useCase = getUseCase()
         val result = useCase.invoke(
             buffer = SourceBuffer(StringBuilder("0xF9823"), 0),
-            dictionary = WordDictionary(
+            dictionary = StaticDictionary(
                 listOf(
                     RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT)
                 ),
@@ -54,7 +55,7 @@ class CheckStringInDictionaryImplTest {
         val useCase = getUseCase()
         val emptyResult = useCase.invoke(
             buffer = SourceBuffer("12345"),
-            dictionary = WordDictionary(
+            dictionary = StaticDictionary(
                 listOf(
                     object: ProgrammableWord {
                         override val name = "NOT"
@@ -68,7 +69,7 @@ class CheckStringInDictionaryImplTest {
         )
         val oneResult = useCase.invoke(
             buffer = SourceBuffer("12345"),
-            dictionary = WordDictionary(
+            dictionary = StaticDictionary(
                 listOf(
                     object: ProgrammableWord {
                         override val name = "NOT"
