@@ -2,8 +2,11 @@ package ce.parser
 
 import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
+import ce.parser.domain.dictionaries.NamesDictionary
 import ce.parser.domain.usecase.*
-import ce.parser.nnparser.TargetDictionaries
+import ce.parser.domain.dictionaries.DynamicDictionariesImpl
+import ce.parser.domain.dictionaries.StaticDictionaries
+import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,13 +43,23 @@ data class SampleData(
 val globalSources = mutableListOf<SampleData>()
 var globalOutputDirectory: String = "./expparse_out/"
 var dictinariesDirectory: String = "./dictionary/"
-var globalDicts = emptyMap<Target, TargetDictionaries>()
+var globalDicts = emptyMap<Target, StaticDictionaries>()
+const val defaultCapacity = 1000000
+var globalNameBase = 1000000
+var globalNameMax = globalNameBase + defaultCapacity
+var globalDigitBase = globalNameMax
+var globalDigitMax = globalDigitBase + defaultCapacity
+var globalStringLiteralsBase = globalDigitMax
+var globalStringLiteralsMax = globalStringLiteralsBase + defaultCapacity
 
 fun cleanSource() {
     globalSources.clear()
 }
 
-fun addSource(sampleName: String, sourceName: String, sourceTarget: Target, metaFile: String) {
+fun addSource(sampleName: String,
+              sourceName: String,
+              sourceTarget: Target,
+              metaFile: String) {
     globalSources.add(SampleData(
         sampleName = sampleName,
         sourceFile = sourceName,
@@ -74,18 +87,36 @@ fun main(args: Array<String>) {
     )
     val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     val calcScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    val loadDictionaryUseCase = LoadDictionaryUseCaseImpl()
+    val loadDictionaryUseCase = LoadCsvDictionaryUseCaseImpl()
+    val loadGroovyDictUseCase = LoadGroovyDictionaryUseCaseImpl(
+        groovyScriptEngine = groovyEngine
+    )
     val loadFileUseCase = LoadFileUseCaseImpl(ioScope)
+    val writeResultsUseCase = WriteResultsUseCaseImpl(
+        ioScope = ioScope
+    )
     val loadTargetDictionaries = LoadTargetDictionariesUseCaseImpl(
-        loadDictionaryUseCase = loadDictionaryUseCase,
+        loadCsvDictionaryUseCase = loadDictionaryUseCase,
+        loadGroovyDictionaryUseCase = loadGroovyDictUseCase,
         ioScope = ioScope
     )
     val loadAllDictionariesUseCase = LoadAllDictionariesUseCaseImpl(
         ioScope = ioScope,
         loadTargetDictionariesUseCase = loadTargetDictionaries
     )
-    val buildLinearUseCase = BuildLinearUseCaseImpl2()
-    val processSampleUseCase = ProcessSampleUseCaseImpl(calcScope, loadFileUseCase, buildLinearUseCase)
+    val checkStringInDictionary = CheckStringInDictionaryImpl();
+    val tokenizer = TokenizerUseCaseImpl(
+        checkString = checkStringInDictionary
+    )
+    val metaTokenizer = MetaTokenizerUseCaseImpl(
+        checkStringInDictionaryUseCase = checkStringInDictionary
+    )
+    val processSampleUseCase = ProcessSampleUseCaseImpl(
+        calcScope = calcScope,
+        loadFileUseCase =  loadFileUseCase,
+        tokenizerUseCase = tokenizer,
+        metaTokenizerUseCase = metaTokenizer,
+        writeResultsUseCase = writeResultsUseCase)
     val configFile = File(args[0])
     println("Execute $configFile")
     executeScriptUseCase(configFile)
@@ -93,8 +124,27 @@ fun main(args: Array<String>) {
         println("Load dictionaries from $dictinariesDirectory")
         globalDicts = loadAllDictionariesUseCase(dictinariesDirectory)
     }
+    val namesDictionary = NamesDictionary(
+        startId = globalNameBase,
+        maxId = globalNameMax,
+        type = Type.NAME
+    )
+    val digitsDictionary = NamesDictionary(
+        startId = globalDigitBase,
+        maxId = globalDigitMax,
+        type = Type.DIGIT
+    )
+    val stringLiteralsDictionary = NamesDictionary(
+        startId = globalStringLiteralsBase,
+        maxId = globalStringLiteralsMax,
+        type = Type.DIGIT
+    )
+    val dynamiDictionaries = DynamicDictionariesImpl(namesDictionary, digitsDictionary, stringLiteralsDictionary)
     runBlocking {
-        processSampleUseCase(globalSources.first(), globalOutputDirectory, globalDicts)
+        processSampleUseCase(
+            globalSources.first(), globalOutputDirectory, globalDicts,
+            dynamicDictionaries = dynamiDictionaries,
+        )
     }
     println("END")
 
