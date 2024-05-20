@@ -21,7 +21,7 @@ object TestDictionary {
         )
     }
 
-    val keywordDict = getDict(listOf("max", "float", "int", "pragma", "once", "namespace"), 100, Type.KEYWORD)
+    val keywordDict = getDict(listOf("max", "float", "int", "pragma", "once", "namespace", "add"), 100, Type.KEYWORD)
     val operatorsDict =
         getDict(listOf("(", ")", "=", "->", ",", "-", ">", "+", "#", ":", "::", ";",".","\""), 200, Type.OPERATOR)
     val spaces = getDict(listOf(" ", "\t", "\n"), 1000, Type.SPACES)

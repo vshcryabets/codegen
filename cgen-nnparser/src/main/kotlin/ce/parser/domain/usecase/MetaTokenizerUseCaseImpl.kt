@@ -24,6 +24,9 @@ class MetaTokenizerUseCaseImpl @Inject constructor(
         if (buffer.nextIs("namespace(")) {
             namespaceParseMode = 2
         }
+        if (buffer.nextIs("add(")) {
+            namespaceParseMode = 2
+        }
         if (namespaceParseMode > 0 && buffer.nextIs("\"")) {
             // What about escaped \" symbols ?
             val quoteOperator = staticDictionaries.getOperators().search("\"")!!
