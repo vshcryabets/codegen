@@ -29,7 +29,8 @@ class MetaTokenizerUseCaseImpl @Inject constructor(
         }
         if (namespaceParseMode > 0 && buffer.nextIs("\"")) {
             // What about escaped \" symbols ?
-            val quoteOperator = staticDictionaries.getOperators().search("\"")!!
+            val quoteOperator = staticDictionaries.getOperators().search("\"") ?:
+                throw IllegalStateException("Can't find \" symbol in Meta dictionaries. ")
             result.add(quoteOperator)
             debugLine1.append('"')
             debugLine2.append("${quoteOperator.id}, ")
