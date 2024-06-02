@@ -33,7 +33,7 @@ class MetaTokenizerUseCaseImplTest {
         val src = SourceBuffer("namespace(\"a.b.c\")")
         val result = env.tokenizer(buffer = src,
             dynamicDictionaries = env.dynamicDictionaries,
-            dictionaries = TestDictionary.dictionaries,
+            dictionaries = TestDictionary.metaDictionaries,
             debugFindings = true
             )
         assertEquals(10, result.words.size)
@@ -43,15 +43,37 @@ class MetaTokenizerUseCaseImplTest {
     fun metaAdd() {
         val env = prepareTokenizer()
         // expected
-        // <keyword namespace><operator (><operator "><literal varName>
+        // <keyword add><operator (><operator "><name varName>
         // <operator "><operator )>
         val src = SourceBuffer("add(\"varName\")")
         val result = env.tokenizer(buffer = src,
             dynamicDictionaries = env.dynamicDictionaries,
-            dictionaries = TestDictionary.dictionaries,
+            dictionaries = TestDictionary.metaDictionaries,
             debugFindings = true
         )
         assertEquals(6, result.words.size)
         assertEquals(Type.KEYWORD, result.words[0].type)
+        assertEquals(Type.OPERATOR, result.words[1].type)
+        assertEquals(Type.OPERATOR, result.words[2].type)
+        assertEquals(Type.NAME, result.words[3].type)
+        assertEquals(Type.OPERATOR, result.words[4].type)
+        assertEquals(Type.OPERATOR, result.words[5].type)
+
+    }
+
+    @Test
+    fun metaAddBlockComment() {
+        val env = prepareTokenizer()
+        // expected
+        // <keyword addBlockComment><operator (><operator "><comment comment>
+        // <operator "><operator )>
+        val src = SourceBuffer("addBlockComment(\"comment\")")
+        val result = env.tokenizer(buffer = src,
+            dynamicDictionaries = env.dynamicDictionaries,
+            dictionaries = TestDictionary.metaDictionaries,
+            debugFindings = true
+        )
+        assertEquals(1, result.words.size)
+        assertEquals(Type.COMMENTS, result.words[0].type)
     }
 }
