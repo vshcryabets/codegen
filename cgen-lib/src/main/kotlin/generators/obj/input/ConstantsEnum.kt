@@ -16,7 +16,9 @@ data class ConstantsEnum(
         defaultDataType = name
     }
 
-    fun add(name: String, value: Any = NotDefined) {
+    fun add(name: String) = add(name, NotDefined)
+
+    fun add(name: String, value: Any) {
         addSub(DataField(name, defaultDataType, DataValue(value)))
     }
 

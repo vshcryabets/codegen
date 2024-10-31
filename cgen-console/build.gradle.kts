@@ -19,6 +19,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     implementation("com.opencsv:opencsv:5.7.1")
+
+    // script engines
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
+    implementation("org.codehaus.groovy:groovy-jsr223:3.0.17")
 }
 
 kotlin {
