@@ -34,8 +34,7 @@ fun main(args: Array<String>) {
     }
 
     val kotlinScriptEngine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
-    val factory = ScriptEngineManager()
-    val groovyEngine = factory.getEngineByName("groovy")
+    val groovyEngine = ScriptEngineManager().getEngineByName("groovy")
 
     val buildProjectUseCase = BuildProjectUseCase(
         getProjectUseCase = LoadProjectUseCaseImpl(),

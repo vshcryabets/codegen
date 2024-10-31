@@ -1,9 +1,9 @@
 package ce.domain.usecase.execute
 
-import org.jetbrains.kotlin.javax.inject.Inject
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import javax.inject.Inject
 import javax.script.ScriptEngine
 import javax.script.ScriptException
 
