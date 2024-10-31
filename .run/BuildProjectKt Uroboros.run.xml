@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BuildProjectKt Uroboros" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="ce.entrypoints.BuildProjectKt" />
+    <module name="codegen.cgen-console.main" />
+    <option name="PROGRAM_PARAMETERS" value="--project ./project.json" />
+    <shortenClasspath name="NONE" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/cgen-lib/cgen/" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

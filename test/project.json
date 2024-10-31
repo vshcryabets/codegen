@@ -1,6 +1,7 @@
 {
   "files": [
-    "./test/test.kts",
+    "./test/enumGoldErrors.kts",
+    "./test/enumGoldErrors.groovy",
     "./test/constants.kts",
     "./test/enums.kts",
     "./test/dataclass.kts",

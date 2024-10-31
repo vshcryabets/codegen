@@ -8,14 +8,15 @@ import generators.obj.input.clearSubs
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import javax.script.ScriptEngine
 import javax.script.ScriptException
-import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 
-class LoadMetaFilesForTargetUseCase {
+class LoadMetaFilesForTargetUseCase constructor(
+    private val groovyScriptEngine: ScriptEngine,
+    private val kotlinScriptEngine: ScriptEngine,
+) {
 
     operator fun invoke(project: Project, target : Target) : Namespace {
-        val engine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
-
         println("Target $target")
         currentTarget = target
         globRootNamespace.clearSubs()
@@ -29,10 +30,16 @@ class LoadMetaFilesForTargetUseCase {
             sourceFile = fileObject.absolutePath
             outputFile = ""
             try {
-                engine.eval(reader)
+                if (fileName.endsWith(".kts")) {
+                    kotlinScriptEngine.eval(reader)
+                } else if (fileName.endsWith(".groovy")) {
+                    groovyScriptEngine.eval(reader)
+                } else {
+                    System.err.println("Unknown file type $fileName")
+                }
             }
             catch (error: ScriptException) {
-                error("Error in file ${fileObject.absoluteFile}:${error.message}")
+                error("Error in file ${fileObject.absoluteFile} : ${error.message}")
                 throw error
             }
 

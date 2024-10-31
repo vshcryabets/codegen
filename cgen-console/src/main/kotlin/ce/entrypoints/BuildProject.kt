@@ -7,6 +7,8 @@ import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import javax.script.ScriptEngineManager
+import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 
 fun main(args: Array<String>) {
     var needToStoreInTree = false
@@ -31,10 +33,17 @@ fun main(args: Array<String>) {
         """.trimIndent())
     }
 
+    val kotlinScriptEngine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
+    val factory = ScriptEngineManager()
+    val groovyEngine = factory.getEngineByName("groovy")
+
     val buildProjectUseCase = BuildProjectUseCase(
         getProjectUseCase = LoadProjectUseCaseImpl(),
         storeInTreeUseCase = StoreAstTreeUseCase(),
-        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(),
+        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(
+            kotlinScriptEngine = kotlinScriptEngine,
+            groovyScriptEngine = groovyEngine
+        ),
         storeOutTreeUseCase = StoreOutTreeUseCase(),
         transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
     )
