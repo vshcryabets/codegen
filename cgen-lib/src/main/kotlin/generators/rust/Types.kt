@@ -16,7 +16,7 @@ object Types {
             DataType.uint32 -> "u32"
             DataType.float32 -> "f32"
             DataType.float64 -> "f64"
-            else -> "QQTP_$type"
+            else -> "rustQQTP_$type"
         }
 
     fun toValue(classData: RustClassData, type: DataType, value: Any?) : String =

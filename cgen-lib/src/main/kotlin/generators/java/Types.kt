@@ -16,7 +16,7 @@ object Types {
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
             is DataType.string -> "String[]"
-            else -> "QQTP_array_$type"
+            else -> "javaQQTP_array_$type"
         }
 
     fun typeTo(file: FileData,
@@ -33,7 +33,7 @@ object Types {
             DataType.float64 -> "double"
             is DataType.string -> "string"
             is DataType.array -> getArrayType(type.elementDataType)
-            else -> "QQTP_$type"
+            else -> "javaQQTP_$type"
         }
 
     fun toValue(classData: JavaClassData, type: DataType, value: DataValue) : String =

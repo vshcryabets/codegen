@@ -4,6 +4,7 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import generators.obj.input.findOrCreateSub
 import generators.obj.input.getParentPath
+import generators.obj.input.getPath
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ImportLeaf
@@ -23,7 +24,7 @@ object Types {
             is DataType.string -> "String[]"
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name // TODO nullable check ?
-            else -> "QQTP_array_$type"
+            else -> "ktQQTP_array_$type"
         }
 
     fun typeTo(file: FileData,
@@ -53,7 +54,8 @@ object Types {
             is DataType.array -> getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name
-            else -> "QQTP_$type"
+            is DataType.userClassTest2 -> type.node.getPath()
+            else -> "ktQQTP_$type"
         } + (if (type.canBeNull) "?" else "")
     }
 

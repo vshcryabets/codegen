@@ -14,6 +14,9 @@ dependencies {
     implementation(gradleApi())
     implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.5")
+
 
     // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
     implementation("org.jfree:org.jfree.svg:5.0.3")

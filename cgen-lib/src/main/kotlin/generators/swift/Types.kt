@@ -19,7 +19,7 @@ object Types {
 //                file.addInclude("<string>")
 //                "std::string"
 //            }
-            else -> "QQTP_$type"
+            else -> "swiftQQTP_$type"
         }
 
     fun toValue(classData: SwiftClassData, type: DataType, value: Any?) : String =

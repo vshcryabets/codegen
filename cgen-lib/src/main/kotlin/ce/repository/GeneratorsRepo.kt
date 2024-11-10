@@ -31,12 +31,13 @@ import generators.swift.SwiftDataClassGenerator
 import generators.swift.SwiftEnumGenerator
 import generators.swift.SwiftFileGenerator
 
-class GeneratorsRepo(val project: Project) {
+class GeneratorsRepo(
+    private val project: Project,
+    private val codestylesRepo: CodestylesRepo
+) {
     val supportedMeta: Map<Target, MetaGenerator>
-    val writtersMap: Map<Target, Writter>
 
     init {
-        val cLikeCodeStyleRepo = CLikeCodestyleRepo(project.codeStyle)
 
         val targets = listOf(
             Target.Kotlin,
@@ -51,28 +52,17 @@ class GeneratorsRepo(val project: Project) {
             Target.Java to JavaFileGenerator(),
         )
 
-        val codestylesMap = targets.map {
-            it to cLikeCodeStyleRepo
-        }.toMap()
 
         val codeFormatters = mapOf(
-            Target.Kotlin to CodeFormatterKotlinUseCaseImpl(cLikeCodeStyleRepo),
-            Target.Cxx to CodeFormatterCxxUseCaseImpl(cLikeCodeStyleRepo),
-//            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
-//            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
-//            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),
-        )
-
-        writtersMap = mapOf(
-            Target.Kotlin to KotlinWritter(codestylesMap[Target.Kotlin]!!, project.outputFolder),
-            Target.Cxx to CppWritter(codestylesMap[Target.Cxx]!!, project.outputFolder),
+            Target.Kotlin to CodeFormatterKotlinUseCaseImpl(codestylesRepo.get(Target.Kotlin)),
+            Target.Cxx to CodeFormatterCxxUseCaseImpl(codestylesRepo.get(Target.Cxx)),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
 //            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
 //            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),
         )
 
         val addBlockDefaultsUseCases = targets.map {
-            it to AddRegionDefaultsUseCaseImpl(codestylesMap[it]!!)
+            it to AddRegionDefaultsUseCaseImpl(codestylesRepo.get(it))
         }.toMap()
 
         val prepareFilesListUseCases = targets.map {
@@ -146,6 +136,4 @@ class GeneratorsRepo(val project: Project) {
     fun get(target: Target): MetaGenerator {
         return supportedMeta[target]!!
     }
-
-    fun getWritter(target: Target): Writter = writtersMap[target]!!
 }

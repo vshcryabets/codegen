@@ -12,13 +12,13 @@ import javax.script.ScriptEngine
 import javax.script.ScriptException
 
 class LoadMetaFilesForTargetUseCase constructor(
-    private val groovyScriptEngine: ScriptEngine,
-    private val kotlinScriptEngine: ScriptEngine,
+    private val groovyScriptEngine: ScriptEngine?,
+    private val kotlinScriptEngine: ScriptEngine?,
 ) {
 
-    operator fun invoke(project: Project, target : Target) : Namespace {
-        println("Target $target")
-        currentTarget = target
+    operator fun invoke(project: Project, target : TargetConfiguration) : Namespace {
+        println("Target ${target.type}")
+        currentTarget = target.type
         globRootNamespace.clearSubs()
 
         project.files.forEach { fileName ->
@@ -26,14 +26,14 @@ class LoadMetaFilesForTargetUseCase constructor(
             val fileObject = File(fileName)
             val reader = InputStreamReader(FileInputStream(fileObject))
             // clean global defines for each file
-            customBaseFolderPath = project.outputFolder
+            customBaseFolderPath = target.outputFolder ?: ""
             sourceFile = fileObject.absolutePath
             outputFile = ""
             try {
                 if (fileName.endsWith(".kts")) {
-                    kotlinScriptEngine.eval(reader)
+                    kotlinScriptEngine?.eval(reader) ?: println("KTS engine is null, can't process $fileName")
                 } else if (fileName.endsWith(".groovy")) {
-                    groovyScriptEngine.eval(reader)
+                    groovyScriptEngine?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
                 } else {
                     System.err.println("Unknown file type $fileName")
                 }

@@ -8,6 +8,7 @@ import ce.treeio.DataValueSerializer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.io.FileInputStream
 
 interface LoadProjectUseCase {
@@ -17,7 +18,10 @@ interface LoadProjectUseCase {
 class LoadProjectUseCaseImpl : LoadProjectUseCase {
     override operator fun invoke(projectPath: String): Project {
         println("Loading project $projectPath")
-        val mapper = ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+        val mapper = ObjectMapper()
+            .registerModule(KotlinModule.Builder()
+                .build())
+            .enable(SerializationFeature.INDENT_OUTPUT)
         val module = SimpleModule()
         module.addSerializer(DataType::class.java, DataTypeSerializer())
         module.addSerializer(DataValue::class.java, DataValueSerializer())
