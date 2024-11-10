@@ -31,9 +31,10 @@ buildscript {
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
+        classpath("org.codehaus.groovy:groovy-jsr223:3.0.17")
 //        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
-        classpath("com.github.vshcryabets:codegen:cd0b4ed5c5")
+        classpath("com.github.vshcryabets:codegen:e65c83c5c0")
     }
 }
 
@@ -60,18 +61,26 @@ java {
 //    classpath = sourceSets["test"].runtimeClasspath
 //}
 
-//task("buildCgen2", DefaultTask::class) {
-//    val kotlinScriptEngine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
-//    val groovyEngine = ScriptEngineManager().getEngineByName("groovy")
-//    val buildProjectUseCase = BuildProjectUseCase(
-//        getProjectUseCase = LoadProjectUseCaseImpl(),
-//        storeInTreeUseCase = StoreAstTreeUseCase(),
-//        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(
-//            groovyEngine,
-//            kotlinScriptEngine
-//        ),
-//        storeOutTreeUseCase = StoreOutTreeUseCase(),
-//        transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
-//    )
-//    buildProjectUseCase("./test/project.json")
-//}
+task("testScriptEngines", DefaultTask::class) {
+    val kotlinScriptEngine = ScriptEngineManager().getEngineByName("kts")
+    //KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
+    val groovyEngine = ScriptEngineManager().getEngineByName("groovy")
+    println("KTS = $kotlinScriptEngine")
+    println("Groovy engine = $groovyEngine")
+}
+
+task("buildCgen2", DefaultTask::class) {
+    val kotlinScriptEngine = ScriptEngineManager().getEngineByName("kts")
+    val groovyEngine = ScriptEngineManager().getEngineByName("groovy")
+    val buildProjectUseCase = BuildProjectUseCase(
+        getProjectUseCase = LoadProjectUseCaseImpl(),
+        storeInTreeUseCase = StoreAstTreeUseCase(),
+        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(
+            groovyEngine,
+            kotlinScriptEngine
+        ),
+        storeOutTreeUseCase = StoreOutTreeUseCase(),
+        transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
+    )
+    buildProjectUseCase("./test/project.json")
+}

@@ -27,7 +27,7 @@ object Types {
             }
             DataType.float32 -> "float"
             DataType.float64 -> "double"
-            else -> "QQTP_$type"
+            else -> "cxxQQTP_$type"
         }
     fun toValue(type: DataType, value: DataValue) : String =
         when (type) {

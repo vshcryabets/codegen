@@ -5,7 +5,10 @@ import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
+import ce.repository.WrittersRepo
+import ce.repository.WrittersRepoImpl
 import ce.settings.Project
 
 class BuildProjectUseCase(
@@ -18,19 +21,23 @@ class BuildProjectUseCase(
     operator fun invoke(projectFile: String, writeInTree: Boolean = false, writeOutTree : Boolean = false) {
         val project : Project = getProjectUseCase(projectFile)
         println("Processing $project")
-        val generatorsRepo = GeneratorsRepo(project)
+        val codeStyleRepo = CodestyleRepoImpl(project)
+        val generatorsRepo = GeneratorsRepo(
+            project = project,
+            codestylesRepo = codeStyleRepo)
+        val writtersRepo = WrittersRepoImpl(codestylesRepo = codeStyleRepo)
 
         project.targets.forEach { target ->
             val inputTree = loadMetaFilesUseCase(project, target)
             if (writeInTree) {
-                storeInTreeUseCase(project.outputFolder + "input_tree_${target.name}.xml", inputTree)
+                storeInTreeUseCase(target.outputFolder + "input_tree_${target.type.name}.xml", inputTree)
             }
-            val outTree = transformInTreeToOutTreeUseCase(inputTree, generatorsRepo.get(target))
+            val outTree = transformInTreeToOutTreeUseCase(inputTree, generatorsRepo.get(target.type))
             if (writeOutTree) {
-                storeOutTreeUseCase(project.outputFolder + "output_tree_${target.name}.xml", outTree)
+                storeOutTreeUseCase(target.outputFolder + "output_tree_${target.type.name}.xml", outTree)
             }
             val codeStyleTree = generatorsRepo.get(outTree.target).prepareCodeStyleTree(outTree)
-            generatorsRepo.getWritter(outTree.target).write(codeStyleTree)
+            writtersRepo.getWritter(target).write(codeStyleTree)
         }
     }
 }

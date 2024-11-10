@@ -18,10 +18,10 @@ class PrepareAstTreeUseCase(
         project.targets.forEach { target ->
             val rootNameSpace = loadMetaFilesUseCase(project, target)
             val astTree = AstTree(
-                target = target,
+                target = target.type,
                 subs = mutableListOf(rootNameSpace)
             )
-            storeInTreeUseCase(project.outputFolder + "ast_tree_${target.name}.xml", astTree)
+            storeInTreeUseCase(target.outputFolder + "ast_tree_${target.type.name}.xml", astTree)
         }
     }
 }

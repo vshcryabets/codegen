@@ -66,6 +66,7 @@ open class DataType(
     class promise(val elementDataType: DataType) : DataType()
     class custom(val block: Block, nullable : Boolean = false) : DataType(nullable)
     class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
+    class userClassTest2(val node: generators.obj.input.Node, nullable : Boolean = false) : DataType(nullable)
 //    class nullable(val inner: DataType) : DataType(true)
 }
 

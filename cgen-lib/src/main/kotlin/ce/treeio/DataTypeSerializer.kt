@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer
+import generators.obj.input.getPath
 
 class DataTypeSerializer : JsonSerializer<DataType>() {
 
@@ -63,6 +64,7 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             is DataType.pointer -> PREFIX_POINTER_TO + stringValue(value.subType)
             is DataType.promise -> PREFIX_FLOW_OF + stringValue(value.elementDataType)
             is DataType.userClass -> PREFIX_CLASS + value.path
+            is DataType.userClassTest2 -> PREFIX_CLASS + value.node.getPath()
             is DataType.string -> "string"
             else -> "UNK" + value.toString()
         }

@@ -3,7 +3,9 @@ package ce.entrypoints
 import ce.domain.usecase.load.LoadOutTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
+import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
+import ce.repository.WrittersRepoImpl
 
 fun main(args: Array<String>) {
     if (args.size < 2) {
@@ -16,10 +18,16 @@ fun main(args: Array<String>) {
 
     val loadOutputTreeUseCase = LoadOutTreeUseCase()
     val getProjectUseCase: LoadProjectUseCase = LoadProjectUseCaseImpl()
-
     val project = getProjectUseCase(args[1])
-    val generatorsRepo = GeneratorsRepo(project)
+    val codestylesRepo = CodestyleRepoImpl(project)
+    val writtersFactoryImpl = WrittersRepoImpl(
+        codestylesRepo = codestylesRepo)
+
+    val generatorsRepo = GeneratorsRepo(project,
+        codestylesRepo = codestylesRepo)
     val tree = loadOutputTreeUseCase(args[0])
     val codeStyleTree = generatorsRepo.get(tree.target).prepareCodeStyleTree(tree)
-    generatorsRepo.getWritter(tree.target).write(codeStyleTree)
+    val targetConfiguration = project.targets.firstOrNull { it.type == tree.target } ?:
+        throw IllegalStateException("Can't find configuration for ${tree.target} in the project file ${args[1]}")
+    writtersFactoryImpl.getWritter(targetConfiguration).write(codeStyleTree)
 }
