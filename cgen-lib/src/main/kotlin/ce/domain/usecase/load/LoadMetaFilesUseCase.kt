@@ -12,8 +12,7 @@ import javax.script.ScriptEngine
 import javax.script.ScriptException
 
 class LoadMetaFilesForTargetUseCase constructor(
-    private val groovyScriptEngine: ScriptEngine?,
-    private val kotlinScriptEngine: ScriptEngine?,
+    private val enginesMap: Map<MetaEngine, ScriptEngine>
 ) {
 
     operator fun invoke(project: Project, target : TargetConfiguration) : Namespace {
@@ -31,11 +30,11 @@ class LoadMetaFilesForTargetUseCase constructor(
             outputFile = ""
             try {
                 if (fileName.endsWith(".kts")) {
-                    kotlinScriptEngine?.eval(reader) ?: println("KTS engine is null, can't process $fileName")
+                    enginesMap[MetaEngine.KTS]?.eval(reader) ?: println("KTS engine is null, can't process $fileName")
                 } else if (fileName.endsWith(".groovy")) {
-                    groovyScriptEngine?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
+                    enginesMap[MetaEngine.GROOVY]?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
                 } else {
-                    System.err.println("Unknown file type $fileName")
+                    error("Unknown file type $fileName")
                 }
             }
             catch (error: ScriptException) {

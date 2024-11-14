@@ -1,5 +1,6 @@
 package ce.entrypoints
 
+import ce.defs.MetaEngine
 import ce.domain.usecase.entry.BuildProjectUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
@@ -33,15 +34,16 @@ fun main(args: Array<String>) {
         """.trimIndent())
     }
 
-    val kotlinScriptEngine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
-    val groovyEngine = ScriptEngineManager().getEngineByName("groovy")
+    val engineMaps = mapOf(
+        MetaEngine.KTS to KotlinJsr223DefaultScriptEngineFactory().getScriptEngine(),
+        MetaEngine.GROOVY to ScriptEngineManager().getEngineByName("groovy")
+    )
 
     val buildProjectUseCase = BuildProjectUseCase(
         getProjectUseCase = LoadProjectUseCaseImpl(),
         storeInTreeUseCase = StoreAstTreeUseCase(),
         loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(
-            kotlinScriptEngine = kotlinScriptEngine,
-            groovyScriptEngine = groovyEngine
+            enginesMap =  engineMaps
         ),
         storeOutTreeUseCase = StoreOutTreeUseCase(),
         transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),

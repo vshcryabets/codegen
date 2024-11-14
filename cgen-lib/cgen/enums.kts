@@ -2,6 +2,11 @@ import ce.defs.*
 
 namespace("ce.defs").apply {
 
+    enum("MetaEngine").apply {
+        add("KTS")
+        add("GROOVY")
+    }
+
     val targetEnum = enum("Target").apply {
         defaultType(DataType.string())
         add("Other", "other")

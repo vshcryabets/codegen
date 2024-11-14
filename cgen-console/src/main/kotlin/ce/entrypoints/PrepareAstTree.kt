@@ -1,5 +1,6 @@
 package ce.entrypoints
 
+import ce.defs.MetaEngine
 import ce.domain.usecase.entry.PrepareAstTreeUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
@@ -11,17 +12,15 @@ fun main(args: Array<String>) {
     if (args.size < 1) {
         error("Please specify project file!")
     }
-    val kotlinScriptEngine = KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
-    val factory = ScriptEngineManager()
-    val groovyEngine = factory.getEngineByName("groovy")
+    val engineMaps = mapOf(
+        MetaEngine.KTS to KotlinJsr223DefaultScriptEngineFactory().getScriptEngine(),
+        MetaEngine.GROOVY to ScriptEngineManager().getEngineByName("groovy")
+    )
 
     val prepareAstTreeUseCase = PrepareAstTreeUseCase(
         LoadProjectUseCaseImpl(),
         StoreAstTreeUseCase(),
-        LoadMetaFilesForTargetUseCase(
-            kotlinScriptEngine = kotlinScriptEngine,
-            groovyScriptEngine = groovyEngine
-        )
+        LoadMetaFilesForTargetUseCase(engineMaps)
     )
     prepareAstTreeUseCase(args[0])
 }
