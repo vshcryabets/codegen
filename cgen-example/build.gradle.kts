@@ -34,7 +34,7 @@ buildscript {
         classpath("org.codehaus.groovy:groovy-jsr223:3.0.17")
 //        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
-        classpath("com.github.vshcryabets:codegen:e65c83c5c0")
+        classpath("com.github.vshcryabets:codegen:feature~gradle-task2-SNAPSHOT")
     }
 }
 
@@ -70,15 +70,14 @@ task("testScriptEngines", DefaultTask::class) {
 }
 
 task("buildCgen2", DefaultTask::class) {
-    val kotlinScriptEngine = ScriptEngineManager().getEngineByName("kts")
-    val groovyEngine = ScriptEngineManager().getEngineByName("groovy")
+    val engineMaps = mapOf<ce.defs.MetaEngine, javax.script.ScriptEngine>(
+        ce.defs.MetaEngine.KTS to ScriptEngineManager().getEngineByName("kts"),
+        ce.defs.MetaEngine.GROOVY to ScriptEngineManager().getEngineByName("groovy")
+    )
     val buildProjectUseCase = BuildProjectUseCase(
         getProjectUseCase = LoadProjectUseCaseImpl(),
         storeInTreeUseCase = StoreAstTreeUseCase(),
-        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(
-            groovyEngine,
-            kotlinScriptEngine
-        ),
+        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(engineMaps),
         storeOutTreeUseCase = StoreOutTreeUseCase(),
         transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
     )
