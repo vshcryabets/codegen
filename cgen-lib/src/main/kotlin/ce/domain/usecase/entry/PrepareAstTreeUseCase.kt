@@ -1,5 +1,6 @@
 package ce.domain.usecase.entry
 
+import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
@@ -11,8 +12,10 @@ class PrepareAstTreeUseCase(
     private val storeInTreeUseCase : StoreAstTreeUseCase,
     private val loadMetaFilesUseCase : LoadMetaFilesForTargetUseCase,
 ) {
-    operator fun invoke(projectFile: String) {
-        val project : Project = getProjectUseCase(projectFile)
+    operator fun invoke(projectFile: String,
+                        dirsConfiguration: DirsConfiguration
+    ) {
+        val project : Project = getProjectUseCase(projectFile, dirsConfiguration)
         println("Processing $project")
 
         project.targets.forEach { target ->

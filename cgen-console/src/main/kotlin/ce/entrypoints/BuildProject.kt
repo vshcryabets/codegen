@@ -1,6 +1,7 @@
 package ce.entrypoints
 
 import ce.defs.MetaEngine
+import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.entry.BuildProjectUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
@@ -8,6 +9,7 @@ import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import java.io.File
 import javax.script.ScriptEngineManager
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 
@@ -48,6 +50,9 @@ fun main(args: Array<String>) {
         storeOutTreeUseCase = StoreOutTreeUseCase(),
         transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
     )
-
-    buildProjectUseCase(projectFile, needToStoreInTree, needToStoreOutTree)
+    val dir = DirsConfiguration(
+        workingDir = File(".").absolutePath
+    )
+    buildProjectUseCase(projectFile, needToStoreInTree, needToStoreOutTree,
+        dir)
 }

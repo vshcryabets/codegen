@@ -21,11 +21,11 @@ class LoadMetaFilesForTargetUseCase constructor(
         globRootNamespace.clearSubs()
 
         project.files.forEach { fileName ->
-            println("Processing $fileName")
             val fileObject = File(fileName)
+            println("Processing ${fileObject.absolutePath}")
             val reader = InputStreamReader(FileInputStream(fileObject))
             // clean global defines for each file
-            customBaseFolderPath = target.outputFolder ?: ""
+            customBaseFolderPath = target.outputFolder
             sourceFile = fileObject.absolutePath
             outputFile = ""
             try {

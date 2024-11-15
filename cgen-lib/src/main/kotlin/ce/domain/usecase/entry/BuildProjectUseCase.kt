@@ -1,5 +1,6 @@
 package ce.domain.usecase.entry
 
+import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
@@ -18,8 +19,11 @@ class BuildProjectUseCase(
     private val storeOutTreeUseCase : StoreOutTreeUseCase,
     private val transformInTreeToOutTreeUseCase : TransformInTreeToOutTreeUseCase,
 ) {
-    operator fun invoke(projectFile: String, writeInTree: Boolean = false, writeOutTree : Boolean = false) {
-        val project : Project = getProjectUseCase(projectFile)
+    operator fun invoke(projectFile: String,
+                        writeInTree: Boolean = false,
+                        writeOutTree : Boolean = false,
+                        dirsConfiguration: DirsConfiguration) {
+        val project : Project = getProjectUseCase(projectFile, dirsConfiguration)
         println("Processing $project")
         val codeStyleRepo = CodestyleRepoImpl(project)
         val generatorsRepo = GeneratorsRepo(

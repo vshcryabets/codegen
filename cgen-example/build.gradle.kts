@@ -5,6 +5,7 @@ import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import java.io.File
 import javax.script.ScriptEngineManager
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 
@@ -34,7 +35,8 @@ buildscript {
         classpath("org.codehaus.groovy:groovy-jsr223:3.0.17")
 //        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
-        classpath("com.github.vshcryabets:codegen:feature~gradle-task2-SNAPSHOT")
+//        classpath("com.github.vshcryabets:codegen:feature~gradle-task2-SNAPSHOT")
+        classpath(files("./libs/shadow.jar")) // Name of the JAR file without the `.jar` extension
     }
 }
 
@@ -74,6 +76,8 @@ task("buildCgen2", DefaultTask::class) {
         ce.defs.MetaEngine.KTS to ScriptEngineManager().getEngineByName("kts"),
         ce.defs.MetaEngine.GROOVY to ScriptEngineManager().getEngineByName("groovy")
     )
+    val currentDir = File(".").canonicalPath
+    println("Current dir = $currentDir")
     val buildProjectUseCase = BuildProjectUseCase(
         getProjectUseCase = LoadProjectUseCaseImpl(),
         storeInTreeUseCase = StoreAstTreeUseCase(),

@@ -2,6 +2,7 @@ package ce.entrypoints
 
 import ce.defs.Target
 import ce.defs.TargetExt
+import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.entry.BuildOutTreeUseCase
 import ce.domain.usecase.entry.BuildOutTreeUseCaseImpl
 import ce.domain.usecase.load.LoadAstTreeUseCase
@@ -9,6 +10,7 @@ import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import java.io.File
 
 fun main(args: Array<String>) {
     if (args.size < 4) {
@@ -32,11 +34,14 @@ fun main(args: Array<String>) {
         StoreOutTreeUseCase(),
         TransformInTreeToOutTreeUseCase(),
     )
-
+    val dir = DirsConfiguration(
+        workingDir = File(".").absolutePath
+    )
     buildOutTreeUseCase(
         projectFile = args[1],
         inTreeFile = args[0],
         outTreeFile = args[2],
-        target = target
+        target = target,
+        dirsConfiguration = dir
     )
 }

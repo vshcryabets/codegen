@@ -1,6 +1,7 @@
 {
   "files": [
-    "./enums.kts"
+    "./enums.kts",
+    "./dataclass.kts"
   ],
   "targets": [
     {
