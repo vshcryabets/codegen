@@ -36,15 +36,12 @@ buildscript {
         classpath("org.codehaus.groovy:groovy-jsr223:3.0.17")
 //        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
-//        classpath("com.github.vshcryabets:codegen:feature~gradle-task2-SNAPSHOT")
-        classpath(files("./libs/shadow.jar")) // Name of the JAR file without the `.jar` extension
+        classpath("com.github.vshcryabets:codegen:4895044cf9")
+//        classpath(files("./libs/shadow.jar")) // Name of the JAR file without the `.jar` extension
     }
 }
 
 dependencies {
-//    api(project(":cgen-lib"))
-//    api(project(":cgen-console"))
-//    implementation("com.github.vshcryabets:cgen-lib:cafbd0e2b3")
 }
 
 kotlin {
