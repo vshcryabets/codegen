@@ -5,6 +5,7 @@ import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import ce.defs.domain.DirsConfiguration
 import java.io.File
 import javax.script.ScriptEngineManager
 import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
@@ -56,13 +57,6 @@ java {
     }
 }
 
-//task("buildCgen1", JavaExec::class) {
-//    workingDir(File("../"))
-//    args("./test/project.json")
-//    mainClass.set("ce.entrypoints.BuildProjectKt")
-//    classpath = sourceSets["test"].runtimeClasspath
-//}
-
 task("testScriptEngines", DefaultTask::class) {
     val kotlinScriptEngine = ScriptEngineManager().getEngineByName("kts")
     //KotlinJsr223DefaultScriptEngineFactory().getScriptEngine()
@@ -71,19 +65,28 @@ task("testScriptEngines", DefaultTask::class) {
     println("Groovy engine = $groovyEngine")
 }
 
-task("buildCgen2", DefaultTask::class) {
-    val engineMaps = mapOf<ce.defs.MetaEngine, javax.script.ScriptEngine>(
-        ce.defs.MetaEngine.KTS to ScriptEngineManager().getEngineByName("kts"),
-        ce.defs.MetaEngine.GROOVY to ScriptEngineManager().getEngineByName("groovy")
-    )
-    val currentDir = File(".").canonicalPath
-    println("Current dir = $currentDir")
-    val buildProjectUseCase = BuildProjectUseCase(
-        getProjectUseCase = LoadProjectUseCaseImpl(),
-        storeInTreeUseCase = StoreAstTreeUseCase(),
-        loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(engineMaps),
-        storeOutTreeUseCase = StoreOutTreeUseCase(),
-        transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
-    )
-    buildProjectUseCase("./test/project.json")
+tasks.register("runCgen") {
+    group = "Custom"
+    description = "Run code generation"
+
+    doLast {
+        val engineMaps = mapOf<ce.defs.MetaEngine, javax.script.ScriptEngine>(
+            ce.defs.MetaEngine.KTS to ScriptEngineManager().getEngineByName("kts"),
+            ce.defs.MetaEngine.GROOVY to ScriptEngineManager().getEngineByName("groovy")
+        )
+        val dirsConfiguration = DirsConfiguration(
+            workingDir = rootDir.absolutePath //project.projectDir.absolutePath
+        )
+        println("Project dir = ${dirsConfiguration.workingDir}")
+        val buildProjectUseCase = BuildProjectUseCase(
+            getProjectUseCase = LoadProjectUseCaseImpl(),
+            storeInTreeUseCase = StoreAstTreeUseCase(),
+            loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(engineMaps),
+            storeOutTreeUseCase = StoreOutTreeUseCase(),
+            transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
+        )
+        buildProjectUseCase(
+            projectFile = "./test/project.json",
+            dirsConfiguration = dirsConfiguration)
+    }
 }

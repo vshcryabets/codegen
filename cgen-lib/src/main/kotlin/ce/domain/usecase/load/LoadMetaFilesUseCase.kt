@@ -8,10 +8,11 @@ import generators.obj.input.clearSubs
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import javax.inject.Inject
 import javax.script.ScriptEngine
 import javax.script.ScriptException
 
-class LoadMetaFilesForTargetUseCase constructor(
+class LoadMetaFilesForTargetUseCase @Inject constructor(
     private val enginesMap: Map<MetaEngine, ScriptEngine>
 ) {
 
@@ -21,7 +22,7 @@ class LoadMetaFilesForTargetUseCase constructor(
         globRootNamespace.clearSubs()
 
         project.files.forEach { fileName ->
-            val fileObject = File(fileName)
+            val fileObject = File(project.dirsConfiguration.workingDir + File.separator + fileName)
             println("Processing ${fileObject.absolutePath}")
             val reader = InputStreamReader(FileInputStream(fileObject))
             // clean global defines for each file
