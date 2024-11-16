@@ -1,5 +1,6 @@
 package ce.domain.usecase.entry
 
+import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.load.LoadOutTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreCodeStyleTreeUseCase
@@ -13,8 +14,11 @@ class BuildCodeStyleTreeUseCase(
     private val storeCodeStyleTreeUseCase: StoreCodeStyleTreeUseCase,
     private val transformOutTreeToCodeStyleTreeUseCase : TransformOutTreeToCodeStyleTreeUseCase,
 ) {
-    operator fun invoke(projectFile: String, outTreeFile: String, codeStyleTreeFile: String) {
-        val project = loadProjectUseCase(projectFile)
+    operator fun invoke(projectFile: String,
+                        outTreeFile: String,
+                        codeStyleTreeFile: String,
+                        dirsConfiguration: DirsConfiguration) {
+        val project = loadProjectUseCase(projectFile, dirsConfiguration)
         val codeStyleRepo = CodestyleRepoImpl(project)
         val generatorsRepo = GeneratorsRepo(project, codeStyleRepo)
         val outTree = loadOutTreeUseCase(outTreeFile)

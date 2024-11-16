@@ -1,11 +1,13 @@
 package ce.entrypoints
 
+import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.load.LoadOutTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
 import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
 import ce.repository.WrittersRepoImpl
+import java.io.File
 
 fun main(args: Array<String>) {
     if (args.size < 2) {
@@ -18,7 +20,10 @@ fun main(args: Array<String>) {
 
     val loadOutputTreeUseCase = LoadOutTreeUseCase()
     val getProjectUseCase: LoadProjectUseCase = LoadProjectUseCaseImpl()
-    val project = getProjectUseCase(args[1])
+    val dir = DirsConfiguration(
+        workingDir = File(".").absolutePath
+    )
+    val project = getProjectUseCase(args[1], dir)
     val codestylesRepo = CodestyleRepoImpl(project)
     val writtersFactoryImpl = WrittersRepoImpl(
         codestylesRepo = codestylesRepo)

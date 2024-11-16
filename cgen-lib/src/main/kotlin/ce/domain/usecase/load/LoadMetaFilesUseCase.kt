@@ -8,12 +8,12 @@ import generators.obj.input.clearSubs
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import javax.inject.Inject
 import javax.script.ScriptEngine
 import javax.script.ScriptException
 
-class LoadMetaFilesForTargetUseCase constructor(
-    private val groovyScriptEngine: ScriptEngine?,
-    private val kotlinScriptEngine: ScriptEngine?,
+class LoadMetaFilesForTargetUseCase @Inject constructor(
+    private val enginesMap: Map<MetaEngine, ScriptEngine>
 ) {
 
     operator fun invoke(project: Project, target : TargetConfiguration) : Namespace {
@@ -22,20 +22,20 @@ class LoadMetaFilesForTargetUseCase constructor(
         globRootNamespace.clearSubs()
 
         project.files.forEach { fileName ->
-            println("Processing $fileName")
-            val fileObject = File(fileName)
+            val fileObject = File(project.dirsConfiguration.workingDir + File.separator + fileName)
+            println("Processing ${fileObject.absolutePath}")
             val reader = InputStreamReader(FileInputStream(fileObject))
             // clean global defines for each file
-            customBaseFolderPath = target.outputFolder ?: ""
+            customBaseFolderPath = target.outputFolder
             sourceFile = fileObject.absolutePath
             outputFile = ""
             try {
                 if (fileName.endsWith(".kts")) {
-                    kotlinScriptEngine?.eval(reader) ?: println("KTS engine is null, can't process $fileName")
+                    enginesMap[MetaEngine.KTS]?.eval(reader) ?: println("KTS engine is null, can't process $fileName")
                 } else if (fileName.endsWith(".groovy")) {
-                    groovyScriptEngine?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
+                    enginesMap[MetaEngine.GROOVY]?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
                 } else {
-                    System.err.println("Unknown file type $fileName")
+                    error("Unknown file type $fileName")
                 }
             }
             catch (error: ScriptException) {
