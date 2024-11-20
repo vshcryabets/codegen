@@ -5,7 +5,8 @@
     "./test/constants.kts",
     "./test/enums.kts",
     "./test/dataclass.kts",
-    "./test/interface.kts"
+    "./test/interface.kts",
+    "./test/constants.xml"
   ],
   "targets": [
     {

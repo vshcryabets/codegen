@@ -36,9 +36,14 @@ class LoadProjectUseCaseImpl : LoadProjectUseCase {
         mapper.registerModule(module)
 
         // load project file
-        val projectJson = FileInputStream(projectPath)
-        val project: Project = mapper.readValue(projectJson, Project::class.java)
-        projectJson.close()
-        return project.copy(dirsConfiguration = dirs)
+        try {
+            val projectJson = FileInputStream(projectPath)
+            val project: Project = mapper.readValue(projectJson, Project::class.java)
+            projectJson.close()
+            return project.copy(dirsConfiguration = dirs)
+        } catch (err: Exception) {
+            System.err.println("Can't load project file $projectPath")
+            throw err
+        }
     }
 }
