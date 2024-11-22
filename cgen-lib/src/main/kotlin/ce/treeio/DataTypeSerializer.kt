@@ -77,6 +77,6 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
         if (value.startsWith(PREFIX_ARRAY_OF)) {
             return DataType.array(fromStringValue(value.substring(PREFIX_ARRAY_OF.length)))
         }
-        throw IllegalStateException("Not supported \"$value\"")
+        throw IllegalStateException("Not supported data type=\"$value\"")
     }
 }

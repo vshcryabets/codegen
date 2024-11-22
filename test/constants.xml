@@ -1,8 +1,8 @@
 <Namespace name="com.goldman.xml">
         <ConstantsBlock defaultType="int32" name="ModeTypeXml">
-            <CommentsBloc>
+            <CommentsBlock>
                 <CommentLeaf name="File mode types"/>
-            </CommentsBloc>
+            </CommentsBlock>
             <ConstantDesc name="OREAD"/>
             <ConstantDesc name="OWRITE"/>
             <ConstantDesc name="ORDWR"/>

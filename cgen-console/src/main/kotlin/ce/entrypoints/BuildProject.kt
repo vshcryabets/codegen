@@ -4,8 +4,8 @@ import ce.defs.MetaEngine
 import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.entry.BuildProjectUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
-import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
+import ce.domain.usecase.load.LoadXmlTreeUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
@@ -45,7 +45,8 @@ fun main(args: Array<String>) {
         getProjectUseCase = LoadProjectUseCaseImpl(),
         storeInTreeUseCase = StoreAstTreeUseCase(),
         loadMetaFilesUseCase = LoadMetaFilesForTargetUseCase(
-            enginesMap =  engineMaps
+            enginesMap =  engineMaps,
+            loadXmlTreeUseCase = LoadXmlTreeUseCase()
         ),
         storeOutTreeUseCase = StoreOutTreeUseCase(),
         transformInTreeToOutTreeUseCase = TransformInTreeToOutTreeUseCase(),
