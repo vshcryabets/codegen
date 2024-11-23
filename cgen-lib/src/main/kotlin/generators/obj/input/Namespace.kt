@@ -4,6 +4,24 @@ import ce.defs.customBaseFolderPath
 import ce.defs.outputFile
 import ce.defs.sourceFile
 
+fun buildNamespaceTree(fullName: String) : Namespace {
+    if (fullName.isEmpty()) {
+        throw IllegalStateException("Can't get empty namespace")
+    }
+    val points = fullName.split(".")
+    var root: Namespace? = null
+    var last: Namespace? = null
+    points.forEach {
+        val ns = NamespaceImpl(it)
+        if (root == null) {
+            root = ns
+        }
+        last?.addSub(ns)
+        last = ns
+    }
+    return root ?: throw IllegalStateException("Empty namespace tree")
+}
+
 fun <T:Namespace> T.getNamespaceExt(name: String): Namespace {
     if (name.isEmpty()) {
         return this

@@ -36,7 +36,7 @@ class LoadMetaFilesForTargetUseCase @Inject constructor(
                 } else if (fileName.endsWith(".groovy")) {
                     enginesMap[MetaEngine.GROOVY]?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
                 } else if (fileName.endsWith(".xml")) {
-                    val xmlTree = loadXmlTreeUseCase(fileName)
+                    val xmlTree = loadXmlTreeUseCase.fromFile(fileName)
                     // TODO merge xml tree with global namespace
                     TODO()
                 } else {
