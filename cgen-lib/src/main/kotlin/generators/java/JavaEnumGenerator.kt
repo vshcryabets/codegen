@@ -8,7 +8,6 @@ import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaEnumGenerator(
-    fileGenerator: JavaFileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 

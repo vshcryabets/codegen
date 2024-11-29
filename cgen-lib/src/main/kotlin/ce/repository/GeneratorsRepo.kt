@@ -4,6 +4,7 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterCxxUseCaseImpl
+import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.settings.Project
 import generators.cpp.CppConstantsBlockGenerator
@@ -11,7 +12,7 @@ import generators.cpp.CppDataClassGenerator
 import generators.cpp.CppEnumGenerator
 import generators.cpp.CppFileGenerator
 import generators.cpp.CppWritter
-import generators.java.JavaFileGenerator
+import generators.java.*
 import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
 import generators.kotlin.KotlinInterfaceGenerator
@@ -42,6 +43,7 @@ class GeneratorsRepo(
         val targets = listOf(
             Target.Kotlin,
             Target.Cxx,
+            Target.Java
         )
 
         val fileGeneratorsMap = mapOf(
@@ -58,7 +60,7 @@ class GeneratorsRepo(
             Target.Cxx to CodeFormatterCxxUseCaseImpl(codestylesRepo.get(Target.Cxx)),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
 //            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
-//            Target.Java to JavaWritter(codestylesMap[Target.Java]!!, project.outputFolder),
+            Target.Java to CodeFormatterJavaUseCaseImpl(codestylesRepo.get(Target.Java)),
         )
 
         val addBlockDefaultsUseCases = targets.map {
@@ -79,7 +81,12 @@ class GeneratorsRepo(
                     DataClass::class.java to KtDataClassGenerator(addBlockUseCase),
                     InterfaceDescription::class.java to KotlinInterfaceGenerator(addBlockUseCase)
                 )
-
+                Target.Java -> mapOf(
+                    ConstantsEnum::class.java to JavaEnumGenerator(addBlockUseCase),
+                    ConstantsBlock::class.java to JavaConstantsGenerator(addBlockUseCase),
+                    DataClass::class.java to JavaDataClassGenerator(addBlockUseCase),
+                    InterfaceDescription::class.java to JavaInterfaceGenerator(addBlockUseCase)
+                )
                 Target.Cxx -> mapOf(
                     ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
                     ConstantsBlock::class.java to CppConstantsBlockGenerator(addBlockUseCase),
@@ -98,8 +105,8 @@ class GeneratorsRepo(
                 target = it,
                 fileGenerator = fileGenerator,
                 generatorsMap = generators,
-                prepareFilesListUseCase = prepareFilesListUseCases[it]!!,
-                codeFormatter = codeFormatters[it]!!,
+                prepareFilesListUseCase = prepareFilesListUseCases[it] ?: throw IllegalStateException("Can't find prepareFilesListUseCases for $it"),
+                codeFormatter = codeFormatters[it] ?: throw IllegalStateException("Can't find code formatter for $it"),
             )
         }.toMap()
 
@@ -134,6 +141,9 @@ class GeneratorsRepo(
     }
 
     fun get(target: Target): MetaGenerator {
-        return supportedMeta[target]!!
+        if (supportedMeta.containsKey(target))
+            return supportedMeta[target]!!
+        else
+            throw IllegalStateException("GeneratorsRepo: Can't find $target in the $supportedMeta map")
     }
 }

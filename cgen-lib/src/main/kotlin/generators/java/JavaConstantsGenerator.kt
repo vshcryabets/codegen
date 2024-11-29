@@ -10,7 +10,6 @@ import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaConstantsGenerator(
-    fileGenerator : FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
