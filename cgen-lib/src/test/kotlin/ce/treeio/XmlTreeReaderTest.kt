@@ -1,5 +1,8 @@
 package ce.treeio
 
+import ce.defs.DataType
+import generators.obj.input.ConstantDesc
+import generators.obj.input.ConstantsBlock
 import generators.obj.input.NamespaceImpl
 import org.junit.jupiter.api.Assertions.*
 
@@ -26,5 +29,11 @@ class XmlTreeReaderTest {
         val rootNs =result as NamespaceImpl
         assertEquals("com", rootNs.name)
         assertEquals(1, rootNs.subs.size)
+
+        val lastNs = rootNs.getNamespace("goldman.xml")
+        val constantsBlock = lastNs.subs.first() as ConstantsBlock
+        assertEquals(6, constantsBlock.subs.size)
+        val constant1 = constantsBlock.subs[1] as ConstantDesc
+        assertEquals(DataType.int32, constant1.type)
     }
 }
