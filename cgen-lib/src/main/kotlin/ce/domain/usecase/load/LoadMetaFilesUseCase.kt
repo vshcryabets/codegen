@@ -3,7 +3,9 @@ package ce.domain.usecase.load
 import ce.defs.*
 import ce.defs.Target
 import ce.settings.Project
+import ce.treeio.TreeFunctions
 import generators.obj.input.Namespace
+import generators.obj.input.Node
 import generators.obj.input.clearSubs
 import java.io.File
 import java.io.FileInputStream
@@ -37,8 +39,11 @@ class LoadMetaFilesForTargetUseCase @Inject constructor(
                     enginesMap[MetaEngine.GROOVY]?.eval(reader) ?: println("Groovy engine is null, can't process $fileName")
                 } else if (fileName.endsWith(".xml")) {
                     val xmlTree = loadXmlTreeUseCase.fromFile(fileName)
-                    // TODO merge xml tree with global namespace
-                    TODO()
+                    if (xmlTree !is Node) {
+                        println("$fileName doesn't contain Node description")
+                    } else {
+                        TreeFunctions.mergeTrees(globRootNamespace, xmlTree)
+                    }
                 } else {
                     error("Unknown file type $fileName")
                 }
