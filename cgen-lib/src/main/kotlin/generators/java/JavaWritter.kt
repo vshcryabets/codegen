@@ -27,12 +27,10 @@ class JavaWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
 
     override fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-//            is KotlinClassData -> {
-//                super.writeNode(node, out)
-//                if (node.classDefinition.isNotEmpty()) {
-//                    out.write(node.classDefinition.toString())
-//                }
-//            }
+            is OutBlock -> {
+                out.write(node.name)
+                super.writeNode(node, out, indent)
+            }
             else -> super.writeNode(node, out, indent)
         }
     }

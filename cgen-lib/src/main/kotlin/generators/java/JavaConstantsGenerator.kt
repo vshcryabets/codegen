@@ -38,6 +38,7 @@ class JavaConstantsGenerator(
                             addVarName(it.name)
                             addKeyword("=")
                             addRValue(Types.toValue(it.type, it.value))
+                            addKeyword(";")
                         })
                     }
                 }

@@ -66,10 +66,10 @@ class JavaConstantsGeneratorTest {
 
         // check OREAD node
         val node1 = outBlock.subs[0] as ConstantNode
-        Assert.assertEquals(7, node1.subs.size)
+        Assert.assertEquals(8, node1.subs.size)
 
         // check OWRITE node
         val node2 = outBlock.subs[1] as ConstantNode
-        Assert.assertEquals(7, node2.subs.size)
+        Assert.assertEquals(8, node2.subs.size)
     }
 }
