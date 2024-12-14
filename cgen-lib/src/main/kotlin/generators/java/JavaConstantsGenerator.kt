@@ -2,37 +2,46 @@ package generators.java
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
-import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
+import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
-import generators.obj.input.addOutBlock
+import generators.obj.input.addDatatype
+import generators.obj.input.addKeyword
+import generators.obj.input.addRValue
 import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.out.ConstantNode
 import generators.obj.out.FileData
+import generators.obj.out.OutBlock
+import generators.obj.out.RegionImpl
 
 class JavaConstantsGenerator(
-    fileGenerator : FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
-        val file = blockFiles.find { it is FileData }
-            ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
+        val file = blockFiles.firstOrNull()
+            ?: throw java.lang.IllegalStateException("Can't find Main file for Java")
+        val autoIncrement = AutoincrementField()
 
-        file.addSub(JavaClassData(desc.name)).apply {
+        file.addSub(RegionImpl()).apply {
             addBlockDefaultsUseCase(desc, this)
-            addOutBlock("public class ${desc.name}") {
-                val autoIncrement = AutoincrementField()
-//            desc.subs.forEach { leaf ->
-//                val it = leaf as DataField
-//                autoIncrement.invoke(it)
-//
-//                classDefinition.append(fileGenerator.tabSpace);
-//                classDefinition.append("public static final ${Types.typeTo(file, it.type)} ");
-//                classDefinition.append(it.name);
-//                classDefinition.append(" = ${Types.toValue(this, it.type, it.value)};")
-//                classDefinition.append(fileGenerator.newLine())
-//            }
-//            appendNotEmptyWithNewLine("}", classDefinition)
+            addSub(OutBlock("public class ${desc.name}")).apply {
+                desc.subs.forEach {
+                    if (it is ConstantDesc) {
+                        autoIncrement.invoke(it)
+                        addSub(ConstantNode().apply {
+                            addKeyword("public")
+                            addKeyword("static")
+                            addKeyword("final")
+                            addDatatype(Types.typeTo(file, it.type))
+                            addVarName(it.name)
+                            addKeyword("=")
+                            addRValue(Types.toValue(it.type, it.value))
+                            addKeyword(";")
+                        })
+                    }
+                }
             }
         }
     }

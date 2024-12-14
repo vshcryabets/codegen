@@ -11,7 +11,7 @@ class KtConstantsGenerator(
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
-        val file = blockFiles.find { it is FileData }
+        val file = blockFiles.firstOrNull()
             ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
         val autoIncrement = AutoincrementField()
 

@@ -3,8 +3,10 @@ package ce.entrypoints
 import ce.defs.MetaEngine
 import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.entry.PrepareAstTreeUseCase
+import ce.domain.usecase.load.LoadAstTreeUseCase
 import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
+import ce.domain.usecase.load.LoadXmlTreeUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import java.io.File
 import javax.script.ScriptEngineManager
@@ -22,7 +24,7 @@ fun main(args: Array<String>) {
     val prepareAstTreeUseCase = PrepareAstTreeUseCase(
         LoadProjectUseCaseImpl(),
         StoreAstTreeUseCase(),
-        LoadMetaFilesForTargetUseCase(engineMaps)
+        LoadMetaFilesForTargetUseCase(engineMaps, LoadXmlTreeUseCase())
     )
     val dir = DirsConfiguration(
         workingDir = File(".").absolutePath

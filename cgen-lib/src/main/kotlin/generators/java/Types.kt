@@ -36,7 +36,7 @@ object Types {
             else -> "javaQQTP_$type"
         }
 
-    fun toValue(classData: JavaClassData, type: DataType, value: DataValue) : String =
+    fun toValue(type: DataType, value: DataValue) : String =
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,

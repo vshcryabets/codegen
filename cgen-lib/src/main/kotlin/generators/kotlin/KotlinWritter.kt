@@ -16,7 +16,6 @@ class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
     override fun writeFile(fileData: FileData) {
         val outputFile = File(fileData.name + ".kt")
         outputFile.parentFile.mkdirs()
-//        println("KotlinWritter fileData= $fileData")
         println("KotlinWritter writing ${outputFile.absolutePath}")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)

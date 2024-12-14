@@ -8,7 +8,6 @@ import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaDataClassGenerator(
-    fileGenerator : FileGenerator,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<DataClass> {
 

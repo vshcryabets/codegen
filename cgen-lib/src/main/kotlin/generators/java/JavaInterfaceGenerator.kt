@@ -9,8 +9,6 @@ import generators.obj.input.addSub
 import generators.obj.out.FileData
 
 class JavaInterfaceGenerator(
-    fileGenerator: JavaFileGenerator,
-    private val project: Project,
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<InterfaceDescription> {
 
