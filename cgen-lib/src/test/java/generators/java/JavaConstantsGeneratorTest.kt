@@ -47,9 +47,9 @@ class JavaConstantsGeneratorTest {
         //     <NamespaceDeclaration />
         //     <ImportsBlock />
         //     <region>
-        //        <CommentsBlock>...</CommentsBlock>
         //        <OutBlock>
-
+        //          <ConstantNode />
+        //          <ConstantNode />
         //        </OutBlock>
         //     </region>
         // </FileData>
@@ -59,22 +59,17 @@ class JavaConstantsGeneratorTest {
         Assert.assertEquals(3, mainFile.subs.size)
         Assert.assertTrue(mainFile.subs[2] is RegionImpl)
         val region = mainFile.subs[2] as Region
-        Assert.assertEquals(2, region.subs.size)
-        Assert.assertTrue(region.subs[0] is CommentsBlock)
-        Assert.assertTrue(region.subs[1] is OutBlock)
-        Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)
+        Assert.assertEquals(1, region.subs.size)
+        Assert.assertTrue(region.subs[0] is OutBlock)
         val outBlock = region.findOrNull(OutBlock::class.java)!!
-        Assert.assertEquals(1, outBlock.subs.size)
-        val outBlockArgs = outBlock.findOrNull(OutBlockArguments::class.java)!!
-        Assert.assertEquals(3, outBlockArgs.subs.size)
+        Assert.assertEquals(2, outBlock.subs.size)
 
-        // check A rvalue
-        val aArgument = outBlockArgs.subs[0] as ArgumentNode
-        Assert.assertEquals(6, aArgument.subs.size)
-        Assert.assertEquals("1", aArgument.subs[5].name)
+        // check OREAD node
+        val node1 = outBlock.subs[0] as ConstantNode
+        Assert.assertEquals(7, node1.subs.size)
 
-        // check C rvalue
-        val cArgument = outBlockArgs.subs[2] as ArgumentNode
-        Assert.assertEquals(4, cArgument.subs.size)
+        // check OWRITE node
+        val node2 = outBlock.subs[1] as ConstantNode
+        Assert.assertEquals(7, node2.subs.size)
     }
 }
