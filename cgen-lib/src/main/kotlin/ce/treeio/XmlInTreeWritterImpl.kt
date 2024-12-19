@@ -2,6 +2,8 @@ package ce.treeio
 
 import generators.obj.input.*
 import generators.obj.out.OutputTree
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -47,9 +49,14 @@ class XmlInTreeWritterImpl : TreeWritter {
     }
 
     private fun treeToXml(doc: Document, node: Leaf): Element {
-        val tagName = node.javaClass.simpleName
+        val tagName = when (node) {
+            is RegionImpl -> Region::class.java.simpleName
+            else -> node.javaClass.simpleName
+        }
+
         val element = doc.createElement(tagName)
-        element.setAttribute(KEY_NAME, node.name)
+        if (node.name.isNotEmpty())
+            element.setAttribute(KEY_NAME, node.name)
         if (node is Block) {
             element.setAttribute(KEY_SOURCE_FILE, node.sourceFile)
             element.setAttribute(KEY_OUTPUT_FILE, node.outputFile)

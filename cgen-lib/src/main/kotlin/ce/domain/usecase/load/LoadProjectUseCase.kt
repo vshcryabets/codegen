@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import java.io.File
 import java.io.FileInputStream
 
 interface LoadProjectUseCase {
@@ -19,11 +18,14 @@ interface LoadProjectUseCase {
 
 class LoadProjectUseCaseImpl : LoadProjectUseCase {
     override operator fun invoke(
-        projectPath: String,
+        projectFileRelativePath: String,
         dirs: DirsConfiguration
     ): Project {
-        val projectDirectory = dirs.workingDir
-        println("Loading project $projectPath from $projectDirectory")
+        val projectFilePath = if (projectFileRelativePath.startsWith("/"))
+            projectFileRelativePath
+        else
+            "${dirs.workingDir}/$projectFileRelativePath"
+        println("Loading project $projectFilePath")
         val mapper = ObjectMapper()
             .registerModule(
                 KotlinModule.Builder()
@@ -37,12 +39,13 @@ class LoadProjectUseCaseImpl : LoadProjectUseCase {
 
         // load project file
         try {
-            val projectJson = FileInputStream(projectPath)
+            val projectJson = FileInputStream(projectFilePath)
             val project: Project = mapper.readValue(projectJson, Project::class.java)
             projectJson.close()
             return project.copy(dirsConfiguration = dirs)
         } catch (err: Exception) {
-            System.err.println("Can't load project file $projectPath")
+            System.err.println("Can't load project file $projectFileRelativePath")
+            err.printStackTrace(System.err)
             throw err
         }
     }
