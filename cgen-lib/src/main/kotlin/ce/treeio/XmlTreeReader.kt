@@ -154,7 +154,7 @@ class XmlTreeReader : TreeReader {
                 ArgumentNode::class.java.simpleName -> ArgumentNode(name)
                 MultilineCommentsBlock::class.java.simpleName -> MultilineCommentsBlock()
                 ImportsBlock::class.java.simpleName -> ImportsBlock()
-                RegionImpl::class.java.simpleName -> RegionImpl()
+                RegionImpl::class.java.simpleName,Region::class.java.simpleName -> RegionImpl()
                 Space::class.java.simpleName -> Space(name)
 
                 else -> throw IllegalStateException("Unknown $tagName")
@@ -170,7 +170,7 @@ class XmlTreeReader : TreeReader {
                     for (i in 0..node.childNodes.length - 1) {
                         val subnode = node.childNodes.item(i)
                         if (subnode != null && subnode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-                            (nextRoot as Node).addSub(xmlToTree(subnode as Element, nextRoot))
+                            nextRoot.addSub(xmlToTree(subnode as Element, nextRoot))
                         }
                     }
 
