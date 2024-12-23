@@ -29,7 +29,7 @@ class CodeFormatterConstantsTest {
     val formatter = CodeFormatterKotlinUseCaseImpl(repoNoSpace)
 
     @Test
-    fun testKotlinDeclaationPattern() {
+    fun testKotlinDeclarationPattern() {
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
                 <ConstantNode>
                     <Keyword name="const"/>
@@ -74,6 +74,16 @@ class CodeFormatterConstantsTest {
                 <ConstantNode>
                     <VariableName name="ModeStateOn"/>
                     <Separator name=","/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
+
+        Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <Keyword name="const"/>
+                    <Keyword name="val"/>
+                    <VariableName name="ModeStateOn"/>
+                    <Keyword name="="/>
+                    <RValue name="105"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
     }

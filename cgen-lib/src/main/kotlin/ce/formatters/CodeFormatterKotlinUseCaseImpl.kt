@@ -81,14 +81,26 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
     public fun declarationPattern(input: Node): Int {
         if (input.subs.size < 4)
             return -1
-        for (pos in 0..input.subs.size-1-4) {
-            val w1 = input.subs[pos]
+        for (pos in 0..input.subs.size-4) {
+            val w1 = input.subs[pos] // val/var
             if (w1 !is Keyword)
                 continue
-            val w2 = input.subs[pos + 1]
-            val w3 = input.subs[pos + 2]
-            val w4 = input.subs[pos + 3]
-
+            val w2 = input.subs[pos + 1] // NAME
+            if (w2 !is VariableName)
+                continue
+            val w3 = input.subs[pos + 2] // : or =
+            val w4 = input.subs[pos + 3] // Int or 10
+            if (w3 is Keyword) {
+                if (w3.name == ":") {
+                    if (w4 !is Datatype)
+                        continue
+                    return pos
+                } else if (w3.name == "=") {
+                    if (w4 !is RValue)
+                        continue
+                    return pos
+                }
+            }
         }
         return -1
     }
