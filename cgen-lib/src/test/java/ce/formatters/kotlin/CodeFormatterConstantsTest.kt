@@ -121,7 +121,7 @@ class CodeFormatterConstantsTest {
         //        <SPACE> <{> <nl>
         //        <Indent>
         //           <ConstantNode ModeStateOn>
-        //              <const><SP><val><SP><ModeStateOff><SP><:><SP><Int><SP><=><SP><1>
+        //              <const><SP><val><SP><ModeStateOff><:><SP><Int><SP><=><SP><1>
         //           </ConstantNode> <nl>
         //        <Indent> <ConstantNode ModeStateOff> <nl>
         //        <}>
@@ -132,6 +132,6 @@ class CodeFormatterConstantsTest {
         val outBlock = outputRegion.subs[0] as OutBlock
         Assert.assertEquals(10, outBlock.subs.size)
         val constNode1 = outBlock.subs[4] as ConstantNode
-        Assert.assertEquals(13, constNode1.subs.size)
+        Assert.assertEquals(12, constNode1.subs.size)
     }
 }
