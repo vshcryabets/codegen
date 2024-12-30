@@ -29,7 +29,7 @@ class CodeFormatterConstantsTest {
     val formatter = CodeFormatterKotlinUseCaseImpl(repoNoSpace)
 
     @Test
-    fun testKotlinDeclaationPattern() {
+    fun testKotlinDeclarationPattern() {
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
                 <ConstantNode>
                     <Keyword name="const"/>
@@ -76,6 +76,16 @@ class CodeFormatterConstantsTest {
                     <Separator name=","/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
+
+        Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <Keyword name="const"/>
+                    <Keyword name="val"/>
+                    <VariableName name="ModeStateOn"/>
+                    <Keyword name="="/>
+                    <RValue name="105"/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
     }
 
     @Test
@@ -111,7 +121,7 @@ class CodeFormatterConstantsTest {
         //        <SPACE> <{> <nl>
         //        <Indent>
         //           <ConstantNode ModeStateOn>
-        //              <const><SP><val><SP><ModeStateOff><SP><:><SP><Int><SP><=><SP><1>
+        //              <const><SP><val><SP><ModeStateOff><:><SP><Int><SP><=><SP><1>
         //           </ConstantNode> <nl>
         //        <Indent> <ConstantNode ModeStateOff> <nl>
         //        <}>
@@ -122,6 +132,6 @@ class CodeFormatterConstantsTest {
         val outBlock = outputRegion.subs[0] as OutBlock
         Assert.assertEquals(10, outBlock.subs.size)
         val constNode1 = outBlock.subs[4] as ConstantNode
-        Assert.assertEquals(13, constNode1.subs.size)
+        Assert.assertEquals(12, constNode1.subs.size)
     }
 }

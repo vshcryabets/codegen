@@ -2,6 +2,7 @@ package ce.formatters
 
 import generators.obj.input.*
 import generators.obj.out.*
+import org.gradle.internal.serialization.Transient.Var
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
@@ -81,14 +82,26 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
     public fun declarationPattern(input: Node): Int {
         if (input.subs.size < 4)
             return -1
-        for (pos in 0..input.subs.size-1-4) {
-            val w1 = input.subs[pos]
+        for (pos in 0..input.subs.size-4) {
+            val w1 = input.subs[pos] // val/var
             if (w1 !is Keyword)
                 continue
-            val w2 = input.subs[pos + 1]
-            val w3 = input.subs[pos + 2]
-            val w4 = input.subs[pos + 3]
-
+            val w2 = input.subs[pos + 1] // NAME
+            if (w2 !is VariableName)
+                continue
+            val w3 = input.subs[pos + 2] // : or =
+            val w4 = input.subs[pos + 3] // Int or 10
+            if (w3 is Keyword) {
+                if (w3.name == ":") {
+                    if (w4 !is Datatype)
+                        continue
+                    return pos
+                } else if (w3.name == "=") {
+                    if (w4 !is RValue)
+                        continue
+                    return pos
+                }
+            }
         }
         return -1
     }
@@ -109,39 +122,20 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                 outputParent?.addSub(Separator(","))
                 outputParent?.addSub(NlSeparator())
             }
-            // <val><NAME><:><int>
-            if ((input.subs.size == 4) &&
-                (input.subs[0] is Keyword) &&
-                (input.subs[1] is VariableName) &&
-                (input.subs[2] is Keyword) &&
-                (input.subs[3] is Datatype)
-            ) {
+            if (declarationPattern(input) >= 0) {
+                // <val><NAME><:><int> to
                 // <val><SPACE><NAME><:><SPACE><int>
-                addSub(input.subs[0].copyLeaf(this, true))
-                addSub(Space())
-                addSub(input.subs[1].copyLeaf(this, true))
-                addSub(input.subs[2].copyLeaf(this, true))
-                addSub(Space())
-                addSub(input.subs[3].copyLeaf(this, true))
-            } else if ((input.subs.size == 6) && // <val><NAME><:><int><=><RValue>
-                (input.subs[0] is Keyword) &&
-                (input.subs[1] is VariableName) &&
-                (input.subs[2] is Keyword) &&
-                (input.subs[3] is Datatype) &&
-                (input.subs[4] is Keyword) &&
-                (input.subs[5] is RValue)
-            ) {
+                // <val><NAME><:><int><=><RValue> to
                 // <val><SPACE><NAME><:><SPACE><int><SPACE><=><SPACE><RValue>
-                addSub(input.subs[0].copyLeaf(this, true))
-                addSub(Space())
-                addSub(input.subs[1].copyLeaf(this, true))
-                addSub(input.subs[2].copyLeaf(this, true))
-                addSub(Space())
-                addSub(input.subs[3].copyLeaf(this, true))
-                addSub(Space())
-                addSub(input.subs[4].copyLeaf(this, true))
-                addSub(Space())
-                addSub(input.subs[5].copyLeaf(this, true))
+                for (i in 0..input.subs.size - 1) {
+                    val current = input.subs[i]
+                    if (i > 0) {
+                        if (input.subs[i-1] !is VariableName || !current.name.equals(":"))
+                            // no SP between <ANME> and <:>
+                            addSub(Space())
+                    }
+                    addSub(current.copyLeaf(this, true))
+                }
             } else {
                 processSubs(input, this, indent)
             }
