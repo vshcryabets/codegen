@@ -54,7 +54,6 @@ class JavaConstantsGeneratorTest {
         //     </region>
         // </FileData>
 
-
         Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
         Assert.assertEquals(3, mainFile.subs.size)
         Assert.assertTrue(mainFile.subs[2] is RegionImpl)

@@ -1,5 +1,6 @@
 package ce.treeio
 
+import ce.defs.DataType
 import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
 import generators.obj.input.*
@@ -25,7 +26,7 @@ class XmlTreeReader : TreeReader {
         val doc: Document = db.parse(file)
         doc.documentElement.normalize()
         val root = doc.documentElement
-        return xmlToTree(root, TreeRoot)
+        return xmlToTree(root, TreeRoot, file.absolutePath)
     }
 
     override fun loadFromString(data: String): Leaf {
@@ -34,29 +35,38 @@ class XmlTreeReader : TreeReader {
         val doc: Document = db.parse(InputSource(StringReader(data)))
         doc.documentElement.normalize()
         val root = doc.documentElement
-        return xmlToTree(root, TreeRoot)
+        return xmlToTree(root, TreeRoot, "")
     }
 
-    private fun xmlToTree(node: Element, parent: Node): Leaf {
+    private fun xmlToTree(node: Element, parent: Node, defaultSourceFile: String): Leaf {
         val tagName = node.tagName
         val name = node.getAttribute(XmlInTreeWritterImpl.KEY_NAME)
+        var sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE)
+        if (sourceFile.isEmpty())
+            sourceFile = defaultSourceFile
         try {
             return when (tagName) {
                 Namespace::class.java.simpleName,
                 NamespaceImpl::class.java.simpleName -> buildNamespaceTree(name)
-                ConstantsEnum::class.java.simpleName -> ConstantsEnum(
-                    name = name,
-                    sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
-                    outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
-                    objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
-                    defaultDataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
-                )
+                ConstantsEnum::class.java.simpleName -> {
+                    val dataTypeStr = node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE)
+                    ConstantsEnum(
+                        name = name,
+                        sourceFile = sourceFile,
+                        outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
+                        objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
+                        defaultDataType = if (dataTypeStr.isNotEmpty())
+                            dataTypeSerializer.fromStringValue(dataTypeStr)
+                        else
+                            DataType.VOID
+                    )
+                }
 
                 CommentsBlock::class.java.simpleName -> CommentsBlock()
                 CommentLeaf::class.java.simpleName -> CommentLeaf(name)
                 "ConstantsBlock" -> ConstantsBlock(
                     name = name,
-                    sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                    sourceFile = sourceFile,
                     outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                     objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
                     defaultDataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_DEFAULT_TYPE))
@@ -64,14 +74,14 @@ class XmlTreeReader : TreeReader {
 
                 DataClass::class.java.simpleName -> DataClass(
                     name = name,
-                    sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                    sourceFile = sourceFile,
                     outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                     objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
                 )
 
                 "InterfaceDescription" -> InterfaceDescription(
                     name = name,
-                    sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE),
+                    sourceFile = sourceFile,
                     outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE),
                     objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER),
                 )
@@ -98,7 +108,11 @@ class XmlTreeReader : TreeReader {
                 )
 
                 DataField::class.java.simpleName -> {
-                    val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
+                    val dataTypeStr = node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE)
+                    val dataType = if (dataTypeStr.isNotEmpty())
+                        dataTypeSerializer.fromStringValue(dataTypeStr)
+                    else
+                        DataType.VOID
                     DataField(
                         name = name,
                         type = dataType,
@@ -113,7 +127,8 @@ class XmlTreeReader : TreeReader {
                     if (parent !is ConstantsBlock)
                         throw IllegalStateException("ConstantDesc can be declared only in the ConstantsBlock")
                     val dataTypeString = node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE)
-                    val dataType = if (dataTypeString.isEmpty()) parent.defaultDataType
+                    val dataType = if (dataTypeString.isEmpty())
+                        parent.defaultDataType
                     else
                         dataTypeSerializer.fromStringValue(dataTypeString)
                     ConstantDesc(
@@ -161,7 +176,7 @@ class XmlTreeReader : TreeReader {
             }.also {
                 it.setParent2(parent)
                 if (it is Block) {
-                    it.sourceFile = node.getAttribute(XmlInTreeWritterImpl.KEY_SOURCE_FILE)
+                    it.sourceFile = sourceFile
                     it.outputFile = node.getAttribute(XmlInTreeWritterImpl.KEY_OUTPUT_FILE)
                     it.objectBaseFolder = node.getAttribute(XmlInTreeWritterImpl.KEY_BASE_FOLDER)
                 }
@@ -170,7 +185,7 @@ class XmlTreeReader : TreeReader {
                     for (i in 0..node.childNodes.length - 1) {
                         val subnode = node.childNodes.item(i)
                         if (subnode != null && subnode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-                            nextRoot.addSub(xmlToTree(subnode as Element, nextRoot))
+                            nextRoot.addSub(xmlToTree(subnode as Element, nextRoot, defaultSourceFile))
                         }
                     }
 

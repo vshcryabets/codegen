@@ -2,55 +2,55 @@ package generators.java
 
 import ce.defs.DataType
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
+import generators.kotlin.Types
+import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
+import generators.obj.input.DataField
+import generators.obj.input.addDataField
+import generators.obj.input.addDatatype
+import generators.obj.input.addEnumLeaf
+import generators.obj.input.addKeyword
+import generators.obj.input.addOutBlock
 import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.out.FieldNode
 import generators.obj.out.FileData
+import generators.obj.out.RegionImpl
 
 class JavaEnumGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
-        val file = files.find { it is FileData }
+    override fun invoke(blockFiles: List<FileData>, desc: ConstantsEnum) {
+        val file = blockFiles.firstOrNull()
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
-        file.addSub(JavaClassData(desc.name)).apply {
-            addBlockDefaultsUseCase(desc, this)
-            val withRawValues = desc.defaultDataType != DataType.VOID
-//            subs.add(BlockStart("enum class ${desc.name}", this))
-//            if (!withRawValues) {
-//                classDefinition.append(" {")
-//                    .append(fileGenerator.newLine())
-//            } else {
-//                classDefinition.append("(val rawValue : ${Types.typeTo(file, desc.defaultDataType)}) {")
-//                    .append(fileGenerator.newLine())
-//            }
-//
-//            val autoIncrement = AutoincrementField()
-//            var needToAddComa = false
-//            desc.subs.forEach { leaf ->
-//                val it = leaf as DataField
-//
-//                if (withRawValues) {
-//                    autoIncrement.invoke(it)
-//                    putTabs(classDefinition, 1)
-//                    classDefinition
-//                        .append(it.name)
-//                        .append("(${Types.toValue(this, it.type, it.value)}),")
-//                        .append(fileGenerator.newLine())
-//                } else {
-//                    if (needToAddComa) {
-//                        classDefinition.append(", ")
-//                    }
-//                    classDefinition.append(it.name)
-//                    needToAddComa = true
-//                }
-//            }
-//            if (!withRawValues) {
-//                classDefinition.append(fileGenerator.newLine())
-//                    .append(fileGenerator.newLine())
-//            }
-//            appendClassDefinition(this, "}");
+        val withRawValues = desc.defaultDataType != DataType.VOID
+        val autoIncrement = AutoincrementField()
+
+        file.addSub(RegionImpl(desc.name)).also { region ->
+            addBlockDefaultsUseCase(desc, region)
+            region.addOutBlock("enum ${desc.name}") {
+                desc.subs.forEach { leaf ->
+                    if (leaf is DataField) {
+                        val it = leaf
+
+                        if (withRawValues) {
+                            autoIncrement(it)
+                            addEnumLeaf("${it.name}(${Types.toValue(it.type, it.value)})")
+                        } else {
+                            addEnumLeaf(it.name)
+                        }
+                    }
+                }
+                if (withRawValues) {
+                    addSub(FieldNode()).apply {
+                        addKeyword("final")
+                        addDatatype(generators.java.Types.typeTo(file, desc.defaultDataType))
+                        addVarName("value")
+                    }
+                }
+            }
         }
     }
 }

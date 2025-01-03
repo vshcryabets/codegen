@@ -42,7 +42,7 @@ class KotlinEnumGenerator(
                             autoIncrement(it)
                             addEnumLeaf("${it.name}(${Types.toValue(it.type, it.value)})")
                         } else {
-                            addEnumLeaf("${it.name}")
+                            addEnumLeaf(it.name)
                         }
                     }
                 }

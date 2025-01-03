@@ -28,10 +28,6 @@ dependencies {
     implementation("org.abego.treelayout:org.abego.treelayout.core:1.0.3")
 }
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
-
 kotlin {
     jvmToolchain(Versions.jvmLevel)
 }
@@ -56,6 +52,13 @@ tasks {
         mergeServiceFiles()
         manifest {
 //            attributes(mapOf("Main-Class" to "com.github.csolem.gradle.shadow.kotlin.example.App"))
+        }
+    }
+    test {
+        useJUnitPlatform()
+        testLogging.showStandardStreams = true
+        testLogging {
+            events("passed", "skipped", "failed", "started")
         }
     }
 }

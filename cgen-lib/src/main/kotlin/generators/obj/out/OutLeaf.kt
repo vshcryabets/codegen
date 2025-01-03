@@ -150,7 +150,7 @@ data class VariableName(
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
-// for example ",\n"
+// for example "," or ";"
 data class Separator(
     override val name: String,
 ) : Leaf {

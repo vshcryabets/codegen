@@ -1,14 +1,17 @@
 package ce.treeio
 
 import ce.defs.DataType
+import ce.defs.DataValue
+import ce.defs.NotDefined
 import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.NamespaceImpl
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class XmlTreeReaderTest {
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun loadFromString() {
         val reader = XmlTreeReader()
         val result = reader.loadFromString("""
@@ -21,7 +24,7 @@ class XmlTreeReaderTest {
                         <ConstantDesc name="OWRITE"/>
                         <ConstantDesc name="ORDWR"/>
                         <ConstantDesc name="OEXEC"/>
-                        <ConstantDesc name="OTRUNC"/>
+                        <ConstantDesc name="OTRUNC" value="100"/>
                     </ConstantsBlock>
             </Namespace>
         """.trimIndent())
@@ -35,5 +38,9 @@ class XmlTreeReaderTest {
         assertEquals(6, constantsBlock.subs.size)
         val constant1 = constantsBlock.subs[1] as ConstantDesc
         assertEquals(DataType.int32, constant1.type)
+        assertEquals(NotDefined, constant1.value.value)
+        val constant5 = constantsBlock.subs[5] as ConstantDesc
+        assertEquals(100, constant5.value.value)
     }
+
 }
