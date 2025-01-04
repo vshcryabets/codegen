@@ -48,7 +48,9 @@ class JavaConstantsGeneratorTest {
         //     <ImportsBlock />
         //     <region>
         //        <OutBlock>
-        //          <ConstantNode />
+        //          <ConstantNode>
+        //              <public><static><final><int><OREAD><=><0>
+        //          </ConstantNode>
         //          <ConstantNode />
         //        </OutBlock>
         //     </region>
@@ -65,10 +67,10 @@ class JavaConstantsGeneratorTest {
 
         // check OREAD node
         val node1 = outBlock.subs[0] as ConstantNode
-        Assert.assertEquals(8, node1.subs.size)
+        Assert.assertEquals(7, node1.subs.size)
 
         // check OWRITE node
         val node2 = outBlock.subs[1] as ConstantNode
-        Assert.assertEquals(8, node2.subs.size)
+        Assert.assertEquals(7, node2.subs.size)
     }
 }

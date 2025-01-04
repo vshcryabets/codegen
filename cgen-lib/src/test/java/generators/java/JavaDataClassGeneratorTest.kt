@@ -56,9 +56,9 @@ class JavaDataClassGeneratorTest {
         //        <CommentsBlock>...</CommentsBlock>
         //        <OutBlock>
         //           <OutBlockArguments>
-        //              <ArgumentNode><val><A><:><int><=><1></<ArgumentNode>
-        //              <ArgumentNode><val><B><:><float><=><0.5f></<ArgumentNode>
-        //              <ArgumentNode><val><C><:><string></<ArgumentNode>
+        //              <ArgumentNode><int><A></<ArgumentNode>
+        //              <ArgumentNode><int><B></<ArgumentNode>
+        //              <ArgumentNode><int><C></<ArgumentNode>
         //           </OutBlockArguments>
         //        </OutBlock>
         //     </region>
@@ -80,11 +80,10 @@ class JavaDataClassGeneratorTest {
 
         // check A rvalue
         val aArgument = outBlockArgs.subs[0] as ArgumentNode
-        Assert.assertEquals(6, aArgument.subs.size)
-        Assert.assertEquals("1", aArgument.subs[5].name)
+        Assert.assertEquals(2, aArgument.subs.size)
 
         // check C rvalue
         val cArgument = outBlockArgs.subs[2] as ArgumentNode
-        Assert.assertEquals(4, cArgument.subs.size)
+        Assert.assertEquals(2, cArgument.subs.size)
     }
 }

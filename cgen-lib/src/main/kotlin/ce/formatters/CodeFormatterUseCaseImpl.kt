@@ -42,6 +42,14 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
     protected fun getNewLine(): Leaf = NlSeparator(codeStyleRepo.newLine())
 
+    open fun processArgumentNode(
+        input: ArgumentNode,
+        outputParent: Node,
+        indent: Int,
+        prev: Leaf?,
+        inputQueue: MutableList<Leaf>
+    ): ArgumentNode = defaultProcessNode(input, outputParent, indent) as ArgumentNode
+
     protected open fun processOutBlock(
         input: OutBlock,
         outputParent: Node,
@@ -53,13 +61,14 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             addIndents(outputParent, indent)
             outputParent.addSub(this)
             // find out block args
-            val args = input.subs.findLast {
+            val outBlockArgs = input.subs.findLast {
                 it is OutBlockArguments
             }
-            if (args != null) {
-                input.subs.remove(args)
+            if (outBlockArgs != null) {
+                // wrap then into ()
+                input.subs.remove(outBlockArgs)
                 addKeyword("(")
-                addSub(args)
+                processNode(mutableListOf(outBlockArgs), this, indent, null)
                 addKeyword(")")
             }
             addSub(Space())
@@ -73,6 +82,13 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 processSeparatorAfterOutBlock(inputQueue, outputParent)
             outputParent.addSeparatorNewLine()
         }
+
+    protected open fun defaultProcessNode(input: Leaf, outputParent: Node?, indent: Int): Node {
+        val node = input.copyLeaf(copySubs = false) as Node
+        outputParent?.addSub(node)
+        processSubs(input as Node, node, indent)
+        return node
+    }
 
     protected open fun processSeparatorAfterOutBlock(
         inputQueue: MutableList<Leaf>,
@@ -115,7 +131,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 }
             }
 
-            is ConstantNode -> formatConstantNode(input, outputParent, indent, next, prev)
+            is ConstantNode -> processConstantNode(input, outputParent, indent, next, prev)
 
             is OutBlock -> processOutBlock(input, outputParent!!, indent, prev, inputQueue)
 
@@ -137,25 +153,37 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                     processSubs(input, this, indent)
                 }
             }
+            is ArgumentNode -> processArgumentNode(input, outputParent!!, indent, prev, inputQueue)
+            is OutBlockArguments -> {
+                if (input.subs.size > 1) {
+                    // multiple arguments, let's place them on separate lines
+                    input.copyLeaf(copySubs = false).apply {
+                        outputParent?.addSub(NlSeparator())
+                        outputParent?.addSub(this)
+                        outputParent?.addSub(NlSeparator())
+                        processSubs(input, this, indent + 1)
+                    }
+                } else {
+                    // single argument
+                    defaultProcessNode(input, outputParent, indent)
+                }
+            }
 
             else -> {
-                val node = input.copyLeaf(copySubs = false) as Node
-                outputParent?.addSub(node)
-                processSubs(input as Node, node, indent)
-                node
+                defaultProcessNode(input, outputParent, indent)
             }
         }
     }
 
-    open fun formatConstantNode(
+    open fun processConstantNode(
         input: ConstantNode,
         parent: Node?,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
     ): ConstantNode {
+        addIndents(parent, indent)
         val res = input.copyLeaf(copySubs = false).apply {
-            addIndents(parent, indent)
             parent?.addSub(this)
             val queue = input.subs.toMutableList()
             while (queue.isNotEmpty()) {
@@ -165,8 +193,9 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                     this.addSub(Space())
                 }
             }
-            parent?.addSeparatorNewLine()
         }
+        parent?.addSeparator(";")
+        parent?.addSeparatorNewLine()
         return res
     }
 

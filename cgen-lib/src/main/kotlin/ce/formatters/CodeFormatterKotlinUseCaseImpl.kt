@@ -2,71 +2,51 @@ package ce.formatters
 
 import generators.obj.input.*
 import generators.obj.out.*
-import org.gradle.internal.serialization.Transient.Var
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
     CodeFormatterUseCaseImpl(codeStyleRepo) {
 
-    override fun processNode(
-        inputQueue: MutableList<Leaf>,
-        outputParent: Node?,
+
+    override fun processArgumentNode(
+        input: ArgumentNode,
+        outputParent: Node,
         indent: Int,
-        prev: Leaf?
-    ): Node? {
-        val input = inputQueue.first()
-        return when (input) {
-            is OutBlockArguments -> {
-                if (input.subs.size > 1) {
-                    inputQueue.removeFirst()
-                    // multiple lines
-                    input.copyLeaf(copySubs = false).apply {
-                        outputParent?.addSub(NlSeparator())
-                        outputParent?.addSub(this)
-                        outputParent?.addSub(NlSeparator())
-                        processSubs(input, this, indent + 1)
-                    }
-                } else {
-                    // single argument
-                    super.processNode(inputQueue, outputParent, indent, prev)
-                }
-            }
-            is OutBlock -> {
-                inputQueue.removeFirst()
-                input.copyLeaf(copySubs = false).apply {
-                    outputParent?.addSub(this)
-                    // find out block args
-                    val args = input.subs.findLast {
-                        it is OutBlockArguments
-                    } as OutBlockArguments?
-                    if (args != null) {
-                        input.subs.remove(args)
-                        addKeyword("(")
-                        processNode(mutableListOf(args), this, indent, null)
-                        addKeyword(")")
-                    }
-                    if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
-                        addSub(Space())
-                        addKeyword("{")
-                        addSeparatorNewLine()
-                        processSubs(input, this, indent + 1)
-                        addKeyword("}")
-                    }
-                    outputParent?.addSeparatorNewLine()
-                }
-            }
+        prev: Leaf?,
+        inputQueue: MutableList<Leaf>
+    ): ArgumentNode = formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) as ArgumentNode
 
-            is ArgumentNode -> {
-                inputQueue.removeFirst()
-                val next = inputQueue.firstOrNull()
-                formatArgumentNode(input, outputParent, indent, next, prev)
+    override fun processOutBlock(
+        input: OutBlock,
+        outputParent: Node,
+        indent: Int,
+        prev: Leaf?,
+        inputQueue: MutableList<Leaf>
+    ): OutBlock {
+        return input.copyLeaf(copySubs = false).apply {
+            outputParent.addSub(this)
+            // find out block args
+            val outBlockArgs = input.subs.findLast {
+                it is OutBlockArguments
+            } as OutBlockArguments?
+            if (outBlockArgs != null) {
+                input.subs.remove(outBlockArgs)
+                addKeyword("(")
+                processNode(mutableListOf(outBlockArgs), this, indent, null)
+                addKeyword(")")
             }
-
-            else -> super.processNode(inputQueue, outputParent, indent, prev)
+            if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
+                addSub(Space())
+                addKeyword("{")
+                addSeparatorNewLine()
+                processSubs(input, this, indent + 1)
+                addKeyword("}")
+            }
+            outputParent.addSeparatorNewLine()
         }
     }
 
-    override fun formatConstantNode(
+    override fun processConstantNode(
         input: ConstantNode,
         parent: Node?,
         indent: Int,
