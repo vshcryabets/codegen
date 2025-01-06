@@ -12,8 +12,12 @@ data class DataClass(
     override var objectBaseFolder: String = "",
 ) : Block {
 
-    fun field(name: String, type: DataType, value: Any? = NotDefined) {
+    fun field(name: String, type: DataType, value: Any?) {
         addSub(DataField(name, type, DataValue(value)))
+    }
+
+    fun field(name: String, type: DataType) {
+        addSub(DataField(name, type, DataValue(NotDefined)))
     }
 
     override fun addBlockComment(value: String) {
