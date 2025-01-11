@@ -5,12 +5,23 @@ import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
 import generators.obj.input.Node
+import generators.obj.input.addDatatype
+import generators.obj.input.addKeyword
+import generators.obj.input.addOutBlock
+import generators.obj.input.addRValue
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
 import generators.obj.out.ConstantNode
+import generators.obj.out.Indent
+import generators.obj.out.Keyword
+import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
+import generators.obj.out.RegionImpl
+import generators.obj.out.Space
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
-class CodeFormatterConstantsTest {
+class KotlinConstantsFormatterTest {
     val xmlReader = XmlTreeReader()
 
     val codeStyle1NlBeforeRegion = CodeStyle(
@@ -119,11 +130,11 @@ class CodeFormatterConstantsTest {
         // <Region>
         //     <OutBlock>
         //        <SPACE> <{> <nl>
-        //        <Indent>
-        //           <ConstantNode ModeStateOn>
-        //              <const><SP><val><SP><ModeStateOff><:><SP><Int><SP><=><SP><1>
-        //           </ConstantNode> <nl>
-        //        <Indent> <ConstantNode ModeStateOff> <nl>
+        //        <TAB>
+        //        <ConstantNode ModeStateOn>
+        //            <const><SP><val><SP><ModeStateOff><:><SP><Int><SP><=><SP><1>
+        //        </ConstantNode> <nl>
+        //        <TAB> <ConstantNode ModeStateOff> <nl>
         //        <}>
         //     </OutBlock>
         //     <NL>
@@ -133,5 +144,46 @@ class CodeFormatterConstantsTest {
         Assert.assertEquals(10, outBlock.subs.size)
         val constNode1 = outBlock.subs[4] as ConstantNode
         Assert.assertEquals(12, constNode1.subs.size)
+    }
+
+
+    @Test
+    fun testConstantsFormatting() {
+        val input = RegionImpl().apply {
+            addOutBlock("object TEST") {
+                addSub(ConstantNode().apply {
+                    addKeyword("val")
+                    addVarName("A")
+                    addKeyword(":")
+                    addDatatype("int")
+                    addKeyword("=")
+                    addRValue("1")
+                })
+            }
+        }
+        val output = formatter(input)
+        // expected result
+        // <Region>
+        //     <OutBlock>
+        //        <SPACE> <{> <nl>
+        //        <TAB><ConstantNode>
+        //            <val><SPACE><A><:><SPACE><int><SPACE><=><SPACE><1>
+        //        </ConstantNode>
+        //        <NL>
+        //        <}>
+        //     </OutBlock>
+        //     <NL>
+        // </Region>
+        Assert.assertEquals(2, output.subs.size)
+        val outBlock = output.subs[0] as OutBlock
+        Assert.assertEquals(7, outBlock.subs.size)
+        Assert.assertTrue(outBlock.subs[0] is Space)
+        Assert.assertTrue(outBlock.subs[1] is Keyword)
+        Assert.assertTrue(outBlock.subs[2] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[3] is Indent)
+        Assert.assertTrue(outBlock.subs[4] is ConstantNode)
+
+        val constantNode = outBlock.subs[4] as ConstantNode
+        Assert.assertEquals(10, constantNode.subs.size)
     }
 }

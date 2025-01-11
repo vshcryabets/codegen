@@ -20,7 +20,7 @@ class JavaInterfaceGenerator(
 //            subs.add(BlockStart("interface ${desc.name}", this))
 
             desc.subs.forEach { leaf ->
-                val it = leaf as DataField
+//                val it = leaf as DataField
             }
 //            appendClassDefinition(this, "}");
         }

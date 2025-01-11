@@ -3,7 +3,7 @@
             <CommentsBlock>
                 <CommentLeaf name="File mode types"/>
             </CommentsBlock>
-            <ConstantDesc name="OREAD"/>
+            <ConstantDesc name="OREAD" value="100"/>
             <ConstantDesc name="OWRITE"/>
             <ConstantDesc name="ORDWR"/>
             <ConstantDesc name="OEXEC"/>

@@ -6,33 +6,32 @@ import generators.obj.TransformBlockUseCase
 import generators.obj.input.DataClass
 import generators.obj.input.addSub
 import generators.obj.out.FileData
+import generators.obj.out.RegionImpl
+import generators.obj.input.*
+import generators.obj.out.ArgumentNode
 
 class JavaDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
-        val file = blockFiles.find { it is FileData }
-            ?: throw java.lang.IllegalStateException("Can't find Main file for Kotlin")
+        val file = blockFiles.firstOrNull()
+            ?: throw java.lang.IllegalStateException("Can't find Main file for $desc")
 
-        file.addSub(JavaClassData(desc.name)).apply {
+        file.addSub(RegionImpl()).apply {
             addBlockDefaultsUseCase(desc, this)
-//            appendNotEmptyWithNewLine("data class ${desc.name} (", classDefinition)
-//
-//            desc.subs.forEach { leaf ->
-//                val it = leaf as DataField
-//
-//                classDefinition.append(fileGenerator.tabSpace)
-//                classDefinition.append("val ")
-//                classDefinition.append(it.name)
-//                classDefinition.append(" : ${Types.typeTo(file, it.type)}")
-//                if (it.value.notDefined()) {
-//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)}")
-//                }
-//
-//                appendNotEmptyWithNewLine(",", classDefinition)
-//            }
-//            appendNotEmptyWithNewLine(")", classDefinition)
+            addOutBlock("record ${desc.name}") {
+                addOutBlockArguments {
+                    desc.subs.forEach { leaf ->
+                        if (leaf is DataField) {
+                            addSub(ArgumentNode().apply {
+                                addDatatype(Types.typeTo(file, leaf.type))
+                                addVarName(leaf.name)
+                            })
+                        }
+                    }
+                }
+            }
         }
     }
 }

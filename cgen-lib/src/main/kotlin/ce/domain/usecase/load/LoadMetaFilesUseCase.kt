@@ -42,7 +42,12 @@ class LoadMetaFilesForTargetUseCase @Inject constructor(
                     if (xmlTree !is Node) {
                         println("$fileName doesn't contain Node description")
                     } else {
-                        TreeFunctions.mergeTrees(globRootNamespace, xmlTree)
+                        if (xmlTree.name.isNotEmpty()) {
+                            val subSpace = globRootNamespace.getNamespace(xmlTree.name)
+                            TreeFunctions.mergeTrees(subSpace, xmlTree)
+                        } else {
+                            TreeFunctions.mergeTrees(globRootNamespace, xmlTree)
+                        }
                     }
                 } else {
                     error("Unknown file type $fileName")
