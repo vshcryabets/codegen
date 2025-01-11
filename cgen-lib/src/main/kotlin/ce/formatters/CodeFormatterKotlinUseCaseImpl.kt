@@ -7,7 +7,6 @@ import javax.inject.Inject
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
     CodeFormatterUseCaseImpl(codeStyleRepo) {
 
-
     override fun processArgumentNode(
         input: ArgumentNode,
         outputParent: Node,

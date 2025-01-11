@@ -2,6 +2,7 @@ package generators.java
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import generators.obj.input.getPath
 import generators.obj.out.FileData
 
 object Types {
@@ -16,6 +17,8 @@ object Types {
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
             is DataType.string -> "String[]"
+            is DataType.userClass -> type.path
+            is DataType.custom -> type.block.name // TODO nullable check ?
             else -> "javaQQTP_array_$type"
         }
 
@@ -31,8 +34,13 @@ object Types {
             DataType.uint32 -> "long"
             DataType.float32 -> "float"
             DataType.float64 -> "double"
-            is DataType.string -> "string"
+            DataType.bool -> "boolean"
+            DataType.boolNullable -> "Boolean"
+            is DataType.string -> "String"
             is DataType.array -> getArrayType(type.elementDataType)
+            is DataType.userClass -> type.path
+            is DataType.custom -> type.block.name
+            is DataType.userClassTest2 -> type.node.getPath()
             else -> "javaQQTP_$type"
         }
 

@@ -3,6 +3,7 @@ package ce.formatters.java
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.settings.CodeStyle
+import ce.treeio.XmlTreeReader
 import generators.obj.input.*
 import generators.obj.out.*
 import org.gradle.internal.impldep.org.junit.Assert
@@ -16,6 +17,51 @@ class JavaDataClassFormattingTests {
     )
     private val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
     val formatter = CodeFormatterJavaUseCaseImpl(repoNoSpace)
+    val xmlReader = XmlTreeReader()
+
+
+    @Test
+    fun testKotlinDeclarationPattern() {
+        Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <Keyword name="static"/>
+                    <Datatype name="int"/>
+                    <VariableName name="ModeStateOn"/>
+                    <Keyword name="="/>
+                    <RValue name="0"/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
+
+        Assert.assertEquals(0, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <Datatype name="int"/>
+                    <VariableName name="ModeStateOn"/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
+
+        Assert.assertEquals(2, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <Keyword name="public"/>
+                    <Keyword name="static"/>
+                    <Datatype name="int"/>
+                    <VariableName name="ModeStateOn"/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
+
+        Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <Keyword name="static"/>
+                    <VariableName name="ModeStateOn"/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
+
+        Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
+                <ConstantNode>
+                    <VariableName name="ModeStateOn"/>
+                    <Separator name=","/>
+                </ConstantNode>
+                """.trimIndent()) as Node))
+    }
 
     @Test
     fun testRecordClassFormatting() {
@@ -25,7 +71,6 @@ class JavaDataClassFormattingTests {
                     addSub(ArgumentNode()).apply {
                         addDatatype("int")
                         addVarName("A")
-                        addSeparator(",")
                     }
                     addSub(ArgumentNode()).apply {
                         addDatatype("int")
