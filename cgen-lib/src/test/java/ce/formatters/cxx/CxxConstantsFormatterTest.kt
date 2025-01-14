@@ -1,12 +1,20 @@
 package ce.formatters.cxx
 
-import ce.defs.Target
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
-import generators.cpp.CppHeaderFile
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.addKeyword
+import generators.obj.input.addSub
+import generators.obj.out.CommentLeaf
+import generators.obj.out.CommentsBlock
+import generators.obj.out.ConstantNode
+import generators.obj.out.Datatype
+import generators.obj.out.Keyword
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.RValue
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
+import generators.obj.out.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

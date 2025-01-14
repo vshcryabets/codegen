@@ -7,6 +7,8 @@ class AutoincrementField {
     var previous: DataValue? = null
 
     operator fun invoke(field : Field) {
+        if (!field.type.isNumber())
+            return
         if ((field.value.notDefined()) && previous != null) {
 
             val previousValue = previous!!.value

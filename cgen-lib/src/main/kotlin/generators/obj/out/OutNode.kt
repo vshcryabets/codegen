@@ -37,7 +37,12 @@ data class ImportsBlock(
     override fun setParent2(parent: Node?) { this.parent = parent }
 
     fun addInclude(name: String) {
-        addSub(ImportLeaf(name))
+        val include = subs.firstOrNull {
+            it.name == name
+        }
+        if (include == null) {
+            addSub(ImportLeaf(name))
+        }
     }
 }
 
