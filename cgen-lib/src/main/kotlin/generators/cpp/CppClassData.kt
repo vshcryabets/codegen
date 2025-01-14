@@ -3,6 +3,7 @@ package generators.cpp
 import generators.obj.input.*
 import generators.obj.out.ClassData
 import generators.obj.out.FileData
+import generators.obj.out.ImportsBlock
 
 class CompilerDirective(override val name: String) : Leaf {
     var parent: Node? = null
@@ -33,6 +34,7 @@ data class CppHeaderFile(
 
     init {
         addSub(CompilerDirective("pragma once"))
+        addSub(ImportsBlock())
         isDirty = false
     }
 

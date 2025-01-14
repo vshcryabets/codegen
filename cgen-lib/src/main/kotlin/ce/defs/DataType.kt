@@ -68,5 +68,12 @@ open class DataType(
     class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
     class userClassTest2(val node: generators.obj.input.Node, nullable : Boolean = false) : DataType(nullable)
 //    class nullable(val inner: DataType) : DataType(true)
+
+    fun isNumber(): Boolean {
+        return when (this) {
+            int8, int16, int32, int64, uint8, uint16, uint32, uint64 -> true
+            else -> false
+        }
+    }
 }
 
