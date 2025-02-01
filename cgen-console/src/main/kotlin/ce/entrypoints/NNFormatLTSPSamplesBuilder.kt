@@ -6,14 +6,17 @@ import generators.obj.input.addDatatype
 import generators.obj.input.addOutBlock
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.out.ArgumentNode
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.RegionImpl
-import generators.obj.out.VariableName
 import kotlin.random.Random
+import ce.settings.CodeStyle
+import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterJavaUseCaseImpl
+import generators.obj.out.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
 
 fun main(args: Array<String>) {
-    BuildLtspSampels(args[0], 1).build()
+    BuildLtspSampels(args[0], 6).build()
 }
 
 class BuildLtspSampels(
@@ -21,6 +24,12 @@ class BuildLtspSampels(
     private val samplesCount: Int
 ) {
     private var maxId = 1
+    val codeStyleNoSpace = CodeStyle(
+        newLinesBeforeClass = 0,
+        tabSize = 2,
+        preventEmptyBlocks = true,
+    )
+    private val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
 
     data class NodeData(
         val openId: Int,
@@ -30,6 +39,7 @@ class BuildLtspSampels(
     fun isUniq(leaf: Leaf): Boolean {
         return when (leaf) {
             is VariableName -> true
+            is Keyword -> true
             else -> false
         }
     }
@@ -86,12 +96,36 @@ class BuildLtspSampels(
     fun build() {
         val rnd = Random(System.currentTimeMillis())
         val map = mutableMapOf<String, NodeData>()
+        val formatter = CodeFormatterJavaUseCaseImpl(repoNoSpace)
+        val outS1File = File(outputDir, "outs1.csv")
+        val outS2File = File(outputDir, "outs2.csv")
+        val outS1 = OutputStreamWriter(FileOutputStream(outS1File))
+        val outS2 = OutputStreamWriter(FileOutputStream(outS2File))
+
         for (i in 0..samplesCount) {
             val vector = mutableListOf<Int>()
             val input = buildTree(rnd)
             toVector(input, vector, map)
-            println(vector)
+            //println(vector)
+            vector.forEachIndexed { index, it ->
+                if (index > 0)
+                    outS1.write(",")
+                outS1.write("$it")
+            }
+            outS1.write("\n")
+            val output = formatter.invoke(input)
+            vector.clear()
+            toVector(output, vector, map)
+            //println(vector)
+            vector.forEachIndexed { index, it ->
+                if (index > 0)
+                    outS2.write(",")
+                outS2.write("$it")
+            }
+            outS2.write("\n")
         }
+        outS1.close()
+        outS2.close()
         println(map)
     }
 }
