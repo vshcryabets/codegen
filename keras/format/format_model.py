@@ -74,5 +74,11 @@ if TRAIN_MODEL:
                     batch_size=16,
                     validation_split = 0.2,
                     callbacks=[checkpoint],
-                    epochs=32)
+                    epochs=128)
 
+x = [0,0,1,3]
+inp = np.expand_dims(x, axis=0)
+print(x)
+print(inp)
+pred = model.predict(inp)
+print(f"pred={pred}")
