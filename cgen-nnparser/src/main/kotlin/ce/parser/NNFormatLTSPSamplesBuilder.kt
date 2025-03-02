@@ -1,4 +1,4 @@
-package ce.entrypoints
+package ce.parser
 
 import generators.obj.input.Leaf
 import generators.obj.input.Node
@@ -10,13 +10,19 @@ import kotlin.random.Random
 import ce.settings.CodeStyle
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterJavaUseCaseImpl
+import ce.parser.domain.dictionaries.TreeNodeData
+import ce.parser.domain.usecase.LoadTreeDictionaryFromJson
+import ce.parser.domain.usecase.SaveTreeDictrionaryToJson
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import generators.obj.out.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
+import javax.swing.tree.TreeNode
 
 fun main(args: Array<String>) {
-    BuildLtspSampels(args[0], 100).build()
+    BuildLtspSampels(args[0], 1000).build()
 }
 
 class BuildLtspSampels(
@@ -30,26 +36,6 @@ class BuildLtspSampels(
         preventEmptyBlocks = true,
     )
     private val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-
-    data class NodeData(
-        val openId: Int,
-        val closeId: Int = -1
-    )
-
-    fun isUniq(leaf: Leaf): Boolean {
-        return when (leaf) {
-            is VariableName -> true
-            is Keyword -> true
-            else -> false
-        }
-    }
-
-    fun toId(leaf: Leaf): String {
-        if (isUniq(leaf)) {
-            return leaf.javaClass.simpleName + "_" + leaf.name
-        }
-        return leaf.javaClass.simpleName
-    }
 
     fun buildTree(rnd: Random): Node {
         val fieldsCount = rnd.nextInt(1,3)
@@ -68,17 +54,17 @@ class BuildLtspSampels(
         return input
     }
 
-    fun toVector(leaf : Leaf, vector: MutableList<Int>, map: MutableMap<String, NodeData>) {
-        val nodeId = toId(leaf)
+    fun toVector(leaf : Leaf, vector: MutableList<Int>, map: MutableMap<String, TreeNodeData>) {
+        val nodeId = TreeNodeData.toId(leaf)
         if (!map.containsKey(nodeId)) {
             // create new one
             val newData = if (leaf is Node) {
-                NodeData(
+                TreeNodeData(
                     openId = maxId++,
                     closeId = maxId++
                 )
             } else {
-                NodeData(openId = maxId++, closeId = -1)
+                TreeNodeData(openId = maxId++, closeId = -1)
             }
             map[nodeId] = newData
         }
@@ -93,9 +79,21 @@ class BuildLtspSampels(
         }
     }
 
+    private fun computeDifference(srcVector: List<Int>, dstVector: List<Int>): Set<Int> {
+        return dstVector.filter { it !in srcVector }.toSet()
+    }
+
     fun build() {
         val rnd = Random(System.currentTimeMillis())
-        val map = mutableMapOf<String, NodeData>()
+        val dictionaryFileName = "dictionary.json"
+        val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+        val map = mutableMapOf<String, TreeNodeData>()
+        val loadMapFromJsonFile = LoadTreeDictionaryFromJson(objectMapper)
+        val saveTreeDictionary = SaveTreeDictrionaryToJson()
+        loadMapFromJsonFile.load(File(outputDir, dictionaryFileName)).forEach { (key, value) ->
+            maxId = maxOf(maxId, value.openId, value.closeId)
+            map[key] = value
+        }
         val formatter = CodeFormatterJavaUseCaseImpl(repoNoSpace)
         val outS1File = File(outputDir, "outs1.csv")
         val outS2File = File(outputDir, "outs2.csv")
@@ -103,27 +101,32 @@ class BuildLtspSampels(
         val outS2 = OutputStreamWriter(FileOutputStream(outS2File))
 
         for (i in 0..samplesCount) {
-            val vector = mutableListOf<Int>()
+            val srcVector = mutableListOf<Int>()
             val input = buildTree(rnd)
-            toVector(input, vector, map)
-            vector.forEachIndexed { index, it ->
-                if (index > 0)
-                    outS1.write(",")
-                outS1.write("$it")
-            }
-            outS1.write("\n")
+            toVector(input, srcVector, map)
+            writeVectorToCsv(srcVector, outS1)
             val output = formatter.invoke(input)
-            vector.clear()
-            toVector(output, vector, map)
-            vector.forEachIndexed { index, it ->
-                if (index > 0)
-                    outS2.write(",")
-                outS2.write("$it")
+            val dstVector = mutableListOf<Int>()
+            toVector(output, dstVector, map)
+            writeVectorToCsv(dstVector, outS2)
+            computeDifference(srcVector, dstVector).forEach { id ->
+                map.filter { it.value.openId == id || it.value.closeId == id }.forEach {
+                    map[it.key] = it.value.copy(priority = 1)
+                }
             }
-            outS2.write("\n")
         }
         outS1.close()
         outS2.close()
+        saveTreeDictionary.save(File(outputDir, dictionaryFileName), map)
         println(map)
+    }
+
+    private fun writeVectorToCsv(vector: Iterable<Int>, writer: OutputStreamWriter) {
+        vector.forEachIndexed { index, it ->
+            if (index > 0)
+                writer.write(",")
+            writer.write("$it")
+        }
+        writer.write("\n")
     }
 }

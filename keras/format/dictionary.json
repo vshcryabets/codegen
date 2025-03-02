@@ -1,0 +1,82 @@
+{
+  "RegionImpl" : {
+    "openId" : 1,
+    "closeId" : 2,
+    "priority" : 0
+  },
+  "OutBlock" : {
+    "openId" : 3,
+    "closeId" : 4,
+    "priority" : 0
+  },
+  "OutBlockArguments" : {
+    "openId" : 5,
+    "closeId" : 6,
+    "priority" : 0
+  },
+  "ArgumentNode" : {
+    "openId" : 7,
+    "closeId" : 8,
+    "priority" : 0
+  },
+  "Datatype" : {
+    "openId" : 9,
+    "closeId" : -1,
+    "priority" : 0
+  },
+  "VariableName_A0" : {
+    "openId" : 10,
+    "closeId" : -1,
+    "priority" : 0
+  },
+  "VariableName_A1" : {
+    "openId" : 11,
+    "closeId" : -1,
+    "priority" : 0
+  },
+  "VariableName_A2" : {
+    "openId" : 12,
+    "closeId" : -1,
+    "priority" : 0
+  },
+  "Keyword_(" : {
+    "openId" : 13,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "NlSeparator" : {
+    "openId" : 14,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "Indent" : {
+    "openId" : 15,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "Space" : {
+    "openId" : 16,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "Separator" : {
+    "openId" : 17,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "Keyword_)" : {
+    "openId" : 18,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "Keyword_{" : {
+    "openId" : 19,
+    "closeId" : -1,
+    "priority" : 1
+  },
+  "Keyword_}" : {
+    "openId" : 20,
+    "closeId" : -1,
+    "priority" : 1
+  }
+}

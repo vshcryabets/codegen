@@ -24,8 +24,8 @@ def define_model(vocab,in_timesteps,units):
     model.summary()
     return model
 
-NEW_MODEL = False
-TRAIN_MODEL = False
+NEW_MODEL = True
+TRAIN_MODEL = True
 filename = 'lstm-formatting-model.h1.keras'
 inp_words = 4
 paddingVec = [0] * (inp_words - 1)

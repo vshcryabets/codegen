@@ -22,6 +22,11 @@ dependencies {
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.17")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.5")
+
 }
 
 tasks.getByName<Test>("test") {
