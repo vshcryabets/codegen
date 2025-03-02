@@ -16,7 +16,7 @@ import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 
 fun main(args: Array<String>) {
-    BuildLtspSampels(args[0], 6).build()
+    BuildLtspSampels(args[0], 100).build()
 }
 
 class BuildLtspSampels(
@@ -52,7 +52,7 @@ class BuildLtspSampels(
     }
 
     fun buildTree(rnd: Random): Node {
-        val fieldsCount = rnd.nextInt(3,6)
+        val fieldsCount = rnd.nextInt(1,3)
         val input = RegionImpl().apply {
             addOutBlock("record TEST") {
                 addSub(OutBlockArguments().apply {
@@ -106,7 +106,6 @@ class BuildLtspSampels(
             val vector = mutableListOf<Int>()
             val input = buildTree(rnd)
             toVector(input, vector, map)
-            //println(vector)
             vector.forEachIndexed { index, it ->
                 if (index > 0)
                     outS1.write(",")
@@ -116,7 +115,6 @@ class BuildLtspSampels(
             val output = formatter.invoke(input)
             vector.clear()
             toVector(output, vector, map)
-            //println(vector)
             vector.forEachIndexed { index, it ->
                 if (index > 0)
                     outS2.write(",")
