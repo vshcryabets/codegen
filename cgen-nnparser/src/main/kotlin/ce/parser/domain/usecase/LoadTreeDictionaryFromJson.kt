@@ -2,7 +2,6 @@ package ce.parser.domain.usecase
 
 import ce.parser.domain.dictionaries.TreeNodeData
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.io.File
 
 class LoadTreeDictionaryFromJson(

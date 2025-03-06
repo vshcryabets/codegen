@@ -4,6 +4,11 @@ from keras.models import load_model
 import json
 import queue
 
+def read_project_data(filename):
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    return data
+
 def findWord(dictionary, index):
     for word, i in dictionary.items():
         if i['openId'] == index or i['closeId'] == index:
@@ -11,16 +16,16 @@ def findWord(dictionary, index):
     return None
 
 modelFilename = 'lstm-formatting-model.h1.keras'
-dictionaryFilename = 'dictionary.json'
+projectFilename = 'sources.json'
 model = load_model(modelFilename)
+project = read_project_data(projectFilename)
+if project['name'] != "RNNSources":
+    print(f"Error: Invalid training data file - {training_data['name']}")
+    exit(1)
 
-def load_dictionary(filename):
-    with open(filename, 'r') as file:
-        return json.load(file)
-
-x = [0,0,1,3,5,7,9,10,8,7,9,11,8,7,9,12,8,6,4,2]
-
-dictionary = load_dictionary(dictionaryFilename)
+dictionary = project['dictionary']
+samples = project['samples']
+x = [0,0] + samples[0]
 input = x[:4]
 x = x[4:]
 output = input.copy()

@@ -10,9 +10,11 @@ import kotlin.random.Random
 import ce.settings.CodeStyle
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterJavaUseCaseImpl
+import ce.parser.domain.dictionaries.FormatProject
 import ce.parser.domain.dictionaries.TreeNodeData
 import ce.parser.domain.usecase.LoadTreeDictionaryFromJson
 import ce.parser.domain.usecase.SaveTreeDictrionaryToJson
+import ce.parser.domain.usecase.StoreFormatProjectToJsonImpl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import generators.obj.out.*
@@ -89,34 +91,49 @@ class BuildLtspSampels(
         val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
         val map = mutableMapOf<String, TreeNodeData>()
         val loadMapFromJsonFile = LoadTreeDictionaryFromJson(objectMapper)
+        val storeFormatProject = StoreFormatProjectToJsonImpl(objectMapper)
         val saveTreeDictionary = SaveTreeDictrionaryToJson()
         loadMapFromJsonFile.load(File(outputDir, dictionaryFileName)).forEach { (key, value) ->
             maxId = maxOf(maxId, value.openId, value.closeId)
             map[key] = value
         }
         val formatter = CodeFormatterJavaUseCaseImpl(repoNoSpace)
-        val outS1File = File(outputDir, "outs1.csv")
-        val outS2File = File(outputDir, "outs2.csv")
-        val outS1 = OutputStreamWriter(FileOutputStream(outS1File))
-        val outS2 = OutputStreamWriter(FileOutputStream(outS2File))
+        val dstVectors = mutableListOf<List<Int>>()
+        val srcVectors = mutableListOf<List<Int>>()
 
         for (i in 0..samplesCount) {
-            val srcVector = mutableListOf<Int>()
             val input = buildTree(rnd)
+            val srcVector = mutableListOf<Int>()
             toVector(input, srcVector, map)
-            writeVectorToCsv(srcVector, outS1)
-            val output = formatter.invoke(input)
+            srcVectors.add(srcVector)
+            val output = formatter(input)
             val dstVector = mutableListOf<Int>()
             toVector(output, dstVector, map)
-            writeVectorToCsv(dstVector, outS2)
             computeDifference(srcVector, dstVector).forEach { id ->
                 map.filter { it.value.openId == id || it.value.closeId == id }.forEach {
                     map[it.key] = it.value.copy(priority = 1)
                 }
             }
+            dstVectors.add(dstVector)
         }
-        outS1.close()
-        outS2.close()
+        storeFormatProject.store(
+            FormatProject(
+                name = "RNNTrainingData",
+                process = "samples_builder",
+                dictionary = map,
+                samples = dstVectors
+            ),
+            File(outputDir, "training.json")
+        )
+        storeFormatProject.store(
+            FormatProject(
+                name = "RNNSources",
+                process = "samples_builder",
+                dictionary = map,
+                samples = srcVectors
+            ),
+            File(outputDir, "sources.json")
+        )
         saveTreeDictionary.save(File(outputDir, dictionaryFileName), map)
         println(map)
     }

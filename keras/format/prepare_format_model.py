@@ -6,6 +6,12 @@ import numpy as np
 from tensorflow.keras.utils import to_categorical
 from keras.models import load_model
 from keras.callbacks import ModelCheckpoint
+import json
+
+def read_training_data(filename):
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    return data
 
 def read_vectors(filename):
     with open(filename, 'r') as file:
@@ -29,13 +35,17 @@ TRAIN_MODEL = True
 filename = 'lstm-formatting-model.h1.keras'
 inp_words = 4
 paddingVec = [0] * (inp_words - 1)
-# vectors = read_vectors("./outs1_t1.csv")
-vectors = read_vectors("./outs1_add_open_bracket.csv")
+training_data = read_training_data("./training.json")
+
+if training_data['name'] != "RNNTrainingData":
+    print(f"Error: Invalid training data file - {training_data['name']}")
+    exit(1)
+
+vectors = training_data['samples']
 vocab = max(max(sublist) for sublist in vectors) + 1
 max_length_out = max(len(sublist) for sublist in vectors)
 vectors = [paddingVec + sb for sb in vectors]
-#print(vectors[0])
-#print(vectors[1])
+
 print(f"vocab={vocab} max_length_out={max_length_out}")
 X = []
 Y = []
