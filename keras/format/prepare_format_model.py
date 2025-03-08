@@ -13,11 +13,6 @@ def read_training_data(filename):
         data = json.load(file)
     return data
 
-def read_vectors(filename):
-    with open(filename, 'r') as file:
-        vectors = [list(map(int, line.strip().split(','))) for line in file]
-    return vectors
-
 def define_model(vocab,in_timesteps,units):
     model = Sequential()
     model.add(Embedding(vocab, 
@@ -37,8 +32,8 @@ inp_words = 4
 paddingVec = [0] * (inp_words - 1)
 training_data = read_training_data("./training.json")
 
-if training_data['name'] != "RNNTrainingData":
-    print(f"Error: Invalid training data file - {training_data['name']}")
+if training_data['type'] != "RNNTrainingData":
+    print(f"Error: Invalid training data file type - {training_data['type']}")
     exit(1)
 
 vectors = training_data['samples']

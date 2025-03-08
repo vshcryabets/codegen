@@ -1,4 +1,4 @@
-package ce.parser.domain.dictionaries
+package ce.parser.domain.dictionaries.natural
 
 import org.jetbrains.kotlin.javax.inject.Inject
 

@@ -1,8 +1,8 @@
 package ce.parser.domain.usecase
 
 import ce.defs.Target
-import ce.parser.domain.dictionaries.StaticDictionaries
-import ce.parser.domain.dictionaries.StaticDictionariesImpl
+import ce.parser.domain.dictionaries.natural.StaticDictionaries
+import ce.parser.domain.dictionaries.natural.StaticDictionariesImpl
 import ce.parser.nnparser.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async

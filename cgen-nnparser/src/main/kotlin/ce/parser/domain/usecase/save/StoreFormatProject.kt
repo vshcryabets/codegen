@@ -1,6 +1,6 @@
-package ce.parser.domain.usecase
+package ce.parser.domain.usecase.save
 
-import ce.parser.domain.dictionaries.FormatProject
+import ce.parser.domain.FormatProject
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.kotlin.javax.inject.Inject
 import java.io.File

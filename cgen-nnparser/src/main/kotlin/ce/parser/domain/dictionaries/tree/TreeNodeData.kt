@@ -1,4 +1,4 @@
-package ce.parser.domain.dictionaries
+package ce.parser.domain.dictionaries.tree
 
 import generators.obj.input.Leaf
 import generators.obj.out.Keyword
