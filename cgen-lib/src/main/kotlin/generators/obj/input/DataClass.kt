@@ -12,6 +12,14 @@ data class DataClass(
     override var objectBaseFolder: String = "",
 ) : Block {
 
+    fun instance(): DataValue {
+        return DataValue("ASD")
+    }
+
+    fun addstaticfield(name: String, type: DataType, value: Any?) {
+        addSub(DataField(name, type, DataValue(value), static = true))
+    }
+
     fun field(name: String, type: DataType, value: Any?) {
         addSub(DataField(name, type, DataValue(value)))
     }

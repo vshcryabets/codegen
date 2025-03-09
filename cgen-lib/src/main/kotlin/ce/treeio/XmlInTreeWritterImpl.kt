@@ -1,6 +1,14 @@
 package ce.treeio
 
-import generators.obj.input.*
+import generators.obj.input.Block
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.ConstantsEnum
+import generators.obj.input.DataField
+import generators.obj.input.Input
+import generators.obj.input.Leaf
+import generators.obj.input.Node
+import generators.obj.input.Output
+import generators.obj.input.OutputReusable
 import generators.obj.out.OutputTree
 import generators.obj.out.Region
 import generators.obj.out.RegionImpl
@@ -26,6 +34,7 @@ class XmlInTreeWritterImpl : TreeWritter {
         const val KEY_OUTPUT_FILE = "outFile"
         const val KEY_BASE_FOLDER = "baseFolder"
         const val KEY_TARGET = "target"
+        const val KEY_STATIC = "static"
     }
 
     val dataTypeSerializer = DataTypeSerializer()
@@ -86,6 +95,7 @@ class XmlInTreeWritterImpl : TreeWritter {
                 dataValueSerializer.stringValue(node.value)?.also {
                     element.setAttribute(KEY_VALUE, it)
                 }
+                element.setAttribute(KEY_STATIC, node.static.toString())
             }
             is OutputTree -> element.setAttribute(KEY_TARGET, node.target.rawValue)
             else -> {}

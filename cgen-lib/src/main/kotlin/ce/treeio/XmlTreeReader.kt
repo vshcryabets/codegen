@@ -3,8 +3,53 @@ package ce.treeio
 import ce.defs.DataType
 import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.Block
+import generators.obj.input.ConstantDesc
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.ConstantsEnum
+import generators.obj.input.DataClass
+import generators.obj.input.DataField
+import generators.obj.input.Input
+import generators.obj.input.InputList
+import generators.obj.input.InterfaceDescription
+import generators.obj.input.Leaf
+import generators.obj.input.Method
+import generators.obj.input.Namespace
+import generators.obj.input.NamespaceImpl
+import generators.obj.input.Node
+import generators.obj.input.Output
+import generators.obj.input.OutputList
+import generators.obj.input.OutputReusable
+import generators.obj.input.TreeRoot
+import generators.obj.input.addSub
+import generators.obj.input.buildNamespaceTree
+import generators.obj.input.getPath
+import generators.obj.out.ArgumentNode
+import generators.obj.out.AstTree
+import generators.obj.out.CodeStyleOutputTree
+import generators.obj.out.CommentLeaf
+import generators.obj.out.CommentsBlock
+import generators.obj.out.ConstantNode
+import generators.obj.out.Datatype
+import generators.obj.out.EnumNode
+import generators.obj.out.FileData
+import generators.obj.out.FileDataImpl
+import generators.obj.out.ImportsBlock
+import generators.obj.out.Indent
+import generators.obj.out.Keyword
+import generators.obj.out.MultilineCommentsBlock
+import generators.obj.out.NamespaceDeclaration
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.OutputTree
+import generators.obj.out.RValue
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
+import generators.obj.out.ResultLeaf
+import generators.obj.out.Separator
+import generators.obj.out.Space
+import generators.obj.out.VariableName
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.xml.sax.InputSource
@@ -119,7 +164,8 @@ class XmlTreeReader : TreeReader {
                         value = dataValueSerializer.fromString(
                             node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE),
                             dataType
-                        )
+                        ),
+                        static = node.getAttribute(XmlInTreeWritterImpl.KEY_STATIC).toBoolean()
                     )
                 }
 

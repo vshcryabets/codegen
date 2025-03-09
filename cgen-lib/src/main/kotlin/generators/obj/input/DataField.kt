@@ -13,6 +13,7 @@ data class DataField(
     override val name: String,
     override val type: DataType,
     override var value: DataValue = NotDefinedValue,
+    val static: Boolean = false,
 ) : Field {
 
     override fun toString(): String = "$name:$type=$value"

@@ -1,12 +1,14 @@
 package ce.treeio
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.NotDefined
 import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
+import generators.obj.input.DataField
 import generators.obj.input.NamespaceImpl
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class XmlTreeReaderTest {
@@ -43,4 +45,21 @@ class XmlTreeReaderTest {
         assertEquals(100, constant5.value.value)
     }
 
+    @Test
+    fun loadStaticField() {
+        val reader = XmlTreeReader()
+        val result = reader.loadFromString("""
+            <DataField name="A" type="int32" value="100"/>
+        """.trimIndent())
+        assertTrue(result is DataField)
+        val dataField1 = result as DataField
+        assertFalse(dataField1.static)
+
+        val result2 = reader.loadFromString("""
+            <DataField name="B" type="int32" value="100" static="true"/>
+        """.trimIndent())
+        assertTrue(result2 is DataField)
+        val dataField2 = result2 as DataField
+        assertTrue(dataField2.static)
+    }
 }
