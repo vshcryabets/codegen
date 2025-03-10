@@ -20,7 +20,7 @@ class JavaDataClassGenerator(
 
         file.addSub(RegionImpl()).apply {
             addBlockDefaultsUseCase(desc, this)
-            addOutBlock("record ${desc.name}") {
+            addOutBlock("public record ${desc.name}") {
                 addOutBlockArguments {
                     desc.subs.forEach { leaf ->
                         if (leaf is DataField) {
