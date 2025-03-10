@@ -2,6 +2,7 @@ package generators.java
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.IntValue
 import generators.obj.input.getPath
 import generators.obj.out.FileData
 
@@ -30,6 +31,7 @@ object Types {
             DataType.int8 -> "byte"
             DataType.int16 -> "short"
             DataType.int32 -> "int"
+            DataType.int64 -> "long"
             DataType.uint16 -> "int"
             DataType.uint32 -> "long"
             DataType.float32 -> "float"
@@ -51,6 +53,18 @@ object Types {
             DataType.uint16, DataType.uint32 -> value.value.toString()
             DataType.float32 -> value.value.toString() + "f"
             DataType.float64 -> value.value.toString()
+            DataType.int64 -> {
+                if (value is IntValue) {
+                    if (value.preferredRadix == 16) {
+                        val l = value.value as Long
+                        "0x${value.value.toString(radix = value.preferredRadix)}L"
+                    } else {
+                        "${value.value.toString()}L"
+                    }
+                } else {
+                    "${value.value.toString()}L"
+                }
+            }
             is DataType.string -> {
                 "\"${value.value}\""
             }

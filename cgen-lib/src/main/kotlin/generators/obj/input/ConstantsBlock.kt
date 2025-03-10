@@ -2,6 +2,7 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.IntValue
 import ce.defs.NotDefined
 
 data class ConstantsBlock(
@@ -10,19 +11,30 @@ data class ConstantsBlock(
     override var sourceFile: String = "",
     override var outputFile: String = "",
     override var objectBaseFolder: String = "",
-    var defaultDataType: DataType = DataType.VOID
+    var defaultDataType: DataType = DataType.VOID,
+    var preferredRadix: Int = 10,
 ) : Block {
     override fun toString() = name
+
+    fun preferredRadix(radix: Int) {
+        preferredRadix = radix
+    }
 
     fun defaultType(name: DataType) {
         defaultDataType = name
     }
 
-    fun add(name: String, value: Any? = NotDefined) : ConstantDesc =
-        addSub(ConstantDesc(name, defaultDataType, DataValue(value)))
+    fun add(name: String, value: Any? = NotDefined) : ConstantDesc = add(name, defaultDataType, value)
 
-    fun add(name: String, type : DataType, value: Any? = NotDefined) =
-        addSub(ConstantDesc(name, type, DataValue(value)))
+    fun add(name: String, type : DataType, value: Any? = NotDefined): ConstantDesc {
+        val dv = if (type in DataType.INTEGERS) {
+            IntValue(value.toString().toLong(), preferredRadix = preferredRadix)
+        } else {
+            DataValue(value)
+        }
+
+        return addSub(ConstantDesc(name, type, dv))
+    }
 
     override fun addBlockComment(value: String) {
         this.addBlockCommentExt(value)

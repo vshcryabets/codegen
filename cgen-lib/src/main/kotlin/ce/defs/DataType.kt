@@ -11,6 +11,8 @@ open class DataType(
         const val WEIGHT_ARRAY = 2
         const val WEIGHT_PROMISE = 3
         const val WEIGHT_CLASS = 4
+
+        val INTEGERS = setOf(int8, int16, int32, int64, uint8, uint16, uint32, uint64)
     }
     fun getWeight(): Int =
         when (this) {
