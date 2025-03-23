@@ -19,10 +19,10 @@ data class ConstantsBlock(
     }
 
     fun add(name: String, value: Any? = NotDefined) : ConstantDesc =
-        addSub(ConstantDesc(name, defaultDataType, DataValue(value)))
+        addSub(ConstantDesc(name, defaultDataType, DataValue(simple = value)))
 
     fun add(name: String, type : DataType, value: Any? = NotDefined) =
-        addSub(ConstantDesc(name, type, DataValue(value)))
+        addSub(ConstantDesc(name, type, DataValue(simple = value)))
 
     override fun addBlockComment(value: String) {
         this.addBlockCommentExt(value)

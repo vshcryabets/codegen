@@ -40,9 +40,9 @@ class XmlTreeReaderTest {
         assertEquals(6, constantsBlock.subs.size)
         val constant1 = constantsBlock.subs[1] as ConstantDesc
         assertEquals(DataType.int32, constant1.type)
-        assertEquals(NotDefined, constant1.value.value)
+        assertEquals(NotDefined, constant1.value.simple)
         val constant5 = constantsBlock.subs[5] as ConstantDesc
-        assertEquals(100, constant5.value.value)
+        assertEquals(100, constant5.value.simple)
     }
 
     @Test

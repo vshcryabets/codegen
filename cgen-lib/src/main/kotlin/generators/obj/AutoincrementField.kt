@@ -9,7 +9,7 @@ class AutoincrementField {
     operator fun invoke(field : Field) {
         if ((field.value.notDefined()) && previous != null) {
 
-            val previousValue = previous!!.value
+            val previousValue = previous!!.simple
             val newValue = when (previousValue) {
                 is Byte -> previousValue.toByte() + 1
                 is Short -> previousValue.toShort() + 1
@@ -18,7 +18,7 @@ class AutoincrementField {
                 else -> throw IllegalStateException("AutoincrementField not supporting ${previousValue!!::class.java.simpleName}")
             }
 
-            field.value = DataValue(newValue)
+            field.value = DataValue(simple = newValue)
         }
 
         previous = field.value

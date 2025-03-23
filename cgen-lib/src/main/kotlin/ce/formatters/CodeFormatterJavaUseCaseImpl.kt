@@ -5,9 +5,7 @@ import generators.obj.input.Node
 import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
 import generators.obj.out.Datatype
-import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
-import generators.obj.out.RValue
 import generators.obj.out.Separator
 import generators.obj.out.Space
 import generators.obj.out.VariableName

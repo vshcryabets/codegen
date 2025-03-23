@@ -5,9 +5,7 @@ import ce.defs.DataValue
 import generators.obj.input.findOrCreateSub
 import generators.obj.input.getParentPath
 import generators.obj.input.getPath
-import generators.obj.out.ClassData
 import generators.obj.out.FileData
-import generators.obj.out.ImportLeaf
 import generators.obj.out.ImportsBlock
 
 object Types {
@@ -63,11 +61,11 @@ object Types {
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32, DataType.int64,
-            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.value.toString()
-            DataType.float32 -> value.value.toString() + "f"
-            DataType.float64 -> value.value.toString()
-            DataType.bool -> value.value.toString()
-            is DataType.string -> "\"${value.value}\""
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.simple.toString()
+            DataType.float32 -> value.simple.toString() + "f"
+            DataType.float64 -> value.simple.toString()
+            DataType.bool -> value.simple.toString()
+            is DataType.string -> "\"${value.simple}\""
             else -> "QQVAL_$type"
         }
 }

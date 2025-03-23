@@ -3,8 +3,17 @@ package generators.obj.input
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.NotDefined
-import ce.defs.NotDefinedValue
-import generators.obj.out.*
+import generators.obj.out.CommentLeaf
+import generators.obj.out.Datatype
+import generators.obj.out.EnumNode
+import generators.obj.out.FileData
+import generators.obj.out.Keyword
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.RValue
+import generators.obj.out.Separator
+import generators.obj.out.VariableName
 import kotlin.reflect.KClass
 
 
@@ -84,7 +93,7 @@ fun <T : Node> T.addOutBlockArguments(name: String = "", function: OutBlockArgum
 
 fun <T : Node> T.addDataField(name: String, dataType: DataType) = addSub(DataField(name, dataType))
 
-fun <T : Node> T.addClassField(name: String, type: DataType, value: DataValue = NotDefinedValue) =
+fun <T : Node> T.addClassField(name: String, type: DataType, value: DataValue = DataValue.NotDefinedValue) =
     addSub(DataField(name, type, value))
 
 fun <T : Node> T.addEnumLeaf(name: String) = addSub(EnumNode(name))
@@ -157,7 +166,7 @@ data class InputList(
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     fun argument(name: String, type: DataType, value: Any? = NotDefined) {
-        addSub(Input(name = name, type = type, value = DataValue(value)))
+        addSub(Input(name = name, type = type, value = DataValue(simple = value)))
     }
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean): InputList =

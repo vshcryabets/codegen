@@ -155,7 +155,7 @@ class StoreTreeToSvgUseCaseImpl : StoreTreeToSvgUseCase {
     fun Leaf.toDisplayString() : String =
         when  {
             this is Namespace && name.isEmpty() -> "/"
-            this is DataField && this.value.isDefined() -> "${this.name} = ${this.value.value}"
+            this is DataField && this.value.isDefined() -> "${this.name} = ${this.value.simple}"
             else -> this.name
         }
 

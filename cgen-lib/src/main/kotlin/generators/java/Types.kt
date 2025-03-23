@@ -48,11 +48,11 @@ object Types {
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16, DataType.uint32 -> value.value.toString()
-            DataType.float32 -> value.value.toString() + "f"
-            DataType.float64 -> value.value.toString()
+            DataType.uint16, DataType.uint32 -> value.simple.toString()
+            DataType.float32 -> value.simple.toString() + "f"
+            DataType.float64 -> value.simple.toString()
             is DataType.string -> {
-                "\"${value.value}\""
+                "\"${value.simple}\""
             }
             else -> "QQVAL_$type"
         }

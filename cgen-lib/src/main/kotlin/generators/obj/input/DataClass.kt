@@ -2,7 +2,6 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
-import ce.defs.NotDefined
 
 data class DataClass(
     override val name: String,
@@ -13,19 +12,28 @@ data class DataClass(
 ) : Block {
 
     fun instance(): DataValue {
-        return DataValue("ASD")
+        return DataValue(simple = "ASD")
+    }
+
+    fun instance(map: Map<Any,Any?>): DataValue {
+        map.forEach { t, u ->
+            println("Map key ${t.javaClass} $t = $u")
+        }
+        println("Map = $map")
+        val newInstance = NewInstance("newInstance", type = DataType.custom(this))
+        return DataValue(simple = "ASD")
     }
 
     fun addstaticfield(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValue(value), static = true))
+        addSub(DataField(name, type, DataValue(simple = value), static = true))
     }
 
     fun field(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValue(value)))
+        addSub(DataField(name, type, DataValue(simple = value)))
     }
 
     fun field(name: String, type: DataType) {
-        addSub(DataField(name, type, DataValue(NotDefined)))
+        addSub(DataField(name, type, DataValue.NotDefinedValue))
     }
 
     override fun addBlockComment(value: String) {

@@ -3,7 +3,6 @@ package generators.cpp
 import ce.defs.DataType
 import ce.defs.DataValue
 import generators.obj.input.findOrCreateSub
-import generators.obj.out.ClassData
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 
@@ -33,9 +32,9 @@ object Types {
         when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int16, DataType.int32, DataType.int64,
-            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.value.toString()
-            DataType.float32 -> value.value.toString() + "f"
-            DataType.float64 -> value.value.toString()
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.simple.toString()
+            DataType.float32 -> value.simple.toString() + "f"
+            DataType.float64 -> value.simple.toString()
             is DataType.string -> {
                 "\"${value}\""
             }

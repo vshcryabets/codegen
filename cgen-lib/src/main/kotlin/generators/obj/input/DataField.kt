@@ -2,7 +2,6 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
-import ce.defs.NotDefinedValue
 
 interface Field : Leaf {
     val type: DataType
@@ -12,7 +11,7 @@ interface Field : Leaf {
 data class DataField(
     override val name: String,
     override val type: DataType,
-    override var value: DataValue = NotDefinedValue,
+    override var value: DataValue = DataValue.NotDefinedValue,
     val static: Boolean = false,
 ) : Field {
 
@@ -29,7 +28,7 @@ data class DataField(
 data class Output(
     override val name: String,
     override val type: DataType,
-    override var value: DataValue = NotDefinedValue,
+    override var value: DataValue = DataValue.NotDefinedValue,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copyLeafExt(parent, {this.copy()})
     var parent: Node? = null
@@ -40,7 +39,7 @@ data class Output(
 data class OutputReusable(
     override val name: String,
     override val type: DataType,
-    override var value: DataValue = NotDefinedValue,
+    override var value: DataValue = DataValue.NotDefinedValue,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copyLeafExt(parent, {this.copy()})
     var parent: Node? = null
