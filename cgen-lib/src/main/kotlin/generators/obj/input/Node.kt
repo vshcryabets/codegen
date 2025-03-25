@@ -11,7 +11,6 @@ import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
 import generators.obj.out.OutBlockArguments
-import generators.obj.out.RValue
 import generators.obj.out.Separator
 import generators.obj.out.VariableName
 import kotlin.reflect.KClass
@@ -77,12 +76,12 @@ fun <R : Leaf, T : Node> T.addSubs(vararg leafs: R) {
     (findParent(FileData::class) as FileData?)?.isDirty = true
 }
 
-fun <R : Leaf, T : Node> T.addSub2(leaf: R, fnc: R.() -> Unit) {
-    subs.add(leaf)
-    leaf.setParent2(this)
-    (findParent(FileData::class) as FileData?)?.isDirty = true
-    fnc(leaf)
-}
+//fun <R : Leaf, T : Node> T.addSub2(leaf: R, fnc: R.() -> Unit) {
+//    subs.add(leaf)
+//    leaf.setParent2(this)
+//    (findParent(FileData::class) as FileData?)?.isDirty = true
+//    fnc(leaf)
+//}
 
 fun <T : Node> T.addOutBlock(name: String = "", function: OutBlock.() -> Unit) =
     addSub(OutBlock(name)).apply(function)
@@ -91,22 +90,19 @@ fun <T : Node> T.addOutBlockArguments(name: String = "", function: OutBlockArgum
     addSub(OutBlockArguments(name)).apply(function)
 
 
-fun <T : Node> T.addDataField(name: String, dataType: DataType) = addSub(DataField(name, dataType))
-
-fun <T : Node> T.addClassField(name: String, type: DataType, value: DataValue = DataValue.NotDefinedValue) =
-    addSub(DataField(name, type, value))
+//fun <T : Node> T.addDataField(name: String, dataType: DataType) = addSub(DataField(name, dataType))
+//
+//fun <T : Node> T.addClassField(name: String, type: DataType, value: DataValue = DataValue.NotDefinedValue) =
+//    addSub(DataField(name, type, value))
 
 fun <T : Node> T.addEnumLeaf(name: String) = addSub(EnumNode(name))
-
 fun <T : Node> T.addCommentLine(name: String) = addSub(CommentLeaf(name))
-
 fun <T : Node> T.addSeparator(name: String) = addSub(Separator(name))
 fun <T : Node> T.addSeparatorNewLine(name: String = "") = addSub(NlSeparator(name))
 fun <T : Node> T.addKeyword(name: String) = addSub(Keyword(name))
 fun <T : Node> T.addDatatype(name: String) = addSub(Datatype(name))
 fun <T : Node> T.addVarName(name: String) = addSub(VariableName(name))
-
-fun <T : Node> T.addRValue(name: String) = addSub(RValue(name))
+fun <T : Node> T.addRValue(name: String) = addSub(DataValue(name = name, simple = name))
 fun <T : Node> T.clearSubs() {
     subs.clear()
 }

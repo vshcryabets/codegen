@@ -8,15 +8,16 @@ import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
 import generators.obj.input.addOutBlock
 import generators.obj.input.addOutBlockArguments
-import generators.obj.input.addRValue
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.out.ArgumentNode
+import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.RegionImpl
 
 class KtDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val dataTypeToString: DataTypeToString
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
@@ -37,10 +38,10 @@ class KtDataClassGenerator(
                             addKeyword("val")
                             addVarName(leaf.name)
                             addKeyword(":")
-                            addDatatype(Types.typeTo(file, leaf.type))
+                            addDatatype(dataTypeToString.typeTo(file, leaf.type))
                             if (leaf.value.isDefined()) {
                                 addKeyword("=")
-                                addRValue(Types.toValue(leaf.type, leaf.value))
+                                addSub(Types.toValue(leaf.type, leaf.value))
                             }
                         })
                     }
@@ -49,15 +50,17 @@ class KtDataClassGenerator(
                 if (staticFields.isNotEmpty()) {
                     addOutBlock("companion object") {
                         staticFields.forEach { leaf ->
-                            addSub(ArgumentNode().apply {
-                                addKeyword("const")
-                                addKeyword("val")
-                                addVarName(leaf.name)
-                                addKeyword(":")
-                                addDatatype(Types.typeTo(file, leaf.type))
-                                if (leaf.value.isDefined()) {
+                            addSub(FieldNode().apply {
+                                val rvalue = leaf.value
+                                if (rvalue.isDefined()) {
+                                    if (!rvalue.isComplex)
+                                        addKeyword("const")
+                                    addKeyword("val")
+                                    addVarName(leaf.name)
+                                    addKeyword(":")
+                                    addDatatype(dataTypeToString.typeTo(file, leaf.type))
                                     addKeyword("=")
-                                    addRValue(Types.toValue(leaf.type, leaf.value))
+                                    addSub(Types.toValue(leaf.type, leaf.value))
                                 }
                             })
                         }

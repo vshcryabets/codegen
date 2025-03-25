@@ -2,6 +2,7 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.NotDefined
 
 interface Field : Leaf {
     val type: DataType
@@ -22,7 +23,6 @@ data class DataField(
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
-
 }
 
 data class Output(
@@ -67,5 +67,14 @@ data class ConstantDesc(
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
+}
 
+fun <T : Field> T.setValue(value: Any?): T {
+    this.value = when (value) {
+        is NotDefined -> DataValue.NotDefinedValue
+        is DataValue -> value
+        is Node -> DataValue(simple = false, isComplex = true).apply { addSub(value) }
+        else -> DataValue(simple = value)
+    }
+    return this
 }

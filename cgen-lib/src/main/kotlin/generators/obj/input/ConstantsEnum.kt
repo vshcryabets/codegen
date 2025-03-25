@@ -1,7 +1,6 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.NotDefined
 
 data class ConstantsEnum(
@@ -19,7 +18,7 @@ data class ConstantsEnum(
     fun add(name: String) = add(name, NotDefined)
 
     fun add(name: String, value: Any) {
-        addSub(DataField(name, defaultDataType, DataValue(simple = value)))
+        addSub(DataField(name, defaultDataType).setValue(value))
     }
 
     override fun toString(): String = "<ConstantsEnum $name>"

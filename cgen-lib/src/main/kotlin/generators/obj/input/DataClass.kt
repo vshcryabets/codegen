@@ -1,7 +1,7 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
+import ce.defs.NotDefined
 
 data class DataClass(
     override val name: String,
@@ -11,30 +11,25 @@ data class DataClass(
     override var objectBaseFolder: String = "",
 ) : Block {
 
-    fun instance(): DataValue {
-        return DataValue(simple = "ASD")
-    }
+    fun instance() = NewInstance("newInstance", type = DataType.custom(this@DataClass))
 
-    fun instance(map: Map<Any,Any?>): DataValue {
-        map.forEach { t, u ->
-            println("Map key ${t.javaClass} $t = $u")
+    fun instance(map: Map<Any, Any?>): NewInstance {
+        return NewInstance("newInstance", type = DataType.custom(this@DataClass)).apply {
+            map.forEach { t, u ->
+                argument(t.toString(), DataType.Unknown, u)
+            }
         }
-        println("Map = $map")
-        val newInstance = NewInstance("newInstance", type = DataType.custom(this))
-        return DataValue(simple = "ASD")
     }
 
     fun addstaticfield(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValue(simple = value), static = true))
+        addSub(DataField(name, type, static = true).setValue(value))
     }
 
     fun field(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValue(simple = value)))
+        addSub(DataField(name, type).setValue(value))
     }
 
-    fun field(name: String, type: DataType) {
-        addSub(DataField(name, type, DataValue.NotDefinedValue))
-    }
+    fun field(name: String, type: DataType) = field(name, type, NotDefined)
 
     override fun addBlockComment(value: String) {
         this.addBlockCommentExt(value)
@@ -47,5 +42,7 @@ data class DataClass(
 
     var parent: Node? = null
     override fun getParent2(): Node? = parent
-    override fun setParent2(parent: Node?) { this.parent = parent }
+    override fun setParent2(parent: Node?) {
+        this.parent = parent
+    }
 }

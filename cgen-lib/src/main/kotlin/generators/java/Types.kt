@@ -44,16 +44,16 @@ object Types {
             else -> "javaQQTP_$type"
         }
 
-    fun toValue(type: DataType, value: DataValue) : String =
+    fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
-            DataType.VOID -> "void"
+            DataType.VOID -> DataValue(name = "void")
             DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16, DataType.uint32 -> value.simple.toString()
-            DataType.float32 -> value.simple.toString() + "f"
-            DataType.float64 -> value.simple.toString()
+            DataType.uint16, DataType.uint32 -> DataValue(name = value.simple.toString())
+            DataType.float32 -> DataValue(name = value.simple.toString() + "f")
+            DataType.float64 -> DataValue(name = value.simple.toString())
             is DataType.string -> {
-                "\"${value.simple}\""
+                DataValue(name = value.simple.toString())
             }
-            else -> "QQVAL_$type"
+            else -> DataValue(name = "QQVAL_$type")
         }
 }

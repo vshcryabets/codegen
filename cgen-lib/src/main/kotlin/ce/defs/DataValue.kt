@@ -7,7 +7,7 @@ import generators.obj.input.copyLeafExt
 data class DataValue(
     override val name: String = "",
     override val subs: MutableList<Leaf> = mutableListOf(),
-    val simple: Any?,
+    val simple: Any? = null,
     val isComplex: Boolean = false,
 ) : Node {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Node = this.copyLeafExt(parent, {this.copy()})

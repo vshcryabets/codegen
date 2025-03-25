@@ -109,18 +109,6 @@ data class ArgumentNode(
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
-// something after "="
-@Deprecated("Use RValueComplex")
-data class RValue(
-    override val name: String,
-) : Leaf {
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf =
-        this.copyLeafExt(parent, { this.copy() })
-    var parent: Node? = null
-    override fun getParent2(): Node? = parent
-    override fun setParent2(parent: Node?) { this.parent = parent }
-}
-
 data class Keyword(
     override val name: String,
 ) : Leaf {

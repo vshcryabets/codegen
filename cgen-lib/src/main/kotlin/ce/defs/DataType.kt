@@ -14,7 +14,7 @@ open class DataType(
     }
     fun getWeight(): Int =
         when (this) {
-            VOID -> WEIGHT_NONE
+            VOID, Unknown -> WEIGHT_NONE
             int8, int16, int32, int64 -> WEIGHT_PRIMITIVE
             uint8, uint16, uint32, uint64 -> WEIGHT_PRIMITIVE
             float32, float64, float128 -> WEIGHT_PRIMITIVE
@@ -28,6 +28,7 @@ open class DataType(
             else -> WEIGHT_CLASS
         }
 
+    object Unknown : DataType()
     object VOID : DataType()
 
     object int8 : DataType()

@@ -7,7 +7,6 @@ import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
 import generators.obj.input.DataField
-import generators.obj.input.addDataField
 import generators.obj.input.addDatatype
 import generators.obj.input.addEnumLeaf
 import generators.obj.input.addKeyword

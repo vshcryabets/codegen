@@ -1,12 +1,20 @@
 package ce.formatters.cxx
 
-import ce.defs.Target
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
-import generators.cpp.CppHeaderFile
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.addKeyword
+import generators.obj.input.addRValue
+import generators.obj.input.addSub
+import generators.obj.out.CommentLeaf
+import generators.obj.out.CommentsBlock
+import generators.obj.out.ConstantNode
+import generators.obj.out.Datatype
+import generators.obj.out.Keyword
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
+import generators.obj.out.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -39,14 +47,14 @@ class CxxConstantsFormatterTest {
                     addSub(Datatype("int32_t"))
                     addSub(VariableName("OREAD"))
                     addSub(Keyword("="))
-                    addSub(RValue("0"))
+                    addRValue("0")
                 })
                 addSub(ConstantNode().apply {
                     addKeyword("const")
                     addSub(Datatype("int32_t"))
                     addSub(VariableName("OWRITE"))
                     addKeyword("=")
-                    addSub(RValue("1"))
+                    addRValue("1")
                 })
             }
         }
@@ -88,7 +96,7 @@ class CxxConstantsFormatterTest {
             addSub(Datatype("int32_t"))
             addSub(VariableName("OREAD"))
             addSub(Keyword("="))
-            addSub(RValue("0"))
+            addRValue("0")
         }
 
         val output = formatter(input) as ConstantNode

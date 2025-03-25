@@ -7,8 +7,6 @@ import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
-import generators.obj.input.addRValue
-import generators.obj.input.addSeparator
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.out.ConstantNode
@@ -38,7 +36,7 @@ class JavaConstantsGenerator(
                             addDatatype(Types.typeTo(file, it.type))
                             addVarName(it.name)
                             addKeyword("=")
-                            addRValue(Types.toValue(it.type, it.value))
+                            addSub(Types.toValue(it.type, it.value))
                         })
                     }
                 }

@@ -49,7 +49,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name=":"/>
                     <Datatype name="Int"/>
                     <Keyword name="="/>
-                    <RValue name="0"/>
+                    <DataValue name="0"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
 
@@ -94,7 +94,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name="="/>
-                    <RValue name="105"/>
+                    <DataValue name="105"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
     }
@@ -111,7 +111,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name=":"/>
                     <Datatype name="Int"/>
                     <Keyword name="="/>
-                    <RValue name="0"/>
+                    <DataValue name="0"/>
                 </ConstantNode>
                 <ConstantNode>
                     <Keyword name="const"/>
@@ -120,7 +120,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name=":"/>
                     <Datatype name="Int"/>
                     <Keyword name="="/>
-                    <RValue name="1"/>
+                    <DataValue name="1"/>
                 </ConstantNode>
             </OutBlock>
             </Region>

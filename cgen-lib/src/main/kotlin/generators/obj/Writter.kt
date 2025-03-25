@@ -1,11 +1,23 @@
 package generators.obj
 
+import ce.defs.DataValue
 import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
-import generators.obj.out.*
+import generators.obj.out.CodeStyleOutputTree
+import generators.obj.out.CommentLeaf
+import generators.obj.out.Datatype
+import generators.obj.out.EnumNode
+import generators.obj.out.FileData
+import generators.obj.out.Indent
+import generators.obj.out.Keyword
+import generators.obj.out.NlSeparator
+import generators.obj.out.ResultLeaf
+import generators.obj.out.Separator
+import generators.obj.out.Space
+import generators.obj.out.VariableName
 import java.io.File
 
 abstract class Writter(val codeStyleRepo: CodeStyleRepo,
@@ -32,7 +44,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
             is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
             }
-            is RValue -> out.write(leaf.name)
+            is DataValue -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
             is Keyword -> out.write(leaf.name)
             is Datatype -> out.write(leaf.name)

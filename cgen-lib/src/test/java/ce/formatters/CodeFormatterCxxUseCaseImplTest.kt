@@ -1,11 +1,24 @@
 package ce.formatters
 
 import ce.defs.DataType
-import ce.defs.Target
 import ce.settings.CodeStyle
-import generators.cpp.CppHeaderFile
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.DataField
+import generators.obj.input.addEnumLeaf
+import generators.obj.input.addKeyword
+import generators.obj.input.addOutBlock
+import generators.obj.input.addRValue
+import generators.obj.input.addSeparator
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.out.Indent
+import generators.obj.out.Keyword
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
+import generators.obj.out.Separator
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

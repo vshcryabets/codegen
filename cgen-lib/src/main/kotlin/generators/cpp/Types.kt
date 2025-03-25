@@ -28,17 +28,17 @@ object Types {
             DataType.float64 -> "double"
             else -> "cxxQQTP_$type"
         }
-    fun toValue(type: DataType, value: DataValue) : String =
+    fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
-            DataType.VOID -> "void"
+            DataType.VOID -> DataValue(name = "void")
             DataType.int8, DataType.int16, DataType.int32, DataType.int64,
-            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.simple.toString()
-            DataType.float32 -> value.simple.toString() + "f"
-            DataType.float64 -> value.simple.toString()
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> DataValue(name = value.simple.toString())
+            DataType.float32 -> DataValue(name = value.simple.toString() + "f")
+            DataType.float64 -> DataValue(name = value.simple.toString())
             is DataType.string -> {
-                "\"${value}\""
+                DataValue(name = value.simple.toString())
             }
-            else -> "QQVL_$type"
+            else -> DataValue(name = "QQVL_$type")
         }
 
 }

@@ -3,11 +3,20 @@ package generators.kotlin
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.ConstantDesc
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.addDatatype
+import generators.obj.input.addKeyword
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.out.ConstantNode
+import generators.obj.out.FileData
+import generators.obj.out.OutBlock
+import generators.obj.out.RegionImpl
 
 class KtConstantsGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val dataTypeToString: DataTypeToString
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -26,9 +35,9 @@ class KtConstantsGenerator(
                             addKeyword("val")
                             addVarName(it.name)
                             addKeyword(":")
-                            addDatatype(Types.typeTo(file, it.type))
+                            addDatatype(dataTypeToString.typeTo(file, it.type))
                             addKeyword("=")
-                            addRValue(Types.toValue(it.type, it.value))
+                            addSub(Types.toValue(it.type, it.value))
                         })
                     }
                 }

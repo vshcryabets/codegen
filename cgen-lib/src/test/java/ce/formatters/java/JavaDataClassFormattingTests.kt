@@ -4,8 +4,18 @@ import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.Node
+import generators.obj.input.addDatatype
+import generators.obj.input.addOutBlock
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.out.ArgumentNode
+import generators.obj.out.Keyword
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.RegionImpl
+import generators.obj.out.Space
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -28,7 +38,7 @@ class JavaDataClassFormattingTests {
                     <Datatype name="int"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name="="/>
-                    <RValue name="0"/>
+                    <DataValue name="0"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
 

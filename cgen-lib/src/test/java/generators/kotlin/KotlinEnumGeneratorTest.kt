@@ -7,12 +7,9 @@ import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
 import generators.obj.input.ConstantsEnum
 import generators.obj.input.Namespace
-import generators.obj.input.NamespaceImpl
 import generators.obj.input.findOrNull
-import generators.obj.out.ArgumentNode
 import generators.obj.out.CommentsBlock
 import generators.obj.out.OutBlock
-import generators.obj.out.OutBlockArguments
 import generators.obj.out.OutputTree
 import generators.obj.out.Region
 import generators.obj.out.RegionImpl
@@ -21,6 +18,8 @@ import org.junit.jupiter.api.Test
 
 class KotlinEnumGeneratorTest {
     private val reader = XmlTreeReader()
+    private val arrayDataType = ArrayDataType()
+    private val dataTypeToString = DataTypeToString(arrayDataType)
 
     @Test
     fun testSimpleEnumClass() {
@@ -32,7 +31,8 @@ class KotlinEnumGeneratorTest {
         val repo = CLikeCodestyleRepo(codeStyle)
         val fileGenerator = KotlinFileGenerator()
         val item = KotlinEnumGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
+            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
+            dataTypeToString = dataTypeToString
         )
 
         val tree = reader.loadFromString("""

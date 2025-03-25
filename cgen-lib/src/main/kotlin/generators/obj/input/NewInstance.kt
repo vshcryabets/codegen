@@ -10,7 +10,7 @@ data class NewInstance(
 ) : Node {
 
     fun argument(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValue(simple = value)))
+        addSub(DataField(name, type, DataValue.NotDefinedValue).setValue(value))
     }
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
