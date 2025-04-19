@@ -31,13 +31,17 @@ class KotlinDataClassGeneratorTest {
         tabSize = 2,
         preventEmptyBlocks = true,
     )
-    private val arrayDataType = ArrayDataType()
-    private val dataTypeToString = DataTypeToString(arrayDataType)
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
     val repo = CLikeCodestyleRepo(codeStyle)
     val ktFileGenerator = KotlinFileGenerator()
+    val prepareRightValueUseCase = PrepareRightValueUseCase(
+        getTypeNameUseCase = getTypeNameUseCase
+    )
     val processor = KtDataClassGenerator(
         addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
-        dataTypeToString = dataTypeToString
+        dataTypeToString = getTypeNameUseCase,
+        prepareRightValueUseCase = prepareRightValueUseCase
     )
 
     @Test

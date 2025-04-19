@@ -15,13 +15,14 @@ import generators.java.JavaDataClassGenerator
 import generators.java.JavaEnumGenerator
 import generators.java.JavaFileGenerator
 import generators.java.JavaInterfaceGenerator
-import generators.kotlin.ArrayDataType
-import generators.kotlin.DataTypeToString
+import generators.kotlin.GetArrayDataTypeUseCase
+import generators.kotlin.GetTypeNameUseCase
 import generators.kotlin.KotlinEnumGenerator
 import generators.kotlin.KotlinFileGenerator
 import generators.kotlin.KotlinInterfaceGenerator
 import generators.kotlin.KtConstantsGenerator
 import generators.kotlin.KtDataClassGenerator
+import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.MetaGenerator
 import generators.obj.PrepareFilesListUseCaseImpl
 import generators.obj.input.ConstantsBlock
@@ -78,17 +79,25 @@ class GeneratorsRepo(
             val addBlockUseCase = addBlockDefaultsUseCases[it]!!
             val generators = when (it) {
                 Target.Kotlin -> {
-                    val arrayDataType = ArrayDataType()
-                    val dataTypeToString = DataTypeToString(
+                    val arrayDataType = GetArrayDataTypeUseCase()
+                    val dataTypeToString = GetTypeNameUseCase(
                         arrayDataType = arrayDataType
                     )
+                    val prepareRightValueUseCase = PrepareRightValueUseCase(
+                        getTypeNameUseCase = dataTypeToString
+                    )
                     mapOf(
-                        ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase, dataTypeToString),
+                        ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase,
+                            dataTypeToString,
+                            prepareRightValueUseCase = prepareRightValueUseCase),
                         ConstantsBlock::class.java to KtConstantsGenerator(addBlockUseCase,
-                            dataTypeToString = dataTypeToString),
+                            dataTypeToString = dataTypeToString,
+                            prepareRightValueUseCase = prepareRightValueUseCase),
                         DataClass::class.java to KtDataClassGenerator(addBlockUseCase,
-                            dataTypeToString = dataTypeToString),
-                        InterfaceDescription::class.java to KotlinInterfaceGenerator(addBlockUseCase, dataTypeToString)
+                            dataTypeToString = dataTypeToString,
+                            prepareRightValueUseCase = prepareRightValueUseCase),
+                        InterfaceDescription::class.java to KotlinInterfaceGenerator(addBlockUseCase, dataTypeToString,
+                            prepareRightValueUseCase = prepareRightValueUseCase)
                     )
                 }
                 Target.Java -> mapOf(

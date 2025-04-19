@@ -2,7 +2,7 @@ package generators.kotlin
 
 import ce.defs.DataType
 
-class ArrayDataType {
+class GetArrayDataTypeUseCase {
     fun getArrayType(type: DataType): String =
         when (type) {
             DataType.int8, DataType.uint8 -> "ByteArray"

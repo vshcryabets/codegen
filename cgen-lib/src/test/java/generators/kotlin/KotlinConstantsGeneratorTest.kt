@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test
 
 class KotlinConstantsGeneratorTest {
     private val reader = XmlTreeReader()
-    private val arrayDataType = ArrayDataType()
-    private val dataTypeToString = DataTypeToString(arrayDataType)
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
 
     @Test
     fun testConstantsClass() {
@@ -30,9 +30,11 @@ class KotlinConstantsGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
         val fileGenerator = KotlinFileGenerator()
+        val prepareRightValueUseCase = PrepareRightValueUseCase(getTypeNameUseCase)
         val item = KtConstantsGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
-            dataTypeToString = dataTypeToString
+            dataTypeToString = getTypeNameUseCase,
+            prepareRightValueUseCase = prepareRightValueUseCase
         )
 
         val tree = reader.loadFromString("""

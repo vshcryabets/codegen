@@ -16,7 +16,8 @@ import generators.obj.out.RegionImpl
 
 class KtConstantsGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
-    private val dataTypeToString: DataTypeToString
+    private val dataTypeToString: GetTypeNameUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -37,7 +38,8 @@ class KtConstantsGenerator(
                             addKeyword(":")
                             addDatatype(dataTypeToString.typeTo(file, it.type))
                             addKeyword("=")
-                            addSub(Types.toValue(it.type, it.value))
+                            val rValue = prepareRightValueUseCase.toRightValue(it.type, it.value, file)
+                            addSub(rValue)
                         })
                     }
                 }

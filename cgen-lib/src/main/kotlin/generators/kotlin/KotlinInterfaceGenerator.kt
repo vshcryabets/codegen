@@ -19,7 +19,8 @@ import generators.obj.out.ResultLeaf
 
 class KotlinInterfaceGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
-    private val dataTypeToString: DataTypeToString
+    private val dataTypeToString: GetTypeNameUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<InterfaceDescription> {
 
     override fun invoke(files: List<FileData>, desc: InterfaceDescription) {
@@ -60,7 +61,7 @@ class KotlinInterfaceGenerator(
 
 
             if (simplestResults.size == 0) {
-               addSub(ResultLeaf(""))
+                addSub(ResultLeaf(""))
             } else if (simplestResults.size == 1) {
                 addSub(ResultLeaf(dataTypeToString.typeTo(file, simplestResults[0].type)))
             } else {
@@ -78,8 +79,8 @@ class KotlinInterfaceGenerator(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${dataTypeToString.typeTo(file, it.type)}"
                                     } else {
-                                        "${it.name}: ${dataTypeToString.typeTo(file, it.type)} = " +
-                                                Types.toValue(it.type, it.value)
+                                        val rValue = prepareRightValueUseCase.toRightValue(it.type, it.value, file)
+                                        "${it.name}: ${dataTypeToString.typeTo(file, it.type)} = " + rValue
                                     }
                                 )
                             )
@@ -96,8 +97,9 @@ class KotlinInterfaceGenerator(
                                     if (it.value.notDefined()) {
                                         "${it.name}: ${dataTypeToString.typeTo(file, it.type)}"
                                     } else {
+                                        val rValue = prepareRightValueUseCase.toRightValue(it.type, it.value, file)
                                         "${it.name}: ${dataTypeToString.typeTo(file, it.type)} = " +
-                                                Types.toValue(it.type, it.value)
+                                                rValue
                                     }
                                 )
                             )

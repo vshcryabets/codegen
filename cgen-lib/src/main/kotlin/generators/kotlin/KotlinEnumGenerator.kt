@@ -19,7 +19,8 @@ import generators.obj.out.RegionImpl
 
 class KotlinEnumGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
-    private val dataTypeToString: DataTypeToString
+    private val dataTypeToString: GetTypeNameUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
     override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
@@ -50,7 +51,8 @@ class KotlinEnumGenerator(
 
                         if (withRawValues) {
                             autoIncrement(it)
-                            addEnumLeaf("${it.name}(${Types.toValue(it.type, it.value)})")
+                            val rValue = prepareRightValueUseCase.toRightValue(dataField = it, fileData = file)
+                            addEnumLeaf("${it.name}(${rValue})")
                         } else {
                             addEnumLeaf(it.name)
                         }

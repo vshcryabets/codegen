@@ -2,7 +2,6 @@ package generators.java
 
 import ce.defs.DataType
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
-import generators.kotlin.Types
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum

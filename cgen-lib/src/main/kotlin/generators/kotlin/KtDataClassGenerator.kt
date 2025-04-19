@@ -17,7 +17,8 @@ import generators.obj.out.RegionImpl
 
 class KtDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
-    private val dataTypeToString: DataTypeToString
+    private val dataTypeToString: GetTypeNameUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
@@ -41,7 +42,8 @@ class KtDataClassGenerator(
                             addDatatype(dataTypeToString.typeTo(file, leaf.type))
                             if (leaf.value.isDefined()) {
                                 addKeyword("=")
-                                addSub(Types.toValue(leaf.type, leaf.value))
+                                val rValue = prepareRightValueUseCase.toRightValue(leaf.type, leaf.value, file)
+                                addSub(rValue)
                             }
                         })
                     }
@@ -60,7 +62,8 @@ class KtDataClassGenerator(
                                     addKeyword(":")
                                     addDatatype(dataTypeToString.typeTo(file, leaf.type))
                                     addKeyword("=")
-                                    addSub(Types.toValue(leaf.type, leaf.value))
+                                    val rValue = prepareRightValueUseCase.toRightValue(leaf.type, leaf.value, file)
+                                    addSub(rValue)
                                 }
                             })
                         }

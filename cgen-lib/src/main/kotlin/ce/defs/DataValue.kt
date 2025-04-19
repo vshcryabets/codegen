@@ -4,6 +4,7 @@ import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.copyLeafExt
 
+// Right value
 data class DataValue(
     override val name: String = "",
     override val subs: MutableList<Leaf> = mutableListOf(),
@@ -23,6 +24,8 @@ data class DataValue(
             simple = NotDefined,
             isComplex = false)
     }
+
+    fun leaf(): Leaf = subs.firstOrNull() ?: throw IllegalStateException("No subs in DataValue")
 }
 
 object NotDefined

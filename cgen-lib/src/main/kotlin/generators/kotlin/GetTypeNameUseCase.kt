@@ -7,8 +7,8 @@ import generators.obj.input.getPath
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 
-class DataTypeToString(
-    private val arrayDataType: ArrayDataType
+class GetTypeNameUseCase(
+    private val arrayDataType: GetArrayDataTypeUseCase
 ) {
     fun typeTo(file: FileData,
                type: DataType

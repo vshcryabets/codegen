@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test
 
 class KotlinEnumGeneratorTest {
     private val reader = XmlTreeReader()
-    private val arrayDataType = ArrayDataType()
-    private val dataTypeToString = DataTypeToString(arrayDataType)
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val dataTypeToString = GetTypeNameUseCase(arrayDataType)
 
     @Test
     fun testSimpleEnumClass() {
@@ -30,9 +30,11 @@ class KotlinEnumGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
         val fileGenerator = KotlinFileGenerator()
+        val prepareRightValueUseCase = PrepareRightValueUseCase(dataTypeToString)
         val item = KotlinEnumGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
-            dataTypeToString = dataTypeToString
+            dataTypeToString = dataTypeToString,
+            prepareRightValueUseCase = prepareRightValueUseCase
         )
 
         val tree = reader.loadFromString("""
