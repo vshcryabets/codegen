@@ -13,24 +13,17 @@ dependencies {
     implementation(project(":cgen-lib"))
     implementation(project(":cgen-nnparser"))
     implementation(project(":cgen-parser"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation(libs.junitJupiterApi)
+    testRuntimeOnly(libs.junitJupiterEngine)
 
     // script engines
-    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
-    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:${Versions.kotlin}")
-    implementation("org.codehaus.groovy:groovy-jsr223:3.0.17")
+    implementation(libs.kotlinScriptingJsr223)
+    implementation(libs.kotlinCompilerEmbedable)
+    implementation(libs.groovyJsr223)
 }
 
-kotlin {
-    jvmToolchain(Versions.jvmLevel)
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
-    }
-}
+kotlin { jvmToolchain(libs.versions.jvmLevel.get().toInt()) }
+java { toolchain { languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmLevel.get().toInt())) } }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
