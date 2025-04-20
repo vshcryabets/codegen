@@ -6,6 +6,7 @@ import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.DataField
 import generators.obj.input.NamespaceImpl
+import generators.obj.input.getValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -39,10 +40,10 @@ class XmlTreeReaderTest {
         val constantsBlock = lastNs.subs.first() as ConstantsBlock
         assertEquals(6, constantsBlock.subs.size)
         val constant1 = constantsBlock.subs[1] as ConstantDesc
-        assertEquals(DataType.int32, constant1.type)
-        assertEquals(NotDefined, constant1.value.simple)
+        assertEquals(DataType.int32, constant1.getType())
+        assertEquals(NotDefined, constant1.getValue().simple)
         val constant5 = constantsBlock.subs[5] as ConstantDesc
-        assertEquals(100, constant5.value.simple)
+        assertEquals(100, constant5.getValue().simple)
     }
 
     @Test

@@ -1,8 +1,6 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
-import ce.defs.DataValueImpl
 
 data class NewInstance(
     override val name: String,
@@ -11,7 +9,10 @@ data class NewInstance(
 ) : Node {
 
     fun argument(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValueImpl.NotDefinedValue).setValue(value))
+        addSub(DataField(name).apply {
+            setType(type)
+            setValue(value)
+        })
     }
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =

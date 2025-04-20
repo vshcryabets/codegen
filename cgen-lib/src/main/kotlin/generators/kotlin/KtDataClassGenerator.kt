@@ -10,6 +10,7 @@ import generators.obj.input.addOutBlock
 import generators.obj.input.addOutBlockArguments
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
+import generators.obj.input.getValue
 import generators.obj.out.ArgumentNode
 import generators.obj.out.FieldNode
 import generators.obj.out.FileData
@@ -39,10 +40,10 @@ class KtDataClassGenerator(
                             addKeyword("val")
                             addVarName(leaf.name)
                             addKeyword(":")
-                            addDatatype(dataTypeToString.typeTo(file, leaf.type))
-                            if (leaf.value.isDefined()) {
+                            addDatatype(dataTypeToString.typeTo(file, leaf.getType()))
+                            if (leaf.getValue().isDefined()) {
                                 addKeyword("=")
-                                val rValue = prepareRightValueUseCase.toRightValue(leaf.type, leaf.value, file)
+                                val rValue = prepareRightValueUseCase.toRightValue(leaf.getType(), leaf.getValue(), file)
                                 addSub(rValue)
                             }
                         })
@@ -53,16 +54,16 @@ class KtDataClassGenerator(
                     addOutBlock("companion object") {
                         staticFields.forEach { leaf ->
                             addSub(FieldNode().apply {
-                                val rvalue = leaf.value
+                                val rvalue = leaf.getValue()
                                 if (rvalue.isDefined()) {
                                     if (!rvalue.isComplex)
                                         addKeyword("const")
                                     addKeyword("val")
                                     addVarName(leaf.name)
                                     addKeyword(":")
-                                    addDatatype(dataTypeToString.typeTo(file, leaf.type))
+                                    addDatatype(dataTypeToString.typeTo(file, leaf.getType()))
                                     addKeyword("=")
-                                    val rValue = prepareRightValueUseCase.toRightValue(leaf.type, leaf.value, file)
+                                    val rValue = prepareRightValueUseCase.toRightValue(leaf.getType(), leaf.getValue(), file)
                                     addSub(rValue)
                                 }
                             })

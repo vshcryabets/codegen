@@ -4,6 +4,16 @@ import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.copyLeafExt
 
+data class RValue(
+    override val name: String = "",
+    override val subs: MutableList<Leaf> = mutableListOf(),
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Node = this.copyLeafExt(parent, {this.copy()})
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
+}
+
 // Right value
 interface DataValue : Node {
     val simple: Any?

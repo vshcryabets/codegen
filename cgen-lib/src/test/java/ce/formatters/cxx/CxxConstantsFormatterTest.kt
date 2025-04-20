@@ -9,7 +9,7 @@ import generators.obj.input.addSub
 import generators.obj.out.CommentLeaf
 import generators.obj.out.CommentsBlock
 import generators.obj.out.ConstantNode
-import generators.obj.out.Datatype
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.Keyword
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.Region
@@ -44,14 +44,14 @@ class CxxConstantsFormatterTest {
                 }
                 addSub(ConstantNode().apply {
                     addSub(Keyword("const"))
-                    addSub(Datatype("int32_t"))
+                    addSub(AstTypeLeaf("int32_t"))
                     addSub(VariableName("OREAD"))
                     addSub(Keyword("="))
                     addRValue("0")
                 })
                 addSub(ConstantNode().apply {
                     addKeyword("const")
-                    addSub(Datatype("int32_t"))
+                    addSub(AstTypeLeaf("int32_t"))
                     addSub(VariableName("OWRITE"))
                     addKeyword("=")
                     addRValue("1")
@@ -93,7 +93,7 @@ class CxxConstantsFormatterTest {
     fun testConstantsLeaf() {
         val input = ConstantNode().apply {
             addSub(Keyword("const"))
-            addSub(Datatype("int32_t"))
+            addSub(AstTypeLeaf("int32_t"))
             addSub(VariableName("OREAD"))
             addSub(Keyword("="))
             addRValue("0")

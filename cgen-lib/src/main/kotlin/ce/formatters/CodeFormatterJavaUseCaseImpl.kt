@@ -4,7 +4,7 @@ import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
-import generators.obj.out.Datatype
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.NlSeparator
 import generators.obj.out.Separator
 import generators.obj.out.Space
@@ -27,7 +27,7 @@ class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleR
             return -1
         for (pos in 0..input.subs.size-2) {
             val w1 = input.subs[pos] // int
-            if (w1 !is Datatype)
+            if (w1 !is AstTypeLeaf)
                 continue
             val w2 = input.subs[pos + 1] // NAME
             if (w2 !is VariableName)

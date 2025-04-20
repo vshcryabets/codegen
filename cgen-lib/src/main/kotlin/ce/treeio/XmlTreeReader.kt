@@ -26,13 +26,14 @@ import generators.obj.input.TreeRoot
 import generators.obj.input.addSub
 import generators.obj.input.buildNamespaceTree
 import generators.obj.input.getPath
+import generators.obj.input.setType
 import generators.obj.out.ArgumentNode
 import generators.obj.out.AstTree
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CodeStyleOutputTree
 import generators.obj.out.CommentLeaf
 import generators.obj.out.CommentsBlock
 import generators.obj.out.ConstantNode
-import generators.obj.out.Datatype
 import generators.obj.out.EnumNode
 import generators.obj.out.FileData
 import generators.obj.out.FileDataImpl
@@ -135,21 +136,16 @@ class XmlTreeReader : TreeReader {
                 "Method" -> Method(name)
                 "OutputList" -> OutputList()
                 "InputList" -> InputList()
-                "Output" -> Output(
-                    name,
+                "Output" -> Output(name).setType(
                     dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 )
 
                 "Input" -> {
                     val dataType = dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
-                    Input(
-                        name, dataType,
-                        dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
-                    )
+                    Input(name).setType(dataType)
                 }
 
-                "OutputReusable" -> OutputReusable(
-                    name,
+                "OutputReusable" -> OutputReusable(name).setType(
                     dataTypeSerializer.fromStringValue(node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE))
                 )
 
@@ -161,29 +157,14 @@ class XmlTreeReader : TreeReader {
                         DataType.VOID
                     DataField(
                         name = name,
-                        type = dataType,
-                        value = dataValueSerializer.fromString(
-                            node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE),
-                            dataType
-                        ),
                         static = node.getAttribute(XmlInTreeWritterImpl.KEY_STATIC).toBoolean()
-                    )
+                    ).setType(dataType)
                 }
 
                 ConstantDesc::class.java.simpleName -> {
                     if (parent !is ConstantsBlock)
                         throw IllegalStateException("ConstantDesc can be declared only in the ConstantsBlock")
-                    val dataTypeString = node.getAttribute(XmlInTreeWritterImpl.KEY_TYPE)
-                    val dataType = if (dataTypeString.isEmpty())
-                        parent.defaultDataType
-                    else
-                        dataTypeSerializer.fromStringValue(dataTypeString)
-                    ConstantDesc(
-                        name = name,
-                        type = dataType,
-                        value =
-                        dataValueSerializer.fromString(node.getAttribute(XmlInTreeWritterImpl.KEY_VALUE), dataType)
-                    )
+                    ConstantDesc(name, null)
                 }
                 // OUT TREE
                 OutputTree::class.java.simpleName -> OutputTree(
@@ -209,7 +190,7 @@ class XmlTreeReader : TreeReader {
                 NlSeparator::class.java.simpleName -> NlSeparator(name)
                 ConstantNode::class.java.simpleName -> ConstantNode()
                 Keyword::class.java.simpleName -> Keyword(name)
-                Datatype::class.java.simpleName -> Datatype(name)
+                AstTypeLeaf::class.java.simpleName -> AstTypeLeaf(name)
                 DataValue::class.java.simpleName -> DataValueImpl(name, simple = name)
                 VariableName::class.java.simpleName -> VariableName(name)
                 ResultLeaf::class.java.simpleName -> ResultLeaf(name)

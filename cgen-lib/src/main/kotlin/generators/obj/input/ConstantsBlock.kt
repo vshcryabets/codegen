@@ -1,7 +1,6 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import ce.defs.IntValue
 import ce.defs.NotDefined
@@ -34,7 +33,7 @@ data class ConstantsBlock(
             DataValueImpl(simple = value)
         }
 
-        return addSub(ConstantDesc(name, type, dv))
+        return addSub(ConstantDesc(name, type).setValue(dv))
     }
 
     override fun addBlockComment(value: String) {

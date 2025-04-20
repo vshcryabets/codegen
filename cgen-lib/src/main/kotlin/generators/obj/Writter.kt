@@ -8,7 +8,7 @@ import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.out.CodeStyleOutputTree
 import generators.obj.out.CommentLeaf
-import generators.obj.out.Datatype
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.EnumNode
 import generators.obj.out.FileData
 import generators.obj.out.Indent
@@ -47,7 +47,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
             is DataValue -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
             is Keyword -> out.write(leaf.name)
-            is Datatype -> out.write(leaf.name)
+            is AstTypeLeaf -> out.write(leaf.name)
             is VariableName -> out.write(leaf.name)
             is CommentLeaf -> {
                 out.write(leaf.name)

@@ -1,11 +1,10 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import ce.defs.NotDefined
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CommentLeaf
-import generators.obj.out.Datatype
 import generators.obj.out.EnumNode
 import generators.obj.out.FileData
 import generators.obj.out.Keyword
@@ -101,7 +100,7 @@ fun <T : Node> T.addCommentLine(name: String) = addSub(CommentLeaf(name))
 fun <T : Node> T.addSeparator(name: String) = addSub(Separator(name))
 fun <T : Node> T.addSeparatorNewLine(name: String = "") = addSub(NlSeparator(name))
 fun <T : Node> T.addKeyword(name: String) = addSub(Keyword(name))
-fun <T : Node> T.addDatatype(name: String) = addSub(Datatype(name))
+fun <T : Node> T.addDatatype(name: String) = addSub(AstTypeLeaf(name))
 fun <T : Node> T.addVarName(name: String) = addSub(VariableName(name))
 fun <T : Node> T.addRValue(name: String) = addSub(DataValueImpl(name = name, simple = name))
 fun <T : Node> T.clearSubs() {
@@ -142,11 +141,11 @@ data class OutputList(
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     fun output(name: String, type: DataType) {
-        addSub(Output(name, type))
+        addSub(Output(name).setType(type))
     }
 
     fun outputReusable(name: String, type: DataType) {
-        addSub(OutputReusable(name, type))
+        addSub(OutputReusable(name).setType(type))
     }
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean): OutputList =
@@ -154,22 +153,26 @@ data class OutputList(
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
-
 }
 
-data class InputList(
-    override val name: String = "",
-    override val subs: MutableList<Leaf> = mutableListOf(),
-) : Node {
-    fun argument(name: String, type: DataType, value: Any? = NotDefined) {
-        addSub(Input(name = name, type = type, value = DataValueImpl(simple = value)))
-    }
-
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): InputList =
-        this.copyLeafExt(parent, { this.copy(subs = mutableListOf()) })
+open class Container(
+    override val name: String = ""
+): Node {
+    override val subs: MutableList<Leaf> = mutableListOf()
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Container =
+        this.copyLeafExt(parent) { Container(name) }
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
+}
+
+class InputList: Container() {
+    fun argument(name: String, type: DataType, value: Any? = NotDefined) {
+        addSub(Input(name = name).apply {
+            setType(type)
+            addSub(DataValueImpl(simple = value))
+        })
+    }
 }
 
 data class InterfaceDescription(

@@ -14,8 +14,8 @@ class GetArrayDataTypeUseCase {
             DataType.float32 -> "FloatArray"
             DataType.float64 -> "DoubleArray"
             is DataType.string -> "String[]"
-            is DataType.userClass -> type.path
-            is DataType.custom -> type.block.name // TODO nullable check ?
+            is DataType.userClass -> "Array<${type.path}>"
+            is DataType.custom -> "Array<${type.block.name}>"
             else -> "ktQQTP_array_$type"
         }
 }

@@ -1,15 +1,16 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import ce.defs.NotDefined
+import ce.defs.RValue
 import generators.obj.input.DataClass
 import generators.obj.input.DataField
 import generators.obj.input.NewInstance
 import generators.obj.input.setValue
 import generators.obj.out.FileDataImpl
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class PrepareRightValueUseCaseTest {
@@ -65,9 +66,25 @@ class PrepareRightValueUseCaseTest {
         instance.argument("b", DataType.int32, 1)
         val field = DataField("name", dataType).setValue(instance)
 
-        val result = prepareRightValueUseCase.toRightValue(field.type, field.value, fileData)
+        val result = prepareRightValueUseCase.toRightValue(field, fileData)
+        assertTrue(result is RValue)
+    }
+
+    @Test
+    fun testConstructorToAst() {
+        val className = "className"
+        val dataClassDescriptor = DataClass(className).apply {
+            field("A", DataType.int32,  1)
+        }
+        val dataType = DataType.custom(dataClassDescriptor)
+        val instance = NewInstance("newInstance", type = dataType)
+        instance.argument("a", DataType.int32, NotDefined)
+        instance.argument("b", DataType.int32, 1)
+
+        val result = prepareRightValueUseCase.prepareConstructor(instance, fileData)
+        assertTrue(result is RValue)
         assertEquals("newInstance", result.name)
-        assertEquals(NewInstance::class, result::class)
+
     }
 
 }

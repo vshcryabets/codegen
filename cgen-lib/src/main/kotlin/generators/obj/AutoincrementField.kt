@@ -3,12 +3,14 @@ package generators.obj
 import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import generators.obj.input.Field
+import generators.obj.input.getValue
+import generators.obj.input.setValue
 
 class AutoincrementField {
     var previous: DataValue? = null
 
     operator fun invoke(field : Field) {
-        if ((!field.value.isDefined()) && previous != null) {
+        if ((!field.getValue().isDefined()) && previous != null) {
 
             val previousValue = previous!!.simple
             val newValue = when (previousValue) {
@@ -19,9 +21,9 @@ class AutoincrementField {
                 else -> throw IllegalStateException("AutoincrementField not supporting ${previousValue!!::class.java.simpleName}")
             }
 
-            field.value = DataValueImpl(simple = newValue)
+            field.setValue(DataValueImpl(simple = newValue))
         }
 
-        previous = field.value
+        previous = field.getValue()
     }
 }

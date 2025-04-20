@@ -15,6 +15,7 @@ import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.input.findOrNull
 import generators.obj.input.getParentPath
+import generators.obj.input.getValue
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 import generators.obj.out.NamespaceBlock
@@ -51,7 +52,7 @@ class CppEnumGenerator(
                             autoIncrement(it)
                             addVarName(it.name)
                             addKeyword("=")
-                            addSub(generators.cpp.Types.toValue(it.type, it.value))
+                            addSub(Types.toValue(it.getType(), it.getValue()))
                         }
                     } else {
                         addEnumLeaf(it.name)

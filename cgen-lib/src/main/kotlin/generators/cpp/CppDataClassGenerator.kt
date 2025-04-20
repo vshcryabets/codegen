@@ -13,6 +13,7 @@ import generators.obj.input.addVarName
 import generators.obj.input.findOrCreateSub
 import generators.obj.input.findOrNull
 import generators.obj.input.getParentPath
+import generators.obj.input.getValue
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FieldNode
 import generators.obj.out.FileData
@@ -42,11 +43,11 @@ class CppDataClassGenerator(
                 desc.subs.forEach { leaf ->
                     if (leaf is DataField) {
                         addSub(FieldNode().apply {
-                            addDatatype(Types.typeTo(header, leaf.type))
+                            addDatatype(Types.typeTo(header, leaf.getType()))
                             addVarName(leaf.name)
-                            if (leaf.value.isDefined()) {
+                            if (leaf.getValue().isDefined()) {
                                 addKeyword("=")
-                                addSub(Types.toValue(leaf.type, leaf.value))
+                                addSub(Types.toValue(leaf.getType(), leaf.getValue()))
                             }
                         })
                     }

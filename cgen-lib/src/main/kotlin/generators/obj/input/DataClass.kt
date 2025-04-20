@@ -22,11 +22,14 @@ data class DataClass(
     }
 
     fun addstaticfield(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, static = true).setValue(value))
+        addSub(DataField(name, static = true).apply {
+            setType(type)
+            setValue(value)
+        })
     }
 
     fun field(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type).setValue(value))
+        addSub(DataField(name))
     }
 
     fun field(name: String, type: DataType) = field(name, type, NotDefined)

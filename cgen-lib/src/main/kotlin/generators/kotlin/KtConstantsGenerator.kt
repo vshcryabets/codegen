@@ -9,6 +9,7 @@ import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
+import generators.obj.input.getValue
 import generators.obj.out.ConstantNode
 import generators.obj.out.FileData
 import generators.obj.out.OutBlock
@@ -36,9 +37,9 @@ class KtConstantsGenerator(
                             addKeyword("val")
                             addVarName(it.name)
                             addKeyword(":")
-                            addDatatype(dataTypeToString.typeTo(file, it.type))
+                            addDatatype(dataTypeToString.typeTo(file, it.getType()))
                             addKeyword("=")
-                            val rValue = prepareRightValueUseCase.toRightValue(it.type, it.value, file)
+                            val rValue = prepareRightValueUseCase.toRightValue(it.getType(), it.getValue(), file)
                             addSub(rValue)
                         })
                     }

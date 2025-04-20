@@ -18,7 +18,10 @@ data class ConstantsEnum(
     fun add(name: String) = add(name, NotDefined)
 
     fun add(name: String, value: Any) {
-        addSub(DataField(name, defaultDataType).setValue(value))
+        addSub(DataField(name).apply {
+            setType(defaultDataType)
+            setValue(value)
+        })
     }
 
     override fun toString(): String = "<ConstantsEnum $name>"

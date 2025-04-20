@@ -1,7 +1,7 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import ce.defs.DataValue
+import ce.defs.RValue
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
@@ -13,7 +13,7 @@ import generators.obj.input.addSub
 import generators.obj.input.findOrNull
 import generators.obj.out.ArgumentNode
 import generators.obj.out.CommentsBlock
-import generators.obj.out.Datatype
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.FieldNode
 import generators.obj.out.Keyword
 import generators.obj.out.OutBlock
@@ -151,10 +151,10 @@ class KotlinDataClassGeneratorTest {
         Assert.assertTrue(companionObjectField.subs[0] is Keyword)
         Assert.assertTrue(companionObjectField.subs[1] is VariableName)
         Assert.assertTrue(companionObjectField.subs[2] is Keyword)
-        Assert.assertTrue(companionObjectField.subs[3] is Datatype)
+        Assert.assertTrue(companionObjectField.subs[3] is AstTypeLeaf)
         Assert.assertTrue(companionObjectField.subs[4] is Keyword)
-        Assert.assertTrue(companionObjectField.subs[5] is DataValue)
-        val dataValue = companionObjectField.subs[5] as DataValue
+        Assert.assertTrue(companionObjectField.subs[5] is RValue)
+        val dataValue = companionObjectField.subs[5] as RValue
         Assert.assertEquals(1, dataValue.subs.size)
         val constructor = dataValue.subs[0]
     }

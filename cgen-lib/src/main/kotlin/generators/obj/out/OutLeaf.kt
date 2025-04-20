@@ -119,7 +119,7 @@ data class Keyword(
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
-data class Datatype(
+data class AstTypeLeaf(
     override val name: String,
 ) : Leaf {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf =

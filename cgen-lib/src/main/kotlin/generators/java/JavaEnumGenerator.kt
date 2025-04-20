@@ -12,6 +12,7 @@ import generators.obj.input.addKeyword
 import generators.obj.input.addOutBlock
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
+import generators.obj.input.getValue
 import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.RegionImpl
@@ -35,7 +36,7 @@ class JavaEnumGenerator(
 
                         if (withRawValues) {
                             autoIncrement(it)
-                            addEnumLeaf("${it.name}(${Types.toValue(it.type, it.value)})")
+                            addEnumLeaf("${it.name}(${Types.toValue(it.getType(), it.getValue())})")
                         } else {
                             addEnumLeaf(it.name)
                         }

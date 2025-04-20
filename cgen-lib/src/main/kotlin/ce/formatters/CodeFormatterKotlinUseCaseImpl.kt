@@ -8,7 +8,7 @@ import generators.obj.input.addSeparatorNewLine
 import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
 import generators.obj.out.ConstantNode
-import generators.obj.out.Datatype
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
@@ -86,7 +86,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             val w4 = input.subs[pos + 3] // Int or 10
             if (w3 is Keyword) {
                 if (w3.name == ":") {
-                    if (w4 !is Datatype)
+                    if (w4 !is AstTypeLeaf)
                         continue
                     return pos
                 } else if (w3.name == "=") {
