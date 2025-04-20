@@ -2,6 +2,7 @@ package ce.treeio
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
 import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
 import generators.obj.input.Block
@@ -209,7 +210,7 @@ class XmlTreeReader : TreeReader {
                 ConstantNode::class.java.simpleName -> ConstantNode()
                 Keyword::class.java.simpleName -> Keyword(name)
                 Datatype::class.java.simpleName -> Datatype(name)
-                DataValue::class.java.simpleName -> DataValue(name, simple = name)
+                DataValue::class.java.simpleName -> DataValueImpl(name, simple = name)
                 VariableName::class.java.simpleName -> VariableName(name)
                 ResultLeaf::class.java.simpleName -> ResultLeaf(name)
                 ArgumentNode::class.java.simpleName -> ArgumentNode(name)

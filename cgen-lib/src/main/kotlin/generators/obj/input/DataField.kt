@@ -2,6 +2,7 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
 import ce.defs.NotDefined
 
 interface Field : Leaf {
@@ -12,7 +13,7 @@ interface Field : Leaf {
 data class DataField(
     override val name: String,
     override val type: DataType,
-    override var value: DataValue = DataValue.NotDefinedValue,
+    override var value: DataValue = DataValueImpl.NotDefinedValue,
     val static: Boolean = false,
 ) : Field {
 
@@ -28,7 +29,7 @@ data class DataField(
 data class Output(
     override val name: String,
     override val type: DataType,
-    override var value: DataValue = DataValue.NotDefinedValue,
+    override var value: DataValue = DataValueImpl.NotDefinedValue,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copyLeafExt(parent, {this.copy()})
     var parent: Node? = null
@@ -39,7 +40,7 @@ data class Output(
 data class OutputReusable(
     override val name: String,
     override val type: DataType,
-    override var value: DataValue = DataValue.NotDefinedValue,
+    override var value: DataValue = DataValueImpl.NotDefinedValue,
 ) : Field {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copyLeafExt(parent, {this.copy()})
     var parent: Node? = null
@@ -71,10 +72,10 @@ data class ConstantDesc(
 
 fun <T : Field> T.setValue(value: Any?): T {
     this.value = when (value) {
-        is NotDefined -> DataValue.NotDefinedValue
+        is NotDefined -> DataValueImpl.NotDefinedValue
         is DataValue -> value
-        is Node -> DataValue(simple = false, isComplex = true).apply { addSub(value) }
-        else -> DataValue(simple = value)
+        is Node -> DataValueImpl(simple = false, isComplex = true).apply { addSub(value) }
+        else -> DataValueImpl(simple = value)
     }
     return this
 }

@@ -76,7 +76,7 @@ class KotlinInterfaceGenerator(
                         if (it is Input) {
                             addSub(
                                 ArgumentNode(
-                                    if (it.value.notDefined()) {
+                                    if (!it.value.isDefined()) {
                                         "${it.name}: ${dataTypeToString.typeTo(file, it.type)}"
                                     } else {
                                         val rValue = prepareRightValueUseCase.toRightValue(it.type, it.value, file)
@@ -94,7 +94,7 @@ class KotlinInterfaceGenerator(
                         reusableResults.forEach {
                             addSub(
                                 ArgumentNode(
-                                    if (it.value.notDefined()) {
+                                    if (!it.value.isDefined()) {
                                         "${it.name}: ${dataTypeToString.typeTo(file, it.type)}"
                                     } else {
                                         val rValue = prepareRightValueUseCase.toRightValue(it.type, it.value, file)

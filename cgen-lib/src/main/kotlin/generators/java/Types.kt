@@ -2,6 +2,8 @@ package generators.java
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
+import ce.defs.IntValue
 import generators.obj.input.getPath
 import generators.obj.out.FileData
 
@@ -30,6 +32,7 @@ object Types {
             DataType.int8 -> "byte"
             DataType.int16 -> "short"
             DataType.int32 -> "int"
+            DataType.int64 -> "long"
             DataType.uint16 -> "int"
             DataType.uint32 -> "long"
             DataType.float32 -> "float"
@@ -46,14 +49,25 @@ object Types {
 
     fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
-            DataType.VOID -> DataValue(name = "void")
+            DataType.VOID -> DataValueImpl(name = "void")
             DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16, DataType.uint32 -> DataValue(name = value.simple.toString())
-            DataType.float32 -> DataValue(name = value.simple.toString() + "f")
-            DataType.float64 -> DataValue(name = value.simple.toString())
+            DataType.uint16, DataType.uint32 -> DataValueImpl(name = value.simple.toString())
+            DataType.float32 -> DataValueImpl(name = value.simple.toString() + "f")
+            DataType.float64 -> DataValueImpl(name = value.simple.toString())
             is DataType.string -> {
-                DataValue(name = value.simple.toString())
+                DataValueImpl(name = value.simple.toString())
             }
-            else -> DataValue(name = "QQVAL_$type")
+            DataType.int64 -> {
+                if (value is IntValue) {
+                    if (value.preferredRadix == 16) {
+                        DataValueImpl(name = "0x${value.simple.toString(radix = value.preferredRadix)}L")
+                    } else {
+                        DataValueImpl(name = "${value.simple.toString()}L")
+                    }
+                } else {
+                    DataValueImpl(name = "${value.simple.toString()}L")
+                }
+            }
+            else -> DataValueImpl(name = "QQVAL_$type")
         }
 }

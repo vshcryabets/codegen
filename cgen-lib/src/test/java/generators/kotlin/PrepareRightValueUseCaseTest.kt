@@ -2,6 +2,7 @@ package generators.kotlin
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
 import ce.defs.NotDefined
 import generators.obj.input.DataClass
 import generators.obj.input.DataField
@@ -19,37 +20,37 @@ class PrepareRightValueUseCaseTest {
 
     @Test
     fun toRightValueReturnsVoidForVoidType() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.VOID, DataValue("ignored"), fileData)
+        val result = prepareRightValueUseCase.toRightValue(DataType.VOID, DataValueImpl("ignored"), fileData)
         assertEquals("void", result.name)
     }
 
     @Test
     fun toRightValueReturnsSimpleValueForIntegerTypes() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.int32, DataValue(simple = 42), fileData)
+        val result = prepareRightValueUseCase.toRightValue(DataType.int32, DataValueImpl(simple = 42), fileData)
         assertEquals("42", result.name)
     }
 
     @Test
     fun toRightValueAppendsFForFloat32Type() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.float32, DataValue(simple = 3.14), fileData)
+        val result = prepareRightValueUseCase.toRightValue(DataType.float32, DataValueImpl(simple = 3.14), fileData)
         assertEquals("3.14f", result.name)
     }
 
     @Test
     fun toRightValueReturnsSimpleValueForFloat64Type() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.float64, DataValue(simple = 3.14), fileData)
+        val result = prepareRightValueUseCase.toRightValue(DataType.float64, DataValueImpl(simple = 3.14), fileData)
         assertEquals("3.14", result.name)
     }
 
     @Test
     fun toRightValueReturnsSimpleValueForBooleanType() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.bool, DataValue(simple = true), fileData)
+        val result = prepareRightValueUseCase.toRightValue(DataType.bool, DataValueImpl(simple = true), fileData)
         assertEquals("true", result.name)
     }
 
     @Test
     fun toRightValueReturnsSimpleValueForStringType() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.string(), DataValue(simple = "hello"), fileData)
+        val result = prepareRightValueUseCase.toRightValue(DataType.string(), DataValueImpl(simple = "hello"), fileData)
         assertEquals("hello", result.name)
     }
 

@@ -2,6 +2,7 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
 import ce.defs.NotDefined
 import generators.obj.out.CommentLeaf
 import generators.obj.out.Datatype
@@ -102,7 +103,7 @@ fun <T : Node> T.addSeparatorNewLine(name: String = "") = addSub(NlSeparator(nam
 fun <T : Node> T.addKeyword(name: String) = addSub(Keyword(name))
 fun <T : Node> T.addDatatype(name: String) = addSub(Datatype(name))
 fun <T : Node> T.addVarName(name: String) = addSub(VariableName(name))
-fun <T : Node> T.addRValue(name: String) = addSub(DataValue(name = name, simple = name))
+fun <T : Node> T.addRValue(name: String) = addSub(DataValueImpl(name = name, simple = name))
 fun <T : Node> T.clearSubs() {
     subs.clear()
 }
@@ -120,7 +121,6 @@ fun <T : Node> T.copyNodeExt(parent: Node?, copySubs: Boolean, fnc: () -> T): T 
     if (copySubs)
         subs.forEach { newCopy.addSub(it.copyLeaf(this, copySubs)) }
 }
-
 
 interface Node : Leaf {
     val subs: MutableList<Leaf>
@@ -162,7 +162,7 @@ data class InputList(
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     fun argument(name: String, type: DataType, value: Any? = NotDefined) {
-        addSub(Input(name = name, type = type, value = DataValue(simple = value)))
+        addSub(Input(name = name, type = type, value = DataValueImpl(simple = value)))
     }
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean): InputList =

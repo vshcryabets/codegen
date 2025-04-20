@@ -2,6 +2,7 @@ package generators.obj.input
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -23,7 +24,7 @@ class NewInstanceTest {
     fun argumentAddsSubWithDataValue() {
         val dc1 = DataClass("argument")
         val dc1instance = NewInstance("newInstance", type = DataType.custom(dc1))
-        val dc1dataValue = DataValue(isComplex = true, simple = null)
+        val dc1dataValue = DataValueImpl(isComplex = true, simple = null)
         dc1dataValue.addSub(dc1instance)
         val instance = NewInstance(name = "test", type = DataType.custom(DataClass("test")))
         instance.argument("arg1", DataType.custom(dc1), dc1dataValue)

@@ -2,6 +2,7 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.DataValue
+import ce.defs.DataValueImpl
 import generators.obj.input.findOrCreateSub
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
@@ -30,15 +31,15 @@ object Types {
         }
     fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
-            DataType.VOID -> DataValue(name = "void")
+            DataType.VOID -> DataValueImpl(name = "void")
             DataType.int8, DataType.int16, DataType.int32, DataType.int64,
-            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> DataValue(name = value.simple.toString())
-            DataType.float32 -> DataValue(name = value.simple.toString() + "f")
-            DataType.float64 -> DataValue(name = value.simple.toString())
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> DataValueImpl(name = value.simple.toString())
+            DataType.float32 -> DataValueImpl(name = value.simple.toString() + "f")
+            DataType.float64 -> DataValueImpl(name = value.simple.toString())
             is DataType.string -> {
-                DataValue(name = value.simple.toString())
+                DataValueImpl(name = value.simple.toString())
             }
-            else -> DataValue(name = "QQVL_$type")
+            else -> DataValueImpl(name = "QQVL_$type")
         }
 
 }
