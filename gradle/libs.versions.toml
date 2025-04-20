@@ -1,0 +1,22 @@
+[versions]
+shadowJar = "8.1.1"
+junitJupiter = "5.8.1"
+jackson = "2.15.0-rc1"
+kotlin = "1.9.25"
+jvmLevel = "17"
+groovy = "3.0.17"
+
+[libraries]
+junitJupiterApi =  { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
+junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:5.8.1"
+jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jacksonDataBind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+## https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
+jacksonModuleKotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+
+kotlinScriptingJsr223 = { module = "org.jetbrains.kotlin:kotlin-scripting-jsr223", version.ref = "kotlin" }
+kotlinCompilerEmbedable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+
+## https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-jsr223
+groovyJsr223 = { module = "org.codehaus.groovy:groovy-jsr223", version.ref = "groovy" }
+groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }

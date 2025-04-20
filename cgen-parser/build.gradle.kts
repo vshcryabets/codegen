@@ -9,30 +9,24 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation(libs.junitJupiterApi)
+    testRuntimeOnly(libs.junitJupiterEngine)
+    implementation(libs.kotlinScriptingJsr223)
+    implementation(libs.kotlinCompilerEmbedable)
 
-    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.0")
-    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
     implementation(project(":cgen-lib"))
     implementation("javax.inject:javax.inject:1")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
+    implementation(libs.jacksonCore)
+    implementation(libs.jacksonDataBind)
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-kotlin {
-    jvmToolchain(Versions.jvmLevel)
-}
+kotlin { jvmToolchain(libs.versions.jvmLevel.get().toInt()) }
+java { toolchain { languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmLevel.get().toInt())) } }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
-    }
-}
 publishing {
     publications {
         create<MavenPublication>("maven") {

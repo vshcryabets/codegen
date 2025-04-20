@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm")
     `java-library`
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.github.johnrengelman.shadow") version libs.versions.shadowJar
 }
 
 repositories {
@@ -12,14 +12,12 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation(libs.junitJupiterApi)
+    testRuntimeOnly(libs.junitJupiterEngine)
     implementation(gradleApi())
-    implementation("com.fasterxml.jackson.core:jackson-core:2.13.4")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.5")
-
+    implementation(libs.jacksonCore)
+    implementation(libs.jacksonDataBind)
+    implementation(libs.jacksonModuleKotlin)
 
     // https://mvnrepository.com/artifact/org.jfree/org.jfree.svg
     implementation("org.jfree:org.jfree.svg:5.0.3")
@@ -28,15 +26,8 @@ dependencies {
     implementation("org.abego.treelayout:org.abego.treelayout.core:1.0.3")
 }
 
-kotlin {
-    jvmToolchain(Versions.jvmLevel)
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(Versions.jvmLevel))
-    }
-}
+kotlin { jvmToolchain(libs.versions.jvmLevel.get().toInt()) }
+java { toolchain { languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmLevel.get().toInt())) } }
 
 publishing {
     publications {
