@@ -45,7 +45,7 @@ class DataValueSerializer : JsonSerializer<DataValue>() {
             DataType.float32, DataType.float64, DataType.float128 -> DataValueImpl(simple = value.toDouble())
             is DataType.string -> DataValueImpl(simple = value)
             DataType.bool -> DataValueImpl(simple = value.toBoolean())
-            else -> throw IllegalStateException("Unsupported datatValue for data type $dataType")
+            else -> throw IllegalStateException("Unsupported dataValue for data type $dataType")
         }
         return result
     }

@@ -47,7 +47,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
-                    <Datatype name="Int"/>
+                    <AstTypeLeaf name="Int"/>
                     <Keyword name="="/>
                     <DataValue name="0"/>
                 </ConstantNode>
@@ -58,7 +58,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name="var"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
-                    <Datatype name="Int"/>
+                    <AstTypeLeaf name="Int"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
 
@@ -69,7 +69,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
-                    <Datatype name="Int"/>
+                    <AstTypeLeaf name="Int"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
 
@@ -77,7 +77,7 @@ class KotlinConstantsFormatterTest {
                 <ConstantNode>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
-                    <Datatype name="Int"/>
+                    <AstTypeLeaf name="Int"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
 
@@ -109,7 +109,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
-                    <Datatype name="Int"/>
+                    <AstTypeLeaf name="Int"/>
                     <Keyword name="="/>
                     <DataValue name="0"/>
                 </ConstantNode>
@@ -118,7 +118,7 @@ class KotlinConstantsFormatterTest {
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOff"/>
                     <Keyword name=":"/>
-                    <Datatype name="Int"/>
+                    <AstTypeLeaf name="Int"/>
                     <Keyword name="="/>
                     <DataValue name="1"/>
                 </ConstantNode>

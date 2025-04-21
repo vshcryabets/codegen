@@ -35,7 +35,7 @@ class JavaDataClassFormattingTests {
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
                 <ConstantNode>
                     <Keyword name="static"/>
-                    <Datatype name="int"/>
+                    <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name="="/>
                     <DataValue name="0"/>
@@ -44,7 +44,7 @@ class JavaDataClassFormattingTests {
 
         Assert.assertEquals(0, formatter.declarationPattern(xmlReader.loadFromString("""
                 <ConstantNode>
-                    <Datatype name="int"/>
+                    <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))
@@ -53,7 +53,7 @@ class JavaDataClassFormattingTests {
                 <ConstantNode>
                     <Keyword name="public"/>
                     <Keyword name="static"/>
-                    <Datatype name="int"/>
+                    <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
                 </ConstantNode>
                 """.trimIndent()) as Node))

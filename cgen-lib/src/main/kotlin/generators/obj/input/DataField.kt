@@ -60,7 +60,7 @@ data class DataField(
 class Output(name: String): FieldImpl(name)
 class OutputReusable(name: String): FieldImpl(name)
 class Input(name: String): FieldImpl(name)
-class ConstantDesc(name: String, type: DataType?): FieldImpl(name, type)
+class ConstantDesc(name: String): FieldImpl(name)
 
 fun <T : Field> T.setValue(value: Any?): T {
     subs.clear()
@@ -73,5 +73,5 @@ fun <T : Field> T.setValue(value: Any?): T {
     return this
 }
 
-fun <T : Field> T.getValue(): DataValue = subs.firstOrNull() as DataValue? ?: DataValueImpl.NotDefinedValue
+fun <T : Field> T.getValue(): DataValue = subs.filterIsInstance<DataValue>().firstOrNull() ?: DataValueImpl.NotDefinedValue
 fun <T : Field> T.setType(type: DataType) = addSub(TypeLeaf(type = type))

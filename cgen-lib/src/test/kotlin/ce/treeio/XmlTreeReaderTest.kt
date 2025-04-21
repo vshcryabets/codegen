@@ -50,14 +50,18 @@ class XmlTreeReaderTest {
     fun loadStaticField() {
         val reader = XmlTreeReader()
         val result = reader.loadFromString("""
-            <DataField name="A" type="int32" value="100"/>
+            <DataField name="A" value="100">
+                <TypeLeaf name="int32"/>
+            </DataField>
         """.trimIndent())
         assertTrue(result is DataField)
         val dataField1 = result as DataField
         assertFalse(dataField1.static)
 
         val result2 = reader.loadFromString("""
-            <DataField name="B" type="int32" value="100" static="true"/>
+            <DataField name="B" value="100" static="true">
+                <TypeLeaf name="int32"/>
+            </DataField>
         """.trimIndent())
         assertTrue(result2 is DataField)
         val dataField2 = result2 as DataField

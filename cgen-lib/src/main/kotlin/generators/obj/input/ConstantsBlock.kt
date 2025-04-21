@@ -32,8 +32,10 @@ data class ConstantsBlock(
         } else {
             DataValueImpl(simple = value)
         }
-
-        return addSub(ConstantDesc(name, type).setValue(dv))
+        return addSub(ConstantDesc(name).apply {
+            setType(type)
+            setValue(dv)
+        })
     }
 
     override fun addBlockComment(value: String) {
