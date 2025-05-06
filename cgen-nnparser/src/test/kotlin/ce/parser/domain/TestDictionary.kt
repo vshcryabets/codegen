@@ -52,6 +52,31 @@ object TestDictionary {
         )
     )
 
+    val metaDictionaries = StaticDictionariesImpl(
+        spaces = spaces,
+        comments = StaticDictionary(
+            listOf(
+                RegexWord(name = "addBlockComment\\(\"(.*)\"\\)", id = 4000, type = Type.COMMENTS),
+            ),
+            sortBySize = false
+        ),
+        keywords = keywordDict,
+        digits = StaticDictionary(
+            listOf(
+                RegexWord(name = "0x[\\dABCDEFabcdef]+", id = 3000, type = Type.DIGIT),
+                RegexWord(name = "\\d+\\.*\\d*f*", id = 3001, type = Type.DIGIT)
+            ),
+            sortBySize = false
+        ),
+        operators = operatorsDict,
+        strings = StaticDictionary(
+            listOf(
+                ClikeLiteralWord(name = "SimpleString", id = 4000, type = Type.STRING_LITERAL)
+            ),
+            sortBySize = false
+        )
+    )
+
     fun prepareDynamicDictionaries(): DynamicDictionaries =
         DynamicDictionariesImpl(
             digitsDictionary = NamesDictionary(
