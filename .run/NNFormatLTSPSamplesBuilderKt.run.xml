@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="NNFormatLTSPSamplesBuilderKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="ce.parser.NNFormatLTSPSamplesBuilderKt" />
+    <module name="codegen.cgen-console.main" />
+    <option name="PROGRAM_PARAMETERS" value="$ProjectFileDir$/keras/format" />
+    <shortenClasspath name="NONE" />
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,8 +1,8 @@
 package ce.parser.domain.usecase
 
-import ce.parser.domain.dictionaries.DynamicDictionaries
-import ce.parser.domain.dictionaries.StaticDictionaries
-import ce.parser.domain.dictionaries.StaticDictionary
+import ce.parser.domain.dictionaries.natural.DynamicDictionaries
+import ce.parser.domain.dictionaries.natural.StaticDictionaries
+import ce.parser.domain.dictionaries.natural.StaticDictionary
 import ce.parser.nnparser.*
 import org.jetbrains.kotlin.javax.inject.Inject
 
