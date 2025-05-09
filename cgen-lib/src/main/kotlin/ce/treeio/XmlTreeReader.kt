@@ -106,7 +106,8 @@ class XmlTreeReader : TreeReader {
                     DeserializeArguments(
                         name = name,
                         element = node,
-                        sourceFile = sourceFile
+                        sourceFile = sourceFile,
+                        parent = parent
                     )
                 )
             } else {

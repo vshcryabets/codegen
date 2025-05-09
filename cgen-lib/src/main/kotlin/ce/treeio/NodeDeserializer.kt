@@ -17,10 +17,12 @@ import generators.obj.input.Leaf
 import generators.obj.input.Method
 import generators.obj.input.Namespace
 import generators.obj.input.NamespaceImpl
+import generators.obj.input.Node
 import generators.obj.input.OutputList
 import generators.obj.input.OutputReusable
 import generators.obj.input.TypeLeaf
 import generators.obj.input.buildNamespaceTree
+import generators.obj.input.setValue
 import generators.obj.out.ArgumentNode
 import generators.obj.out.AstTree
 import generators.obj.out.AstTypeLeaf
@@ -51,7 +53,8 @@ import org.w3c.dom.Element
 data class DeserializeArguments(
     val element: Element,
     val name: String,
-    val sourceFile: String
+    val sourceFile: String,
+    val parent: Node?
 )
 
 interface NodeDeserializer {
@@ -296,16 +299,41 @@ class CodeStyleOututTreeDeserializer: NodeDeserializer {
 }
 
 class ConstantDescDeserializer: NodeDeserializer {
+    fun fromString(value: String, dataType: DataType) : DataValue {
+        if (value.isEmpty()) {
+            return DataValueImpl.NotDefinedValue
+        }
+        val result = when (dataType) {
+            DataType.VOID -> DataValueImpl.NotDefinedValue
+            DataType.int8 -> DataValueImpl(simple = value.toByte())
+            DataType.int16 -> DataValueImpl(simple = value.toShort())
+            DataType.int32 -> DataValueImpl(simple = value.toInt())
+            DataType.int64 -> DataValueImpl(simple = value.toLong())
+            DataType.uint8 -> DataValueImpl(simple = value.toUByte())
+            DataType.uint16 -> DataValueImpl(simple = value.toUShort())
+            DataType.uint32 -> DataValueImpl(simple = value.toUInt())
+            DataType.uint64 -> DataValueImpl(simple = value.toULong())
+            DataType.float32, DataType.float64, DataType.float128 -> DataValueImpl(simple = value.toDouble())
+            is DataType.string -> DataValueImpl(simple = value)
+            DataType.bool -> DataValueImpl(simple = value.toBoolean())
+            else -> throw IllegalStateException("Unsupported dataValue for data type $dataType")
+        }
+        return result
+    }
+
     override operator fun invoke(args: DeserializeArguments): Leaf {
-        //    if (parent !is ConstantsBlock)
-//        throw IllegalStateException("ConstantDesc can be declared only in the ConstantsBlock")
-        return ConstantDesc(args.name)
-//    ConstantDesc(args.name).apply {
-//        if (node.hasAttribute(XmlInTreeWritterImpl.KEY_VALUE)) {
-//            setValue()
-//        }
-//    }
-//}
+        if (args.parent !is ConstantsBlock)
+            throw IllegalStateException("ConstantDesc can be declared only in the ConstantsBlock")
+        return ConstantDesc(args.name).apply {
+            if (args.element.hasAttribute(XmlInTreeWritterImpl.KEY_VALUE)) {
+                this.setValue(
+                    fromString(
+                        args.element.getAttribute(XmlInTreeWritterImpl.KEY_VALUE),
+                        args.parent.defaultDataType
+                    )
+                )
+            }
+        }
     }
     override fun getTags() = listOf(ConstantDesc::class.java.simpleName)
 }
