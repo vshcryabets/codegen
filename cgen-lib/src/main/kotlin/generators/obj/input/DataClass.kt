@@ -1,7 +1,6 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.NotDefined
 
 data class DataClass(
@@ -12,13 +11,31 @@ data class DataClass(
     override var objectBaseFolder: String = "",
 ) : Block {
 
-    fun field(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name, type, DataValue(value)))
+    fun instance() = NewInstance("newInstance").setType(type = DataType.custom(this@DataClass))
+
+    fun instance(map: Map<Any, Any?>): NewInstance {
+        return NewInstance("newInstance").setType(type = DataType.custom(this@DataClass)).apply {
+            map.forEach { t, u ->
+                argument(t.toString(), DataType.Unknown, u)
+            }
+        }
     }
 
-    fun field(name: String, type: DataType) {
-        addSub(DataField(name, type, DataValue(NotDefined)))
+    fun addstaticfield(name: String, type: DataType, value: Any?) {
+        addSub(DataField(name, static = true).apply {
+            setType(type)
+            setValue(value)
+        })
     }
+
+    fun field(name: String, type: DataType, value: Any?) {
+        addSub(DataField(name).apply {
+            setType(type)
+            setValue(value)
+        })
+    }
+
+    fun field(name: String, type: DataType) = field(name, type, NotDefined)
 
     override fun addBlockComment(value: String) {
         this.addBlockCommentExt(value)
@@ -31,5 +48,7 @@ data class DataClass(
 
     var parent: Node? = null
     override fun getParent2(): Node? = parent
-    override fun setParent2(parent: Node?) { this.parent = parent }
+    override fun setParent2(parent: Node?) {
+        this.parent = parent
+    }
 }

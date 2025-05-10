@@ -1,8 +1,26 @@
 package ce.formatters
 
+import ce.defs.DataValue
 import generators.cpp.CompilerDirective
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.Leaf
+import generators.obj.input.Node
+import generators.obj.input.addKeyword
+import generators.obj.input.addSeparator
+import generators.obj.input.addSeparatorNewLine
+import generators.obj.input.addSub
+import generators.obj.out.ArgumentNode
+import generators.obj.out.CommentLeaf
+import generators.obj.out.ConstantNode
+import generators.obj.out.EnumNode
+import generators.obj.out.FileData
+import generators.obj.out.Indent
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.Region
+import generators.obj.out.Separator
+import generators.obj.out.Space
 import javax.inject.Inject
 
 open class CodeFormatterUseCaseImpl @Inject constructor(
@@ -189,7 +207,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             while (queue.isNotEmpty()) {
                 val first = queue.first()
                 processLeaf(queue, this, indent)
-                if ((first !is RValue) and (first !is Separator)) {
+                if ((first !is Separator) and (first !is DataValue)) {
                     this.addSub(Space())
                 }
             }

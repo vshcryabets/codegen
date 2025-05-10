@@ -1,6 +1,9 @@
 package generators.obj.out
 
-import generators.obj.input.*
+import generators.obj.input.Leaf
+import generators.obj.input.Node
+import generators.obj.input.addSub
+import generators.obj.input.copyNodeExt
 
 data class CommentsBlock(
     override val name: String = "",
@@ -8,30 +11,37 @@ data class CommentsBlock(
 ) : Node {
     override fun toString() = name
     override fun copyLeaf(parent: Node?, copySubs: Boolean): CommentsBlock =
-        this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
+@Deprecated("Use CommentsBlock instead")
 data class MultilineCommentsBlock(
     override val name: String = "",
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): MultilineCommentsBlock =
-        this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
+// #include <iostream>
+// #include <string>
+// #include <vector>
 data class ImportsBlock(
     override val name: String = "",
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Region {
 
     override fun copyLeaf(parent: Node?, copySubs: Boolean): ImportsBlock =
-        this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
@@ -53,7 +63,8 @@ data class RegionImpl(
 ) : Region {
     override fun toString() = name
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Region =
-        this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
@@ -68,7 +79,8 @@ data class OutBlock(
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): OutBlock =
-        this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
@@ -79,7 +91,8 @@ data class OutBlockArguments(
     override val subs: MutableList<Leaf> = mutableListOf()
 ) : Node {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): OutBlockArguments =
-        this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
@@ -93,6 +106,31 @@ data class ClassDataImpl(
 ) : ClassData {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): ClassData =
         this.copyNodeExt(parent, copySubs, { this.copy(subs = mutableListOf()) })
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
+}
+
+// new MyClass(arguments...)
+data class Constructor(
+    override val name: String = "",
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Constructor =
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
+}
+
+data class Arguments(
+    override val name: String = "",
+    override val subs: MutableList<Leaf> = mutableListOf()
+) : Node {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Arguments =
+        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
+
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
