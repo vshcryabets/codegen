@@ -29,7 +29,10 @@ data class DataClass(
     }
 
     fun field(name: String, type: DataType, value: Any?) {
-        addSub(DataField(name))
+        addSub(DataField(name).apply {
+            setType(type)
+            setValue(value)
+        })
     }
 
     fun field(name: String, type: DataType) = field(name, type, NotDefined)

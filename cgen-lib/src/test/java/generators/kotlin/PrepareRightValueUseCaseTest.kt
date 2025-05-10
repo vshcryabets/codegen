@@ -7,6 +7,7 @@ import ce.defs.RValue
 import generators.obj.input.DataClass
 import generators.obj.input.DataField
 import generators.obj.input.NewInstance
+import generators.obj.input.setType
 import generators.obj.input.setValue
 import generators.obj.out.FileDataImpl
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -64,7 +65,7 @@ class PrepareRightValueUseCaseTest {
         val instance = NewInstance("newInstance", type = dataType)
         instance.argument("a", DataType.int32, NotDefined)
         instance.argument("b", DataType.int32, 1)
-        val field = DataField("name", dataType).setValue(instance)
+        val field = DataField("name").setValue(instance).setType(dataType)
 
         val result = prepareRightValueUseCase.toRightValue(field, fileData)
         assertTrue(result is RValue)

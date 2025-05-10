@@ -13,10 +13,10 @@ open class FieldImpl(name: String, type: DataType? = null) : Container(name), Fi
         }
     }
     fun getType(): DataType {
-        return subs.filterIsInstance<TypeLeaf>().firstOrNull()?.type ?: DataType.Unknown
+        return subs.filterIsInstance<TypeLeaf>().lastOrNull()?.type ?: DataType.Unknown
     }
     fun getTypeOrNull(): DataType? {
-        return subs.filterIsInstance<TypeLeaf>().firstOrNull()?.type
+        return subs.filterIsInstance<TypeLeaf>().lastOrNull()?.type
     }
 }
 
@@ -34,16 +34,9 @@ class ModifiersList: Container()
 
 data class DataField(
     override val name: String,
-    val dataType: DataType? = null,
     val static: Boolean = false,
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Field {
-    init {
-        dataType?.let {
-            addSub(TypeLeaf(type = it))
-        }
-    }
-
     fun getType(): DataType {
         return subs.filterIsInstance<TypeLeaf>().firstOrNull()?.type ?: DataType.Unknown
     }
@@ -63,7 +56,7 @@ class Input(name: String): FieldImpl(name)
 class ConstantDesc(name: String): FieldImpl(name)
 
 fun <T : Field> T.setValue(value: Any?): T {
-    subs.clear()
+    subs.removeAll { it is DataValue }
     subs.add(when (value) {
         is NotDefined -> DataValueImpl.NotDefinedValue
         is DataValue -> value
@@ -73,5 +66,9 @@ fun <T : Field> T.setValue(value: Any?): T {
     return this
 }
 
-fun <T : Field> T.getValue(): DataValue = subs.filterIsInstance<DataValue>().firstOrNull() ?: DataValueImpl.NotDefinedValue
-fun <T : Field> T.setType(type: DataType) = addSub(TypeLeaf(type = type))
+fun <T : Field> T.getValue(): DataValue = subs.filterIsInstance<DataValue>().lastOrNull() ?: DataValueImpl.NotDefinedValue
+fun <T : Field> T.setType(type: DataType): T {
+    subs.removeAll { it is DataType }
+    addSub(TypeLeaf(type = type))
+    return this
+}

@@ -12,8 +12,8 @@ import generators.obj.input.TreeRoot
 import generators.obj.input.addSub
 import generators.obj.input.findOrNull
 import generators.obj.out.ArgumentNode
-import generators.obj.out.CommentsBlock
 import generators.obj.out.AstTypeLeaf
+import generators.obj.out.CommentsBlock
 import generators.obj.out.FieldNode
 import generators.obj.out.Keyword
 import generators.obj.out.OutBlock
@@ -67,8 +67,8 @@ class KotlinDataClassGeneratorTest {
         //        <CommentsBlock>...</CommentsBlock>
         //        <OutBlock>
         //           <OutBlockArguments>
-        //              <ArgumentNode><val><A><:><int><=><1></<ArgumentNode>
-        //              <ArgumentNode><val><B><:><float><=><0.5f></<ArgumentNode>
+        //              <ArgumentNode><val><A><:><int><=><RValue 1></<ArgumentNode>
+        //              <ArgumentNode><val><B><:><float><=><RValue 0.5f></<ArgumentNode>
         //              <ArgumentNode><val><C><:><string></<ArgumentNode>
         //           </OutBlockArguments>
         //        </OutBlock>
@@ -92,6 +92,13 @@ class KotlinDataClassGeneratorTest {
         // check A rvalue
         val aArgument = outBlockArgs.subs[0] as ArgumentNode
         Assert.assertEquals(6, aArgument.subs.size)
+        Assert.assertTrue(aArgument.subs[0] is Keyword)
+        Assert.assertEquals("val", aArgument.subs[0].name)
+        Assert.assertTrue(aArgument.subs[1] is VariableName)
+        Assert.assertTrue(aArgument.subs[2] is Keyword)
+        Assert.assertTrue(aArgument.subs[3] is AstTypeLeaf)
+        Assert.assertTrue(aArgument.subs[4] is Keyword)
+        Assert.assertTrue(aArgument.subs[5] is RValue)
         Assert.assertEquals("1", aArgument.subs[5].name)
 
         // check C rvalue
