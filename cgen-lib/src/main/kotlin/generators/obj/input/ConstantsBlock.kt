@@ -1,9 +1,9 @@
 package generators.obj.input
 
 import ce.defs.DataType
+import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import ce.defs.IntValue
-import ce.defs.NotDefined
 
 data class ConstantsBlock(
     override val name: String,
@@ -24,10 +24,12 @@ data class ConstantsBlock(
         defaultDataType = name
     }
 
-    fun add(name: String, value: Any? = NotDefined) : ConstantDesc = add(name, defaultDataType, value)
+    fun add(name: String, value: Any? = DataValueImpl.NotDefinedValue) : ConstantDesc = add(name, defaultDataType, value)
 
-    fun add(name: String, type : DataType, value: Any? = NotDefined): ConstantDesc {
-        val dv = if (type in DataType.INTEGERS) {
+    fun add(name: String, type : DataType, value: Any? = DataValueImpl.NotDefinedValue): ConstantDesc {
+        val dv = if (value is DataValue) {
+            value
+        } else if (type in DataType.INTEGERS) {
             IntValue(value.toString().toLong(), preferredRadix = preferredRadix)
         } else {
             DataValueImpl(simple = value)

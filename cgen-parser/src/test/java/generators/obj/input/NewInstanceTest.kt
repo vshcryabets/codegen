@@ -1,7 +1,6 @@
 package generators.obj.input
 
 import ce.defs.DataType
-import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -17,7 +16,7 @@ class NewInstanceTest {
         instance.argument("arg1", DataType.custom(dc1), dc1instance)
         val sub = instance.subs.first() as DataField
         assertEquals("arg1", sub.name)
-        assertEquals(dc1instance, sub.value.subs.first())
+        assertEquals(dc1instance, sub.getValue().subs.first())
     }
 
     @Test
@@ -30,7 +29,7 @@ class NewInstanceTest {
         instance.argument("arg1", DataType.custom(dc1), dc1dataValue)
         val sub = instance.subs.first() as DataField
         assertEquals("arg1", sub.name)
-        assertEquals(dc1instance, sub.value.subs.first())
+        assertEquals(dc1instance, sub.getValue().subs.first())
     }
 
     @Test
@@ -39,7 +38,7 @@ class NewInstanceTest {
         instance.argument("arg1", DataType.string(false), "value1")
         val sub = instance.subs.first() as DataField
         assertEquals("arg1", sub.name)
-        assertEquals("value1", sub.value.simple)
+        assertEquals("value1", sub.getValue().simple)
     }
 
     @Test
@@ -48,7 +47,7 @@ class NewInstanceTest {
         instance.argument("arg2", DataType.string(false), null)
         val sub = instance.subs.first() as DataField
         assertEquals("arg2", sub.name)
-        assertNull(sub.value.simple)
+        assertNull(sub.getValue().simple)
     }
 
     @Test
@@ -60,9 +59,9 @@ class NewInstanceTest {
         val sub1 = instance.subs[0] as DataField
         val sub2 = instance.subs[1] as DataField
         assertEquals("arg1", sub1.name)
-        assertEquals("value1", sub1.value.simple)
+        assertEquals("value1", sub1.getValue().simple)
         assertEquals("arg2", sub2.name)
-        assertEquals(DataType.int32, sub2.type)
-        assertEquals(42, sub2.value.simple)
+        assertEquals(DataType.int32, sub2.getType())
+        assertEquals(42, sub2.getValue().simple)
     }
 }
