@@ -1,7 +1,21 @@
 package ce.formatters
 
-import generators.obj.input.*
-import generators.obj.out.*
+import ce.defs.DataValue
+import generators.obj.input.Leaf
+import generators.obj.input.Node
+import generators.obj.input.addKeyword
+import generators.obj.input.addSeparatorNewLine
+import generators.obj.input.addSub
+import generators.obj.out.ArgumentNode
+import generators.obj.out.ConstantNode
+import generators.obj.out.AstTypeLeaf
+import generators.obj.out.Keyword
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
+import generators.obj.out.Separator
+import generators.obj.out.Space
+import generators.obj.out.VariableName
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
@@ -72,13 +86,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             val w4 = input.subs[pos + 3] // Int or 10
             if (w3 is Keyword) {
                 if (w3.name == ":") {
-                    if (w4 !is Datatype)
+                    if (w4 !is AstTypeLeaf)
                         continue
                     return pos
                 } else if (w3.name == "=") {
-                    if (w4 !is RValue)
-                        continue
-                    return pos
+                    if (w4 is DataValue)
+                        return pos
+                    continue
                 }
             }
         }

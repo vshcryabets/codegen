@@ -5,13 +5,21 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.NamespaceImpl
+import generators.obj.input.findOrNull
+import generators.obj.out.ConstantNode
+import generators.obj.out.OutBlock
+import generators.obj.out.OutputTree
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class KotlinConstantsGeneratorTest {
     private val reader = XmlTreeReader()
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
 
     @Test
     fun testConstantsClass() {
@@ -22,8 +30,11 @@ class KotlinConstantsGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
         val fileGenerator = KotlinFileGenerator()
+        val prepareRightValueUseCase = PrepareRightValueUseCase(getTypeNameUseCase)
         val item = KtConstantsGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
+            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
+            dataTypeToString = getTypeNameUseCase,
+            prepareRightValueUseCase = prepareRightValueUseCase
         )
 
         val tree = reader.loadFromString("""

@@ -15,3 +15,14 @@ ns.dataClass("GroovyData").tap {
     field("secondname", new DataType.string())
     field("age", DataType.int32.INSTANCE, 35)
 }
+
+def styxQid = ns.dataClass("Qid")
+styxQid.with {
+    addBlockComment("QID structure")
+    field("type", DataType.int32.INSTANCE)
+    field("version", DataType.int64.INSTANCE)
+    field("path", DataType.int64.INSTANCE)
+}
+styxQid.addstaticfield("EMPTY", new DataType.custom(styxQid, false), styxQid.instance(
+        [type: 0, version: 0, path: 0]
+))

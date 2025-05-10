@@ -2,11 +2,24 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
-import generators.kotlin.Types
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.ConstantsEnum
+import generators.obj.input.DataField
+import generators.obj.input.addCommentLine
+import generators.obj.input.addEnumLeaf
+import generators.obj.input.addKeyword
+import generators.obj.input.addOutBlock
+import generators.obj.input.addSeparator
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.input.findOrNull
+import generators.obj.input.getParentPath
+import generators.obj.input.getValue
+import generators.obj.out.CommentsBlock
+import generators.obj.out.FileData
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.RegionImpl
 
 class CppEnumGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
@@ -39,7 +52,7 @@ class CppEnumGenerator(
                             autoIncrement(it)
                             addVarName(it.name)
                             addKeyword("=")
-                            addRValue(generators.cpp.Types.toValue(it.type, it.value))
+                            addSub(Types.toValue(it.getType(), it.getValue()))
                         }
                     } else {
                         addEnumLeaf(it.name)

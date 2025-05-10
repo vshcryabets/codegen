@@ -3,8 +3,21 @@ package generators.cpp
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.ConstantDesc
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.addCommentLine
+import generators.obj.input.addDatatype
+import generators.obj.input.addKeyword
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.input.findOrNull
+import generators.obj.input.getParentPath
+import generators.obj.input.getValue
+import generators.obj.out.CommentsBlock
+import generators.obj.out.ConstantNode
+import generators.obj.out.FileData
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.RegionImpl
 
 class CppConstantsBlockGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
@@ -32,10 +45,10 @@ class CppConstantsBlockGenerator(
                 outBlock.addSub(
                     ConstantNode().apply {
                         addKeyword("const")
-                        addDatatype(Types.typeTo(headerFile, it.type))
+                        addDatatype(Types.typeTo(headerFile, it.getType()))
                         addVarName(it.name)
                         addKeyword("=")
-                        addRValue(Types.toValue(it.type, it.value))
+                        addSub(Types.toValue(it.getType(), it.getValue()))
                         addKeyword(";")
                     }
                 )
