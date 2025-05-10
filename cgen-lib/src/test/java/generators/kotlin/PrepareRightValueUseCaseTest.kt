@@ -88,7 +88,6 @@ class PrepareRightValueUseCaseTest {
         assertEquals(1, result.subs.size)
         val newInstanceNode = result.subs[0]
         assertTrue(newInstanceNode is NewInstance)
-
     }
 
 }
