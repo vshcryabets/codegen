@@ -51,8 +51,8 @@ class PrepareRightValueUseCase(
             NewInstance(
                 name = getTypeNameUseCase.typeTo(
                     file = fileData,
-                    type = item.type
-                ), type = item.type
+                    type = item.getType()
+                )
             )
         )
         return result

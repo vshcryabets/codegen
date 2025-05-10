@@ -11,10 +11,10 @@ data class DataClass(
     override var objectBaseFolder: String = "",
 ) : Block {
 
-    fun instance() = NewInstance("newInstance", type = DataType.custom(this@DataClass))
+    fun instance() = NewInstance("newInstance").setType(type = DataType.custom(this@DataClass))
 
     fun instance(map: Map<Any, Any?>): NewInstance {
-        return NewInstance("newInstance", type = DataType.custom(this@DataClass)).apply {
+        return NewInstance("newInstance").setType(type = DataType.custom(this@DataClass)).apply {
             map.forEach { t, u ->
                 argument(t.toString(), DataType.Unknown, u)
             }

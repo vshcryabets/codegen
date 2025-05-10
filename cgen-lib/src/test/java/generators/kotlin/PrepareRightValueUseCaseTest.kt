@@ -62,7 +62,7 @@ class PrepareRightValueUseCaseTest {
             field("A", DataType.int32,  1)
         }
         val dataType = DataType.custom(dataClassDescriptor)
-        val instance = NewInstance("newInstance", type = dataType)
+        val instance = NewInstance("newInstance").setType(type = dataType)
         instance.argument("a", DataType.int32, NotDefined)
         instance.argument("b", DataType.int32, 1)
         val field = DataField("name").setValue(instance).setType(dataType)
@@ -78,13 +78,16 @@ class PrepareRightValueUseCaseTest {
             field("A", DataType.int32,  1)
         }
         val dataType = DataType.custom(dataClassDescriptor)
-        val instance = NewInstance("newInstance", type = dataType)
-        instance.argument("a", DataType.int32, NotDefined)
-        instance.argument("b", DataType.int32, 1)
+        val instance = NewInstance("newInstance")
+            .setType(dataType)
+            .argument("a", DataType.int32, NotDefined)
+            .argument("b", DataType.int32, 1)
 
         val result = prepareRightValueUseCase.prepareConstructor(instance, fileData)
         assertTrue(result is RValue)
-        assertEquals("newInstance", result.name)
+        assertEquals(1, result.subs.size)
+        val newInstanceNode = result.subs[0]
+        assertTrue(newInstanceNode is NewInstance)
 
     }
 
