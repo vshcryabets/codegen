@@ -14,7 +14,7 @@ class PrepareRightValueUseCase(
     fun toRightValue(dataField: DataField, fileData: FileData): RValue =
         toRightValue(
             type = dataField.getType(),
-            value = dataField.subs.first() as DataValue,
+            value = dataField.getValue(),
             fileData = fileData
         )
 

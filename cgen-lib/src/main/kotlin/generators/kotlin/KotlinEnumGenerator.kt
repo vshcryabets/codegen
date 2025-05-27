@@ -23,8 +23,8 @@ class KotlinEnumGenerator(
     private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
-    override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
-        val file = files.firstOrNull()
+    override fun invoke(blockFiles: List<FileData>, desc: ConstantsEnum) {
+        val file = blockFiles.firstOrNull()
             ?: throw java.lang.IllegalStateException("Can't find Class file for Kotlin")
         val withRawValues = desc.defaultDataType != DataType.VOID
         val autoIncrement = AutoincrementField()
@@ -51,7 +51,10 @@ class KotlinEnumGenerator(
 
                         if (withRawValues) {
                             autoIncrement(it)
-                            val rValue = prepareRightValueUseCase.toRightValue(dataField = it, fileData = file)
+                            val rValue = prepareRightValueUseCase.toRightValue(
+                                dataField = it,
+                                fileData = file
+                            )
                             addEnumLeaf("${it.name}(${rValue})")
                         } else {
                             addEnumLeaf(it.name)

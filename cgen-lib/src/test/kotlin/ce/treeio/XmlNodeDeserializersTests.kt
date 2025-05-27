@@ -4,7 +4,6 @@ import ce.defs.DataType
 import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.DataField
-import generators.obj.input.getValue
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

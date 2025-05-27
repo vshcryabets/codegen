@@ -5,19 +5,24 @@ import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import ce.defs.NotDefined
 
-interface Field : Node
+interface Field : Node {
+    fun getValue(): DataValue
+    fun getType(): DataType
+}
+
 open class FieldImpl(name: String, type: DataType? = null) : Container(name), Field {
     init {
         type?.let {
             addSub(TypeLeaf(type = it))
         }
     }
-    fun getType(): DataType {
+    override fun getType(): DataType {
         return subs.filterIsInstance<TypeLeaf>().lastOrNull()?.type ?: DataType.Unknown
     }
     fun getTypeOrNull(): DataType? {
         return subs.filterIsInstance<TypeLeaf>().lastOrNull()?.type
     }
+    override fun getValue(): DataValue = subs.filterIsInstance<DataValue>().lastOrNull() ?: DataValueImpl.NotDefinedValue
 }
 
 data class TypeLeaf(
@@ -32,22 +37,18 @@ data class TypeLeaf(
 
 class ModifiersList: Container()
 
-data class DataField(
-    override val name: String,
+open class DataField(
+    name: String,
     val static: Boolean = false,
-    override val subs: MutableList<Leaf> = mutableListOf(),
-) : Field {
-    fun getType(): DataType {
-        return subs.filterIsInstance<TypeLeaf>().firstOrNull()?.type ?: DataType.Unknown
-    }
+): FieldImpl(
+    name = name
+) {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Container =
+        this.copyLeafExt(parent, { DataField(
+            name = this.name,
+            static = this.static
+        ) })
 
-    override fun toString(): String = "$name:${getType()}=${subs.firstOrNull()?.toString() ?: "null"}"
-    override fun hashCode(): Int = name.hashCode()
-
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): Node = this.copyLeafExt(parent, {this.copy()})
-    var parent: Node? = null
-    override fun getParent2(): Node? = parent
-    override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
 class Output(name: String): FieldImpl(name)
@@ -66,7 +67,6 @@ fun <T : Field> T.setValue(value: Any?): T {
     return this
 }
 
-fun <T : Field> T.getValue(): DataValue = subs.filterIsInstance<DataValue>().lastOrNull() ?: DataValueImpl.NotDefinedValue
 fun <T : Field> T.setType(type: DataType): T {
     subs.removeAll { it is DataType }
     addSub(TypeLeaf(type = type))

@@ -12,7 +12,6 @@ import generators.obj.input.OutputList
 import generators.obj.input.OutputReusable
 import generators.obj.input.addSub
 import generators.obj.input.findOrNull
-import generators.obj.input.getValue
 import generators.obj.out.ArgumentNode
 import generators.obj.out.FileData
 import generators.obj.out.OutBlock
