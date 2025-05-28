@@ -15,7 +15,6 @@ import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.input.findOrNull
 import generators.obj.input.getParentPath
-import generators.obj.input.getValue
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FileData
 import generators.obj.out.NamespaceBlock

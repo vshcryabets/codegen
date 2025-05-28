@@ -10,7 +10,6 @@ import generators.obj.input.addOutBlock
 import generators.obj.input.addOutBlockArguments
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.input.getValue
 import generators.obj.out.ArgumentNode
 import generators.obj.out.FieldNode
 import generators.obj.out.FileData

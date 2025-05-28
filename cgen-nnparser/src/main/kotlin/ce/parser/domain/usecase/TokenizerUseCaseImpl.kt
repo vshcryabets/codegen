@@ -16,7 +16,7 @@ interface TokenizerUseCase {
     )
     operator fun invoke(
         buffer: SourceBuffer,
-        dictionaries: StaticDictionaries,
+        staticDictionaries: StaticDictionaries,
         dynamicDictionaries: DynamicDictionaries,
         debugFindings: Boolean = false,
     ): Result

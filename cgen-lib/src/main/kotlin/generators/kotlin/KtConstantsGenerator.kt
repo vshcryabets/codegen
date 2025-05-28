@@ -9,7 +9,6 @@ import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.input.getValue
 import generators.obj.out.ConstantNode
 import generators.obj.out.FileData
 import generators.obj.out.OutBlock

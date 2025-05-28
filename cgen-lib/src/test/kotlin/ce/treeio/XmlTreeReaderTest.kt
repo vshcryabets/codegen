@@ -6,7 +6,6 @@ import generators.obj.input.ConstantDesc
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.DataField
 import generators.obj.input.NamespaceImpl
-import generators.obj.input.getValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

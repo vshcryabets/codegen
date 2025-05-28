@@ -14,6 +14,8 @@ repositories {
 dependencies {
     testImplementation(libs.junitJupiterApi)
     testRuntimeOnly(libs.junitJupiterEngine)
+    testImplementation("org.mockito:mockito-core:5.0.0")
+
     implementation(gradleApi())
     implementation(libs.jacksonCore)
     implementation(libs.jacksonDataBind)

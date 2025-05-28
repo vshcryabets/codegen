@@ -7,7 +7,6 @@ import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantsEnum
 import generators.obj.input.DataField
 import generators.obj.input.addSub
-import generators.obj.input.getValue
 import generators.obj.out.FileData
 
 class RustEnumGenerator(
