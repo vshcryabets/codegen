@@ -1,6 +1,7 @@
 package ce.formatters
 
 import ce.defs.DataValue
+import ce.defs.RValue
 import generators.cpp.CompilerDirective
 import generators.obj.input.Leaf
 import generators.obj.input.Node
@@ -207,7 +208,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             while (queue.isNotEmpty()) {
                 val first = queue.first()
                 processLeaf(queue, this, indent)
-                if ((first !is Separator) and (first !is DataValue)) {
+                if ((first !is Separator) and (first !is RValue)) {
                     this.addSub(Space())
                 }
             }

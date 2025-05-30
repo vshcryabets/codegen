@@ -9,7 +9,6 @@ import generators.obj.input.Node
 import generators.obj.input.TreeRoot
 import generators.obj.input.addSub
 import generators.obj.input.getPath
-import generators.obj.input.setType
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.xml.sax.InputSource

@@ -22,7 +22,6 @@ import generators.obj.input.OutputList
 import generators.obj.input.OutputReusable
 import generators.obj.input.TypeLeaf
 import generators.obj.input.buildNamespaceTree
-import generators.obj.input.setValue
 import generators.obj.out.ArgumentNode
 import generators.obj.out.AstTree
 import generators.obj.out.AstTypeLeaf

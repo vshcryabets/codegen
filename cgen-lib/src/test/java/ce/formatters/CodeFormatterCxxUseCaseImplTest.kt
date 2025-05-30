@@ -6,11 +6,11 @@ import generators.obj.input.DataField
 import generators.obj.input.addEnumLeaf
 import generators.obj.input.addKeyword
 import generators.obj.input.addOutBlock
+import generators.obj.input.addDataValue
 import generators.obj.input.addRValue
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.input.setType
 import generators.obj.out.Indent
 import generators.obj.out.Keyword
 import generators.obj.out.NamespaceBlock

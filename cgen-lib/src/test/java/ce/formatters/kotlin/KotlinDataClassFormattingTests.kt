@@ -6,6 +6,7 @@ import ce.settings.CodeStyle
 import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
 import generators.obj.input.addOutBlock
+import generators.obj.input.addDataValue
 import generators.obj.input.addRValue
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
