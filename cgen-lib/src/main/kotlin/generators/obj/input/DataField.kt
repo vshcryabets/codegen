@@ -8,6 +8,8 @@ import ce.defs.NotDefined
 interface Field : Node {
     fun getValue(): DataValue
     fun getType(): DataType
+    fun setType(type: DataType): Field
+    fun setValue(value: Any?): Field
 }
 
 open class FieldImpl(name: String, type: DataType? = null) : Container(name), Field {
@@ -23,6 +25,23 @@ open class FieldImpl(name: String, type: DataType? = null) : Container(name), Fi
         return subs.filterIsInstance<TypeLeaf>().lastOrNull()?.type
     }
     override fun getValue(): DataValue = subs.filterIsInstance<DataValue>().lastOrNull() ?: DataValueImpl.NotDefinedValue
+
+    override fun setValue(value: Any?): FieldImpl {
+        subs.removeAll { it is DataValue }
+        subs.add(when (value) {
+            is NotDefined -> DataValueImpl.NotDefinedValue
+            is DataValue -> value
+            is Node -> DataValueImpl(simple = false, isComplex = true).apply { addSub(value) }
+            else -> DataValueImpl(simple = value)
+        })
+        return this
+    }
+
+    override fun setType(type: DataType): FieldImpl {
+        subs.removeAll { it is TypeLeaf }
+        addSub(TypeLeaf(type = type))
+        return this
+    }
 }
 
 data class TypeLeaf(
@@ -48,7 +67,6 @@ open class DataField(
             name = this.name,
             static = this.static
         ) })
-
 }
 
 class Output(name: String): FieldImpl(name)
@@ -56,19 +74,3 @@ class OutputReusable(name: String): FieldImpl(name)
 class Input(name: String): FieldImpl(name)
 class ConstantDesc(name: String): FieldImpl(name)
 
-fun <T : Field> T.setValue(value: Any?): T {
-    subs.removeAll { it is DataValue }
-    subs.add(when (value) {
-        is NotDefined -> DataValueImpl.NotDefinedValue
-        is DataValue -> value
-        is Node -> DataValueImpl(simple = false, isComplex = true).apply { addSub(value) }
-        else -> DataValueImpl(simple = value)
-    })
-    return this
-}
-
-fun <T : Field> T.setType(type: DataType): T {
-    subs.removeAll { it is DataType }
-    addSub(TypeLeaf(type = type))
-    return this
-}

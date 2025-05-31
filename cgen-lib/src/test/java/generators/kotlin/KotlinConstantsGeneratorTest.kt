@@ -59,8 +59,16 @@ class KotlinConstantsGeneratorTest {
         //     <ImportsBlock />
         //     <region>
         //        <OutBlock>
-        //          <ConstantNode />
-        //          <ConstantNode />
+        //          <ConstantNode>
+        //              <Keyword const />
+        //              <Keyword val />
+        //              <VariableName OREAD />
+        //              <Keyword : />
+        //              <AstTypeLeaf Int />
+        //              <Keyword = />
+        //              <RValue 0 />
+        //          </ConstantNode>
+        //          <ConstantNode ... />
         //        </OutBlock>
         //     </region>
         // </FileData>
@@ -78,6 +86,13 @@ class KotlinConstantsGeneratorTest {
         // check OREAD node
         val node1 = outBlock.subs[0] as ConstantNode
         Assert.assertEquals(7, node1.subs.size)
+        Assert.assertEquals("const", node1.subs[0].name)
+        Assert.assertEquals("val", node1.subs[1].name)
+        Assert.assertEquals("OREAD", node1.subs[2].name)
+        Assert.assertEquals(":", node1.subs[3].name)
+        Assert.assertEquals("Int", node1.subs[4].name)
+        Assert.assertEquals("=", node1.subs[5].name)
+        Assert.assertEquals("0", node1.subs[6].name)
 
         // check OWRITE node
         val node2 = outBlock.subs[1] as ConstantNode

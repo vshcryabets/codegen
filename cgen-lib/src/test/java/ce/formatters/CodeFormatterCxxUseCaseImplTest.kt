@@ -10,7 +10,6 @@ import generators.obj.input.addRValue
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.input.setType
 import generators.obj.out.Indent
 import generators.obj.out.Keyword
 import generators.obj.out.NamespaceBlock

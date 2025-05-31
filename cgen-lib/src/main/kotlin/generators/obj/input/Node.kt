@@ -3,6 +3,7 @@ package generators.obj.input
 import ce.defs.DataType
 import ce.defs.DataValueImpl
 import ce.defs.NotDefined
+import ce.defs.RValue
 import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CommentLeaf
 import generators.obj.out.EnumNode
@@ -102,7 +103,7 @@ fun <T : Node> T.addSeparatorNewLine(name: String = "") = addSub(NlSeparator(nam
 fun <T : Node> T.addKeyword(name: String) = addSub(Keyword(name))
 fun <T : Node> T.addDatatype(name: String) = addSub(AstTypeLeaf(name))
 fun <T : Node> T.addVarName(name: String) = addSub(VariableName(name))
-fun <T : Node> T.addRValue(name: String) = addSub(DataValueImpl(name = name, simple = name))
+fun <T : Node> T.addRValue(name: String) = addSub(RValue(name = name))
 fun <T : Node> T.clearSubs() {
     subs.clear()
 }

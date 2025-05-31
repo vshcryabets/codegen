@@ -1,6 +1,7 @@
 package generators.obj
 
 import ce.defs.DataValue
+import ce.defs.RValue
 import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import generators.obj.input.DataField
@@ -81,8 +82,8 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-            is EnumNode -> {
-                if (node.subs.size == 0)
+            is EnumNode, is RValue -> {
+                if (node.subs.isEmpty())
                     out.write(node.name)
                 else
                     writeSubNodes(node, out, indent)
