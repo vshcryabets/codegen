@@ -38,7 +38,7 @@ open class FieldImpl(name: String, type: DataType? = null) : Container(name), Fi
     }
 
     override fun setType(type: DataType): FieldImpl {
-        subs.removeAll { it is DataType }
+        subs.removeAll { it is TypeLeaf }
         addSub(TypeLeaf(type = type))
         return this
     }
@@ -67,7 +67,6 @@ open class DataField(
             name = this.name,
             static = this.static
         ) })
-
 }
 
 class Output(name: String): FieldImpl(name)

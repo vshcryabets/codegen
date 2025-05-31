@@ -103,7 +103,6 @@ fun <T : Node> T.addSeparatorNewLine(name: String = "") = addSub(NlSeparator(nam
 fun <T : Node> T.addKeyword(name: String) = addSub(Keyword(name))
 fun <T : Node> T.addDatatype(name: String) = addSub(AstTypeLeaf(name))
 fun <T : Node> T.addVarName(name: String) = addSub(VariableName(name))
-fun <T : Node> T.addDataValue(name: String) = addSub(DataValueImpl(name = name, simple = name))
 fun <T : Node> T.addRValue(name: String) = addSub(RValue(name = name))
 fun <T : Node> T.clearSubs() {
     subs.clear()

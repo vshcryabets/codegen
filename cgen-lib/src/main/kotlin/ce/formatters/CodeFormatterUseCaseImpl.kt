@@ -1,6 +1,5 @@
 package ce.formatters
 
-import ce.defs.DataValue
 import ce.defs.RValue
 import generators.cpp.CompilerDirective
 import generators.obj.input.Leaf

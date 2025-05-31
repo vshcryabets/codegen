@@ -68,7 +68,7 @@ class PrepareRightValueUseCaseTest {
             setType(dataType)
         }
 
-        val result = prepareRightValueUseCase.toRightValue(dataField = field,  fileData = fileData)
+        val result = prepareRightValueUseCase.toRightValue(dataField = field, fileData = fileData)
         assertTrue(result is RValue)
     }
 
