@@ -1,6 +1,7 @@
 package generators.kotlin
 
 import ce.defs.DataType
+import ce.defs.RValue
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
@@ -11,8 +12,11 @@ import generators.obj.input.Namespace
 import generators.obj.input.NamespaceImpl
 import generators.obj.input.addSub
 import generators.obj.input.findOrNull
+import generators.obj.out.Arguments
 import generators.obj.out.CommentsBlock
+import generators.obj.out.EnumNode
 import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
 import generators.obj.out.OutputTree
 import generators.obj.out.Region
 import generators.obj.out.RegionImpl
@@ -31,7 +35,6 @@ class KotlinEnumGeneratorTest {
     val repo = CLikeCodestyleRepo(codeStyle)
     val fileGenerator = KotlinFileGenerator()
     val prepareRightValueUseCase = PrepareRightValueUseCase(dataTypeToString)
-
 
     @Test
     fun testSimpleEnumWithDefineValues() {
@@ -66,6 +69,20 @@ class KotlinEnumGeneratorTest {
         Assert.assertTrue(region.subs[0] is OutBlock)
         val outBlock = region.findOrNull(OutBlock::class.java)!!
         Assert.assertEquals(6, outBlock.subs.size)
+        Assert.assertTrue(outBlock.subs[0] is OutBlockArguments)
+        Assert.assertTrue(outBlock.subs[1] is EnumNode)
+        Assert.assertTrue(outBlock.subs[2] is EnumNode)
+        Assert.assertTrue(outBlock.subs[3] is EnumNode)
+        Assert.assertTrue(outBlock.subs[4] is EnumNode)
+        Assert.assertTrue(outBlock.subs[5] is EnumNode)
+        val enumNode5 = outBlock.subs[5] as EnumNode
+        Assert.assertEquals("PASSWRONG", enumNode5.name)
+        Assert.assertEquals(1 , enumNode5.subs.size)
+        Assert.assertTrue(enumNode5.subs[0] is Arguments)
+        val arguments5 = enumNode5.subs[0] as Arguments
+        Assert.assertEquals(1, arguments5.subs.size)
+        Assert.assertTrue(arguments5.subs[0] is RValue)
+
     }
 
     @Test

@@ -90,7 +90,7 @@ data class EnumNode(
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
     override fun toString() = name
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): Node =
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): EnumNode =
         this.copyLeafExt(parent, { this.copy(subs = mutableListOf()) })
     var parent: Node? = null
     override fun getParent2(): Node? = parent

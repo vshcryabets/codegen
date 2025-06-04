@@ -81,13 +81,15 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             // find out block args
             val outBlockArgs = input.subs.findLast {
                 it is OutBlockArguments
-            }
+            } as OutBlockArguments?
             if (outBlockArgs != null) {
                 // wrap then into ()
                 input.subs.remove(outBlockArgs)
-                addKeyword("(")
-                processNode(mutableListOf(outBlockArgs), this, indent, null)
-                addKeyword(")")
+                processArguments(
+                    input = outBlockArgs,
+                    parent = this,
+                    indent = indent
+                )
             }
             addSub(Space())
             addKeyword("{")
@@ -114,6 +116,42 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
     ) {
     }
 
+    open fun processEnumNode(
+        input: EnumNode,
+        parent: Node?,
+        indent: Int,
+        next: Leaf?,
+        prev: Leaf?
+    ): EnumNode {
+        return input.copyLeaf(copySubs = false).also { output ->
+            addIndents(parent, indent)
+            parent?.addSub(output)
+            if (next != null && next is EnumNode) {
+                parent?.addSub(Separator(","))
+            }
+            parent?.addSub(getNewLine())
+            processSubs(input, output, indent + 1)
+        }
+    }
+
+    open fun processArguments(
+        input: Node,
+        parent: Node?,
+        indent: Int
+    ): Node {
+        parent?.addKeyword("(")
+        val multiline = input.subs.size > 1
+
+        val result = input.copyLeaf(copySubs = false).apply {
+            if (multiline) parent?.addSub(NlSeparator())
+            parent?.addSub(this)
+            if (multiline) parent?.addSub(NlSeparator())
+            processSubs(input, this, indent + 1)
+        }
+        parent?.addKeyword(")")
+        return result
+    }
+
     protected open fun processNode(
         inputQueue: MutableList<Leaf>,
         outputParent: Node?,
@@ -135,19 +173,13 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
 
         return when (input) {
-            is EnumNode -> {
-                input.copyLeaf(copySubs = false).also { output ->
-                    addIndents(outputParent, indent)
-                    outputParent?.also {parent ->
-                        parent.addSub(output)
-                        if (next != null && next is EnumNode) {
-                            parent.addSub(Separator(","))
-                        }
-                        parent.addSub(getNewLine())
-                    }
-                    processSubs(input, output, indent + 1)
-                }
-            }
+            is EnumNode -> processEnumNode(
+                input = input,
+                parent = outputParent,
+                indent = indent,
+                next = next,
+                prev = prev
+            )
 
             is ConstantNode -> processConstantNode(input, outputParent, indent, next, prev)
 
@@ -172,20 +204,11 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 }
             }
             is ArgumentNode -> processArgumentNode(input, outputParent!!, indent, prev, inputQueue)
-            is OutBlockArguments -> {
-                if (input.subs.size > 1) {
-                    // multiple arguments, let's place them on separate lines
-                    input.copyLeaf(copySubs = false).apply {
-                        outputParent?.addSub(NlSeparator())
-                        outputParent?.addSub(this)
-                        outputParent?.addSub(NlSeparator())
-                        processSubs(input, this, indent + 1)
-                    }
-                } else {
-                    // single argument
-                    defaultProcessNode(input, outputParent, indent)
-                }
-            }
+            is OutBlockArguments -> processArguments(
+                input = input,
+                parent = outputParent,
+                indent = indent
+            )
 
             else -> {
                 defaultProcessNode(input, outputParent, indent)
