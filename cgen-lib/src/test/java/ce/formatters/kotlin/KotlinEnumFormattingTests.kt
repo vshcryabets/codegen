@@ -124,5 +124,11 @@ class KotlinEnumFormattingTests {
         Assert.assertTrue(outBlock.subs[7] is EnumNode)
         val firstEnumNode = outBlock.subs[7] as EnumNode
         Assert.assertEquals(3 , firstEnumNode.subs.size)
+        Assert.assertTrue(firstEnumNode.subs[0] is Keyword)
+        Assert.assertTrue(firstEnumNode.subs[1] is Arguments)
+        Assert.assertTrue(firstEnumNode.subs[2] is Keyword)
+        val firstNodeArguments = firstEnumNode.subs[1] as Arguments
+        Assert.assertEquals(1 , firstNodeArguments.subs.size)
+        Assert.assertTrue(firstNodeArguments.subs[0] is RValue)
     }
 }
