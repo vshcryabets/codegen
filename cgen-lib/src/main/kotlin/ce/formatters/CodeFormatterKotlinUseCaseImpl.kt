@@ -141,30 +141,18 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         }
     }
 
-    override fun processEnumNode(
+
+    override fun processEnumNodeArguments(
         input: EnumNode,
-        parent: Node?,
+        arguments: Arguments,
+        output: EnumNode,
         indent: Int,
-        next: Leaf?,
-        prev: Leaf?
-    ): EnumNode {
-        val output = input.copyLeaf(copySubs = false)
-        addIndents(parent, indent)
-        parent?.addSub(output)
-        if (next != null && next is EnumNode) {
-            parent?.addSub(Separator(","))
-        }
-        parent?.addSub(getNewLine())
-        val arguments = input.subs.findLast { it is Arguments } as Arguments?
-        if (arguments != null) {
-            input.subs.remove(arguments)
-            processArguments(
-                input = arguments,
-                parent = output,
-                indent = indent
-            )
-        }
-        processSubs(input, output, indent + 1)
-        return output
+    ) {
+        input.subs.remove(arguments)
+        processArguments(
+            input = arguments,
+            parent = output,
+            indent = indent
+        )
     }
 }

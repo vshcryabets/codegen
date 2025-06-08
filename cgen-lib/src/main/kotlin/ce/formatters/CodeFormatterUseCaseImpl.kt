@@ -9,6 +9,7 @@ import generators.obj.input.addSeparator
 import generators.obj.input.addSeparatorNewLine
 import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
+import generators.obj.out.Arguments
 import generators.obj.out.CommentLeaf
 import generators.obj.out.ConstantNode
 import generators.obj.out.EnumNode
@@ -116,6 +117,15 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
     ) {
     }
 
+    open fun processEnumNodeArguments(
+        input: EnumNode,
+        arguments: Arguments,
+        output: EnumNode,
+        indent: Int,
+    ) {
+
+    }
+
     open fun processEnumNode(
         input: EnumNode,
         parent: Node?,
@@ -123,15 +133,24 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         next: Leaf?,
         prev: Leaf?
     ): EnumNode {
-        return input.copyLeaf(copySubs = false).also { output ->
-            addIndents(parent, indent)
-            parent?.addSub(output)
-            if (next != null && next is EnumNode) {
-                parent?.addSub(Separator(","))
-            }
-            parent?.addSub(getNewLine())
-            processSubs(input, output, indent + 1)
+        val output = input.copyLeaf(copySubs = false)
+        addIndents(parent, indent)
+        parent?.addSub(output)
+        if (next != null && next is EnumNode) {
+            parent?.addSub(Separator(","))
         }
+        parent?.addSub(getNewLine())
+        val arguments = input.subs.findLast { it is Arguments } as Arguments?
+        if (arguments != null) {
+            processEnumNodeArguments(
+                input = input,
+                arguments = arguments,
+                output = output,
+                indent = indent
+            )
+        }
+        processSubs(input, output, indent + 1)
+        return output
     }
 
     open fun processArguments(
