@@ -14,6 +14,7 @@ import generators.obj.input.addOutBlockArguments
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.out.ArgumentNode
+import generators.obj.out.Arguments
 import generators.obj.out.FileData
 import generators.obj.out.RegionImpl
 
@@ -55,7 +56,11 @@ class KotlinEnumGenerator(
                                 dataField = it,
                                 fileData = file
                             )
-                            addEnumLeaf("${it.name}(${rValue})")
+                            addEnumLeaf(it.name).apply {
+                                addSub(Arguments()).apply {
+                                    addSub(rValue)
+                                }
+                            }
                         } else {
                             addEnumLeaf(it.name)
                         }

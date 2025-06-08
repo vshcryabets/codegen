@@ -7,8 +7,10 @@ import generators.obj.input.addKeyword
 import generators.obj.input.addSeparatorNewLine
 import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
-import generators.obj.out.ConstantNode
+import generators.obj.out.Arguments
 import generators.obj.out.AstTypeLeaf
+import generators.obj.out.ConstantNode
+import generators.obj.out.EnumNode
 import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
@@ -27,7 +29,9 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         indent: Int,
         prev: Leaf?,
         inputQueue: MutableList<Leaf>
-    ): ArgumentNode = formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) as ArgumentNode
+    ): ArgumentNode = formatArgumentNode(input, outputParent,
+        indent = indent,
+        next = inputQueue.firstOrNull(), prev) as ArgumentNode
 
     override fun processOutBlock(
         input: OutBlock,
@@ -44,9 +48,11 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             } as OutBlockArguments?
             if (outBlockArgs != null) {
                 input.subs.remove(outBlockArgs)
-                addKeyword("(")
-                processNode(mutableListOf(outBlockArgs), this, indent, null)
-                addKeyword(")")
+                processArguments(
+                    input = outBlockArgs,
+                    parent = this,
+                    indent = indent
+                )
             }
             if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
                 addSub(Space())
@@ -133,5 +139,20 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                 processSubs(input, this, indent)
             }
         }
+    }
+
+
+    override fun processEnumNodeArguments(
+        input: EnumNode,
+        arguments: Arguments,
+        output: EnumNode,
+        indent: Int,
+    ) {
+        input.subs.remove(arguments)
+        processArguments(
+            input = arguments,
+            parent = output,
+            indent = indent
+        )
     }
 }
