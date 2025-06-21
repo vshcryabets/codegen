@@ -37,7 +37,7 @@ class XmlTreeReader : TreeReader {
             EnumNodeDeserializer(),
             SeparatorDeserializer(),
             NlSeparatorDeserializer(),
-            ConstantNodeDeserializer(),
+            FieldNodeDeserializer(),
             KeywordDeserializer(),
             AstTypeLeafDeserializer(),
             DataValueDeserializer(),

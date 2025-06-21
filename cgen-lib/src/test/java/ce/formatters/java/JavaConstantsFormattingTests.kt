@@ -3,8 +3,19 @@ package ce.formatters.java
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.settings.CodeStyle
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.addDatatype
+import generators.obj.input.addKeyword
+import generators.obj.input.addOutBlock
+import generators.obj.input.addRValue
+import generators.obj.input.addSub
+import generators.obj.input.addVarName
+import generators.obj.out.FieldNode
+import generators.obj.out.Indent
+import generators.obj.out.Keyword
+import generators.obj.out.NlSeparator
+import generators.obj.out.OutBlock
+import generators.obj.out.RegionImpl
+import generators.obj.out.Space
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -21,7 +32,7 @@ class JavaConstantsFormattingTests {
     fun testConstantsFormatting() {
         val input = RegionImpl().apply {
             addOutBlock("public class TEST") {
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addKeyword("public")
                     addKeyword("static")
                     addKeyword("final")
@@ -30,7 +41,7 @@ class JavaConstantsFormattingTests {
                     addKeyword("=")
                     addRValue("0")
                 })
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addKeyword("public")
                     addKeyword("static")
                     addKeyword("final")
@@ -65,9 +76,9 @@ class JavaConstantsFormattingTests {
         Assert.assertTrue(outBlock.subs[1] is Keyword)
         Assert.assertTrue(outBlock.subs[2] is NlSeparator)
         Assert.assertTrue(outBlock.subs[3] is Indent)
-        Assert.assertTrue(outBlock.subs[4] is ConstantNode)
+        Assert.assertTrue(outBlock.subs[4] is FieldNode)
 
-        val constantNode = outBlock.subs[4] as ConstantNode
+        val constantNode = outBlock.subs[4] as FieldNode
         Assert.assertEquals(13, constantNode.subs.size)
     }
 

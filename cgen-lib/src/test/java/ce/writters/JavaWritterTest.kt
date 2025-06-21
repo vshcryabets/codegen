@@ -4,11 +4,8 @@ import ce.formatters.CLikeCodestyleRepo
 import ce.io.CodeWritter
 import ce.settings.CodeStyle
 import generators.java.JavaWritter
-import generators.obj.input.addKeyword
 import generators.obj.input.addOutBlock
 import generators.obj.input.addSubs
-import generators.obj.input.addVarName
-import generators.obj.out.ConstantNode
 import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
 import generators.obj.out.RegionImpl

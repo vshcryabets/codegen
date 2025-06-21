@@ -9,7 +9,7 @@ import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.out.ConstantNode
+import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.OutBlock
 import generators.obj.out.RegionImpl
@@ -29,7 +29,7 @@ class JavaConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantNode().apply {
+                        addSub(FieldNode().apply {
                             addKeyword("public")
                             addKeyword("static")
                             addKeyword("final")

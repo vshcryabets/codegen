@@ -9,8 +9,8 @@ import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
 import generators.obj.out.Arguments
 import generators.obj.out.AstTypeLeaf
-import generators.obj.out.ConstantNode
 import generators.obj.out.EnumNode
+import generators.obj.out.FieldNode
 import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
@@ -41,6 +41,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         inputQueue: MutableList<Leaf>
     ): OutBlock {
         return input.copyLeaf(copySubs = false).apply {
+            addIndents(outputParent, indent)
             outputParent.addSub(this)
             // find out block args
             val outBlockArgs = input.subs.findLast {
@@ -65,15 +66,15 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         }
     }
 
-    override fun processConstantNode(
-        input: ConstantNode,
+    override fun processFieldNode(
+        input: FieldNode,
         parent: Node?,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): ConstantNode {
+    ): FieldNode {
         addIndents(parent, indent)
-        val result = formatArgumentNode(input, parent, indent, next, prev) as ConstantNode
+        val result = formatArgumentNode(input, parent, indent, next, prev) as FieldNode
         parent?.addSeparatorNewLine()
         return result
     }
@@ -140,7 +141,6 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             }
         }
     }
-
 
     override fun processEnumNodeArguments(
         input: EnumNode,

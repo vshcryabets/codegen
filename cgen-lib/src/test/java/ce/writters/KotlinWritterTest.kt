@@ -21,8 +21,8 @@ import generators.obj.input.addSeparator
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.out.AstTypeLeaf
-import generators.obj.out.ConstantNode
 import generators.obj.out.EnumNode
+import generators.obj.out.FieldNode
 import generators.obj.out.OutBlock
 import generators.obj.out.OutputTree
 import generators.obj.out.Region
@@ -46,7 +46,7 @@ class KotlinWritterTest {
     @Test
     fun testConstantNodeWithSimpleRvalue() {
         var buffer = StringBuffer()
-        val input = ConstantNode().apply {
+        val input = FieldNode().apply {
             addKeyword("const")
             addSeparator(" ")
             addKeyword("val")

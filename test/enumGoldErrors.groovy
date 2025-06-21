@@ -26,3 +26,9 @@ styxQid.with {
 styxQid.addstaticfield("EMPTY", new DataType.custom(styxQid, false), styxQid.instance(
         [type: 0, version: 0, path: 0]
 ))
+
+def qid2 = ns.dataClass("Qid2")
+qid2.with {
+    field("type", DataType.int32.INSTANCE, 1)
+}
+qid2.addstaticfield("EMPTY", new DataType.custom(qid2, false), qid2.instance())

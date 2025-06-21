@@ -1,8 +1,19 @@
 package ce.formatters.kotlin
 
+import ce.defs.DataType
+import ce.defs.Target
+import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.settings.CodeStyle
+import generators.kotlin.GetArrayDataTypeUseCase
+import generators.kotlin.GetTypeNameUseCase
+import generators.kotlin.KotlinFileGenerator
+import generators.kotlin.KtDataClassGenerator
+import generators.kotlin.PrepareRightValueUseCase
+import generators.obj.input.DataClass
+import generators.obj.input.NamespaceImpl
+import generators.obj.input.TreeRoot
 import generators.obj.input.addDatatype
 import generators.obj.input.addKeyword
 import generators.obj.input.addOutBlock
@@ -15,26 +26,33 @@ import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
 import generators.obj.out.OutBlockArguments
+import generators.obj.out.OutputTree
+import generators.obj.out.Region
 import generators.obj.out.RegionImpl
 import generators.obj.out.Separator
+import generators.obj.out.Space
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class KotlinDataClassFormattingTests {
-    val codeStyle1NlBeforeRegion = CodeStyle(
-        newLinesBeforeClass = 1,
-        tabSize = 4,
-        preventEmptyBlocks = true,
-    )
-
     val codeStyleNoSpace = CodeStyle(
         newLinesBeforeClass = 0,
         tabSize = 2,
         preventEmptyBlocks = true,
     )
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val repo1NL = CLikeCodestyleRepo(codeStyle1NlBeforeRegion)
     val formatter = CodeFormatterKotlinUseCaseImpl(repoNoSpace)
+    val ktFileGenerator = KotlinFileGenerator()
+    val prepareRightValueUseCase = PrepareRightValueUseCase(
+        getTypeNameUseCase = getTypeNameUseCase
+    )
+    val ktDataClassGenerator = KtDataClassGenerator(
+        addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repoNoSpace),
+        dataTypeToString = getTypeNameUseCase,
+        prepareRightValueUseCase = prepareRightValueUseCase
+    )
 
 
     @Test
@@ -163,5 +181,91 @@ class KotlinDataClassFormattingTests {
         val argumentNode = outBlockArguments.subs[1] as ArgumentNode
         Assert.assertTrue(argumentNode.subs[0] is Keyword)
         Assert.assertEquals(10, argumentNode.subs.size)
+    }
+
+    @Test
+    fun testDataClassWithInstance() {
+        val namespace = NamespaceImpl("a").apply { setParent2(TreeRoot) }
+        val dataClassDescriptor = DataClass("MyDataClass").apply {
+            field("A", DataType.int32,  1)
+            field("B", DataType.float64,  0.5f)
+            addstaticfield("SELF", DataType.custom(this), instance())
+            //                 mapOf("A" to 10, "B" to 10.5f)
+        }
+        val block = namespace.addSub(dataClassDescriptor)
+
+        val projectOutput = OutputTree(Target.Kotlin)
+        val files = ktFileGenerator.createFile(projectOutput, "a", block)
+        val mainFile = files.first()
+        ktDataClassGenerator(files, block)
+        val region = mainFile.subs[2] as Region
+        val output = formatter(region)
+
+        // expected result
+        // <Region>
+        //     <OutBlock data class MyDataClass>
+        //        <(> <NL>
+        //        <OutBlockArguments>
+        //          <Indent>
+        //          <ArgumentNode>
+        //              <val><SPACE><A><:><SPACE><int><SPACE><=><SPACE><1>
+        //          </ArgumentNode><,><NL>
+        //          <Indent>
+        //          <ArgumentNode>
+        //              <val><SPACE><B><:><SPACE><float><SPACE><=><SPACE><0.5f>
+        //          </ArgumentNode>
+        //        </OutBLockArguments>
+        //        <NL> <)><SPACE> <{> <nl>
+        //        <Indent>
+        //        <OutBlock companion object>
+        //             <SPACE><{><NL>
+        //             <Indent><Indent>
+        //             <FieldNode>
+        //                 <val><SELF><:><c><=><RValue>
+        //                      <Constructor c/>
+        //                  </RValue>
+        //             </FieldNode>
+        //             <NL>
+        //             <}>
+        //        </OutBlock companion object>
+        //        <NL>
+        //        <}>
+        //     </OutBlock>
+        //     <NL>
+        // </Region>
+        Assert.assertEquals(2, output.subs.size)
+        val outBlock = output.subs[0] as OutBlock
+        Assert.assertEquals(12, outBlock.subs.size)
+        Assert.assertTrue(outBlock.subs[0] is Keyword)
+        Assert.assertTrue(outBlock.subs[1] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[2] is OutBlockArguments)
+        Assert.assertTrue(outBlock.subs[3] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[4] is Keyword)
+        Assert.assertTrue(outBlock.subs[5] is Space)
+        Assert.assertTrue(outBlock.subs[6] is Keyword)
+        Assert.assertTrue(outBlock.subs[7] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[8] is Indent)
+        Assert.assertTrue(outBlock.subs[9] is OutBlock)
+        Assert.assertTrue(outBlock.subs[10] is NlSeparator)
+        Assert.assertTrue(outBlock.subs[11] is Keyword)
+
+        // check out block arguments
+        val outBlockArguments = outBlock.subs[2] as OutBlockArguments
+        Assert.assertEquals(6, outBlockArguments.subs.size)
+
+        Assert.assertTrue(outBlockArguments.subs[0] is Indent)
+        Assert.assertTrue(outBlockArguments.subs[1] is ArgumentNode)
+        Assert.assertTrue(outBlockArguments.subs[2] is Separator)
+        Assert.assertTrue(outBlockArguments.subs[3] is NlSeparator)
+        Assert.assertTrue(outBlockArguments.subs[4] is Indent)
+        Assert.assertTrue(outBlockArguments.subs[5] is ArgumentNode)
+
+        val argumentNode = outBlockArguments.subs[1] as ArgumentNode
+        Assert.assertTrue(argumentNode.subs[0] is Keyword)
+        Assert.assertEquals(10, argumentNode.subs.size)
+
+        // check companion object
+        val companionObject = outBlock.subs[9] as OutBlock
+        Assert.assertEquals(8, companionObject.subs.size)
     }
 }

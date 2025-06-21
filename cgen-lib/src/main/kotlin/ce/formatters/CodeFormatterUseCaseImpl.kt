@@ -11,8 +11,8 @@ import generators.obj.input.addSub
 import generators.obj.out.ArgumentNode
 import generators.obj.out.Arguments
 import generators.obj.out.CommentLeaf
-import generators.obj.out.ConstantNode
 import generators.obj.out.EnumNode
+import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.Indent
 import generators.obj.out.NamespaceBlock
@@ -200,7 +200,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 prev = prev
             )
 
-            is ConstantNode -> processConstantNode(input, outputParent, indent, next, prev)
+            is FieldNode -> processFieldNode(input, outputParent, indent, next, prev)
 
             is OutBlock -> processOutBlock(input, outputParent!!, indent, prev, inputQueue)
 
@@ -235,13 +235,13 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         }
     }
 
-    open fun processConstantNode(
-        input: ConstantNode,
+    open fun processFieldNode(
+        input: FieldNode,
         parent: Node?,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): ConstantNode {
+    ): FieldNode {
         addIndents(parent, indent)
         val res = input.copyLeaf(copySubs = false).apply {
             parent?.addSub(this)
