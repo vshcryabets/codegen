@@ -222,7 +222,9 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                     processSubs(input, this, indent)
                 }
             }
+            is RValue -> processRValue(input, outputParent, indent)
             is ArgumentNode -> processArgumentNode(input, outputParent!!, indent, prev, inputQueue)
+            is Arguments,
             is OutBlockArguments -> processArguments(
                 input = input,
                 parent = outputParent,
@@ -233,6 +235,18 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 defaultProcessNode(input, outputParent, indent)
             }
         }
+    }
+
+    protected fun processRValue(
+        input: RValue,
+        parent: Node?,
+        indent: Int
+    ): Node {
+        val result = input.copyLeaf(copySubs = false).apply {
+            parent?.addSub(this)
+            processSubs(input, this, indent + 1)
+        }
+        return result
     }
 
     open fun processFieldNode(

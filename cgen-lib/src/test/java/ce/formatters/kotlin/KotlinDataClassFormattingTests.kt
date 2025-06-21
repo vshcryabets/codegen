@@ -1,6 +1,7 @@
 package ce.formatters.kotlin
 
 import ce.defs.DataType
+import ce.defs.RValue
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
@@ -21,6 +22,7 @@ import generators.obj.input.addRValue
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.out.ArgumentNode
+import generators.obj.out.Constructor
 import generators.obj.out.FieldNode
 import generators.obj.out.Indent
 import generators.obj.out.Keyword
@@ -222,7 +224,12 @@ class KotlinDataClassFormattingTests {
         //             <SPACE><{><NL>
         //             <Indent><Indent>
         //             <FieldNode>
-        //                 <val><SPACE><SELF><:><SPACE><MyDataClass><SPACE><=><SPACE><Constructor MyDataClass/><(><Arguments /><)>
+        //                 <val><SPACE><SELF><:><SPACE><MyDataClass><SPACE><=><SPACE>
+        //                 <RValue>
+        //                      <Constructor MyDataClass>
+        //                          <(><Arguments /><)>
+        //                      </Constructor>
+        //                 </RValue>
         //             </FieldNode>
         //             <NL>
         //             <}>
@@ -267,6 +274,13 @@ class KotlinDataClassFormattingTests {
         val companionObject = outBlock.subs[9] as OutBlock
         Assert.assertEquals(8, companionObject.subs.size)
         val fieldNode = companionObject.subs[5] as FieldNode
-        Assert.assertEquals(13, fieldNode.subs.size)
+        Assert.assertEquals(10, fieldNode.subs.size)
+        Assert.assertEquals(RValue::class, fieldNode.subs[9]::class)
+        val rValue = fieldNode.subs[9] as RValue
+        Assert.assertEquals(1, rValue.subs.size)
+        Assert.assertTrue(rValue.subs[0] is Constructor)
+        val constructor = rValue.subs[0] as Constructor
+        Assert.assertEquals("MyDataClass", constructor.name)
+        Assert.assertEquals(3, constructor.subs.size)
     }
 }

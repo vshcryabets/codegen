@@ -1,6 +1,7 @@
 package ce.formatters
 
 import ce.defs.DataValue
+import ce.defs.RValue
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.addKeyword
@@ -131,10 +132,14 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     val current = input.subs[i]
                     if (i > 0) {
                         if (input.subs[i-1] !is VariableName || !current.name.equals(":"))
-                            // no SP between <ANME> and <:>
+                            // no SP between <NAME> and <:>
                             addSub(Space())
                     }
-                    addSub(current.copyLeaf(this, true))
+                    if (current is RValue) {
+                        processNode(inputQueue = mutableListOf(current), this, indent, null)
+                    } else {
+                        addSub(current.copyLeaf(this, true))
+                    }
                 }
             } else {
                 processSubs(input, this, indent)
