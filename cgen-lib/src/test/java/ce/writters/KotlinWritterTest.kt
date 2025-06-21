@@ -20,7 +20,9 @@ import generators.obj.input.addRValue
 import generators.obj.input.addSeparator
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
+import generators.obj.out.Arguments
 import generators.obj.out.AstTypeLeaf
+import generators.obj.out.Constructor
 import generators.obj.out.EnumNode
 import generators.obj.out.FieldNode
 import generators.obj.out.OutBlock
@@ -45,7 +47,7 @@ class KotlinWritterTest {
 
     @Test
     fun testConstantNodeWithSimpleRvalue() {
-        var buffer = StringBuffer()
+        val buffer = StringBuffer()
         val input = FieldNode().apply {
             addKeyword("const")
             addSeparator(" ")
@@ -117,5 +119,45 @@ class KotlinWritterTest {
         }, "")
         Assert.assertEquals("OK(0)", buffer.toString())
     }
+
+    @Test
+    fun testFieldValueWithEmptyConstructor() {
+        val input = FieldNode().apply {
+            addKeyword("val")
+            addSeparator(" ")
+            addVarName("testField")
+            addKeyword(":")
+            addSeparator(" ")
+            addSub(AstTypeLeaf("TestClass"))
+            addSeparator(" ")
+            addKeyword("=")
+            addSeparator(" ")
+            addRValue("").addSub(
+                Constructor("TestClass").apply {
+                    addKeyword("(")
+                    addSub(Arguments())
+                    addKeyword(")")
+                }
+            )
+        }
+        val buffer = StringBuffer()
+        writter.writeNode(input, object : CodeWritter {
+            override fun write(str: String): CodeWritter {
+                buffer.append(str)
+                return this
+            }
+
+            override fun writeNl(): CodeWritter {
+                buffer.append("\n")
+                return this
+            }
+
+            override fun writeNlIfNotEmpty(): CodeWritter = this
+            override fun setIndent(str: String): CodeWritter = this
+            override fun setNewLine(str: String) {}
+        }, "")
+        Assert.assertEquals("val testField: TestClass = TestClass()", buffer.toString())
+    }
+
 
 }
