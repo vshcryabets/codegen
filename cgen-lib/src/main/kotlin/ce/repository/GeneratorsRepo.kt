@@ -129,12 +129,23 @@ class GeneratorsRepo(
                     )
                 }
 
-                Target.Cxx -> mapOf(
-                    ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
-                    ConstantsBlock::class.java to CppConstantsBlockGenerator(addBlockUseCase),
-                    DataClass::class.java to CppDataClassGenerator(addBlockUseCase),
-                    InterfaceDescription::class.java to CppInterfaceGenerator(addBlockUseCase)
-                )
+                Target.Cxx -> {
+                    val arrayDataType = GetArrayDataTypeUseCase()
+                    val dataTypeToString = GetTypeNameUseCase(
+                        arrayDataType = arrayDataType
+                    )
+                    val prepareRightValueUseCase = PrepareRightValueUseCase(
+                        getTypeNameUseCase = dataTypeToString
+                    )
+                    mapOf(
+                        ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
+                        ConstantsBlock::class.java to CppConstantsBlockGenerator(
+                            addBlockDefaultsUseCase = addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase),
+                        DataClass::class.java to CppDataClassGenerator(addBlockUseCase),
+                        InterfaceDescription::class.java to CppInterfaceGenerator(addBlockUseCase)
+                    )
+                }
 
                 Target.Swift -> mapOf(
                     ConstantsEnum::class.java to SwiftEnumGenerator(fileGenerator, project),
