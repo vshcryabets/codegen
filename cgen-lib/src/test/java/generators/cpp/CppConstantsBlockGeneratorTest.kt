@@ -5,8 +5,15 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.NamespaceImpl
+import generators.obj.input.TreeRoot
+import generators.obj.input.addSub
+import generators.obj.input.findOrNull
+import generators.obj.out.CommentsBlock
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.OutputTree
+import generators.obj.out.RegionImpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -39,6 +46,25 @@ class CppConstantsBlockGeneratorTest {
         Assert.assertFalse("Dirty flag should be false in .h before changes", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false in .cpp before changes", cxxFile.isDirty)
         item(files, block)
+        // expected result
+        // <FileData>
+        //     <NamespaceDeclaration />
+        //     <ImportsBlock />
+        //     <region>
+        //        <OutBlock>
+        //          <ConstantNode>
+        //              <Keyword public>
+        //              <Keyword static>
+        //              <Keyword final>
+        //              <AstTypeLeaf int>
+        //              <VariableName OREAD>
+        //              <Keyword =>
+        //              <RValue 0>
+        //          </ConstantNode>
+        //          <ConstantNode />
+        //        </OutBlock>
+        //     </region>
+        // </FileData>
         Assert.assertTrue("Dirty flag should be true", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!

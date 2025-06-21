@@ -1,23 +1,33 @@
 package generators.java
 
+import ce.defs.RValue
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
+import generators.kotlin.GetArrayDataTypeUseCase
+import generators.kotlin.GetTypeNameUseCase
+import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.NamespaceImpl
 import generators.obj.input.findOrNull
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.FieldNode
+import generators.obj.out.Keyword
 import generators.obj.out.OutBlock
 import generators.obj.out.OutputTree
 import generators.obj.out.Region
 import generators.obj.out.RegionImpl
+import generators.obj.out.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class JavaConstantsGeneratorTest {
     private val reader = XmlTreeReader()
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
+    val prepareRightValueUseCase = PrepareRightValueUseCase(getTypeNameUseCase)
 
     @Test
     fun testConstantsClass() {
@@ -29,7 +39,8 @@ class JavaConstantsGeneratorTest {
         val repo = CLikeCodestyleRepo(codeStyle)
         val fileGenerator = JavaFileGenerator()
         val item = JavaConstantsGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
+            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
+            prepareRightValueUseCase = prepareRightValueUseCase
         )
 
         val tree = reader.loadFromString("""
@@ -55,7 +66,13 @@ class JavaConstantsGeneratorTest {
         //     <region>
         //        <OutBlock>
         //          <ConstantNode>
-        //              <public><static><final><int><OREAD><=><0>
+        //              <Keyword public>
+        //              <Keyword static>
+        //              <Keyword final>
+        //              <AstTypeLeaf int>
+        //              <VariableName OREAD>
+        //              <Keyword =>
+        //              <RValue 0>
         //          </ConstantNode>
         //          <ConstantNode />
         //        </OutBlock>
@@ -74,6 +91,15 @@ class JavaConstantsGeneratorTest {
         // check OREAD node
         val node1 = outBlock.subs[0] as FieldNode
         Assert.assertEquals(7, node1.subs.size)
+        Assert.assertEquals(Keyword::class, node1.subs[0]::class)
+        Assert.assertEquals(Keyword::class, node1.subs[1]::class)
+        Assert.assertEquals(Keyword::class, node1.subs[2]::class)
+        Assert.assertEquals(AstTypeLeaf::class, node1.subs[3]::class)
+        Assert.assertEquals(VariableName::class, node1.subs[4]::class)
+        Assert.assertEquals(Keyword::class, node1.subs[5]::class)
+        Assert.assertEquals(RValue::class, node1.subs[6]::class)
+        val rvalue = node1.subs[6] as RValue
+        Assert.assertEquals("0", rvalue.name)
 
         // check OWRITE node
         val node2 = outBlock.subs[1] as FieldNode
