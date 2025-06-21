@@ -8,13 +8,13 @@ import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
 import generators.obj.input.DataClass
 import generators.obj.input.NamespaceImpl
-import generators.obj.input.NewInstance
 import generators.obj.input.TreeRoot
 import generators.obj.input.addSub
 import generators.obj.input.findOrNull
 import generators.obj.out.ArgumentNode
 import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CommentsBlock
+import generators.obj.out.Constructor
 import generators.obj.out.FieldNode
 import generators.obj.out.Keyword
 import generators.obj.out.OutBlock
@@ -39,7 +39,7 @@ class KotlinDataClassGeneratorTest {
     val prepareRightValueUseCase = PrepareRightValueUseCase(
         getTypeNameUseCase = getTypeNameUseCase
     )
-    val processor = KtDataClassGenerator(
+    val ktDataClassGenerator = KtDataClassGenerator(
         addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
         dataTypeToString = getTypeNameUseCase,
         prepareRightValueUseCase = prepareRightValueUseCase
@@ -58,7 +58,7 @@ class KotlinDataClassGeneratorTest {
         val projectOutput = OutputTree(Target.Kotlin)
         val files = ktFileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
-        processor(files, block)
+        ktDataClassGenerator(files, block)
 
         // expected result
         // <FileData>
@@ -121,7 +121,7 @@ class KotlinDataClassGeneratorTest {
         val projectOutput = OutputTree(Target.Kotlin)
         val files = ktFileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
-        processor(files, block)
+        ktDataClassGenerator(files, block)
 
         // expected result
         // <FileData>
@@ -136,7 +136,7 @@ class KotlinDataClassGeneratorTest {
         //           <OutBlock companion object>
         //              <FieldNode><val><SELF><:><c><=>
         //                  <DataValue>
-        //                      <Constructor c/>
+        //                      <Constructor c><Arguments /></Constructor>
         //                  </Datavalue>
         //              </FieldNode>
         //           </OutBlock companion object>
@@ -165,8 +165,8 @@ class KotlinDataClassGeneratorTest {
         Assert.assertTrue(companionObjectField.subs[5] is RValue)
         val dataValue = companionObjectField.subs[5] as RValue
         Assert.assertEquals(1, dataValue.subs.size)
-        Assert.assertTrue(dataValue.subs[0] is NewInstance)
-        val constructor = dataValue.subs[0] as NewInstance
-        Assert.assertEquals(0, constructor.subs.size)
+        Assert.assertTrue(dataValue.subs[0] is Constructor)
+        val constructor = dataValue.subs[0] as Constructor
+        Assert.assertEquals(1, constructor.subs.size)
     }
 }

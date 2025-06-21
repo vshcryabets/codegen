@@ -21,6 +21,7 @@ import generators.obj.input.addRValue
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
 import generators.obj.out.ArgumentNode
+import generators.obj.out.FieldNode
 import generators.obj.out.Indent
 import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
@@ -221,9 +222,7 @@ class KotlinDataClassFormattingTests {
         //             <SPACE><{><NL>
         //             <Indent><Indent>
         //             <FieldNode>
-        //                 <val><SELF><:><c><=><RValue>
-        //                      <Constructor c/>
-        //                  </RValue>
+        //                 <val><SPACE><SELF><:><SPACE><MyDataClass><SPACE><=><SPACE><Constructor MyDataClass/><(><Arguments /><)>
         //             </FieldNode>
         //             <NL>
         //             <}>
@@ -267,5 +266,7 @@ class KotlinDataClassFormattingTests {
         // check companion object
         val companionObject = outBlock.subs[9] as OutBlock
         Assert.assertEquals(8, companionObject.subs.size)
+        val fieldNode = companionObject.subs[5] as FieldNode
+        Assert.assertEquals(13, fieldNode.subs.size)
     }
 }

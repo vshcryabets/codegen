@@ -7,7 +7,10 @@ import ce.defs.RValue
 import generators.obj.input.DataClass
 import generators.obj.input.DataField
 import generators.obj.input.NewInstance
+import generators.obj.out.Arguments
+import generators.obj.out.Constructor
 import generators.obj.out.FileDataImpl
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -87,8 +90,10 @@ class PrepareRightValueUseCaseTest {
         val result = prepareRightValueUseCase.prepareConstructor(instance, fileData)
         assertTrue(result is RValue)
         assertEquals(1, result.subs.size)
-        val newInstanceNode = result.subs[0]
-        assertTrue(newInstanceNode is NewInstance)
+        assertTrue(result.subs[0] is Constructor)
+        val constructor = result.subs[0] as Constructor
+        Assertions.assertEquals(1, constructor.subs.size)
+        assertTrue(constructor.subs[0] is Arguments)
     }
 
 }

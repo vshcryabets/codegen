@@ -22,7 +22,9 @@ class ConstantsBlockTests {
         val constant = block.add("CONST2", DataType.int32, 42)
         Assertions.assertEquals("CONST2", constant.name)
         Assertions.assertEquals(DataType.int32, constant.getType())
-        Assertions.assertEquals(42, (constant.getValue() as IntValue).simple)
+        val value = constant.getValue()
+        Assertions.assertEquals(IntValue::class,  value::class)
+        Assertions.assertEquals(42, (value as IntValue).simple)
     }
 
     @Test

@@ -27,9 +27,10 @@ data class ConstantsBlock(
     fun add(name: String, value: Any? = DataValueImpl.NotDefinedValue) : ConstantDesc = add(name, defaultDataType, value)
 
     fun add(name: String, type : DataType, value: Any? = DataValueImpl.NotDefinedValue): ConstantDesc {
+        val isInt = type.isInteger()
         val dv = if (value is DataValue) {
             value
-        } else if (type in DataType.INTEGERS) {
+        } else if (isInt) {
             IntValue(value.toString().toLong(), preferredRadix = preferredRadix)
         } else {
             DataValueImpl(simple = value)

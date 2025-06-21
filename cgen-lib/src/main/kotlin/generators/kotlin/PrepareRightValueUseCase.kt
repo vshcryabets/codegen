@@ -6,6 +6,8 @@ import ce.defs.RValue
 import generators.obj.input.DataField
 import generators.obj.input.NewInstance
 import generators.obj.input.addSub
+import generators.obj.out.Arguments
+import generators.obj.out.Constructor
 import generators.obj.out.FileData
 
 class PrepareRightValueUseCase(
@@ -48,12 +50,14 @@ class PrepareRightValueUseCase(
     fun prepareConstructor(item: NewInstance, fileData: FileData): RValue {
         val result = RValue()
         result.addSub(
-            NewInstance(
+            Constructor(
                 name = getTypeNameUseCase.typeTo(
                     file = fileData,
                     type = item.getType()
                 )
-            )
+            ).apply {
+                addSub(Arguments())
+            }
         )
         return result
     }
