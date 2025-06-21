@@ -1,6 +1,7 @@
 package generators.java
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
+import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.input.ConstantDesc
@@ -16,6 +17,7 @@ import generators.obj.out.RegionImpl
 
 class JavaConstantsGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -36,7 +38,8 @@ class JavaConstantsGenerator(
                             addDatatype(Types.typeTo(file, it.getType()))
                             addVarName(it.name)
                             addKeyword("=")
-                            addSub(Types.toValue(it.getType(), it.getValue()))
+                            val rValue = prepareRightValueUseCase.toRightValue(it.getType(), it.getValue(), file)
+                            addSub(rValue)
                         })
                     }
                 }

@@ -18,19 +18,6 @@ data class CommentsBlock(
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
 
-@Deprecated("Use CommentsBlock instead")
-data class MultilineCommentsBlock(
-    override val name: String = "",
-    override val subs: MutableList<Leaf> = mutableListOf()
-) : Node {
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): MultilineCommentsBlock =
-        this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()) }
-
-    var parent: Node? = null
-    override fun getParent2(): Node? = parent
-    override fun setParent2(parent: Node?) { this.parent = parent }
-}
-
 // #include <iostream>
 // #include <string>
 // #include <vector>
@@ -47,6 +34,7 @@ data class ImportsBlock(
     override fun setParent2(parent: Node?) { this.parent = parent }
 
     fun addInclude(name: String) {
+        if (subs.any { it is ImportLeaf && it.name == name }) return
         addSub(ImportLeaf(name))
     }
 }

@@ -44,7 +44,6 @@ class XmlTreeReader : TreeReader {
             VariableNameDeserializer(),
             ResultLeafDeserializer(),
             ArgumentNodeDeserializer(),
-            MultilineCommentsBlockDeserializer(),
             ImportsBlockDeserializer(),
             RegionDeserializer(),
             SpaceDeserializer(),

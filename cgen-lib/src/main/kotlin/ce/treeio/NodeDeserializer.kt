@@ -35,7 +35,6 @@ import generators.obj.out.FileDataImpl
 import generators.obj.out.ImportsBlock
 import generators.obj.out.Indent
 import generators.obj.out.Keyword
-import generators.obj.out.MultilineCommentsBlock
 import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
@@ -149,11 +148,6 @@ class ResultLeafDeserializer : NodeDeserializer {
 class ArgumentNodeDeserializer : NodeDeserializer {
     override operator fun invoke(args: DeserializeArguments) = ArgumentNode(args.name)
     override fun getTags() = listOf(ArgumentNode::class.java.simpleName)
-}
-
-class MultilineCommentsBlockDeserializer : NodeDeserializer {
-    override operator fun invoke(args: DeserializeArguments) = MultilineCommentsBlock()
-    override fun getTags() = listOf(MultilineCommentsBlock::class.java.simpleName)
 }
 
 class ImportsBlockDeserializer : NodeDeserializer {

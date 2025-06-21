@@ -3,12 +3,15 @@ import ce.defs.DataType
 import ce.defs.NotDefined
 
 def ns = namespace("com.goldman")
-def enumGoldErrors = ns.enum("GoldErrorsGroovy")
-enumGoldErrors.add("OK", 0)
-enumGoldErrors.add("BUSY")
-enumGoldErrors.add("AUTHERR")
-enumGoldErrors.add("PASSLEN")
-enumGoldErrors.add("PASSWRONG", 4)
+
+def modeType = ns.constantsBlock("ModeType")
+modeType.addBlockComment("File mode types")
+modeType.defaultType(DataType.int32.INSTANCE)
+modeType.add("OREAD", 0)
+modeType.add("OWRITE", 1)
+modeType.add("ORDWR", 2)
+modeType.add("OEXEC", 3)
+modeType.add("OTRUNC", 0x10)
 
 ns.dataClass("GroovyData").tap {
     field("firstname", new DataType.string(true), NotDefined.INSTANCE)

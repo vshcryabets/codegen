@@ -10,6 +10,7 @@ import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppDataClassGenerator
 import generators.cpp.CppEnumGenerator
 import generators.cpp.CppFileGenerator
+import generators.cpp.CppInterfaceGenerator
 import generators.java.JavaConstantsGenerator
 import generators.java.JavaDataClassGenerator
 import generators.java.JavaEnumGenerator
@@ -66,15 +67,15 @@ class GeneratorsRepo(
             Target.Java to CodeFormatterJavaUseCaseImpl(codestylesRepo.get(Target.Java)),
         )
 
-        val addBlockDefaultsUseCases = targets.map {
+        val addBlockDefaultsUseCases = targets.associate {
             it to AddRegionDefaultsUseCaseImpl(codestylesRepo.get(it))
-        }.toMap()
+        }
 
-        val prepareFilesListUseCases = targets.map {
+        val prepareFilesListUseCases = targets.associate {
             it to PrepareFilesListUseCaseImpl(project, fileGeneratorsMap[it]!!)
-        }.toMap()
+        }
 
-        supportedMeta = targets.map {
+        supportedMeta = targets.associate {
             val fileGenerator = fileGeneratorsMap[it]!!
             val addBlockUseCase = addBlockDefaultsUseCases[it]!!
             val generators = when (it) {
@@ -87,30 +88,64 @@ class GeneratorsRepo(
                         getTypeNameUseCase = dataTypeToString
                     )
                     mapOf(
-                        ConstantsEnum::class.java to KotlinEnumGenerator(addBlockUseCase,
+                        ConstantsEnum::class.java to KotlinEnumGenerator(
+                            addBlockUseCase,
                             dataTypeToString,
-                            prepareRightValueUseCase = prepareRightValueUseCase),
-                        ConstantsBlock::class.java to KtConstantsGenerator(addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        ),
+                        ConstantsBlock::class.java to KtConstantsGenerator(
+                            addBlockUseCase,
                             dataTypeToString = dataTypeToString,
-                            prepareRightValueUseCase = prepareRightValueUseCase),
-                        DataClass::class.java to KtDataClassGenerator(addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        ),
+                        DataClass::class.java to KtDataClassGenerator(
+                            addBlockUseCase,
                             dataTypeToString = dataTypeToString,
-                            prepareRightValueUseCase = prepareRightValueUseCase),
-                        InterfaceDescription::class.java to KotlinInterfaceGenerator(addBlockUseCase, dataTypeToString,
-                            prepareRightValueUseCase = prepareRightValueUseCase)
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        ),
+                        InterfaceDescription::class.java to KotlinInterfaceGenerator(
+                            addBlockUseCase, dataTypeToString,
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        )
                     )
                 }
-                Target.Java -> mapOf(
-                    ConstantsEnum::class.java to JavaEnumGenerator(addBlockUseCase),
-                    ConstantsBlock::class.java to JavaConstantsGenerator(addBlockUseCase),
-                    DataClass::class.java to JavaDataClassGenerator(addBlockUseCase),
-                    InterfaceDescription::class.java to JavaInterfaceGenerator(addBlockUseCase)
-                )
-                Target.Cxx -> mapOf(
-                    ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
-                    ConstantsBlock::class.java to CppConstantsBlockGenerator(addBlockUseCase),
-                    DataClass::class.java to CppDataClassGenerator(addBlockUseCase)
-                )
+
+                Target.Java -> {
+                    val arrayDataType = GetArrayDataTypeUseCase()
+                    val dataTypeToString = GetTypeNameUseCase(
+                        arrayDataType = arrayDataType
+                    )
+                    val prepareRightValueUseCase = PrepareRightValueUseCase(
+                        getTypeNameUseCase = dataTypeToString
+                    )
+                    mapOf(
+                        ConstantsEnum::class.java to JavaEnumGenerator(addBlockUseCase),
+                        ConstantsBlock::class.java to JavaConstantsGenerator(
+                            addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        ),
+                        DataClass::class.java to JavaDataClassGenerator(addBlockUseCase),
+                        InterfaceDescription::class.java to JavaInterfaceGenerator(addBlockUseCase)
+                    )
+                }
+
+                Target.Cxx -> {
+                    val arrayDataType = GetArrayDataTypeUseCase()
+                    val dataTypeToString = GetTypeNameUseCase(
+                        arrayDataType = arrayDataType
+                    )
+                    val prepareRightValueUseCase = PrepareRightValueUseCase(
+                        getTypeNameUseCase = dataTypeToString
+                    )
+                    mapOf(
+                        ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
+                        ConstantsBlock::class.java to CppConstantsBlockGenerator(
+                            addBlockDefaultsUseCase = addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase),
+                        DataClass::class.java to CppDataClassGenerator(addBlockUseCase),
+                        InterfaceDescription::class.java to CppInterfaceGenerator(addBlockUseCase)
+                    )
+                }
 
                 Target.Swift -> mapOf(
                     ConstantsEnum::class.java to SwiftEnumGenerator(fileGenerator, project),
@@ -124,39 +159,11 @@ class GeneratorsRepo(
                 target = it,
                 fileGenerator = fileGenerator,
                 generatorsMap = generators,
-                prepareFilesListUseCase = prepareFilesListUseCases[it] ?: throw IllegalStateException("Can't find prepareFilesListUseCases for $it"),
+                prepareFilesListUseCase = prepareFilesListUseCases[it]
+                    ?: throw IllegalStateException("Can't find prepareFilesListUseCases for $it"),
                 codeFormatter = codeFormatters[it] ?: throw IllegalStateException("Can't find code formatter for $it"),
             )
-        }.toMap()
-
-
-//        val rustGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-//            ConstantsEnum::class.java to RustEnumGenerator(rustFileGenerator, project),
-//            ConstantsBlock::class.java to RsConstantsBlockGenerator(rustFileGenerator, project),
-//            DataClass::class.java to RsDataClassGenerator(rustFileGenerator, project)
-//        )
-//        val rustMeta = MetaGenerator(
-//            target = Target.Rust,
-//            writter = RustWritter(rustFileGenerator, clikeCodeStyleRepo, project.outputFolder),
-//            project = project,
-//            fileGenerator = rustFileGenerator,
-//            generatorsMap = rustGenerators,
-//            codeStyleRepo = clikeCodeStyleRepo
-//        )
-//
-//        val javaGenerators : Map<Class<out Block>, TransformBlockUseCase<out Block>> = mapOf(
-//            ConstantsEnum::class.java to JavaEnumGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
-//            ConstantsBlock::class.java to JavaConstantsGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase),
-//            DataClass::class.java to JavaDataClassGenerator(javaFileGenerator, javaAddBlockDefaultsUseCase)
-//        )
-//        val javaMeta = MetaGenerator(
-//            target = Target.Java,
-//            writter = JavaWritter(clikeCodeStyleRepo, project.outputFolder),
-//            project = project,
-//            fileGenerator = javaFileGenerator,
-//            generatorsMap = javaGenerators,
-//            codeStyleRepo = clikeCodeStyleRepo
-//        )
+        }
     }
 
     fun get(target: Target): MetaGenerator {

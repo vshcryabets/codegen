@@ -10,8 +10,14 @@ import generators.obj.out.ImportsBlock
 object Types {
     fun typeTo(file: FileData,
                type: DataType
-    ) : String =
-        when (type) {
+    ) : String {
+        if (type is DataType.string) {
+            file.findOrCreateSub(ImportsBlock::class.java).addInclude("<string>")
+        }
+        if (type.isInteger()) {
+            file.findOrCreateSub(ImportsBlock::class.java).addInclude("<cstdint>")
+        }
+        return when (type) {
             DataType.VOID -> "void"
             DataType.int8 -> "int8_t"
             DataType.int16 -> "int16_t"
@@ -21,14 +27,14 @@ object Types {
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
             DataType.uint64 -> "uint64_t"
-            is DataType.string -> {
-                file.findOrCreateSub(ImportsBlock::class.java).addInclude("<string>")
-                "std::string"
-            }
+            is DataType.string -> "std::string"
+
             DataType.float32 -> "float"
             DataType.float64 -> "double"
             else -> "cxxQQTP_$type"
         }
+    }
+
     fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
             DataType.VOID -> DataValueImpl(name = "void")
