@@ -6,10 +6,10 @@ import ce.settings.CodeStyle
 import generators.obj.input.addKeyword
 import generators.obj.input.addRValue
 import generators.obj.input.addSub
+import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CommentLeaf
 import generators.obj.out.CommentsBlock
-import generators.obj.out.ConstantNode
-import generators.obj.out.AstTypeLeaf
+import generators.obj.out.FieldNode
 import generators.obj.out.Keyword
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.Region
@@ -42,14 +42,14 @@ class CxxConstantsFormatterTest {
                     addSub(CommentLeaf("Line 1"))
                     addSub(CommentLeaf("Line 2"))
                 }
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addSub(Keyword("const"))
                     addSub(AstTypeLeaf("int32_t"))
                     addSub(VariableName("OREAD"))
                     addSub(Keyword("="))
                     addRValue("0")
                 })
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addKeyword("const")
                     addSub(AstTypeLeaf("int32_t"))
                     addSub(VariableName("OWRITE"))
@@ -85,13 +85,13 @@ class CxxConstantsFormatterTest {
         Assert.assertEquals(9, region.subs.size)
         val commentBlock = region.subs[0] as CommentsBlock
         Assert.assertEquals(6, commentBlock.subs.size)
-        val constantNode1 = region.subs[2] as ConstantNode
+        val constantNode1 = region.subs[2] as FieldNode
         Assert.assertEquals(9, constantNode1.subs.size)
     }
 
     @Test
     fun testConstantsLeaf() {
-        val input = ConstantNode().apply {
+        val input = FieldNode().apply {
             addSub(Keyword("const"))
             addSub(AstTypeLeaf("int32_t"))
             addSub(VariableName("OREAD"))
@@ -99,7 +99,7 @@ class CxxConstantsFormatterTest {
             addRValue("0")
         }
 
-        val output = formatter(input) as ConstantNode
+        val output = formatter(input) as FieldNode
         // expected result
         // <ConstantLeaf>
         //     <const> <SPACE>

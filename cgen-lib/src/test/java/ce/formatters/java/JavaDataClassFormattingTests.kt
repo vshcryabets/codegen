@@ -33,43 +33,43 @@ class JavaDataClassFormattingTests {
     @Test
     fun testKotlinDeclarationPattern() {
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="static"/>
                     <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name="="/>
                     <DataValue name="0"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(0, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(2, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="public"/>
                     <Keyword name="static"/>
                     <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="static"/>
                     <VariableName name="ModeStateOn"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <VariableName name="ModeStateOn"/>
                     <Separator name=","/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
     }
 

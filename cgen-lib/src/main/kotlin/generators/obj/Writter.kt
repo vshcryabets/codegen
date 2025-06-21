@@ -10,6 +10,7 @@ import generators.obj.input.Node
 import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CodeStyleOutputTree
 import generators.obj.out.CommentLeaf
+import generators.obj.out.Constructor
 import generators.obj.out.EnumNode
 import generators.obj.out.FileData
 import generators.obj.out.Indent
@@ -82,10 +83,9 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWritter, indent: String) {
         when (node) {
-            is EnumNode, is RValue -> {
+            is EnumNode, is RValue, is Constructor -> {
                 out.write(node.name)
-                if (!node.subs.isEmpty())
-                    writeSubNodes(node, out, indent)
+                writeSubNodes(node, out, indent)
             }
             else -> writeSubNodes(node, out, indent)
         }

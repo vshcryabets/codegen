@@ -5,8 +5,14 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.ConstantsBlock
+import generators.obj.input.NamespaceImpl
+import generators.obj.input.findOrNull
+import generators.obj.out.FieldNode
+import generators.obj.out.OutBlock
+import generators.obj.out.OutputTree
+import generators.obj.out.Region
+import generators.obj.out.RegionImpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -66,11 +72,11 @@ class JavaConstantsGeneratorTest {
         Assert.assertEquals(2, outBlock.subs.size)
 
         // check OREAD node
-        val node1 = outBlock.subs[0] as ConstantNode
+        val node1 = outBlock.subs[0] as FieldNode
         Assert.assertEquals(7, node1.subs.size)
 
         // check OWRITE node
-        val node2 = outBlock.subs[1] as ConstantNode
+        val node2 = outBlock.subs[1] as FieldNode
         Assert.assertEquals(7, node2.subs.size)
     }
 }

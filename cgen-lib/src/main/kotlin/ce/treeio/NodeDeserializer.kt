@@ -28,8 +28,8 @@ import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CodeStyleOutputTree
 import generators.obj.out.CommentLeaf
 import generators.obj.out.CommentsBlock
-import generators.obj.out.ConstantNode
 import generators.obj.out.EnumNode
+import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.FileDataImpl
 import generators.obj.out.ImportsBlock
@@ -116,9 +116,9 @@ class NlSeparatorDeserializer : NodeDeserializer {
     override fun getTags() = listOf(NlSeparator::class.java.simpleName)
 }
 
-class ConstantNodeDeserializer : NodeDeserializer {
-    override operator fun invoke(args: DeserializeArguments) = ConstantNode(args.name)
-    override fun getTags() = listOf(ConstantNode::class.java.simpleName)
+class FieldNodeDeserializer : NodeDeserializer {
+    override operator fun invoke(args: DeserializeArguments) = FieldNode(args.name)
+    override fun getTags() = listOf(FieldNode::class.java.simpleName)
 }
 
 class KeywordDeserializer : NodeDeserializer {

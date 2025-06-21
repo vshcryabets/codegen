@@ -8,7 +8,9 @@ data class RValue(
     override val name: String = "",
     override val subs: MutableList<Leaf> = mutableListOf(),
 ) : Node {
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): Node = this.copyLeafExt(parent, {this.copy()})
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): Node = this.copyLeafExt(parent, {this.copy(
+        subs = if (copySubs) this.subs else  mutableListOf()
+    )})
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }

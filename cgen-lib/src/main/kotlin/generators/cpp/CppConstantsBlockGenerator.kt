@@ -13,7 +13,7 @@ import generators.obj.input.addVarName
 import generators.obj.input.findOrNull
 import generators.obj.input.getParentPath
 import generators.obj.out.CommentsBlock
-import generators.obj.out.ConstantNode
+import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.RegionImpl
@@ -42,7 +42,7 @@ class CppConstantsBlockGenerator(
             if (it is ConstantDesc) {
                 autoIncrement.invoke(it)
                 outBlock.addSub(
-                    ConstantNode().apply {
+                    FieldNode().apply {
                         addKeyword("const")
                         addDatatype(Types.typeTo(headerFile, it.getType()))
                         addVarName(it.name)

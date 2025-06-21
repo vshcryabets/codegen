@@ -11,7 +11,7 @@ import generators.obj.input.addOutBlock
 import generators.obj.input.addRValue
 import generators.obj.input.addSub
 import generators.obj.input.addVarName
-import generators.obj.out.ConstantNode
+import generators.obj.out.FieldNode
 import generators.obj.out.Indent
 import generators.obj.out.Keyword
 import generators.obj.out.NlSeparator
@@ -42,7 +42,7 @@ class KotlinConstantsFormatterTest {
     @Test
     fun testKotlinDeclarationPattern() {
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="const"/>
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
@@ -50,52 +50,52 @@ class KotlinConstantsFormatterTest {
                     <AstTypeLeaf name="Int"/>
                     <Keyword name="="/>
                     <DataValue name="0"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(0, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="var"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
                     <AstTypeLeaf name="Int"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(2, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="volatile"/>
                     <Keyword name="const"/>
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
                     <AstTypeLeaf name="Int"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name=":"/>
                     <AstTypeLeaf name="Int"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <VariableName name="ModeStateOn"/>
                     <Separator name=","/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="const"/>
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name="="/>
                     <DataValue name="105"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
     }
 
@@ -104,7 +104,7 @@ class KotlinConstantsFormatterTest {
         val input = xmlReader.loadFromString("""
             <Region>
             <OutBlock name="object ModeState">
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="const"/>
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOn"/>
@@ -112,8 +112,8 @@ class KotlinConstantsFormatterTest {
                     <AstTypeLeaf name="Int"/>
                     <Keyword name="="/>
                     <DataValue name="0"/>
-                </ConstantNode>
-                <ConstantNode>
+                </FieldNode>
+                <FieldNode>
                     <Keyword name="const"/>
                     <Keyword name="val"/>
                     <VariableName name="ModeStateOff"/>
@@ -121,7 +121,7 @@ class KotlinConstantsFormatterTest {
                     <AstTypeLeaf name="Int"/>
                     <Keyword name="="/>
                     <DataValue name="1"/>
-                </ConstantNode>
+                </FieldNode>
             </OutBlock>
             </Region>
         """.trimIndent()) as Node
@@ -142,7 +142,7 @@ class KotlinConstantsFormatterTest {
         Assert.assertEquals(2, outputRegion.subs.size)
         val outBlock = outputRegion.subs[0] as OutBlock
         Assert.assertEquals(10, outBlock.subs.size)
-        val constNode1 = outBlock.subs[4] as ConstantNode
+        val constNode1 = outBlock.subs[4] as FieldNode
         Assert.assertEquals(12, constNode1.subs.size)
     }
 
@@ -151,7 +151,7 @@ class KotlinConstantsFormatterTest {
     fun testConstantsFormatting() {
         val input = RegionImpl().apply {
             addOutBlock("object TEST") {
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addKeyword("val")
                     addVarName("A")
                     addKeyword(":")
@@ -181,9 +181,9 @@ class KotlinConstantsFormatterTest {
         Assert.assertTrue(outBlock.subs[1] is Keyword)
         Assert.assertTrue(outBlock.subs[2] is NlSeparator)
         Assert.assertTrue(outBlock.subs[3] is Indent)
-        Assert.assertTrue(outBlock.subs[4] is ConstantNode)
+        Assert.assertTrue(outBlock.subs[4] is FieldNode)
 
-        val constantNode = outBlock.subs[4] as ConstantNode
+        val constantNode = outBlock.subs[4] as FieldNode
         Assert.assertEquals(10, constantNode.subs.size)
     }
 }
