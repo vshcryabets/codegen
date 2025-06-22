@@ -12,7 +12,7 @@ namespace("ce.defs").apply {
         add("Other", "other")
         add("Kotlin", "kotlin")
         add("C", "c")
-        add("Cxx", "cxx")
+        add("Cpp", "cpp")
         add("Swift", "swift")
         add("Java", "java")
         add("Rust", "rust")

@@ -21,7 +21,7 @@ class CppDataClassGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
 
-        val project = OutputTree(Target.Cxx)
+        val project = OutputTree(Target.Cpp)
         val item = CppDataClassGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )

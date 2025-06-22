@@ -39,7 +39,7 @@ class CppConstantsBlockGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
 
-        val project = OutputTree(Target.Cxx)
+        val project = OutputTree(Target.Cpp)
         val item = CppConstantsBlockGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
             prepareRightValueUseCase = prepareRightValueUseCase

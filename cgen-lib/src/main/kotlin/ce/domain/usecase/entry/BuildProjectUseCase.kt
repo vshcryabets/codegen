@@ -8,7 +8,7 @@ import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
-import ce.repository.WrittersRepo
+import ce.repository.ReportsRepoImpl
 import ce.repository.WrittersRepoImpl
 import ce.settings.Project
 
@@ -24,12 +24,15 @@ class BuildProjectUseCase(
                         writeOutTree : Boolean = false,
                         dirsConfiguration: DirsConfiguration) {
         val project : Project = getProjectUseCase(projectFile, dirsConfiguration)
-        println("Processing $project")
         val codeStyleRepo = CodestyleRepoImpl(project)
+        val reportsRepo = ReportsRepoImpl()
+        reportsRepo.logi("Processing $project")
         val generatorsRepo = GeneratorsRepo(
             project = project,
             codestylesRepo = codeStyleRepo)
-        val writtersRepo = WrittersRepoImpl(codestylesRepo = codeStyleRepo)
+        val writtersRepo = WrittersRepoImpl(codestylesRepo = codeStyleRepo,
+            reportsRepo = reportsRepo
+        )
 
         project.targets.forEach { target ->
             val inputTree = loadMetaFilesUseCase(project, target)
