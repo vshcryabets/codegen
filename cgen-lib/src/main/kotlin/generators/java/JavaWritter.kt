@@ -3,21 +3,26 @@ package generators.java
 import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import ce.io.FileCodeWritter
-import ce.settings.CodeStyle
+import ce.repository.ReportsRepo
 import generators.obj.Writter
 import generators.obj.input.Leaf
 import generators.obj.input.Node
-import generators.obj.out.*
-import java.io.BufferedWriter
+import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
+import generators.obj.out.NamespaceDeclaration
+import generators.obj.out.OutBlock
 import java.io.File
 
-class JavaWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
+class JavaWritter(
+    codeStyleRepo: CodeStyleRepo,
+    outputFolder: String,
+    private val reportsRepo: ReportsRepo)
     : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
         var outputFile = File(fileData.name + ".java")
         outputFile.parentFile.mkdirs()
-        println("Writing $outputFile")
+        reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
             codeWritter.setNewLine(codeStyleRepo.newLine())

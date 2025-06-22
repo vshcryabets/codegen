@@ -2,12 +2,15 @@ package generators.rust
 
 import ce.formatters.CodeStyleRepo
 import ce.io.FileCodeWritter
+import ce.repository.ReportsRepo
 import generators.obj.Writter
 import generators.obj.out.FileData
 import java.io.File
 
-class RustWritter(fileGenerator: RustFileGenerator, codeStyleRepo: CodeStyleRepo, outputFolder: String)
-    : Writter(codeStyleRepo, outputFolder) {
+class RustWritter(
+    fileGenerator: RustFileGenerator, codeStyleRepo: CodeStyleRepo, outputFolder: String,
+    private val reportsRepo: ReportsRepo
+) : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {
@@ -15,7 +18,7 @@ class RustWritter(fileGenerator: RustFileGenerator, codeStyleRepo: CodeStyleRepo
 //        }
         var outputFile = File(fileData.name + ".rs")
         outputFile.parentFile.mkdirs()
-        println("Writing $outputFile")
+        reportsRepo.logi("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)

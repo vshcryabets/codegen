@@ -3,18 +3,23 @@ package generators.cpp
 import ce.formatters.CodeStyleRepo
 import ce.io.CodeWritter
 import ce.io.FileCodeWritter
-import ce.settings.CodeStyle
-import generators.obj.FileGenerator
+import ce.repository.ReportsRepo
 import generators.obj.Writter
 import generators.obj.input.Leaf
 import generators.obj.input.Node
 import generators.obj.input.findOrNull
 import generators.obj.input.removeSub
-import generators.obj.out.*
+import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.OutBlock
+import generators.obj.out.OutBlockArguments
 import java.io.File
 
-class CppWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String) :
-    Writter(codeStyleRepo, outputFolder) {
+class CppWritter(
+    codeStyleRepo: CodeStyleRepo, outputFolder: String,
+    private val reportsRepo: ReportsRepo
+) : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
@@ -46,12 +51,12 @@ class CppWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String) :
 
     override fun writeFile(fileData: FileData) {
         if (!fileData.isDirty) {
-            println("No data to write ${fileData.name}")
+            reportsRepo.loge("No data to write ${fileData.name}")
             return
         }
         val outputFile = File(fileData.name)
         outputFile.parentFile.mkdirs()
-        println("Writing $outputFile")
+        reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
             codeWritter.setNewLine(codeStyleRepo.newLine())

@@ -48,7 +48,7 @@ class CodeFormatterUseCaseImplTest {
 
     @Test
     fun testNonDirtyFileData() {
-        val input = OutputTree(target = Target.Cxx).apply {
+        val input = OutputTree(target = Target.Cpp).apply {
             addSub(CppHeaderFile("ns1").apply {
                 addSub(NamespaceBlock("b"))
             })
