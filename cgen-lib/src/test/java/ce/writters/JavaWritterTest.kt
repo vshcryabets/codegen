@@ -2,6 +2,7 @@ package ce.writters
 
 import ce.formatters.CLikeCodestyleRepo
 import ce.io.CodeWritter
+import ce.repository.ReportsRepoImpl
 import ce.settings.CodeStyle
 import generators.java.JavaWritter
 import generators.obj.input.addOutBlock
@@ -19,8 +20,10 @@ class JavaWritterTest {
         tabSize = 2,
         preventEmptyBlocks = true,
     )
+    val reportsRepo = ReportsRepoImpl()
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val writter = JavaWritter(repoNoSpace, "")
+    val writter = JavaWritter(repoNoSpace, "",
+        reportsRepo = reportsRepo)
 
     @Test
     fun testOutBlock() {
@@ -35,7 +38,7 @@ class JavaWritterTest {
                 )
             }
         }
-        var buffer = StringBuffer()
+        val buffer = StringBuffer()
         writter.writeNode(input, object : CodeWritter {
             override fun write(str: String): CodeWritter {
                 buffer.append(str)

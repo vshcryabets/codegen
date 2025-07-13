@@ -20,9 +20,9 @@ class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleR
         indent: Int,
         prev: Leaf?,
         inputQueue: MutableList<Leaf>
-    ): ArgumentNode = formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) as ArgumentNode
+    ) { formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) }
 
-    public fun declarationPattern(input: Node): Int {
+    fun declarationPattern(input: Node): Int {
         if (input.subs.size < 2)
             return -1
         for (pos in 0..input.subs.size-2) {
@@ -43,8 +43,8 @@ class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleR
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): Node {
-        return input.copyLeaf(copySubs = false).apply {
+    ) {
+        input.copyLeaf(copySubs = false).apply {
             if (next is ArgumentNode || prev is ArgumentNode) {
                 outputParent?.subs?.addAll(getIndents(indent))
             }

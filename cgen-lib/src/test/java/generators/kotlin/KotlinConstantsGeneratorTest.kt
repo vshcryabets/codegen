@@ -48,7 +48,7 @@ class KotlinConstantsGeneratorTest {
         val lastNs = (tree as NamespaceImpl).getNamespace("goldman.xml")
         val block = lastNs.subs.first() as ConstantsBlock
 
-        val projectOutput = OutputTree(Target.Java)
+        val projectOutput = OutputTree(Target.Kotlin)
         val files = fileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
         item(files, block)

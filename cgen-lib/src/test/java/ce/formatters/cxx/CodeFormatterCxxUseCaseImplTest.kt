@@ -1,6 +1,8 @@
-package ce.formatters
+package ce.formatters.cxx
 
 import ce.defs.DataType
+import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterCxxUseCaseImpl
 import ce.settings.CodeStyle
 import generators.obj.input.DataField
 import generators.obj.input.addEnumLeaf
@@ -23,19 +25,12 @@ import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class CodeFormatterCxxUseCaseImplTest {
-    val codeStyle1NlBeforeRegion = CodeStyle(
-        newLinesBeforeClass = 1,
-        tabSize = 4,
-        preventEmptyBlocks = true,
-    )
-
     val codeStyleNoSpace = CodeStyle(
         newLinesBeforeClass = 0,
         tabSize = 2,
         preventEmptyBlocks = true,
     )
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val repo1NL = CLikeCodestyleRepo(codeStyle1NlBeforeRegion)
     val formatter = CodeFormatterCxxUseCaseImpl(repoNoSpace)
 
     @Test

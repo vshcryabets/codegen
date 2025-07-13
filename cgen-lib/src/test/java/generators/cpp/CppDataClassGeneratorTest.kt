@@ -5,8 +5,17 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.DataClass
+import generators.obj.input.NamespaceImpl
+import generators.obj.input.TreeRoot
+import generators.obj.input.addSub
+import generators.obj.input.findOrNull
+import generators.obj.out.CommentsBlock
+import generators.obj.out.FieldNode
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.OutBlock
+import generators.obj.out.OutputTree
+import generators.obj.out.Region
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -54,12 +63,12 @@ class CppDataClassGeneratorTest {
         //     </namespace>
         // </CppHeaderFile>
 
-
         Assert.assertTrue("Dirty flag should be true", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
         Assert.assertEquals(1, outNamespace.subs.size)
-        val region = outNamespace.findOrNull(CppClassData::class.java)!!
+        Assert.assertTrue(outNamespace.subs[0] is Region)
+        val region = outNamespace.subs[0] as Region
         Assert.assertEquals(2, region.subs.size)
         Assert.assertEquals(CommentsBlock::class.java, region.subs[0]::class.java)
         Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)

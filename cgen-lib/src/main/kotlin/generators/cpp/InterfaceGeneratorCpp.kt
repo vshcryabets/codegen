@@ -6,6 +6,7 @@ import generators.obj.TransformBlockUseCase
 import generators.obj.input.InterfaceDescription
 import generators.obj.input.addSub
 import generators.obj.out.FileData
+import generators.obj.out.RegionImpl
 
 class InterfaceGeneratorCpp(
     fileGenerator: FileGenerator,
@@ -43,7 +44,7 @@ class InterfaceGeneratorCpp(
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         //        val definition = CppClassData(desc.name, header)
-        header.addSub(CppClassData(desc.name)).apply {
+        header.addSub(RegionImpl(desc.name)).apply {
             addBlockDefaultsUseCase(desc, this)
         }
     }

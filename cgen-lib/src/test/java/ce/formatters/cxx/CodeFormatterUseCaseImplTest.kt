@@ -1,10 +1,13 @@
-package ce.formatters
+package ce.formatters.cxx
 
 import ce.defs.Target
+import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.input.addSub
+import generators.obj.out.NamespaceBlock
+import generators.obj.out.OutputTree
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -31,7 +34,7 @@ class CodeFormatterUseCaseImplTest {
             addSub(NamespaceBlock("b"))
         }
 
-        val output = formatter(input) as CppHeaderFile
+        val output = formatter(input)
         // expected result
         // <CppHeaderFile>
         //    <pragama once> <nl>
