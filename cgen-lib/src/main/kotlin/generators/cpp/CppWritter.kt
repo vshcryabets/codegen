@@ -24,7 +24,15 @@ class CppWritter(
     override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
         when (leaf) {
             is CompilerDirective -> out.write("#${leaf.name}")
-            is ImportLeaf -> out.write("#include \"${leaf.name}\"")
+            is ImportLeaf -> {
+                if (leaf.name.startsWith("<") && leaf.name.endsWith(">")) {
+                    out.write("#include ${leaf.name}")
+                } else if (leaf.name.startsWith("\"") && leaf.name.endsWith("\"")) {
+                    out.write("#include ${leaf.name}")
+                } else {
+                    out.write("#include \"${leaf.name}\"")
+                }
+            }
             else -> super.writeLeaf(leaf, out, indent)
         }
     }

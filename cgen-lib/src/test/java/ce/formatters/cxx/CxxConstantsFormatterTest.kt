@@ -19,19 +19,12 @@ import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class CxxConstantsFormatterTest {
-    val codeStyle1NlBeforeRegion = CodeStyle(
-        newLinesBeforeClass = 1,
-        tabSize = 4,
-        preventEmptyBlocks = true,
-    )
-
     val codeStyleNoSpace = CodeStyle(
         newLinesBeforeClass = 0,
         tabSize = 2,
         preventEmptyBlocks = true,
     )
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val repo1NL = CLikeCodestyleRepo(codeStyle1NlBeforeRegion)
     val formatter = CodeFormatterUseCaseImpl(repoNoSpace)
 
     @Test
@@ -59,7 +52,7 @@ class CxxConstantsFormatterTest {
             }
         }
 
-        val output = formatter(input) as NamespaceBlock
+        val output = formatter(input)
         // expected result
         // <NamespaceBlock>
         //     <SPACE> <{> <nl>

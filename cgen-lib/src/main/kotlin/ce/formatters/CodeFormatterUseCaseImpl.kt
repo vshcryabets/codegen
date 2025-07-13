@@ -14,6 +14,7 @@ import generators.obj.out.CommentLeaf
 import generators.obj.out.EnumNode
 import generators.obj.out.FieldNode
 import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
 import generators.obj.out.Indent
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.NlSeparator
@@ -35,7 +36,9 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         return container.subs.first() as T
     }
 
-    protected open fun processLeaf(inputQueue: MutableList<Leaf>, outputParent: Node, indent: Int) {
+    protected open fun processLeaf(inputQueue: MutableList<Leaf>,
+                                   outputParent: Node,
+                                   indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
         val input = inputQueue.first()
         when (input) {
@@ -47,6 +50,12 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             }
 
             is CompilerDirective -> {
+                val leaf = input.copyLeaf(parent = outputParent)
+                nodesToAdd.add(leaf)
+                nodesToAdd.add(getNewLine())
+            }
+
+            is ImportLeaf -> {
                 val leaf = input.copyLeaf(parent = outputParent)
                 nodesToAdd.add(leaf)
                 nodesToAdd.add(getNewLine())
