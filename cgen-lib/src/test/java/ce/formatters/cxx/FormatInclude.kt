@@ -43,7 +43,7 @@ class FormatInclude {
     )
 
     @Test
-    fun testCompilerDerectivesFormating() {
+    fun testCompilerDirectivesFormatting() {
         val headerFile = FileDataImpl("a")
         headerFile.addSub(CompilerDirective("pragma once"))
         headerFile.addSub(CompilerDirective("pragma once"))
