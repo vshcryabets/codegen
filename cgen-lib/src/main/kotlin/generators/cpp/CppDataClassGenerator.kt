@@ -18,19 +18,20 @@ import generators.obj.out.FieldNode
 import generators.obj.out.FileData
 import generators.obj.out.ImportsBlock
 import generators.obj.out.NamespaceBlock
+import generators.obj.out.RegionImpl
 
 class CppDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
 ) : TransformBlockUseCase<DataClass> {
 
-    override fun invoke(files: List<FileData>, desc: DataClass) {
-        val header = files.find { it is CppHeaderFile }
+    override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
+        val header = blockFiles.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
         header.findOrCreateSub(ImportsBlock::class.java)
 
         val namespace = header.addSub(NamespaceBlock(desc.getParentPath()))
 
-        namespace.addSub(CppClassData(desc.name)).apply {
+        namespace.addSub(RegionImpl(desc.name)).apply {
             addBlockDefaultsUseCase(desc, this)
             if (findOrNull(CommentsBlock::class.java) == null) {
                 // add default comments block

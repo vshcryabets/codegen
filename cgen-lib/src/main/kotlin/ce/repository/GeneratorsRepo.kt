@@ -46,13 +46,13 @@ class GeneratorsRepo(
 
         val targets = listOf(
             Target.Kotlin,
-            Target.Cxx,
+            Target.Cpp,
             Target.Java
         )
 
         val fileGeneratorsMap = mapOf(
             Target.Kotlin to KotlinFileGenerator(),
-            Target.Cxx to CppFileGenerator(),
+            Target.Cpp to CppFileGenerator(),
             Target.Swift to SwiftFileGenerator(),
             Target.Rust to RustFileGenerator(),
             Target.Java to JavaFileGenerator(),
@@ -61,7 +61,7 @@ class GeneratorsRepo(
 
         val codeFormatters = mapOf(
             Target.Kotlin to CodeFormatterKotlinUseCaseImpl(codestylesRepo.get(Target.Kotlin)),
-            Target.Cxx to CodeFormatterCxxUseCaseImpl(codestylesRepo.get(Target.Cxx)),
+            Target.Cpp to CodeFormatterCxxUseCaseImpl(codestylesRepo.get(Target.Cpp)),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
 //            Target.Rust to RustWritter(codestylesMap[Target.Rust]!!, project.outputFolder),
             Target.Java to CodeFormatterJavaUseCaseImpl(codestylesRepo.get(Target.Java)),
@@ -129,7 +129,7 @@ class GeneratorsRepo(
                     )
                 }
 
-                Target.Cxx -> {
+                Target.Cpp -> {
                     val arrayDataType = GetArrayDataTypeUseCase()
                     val dataTypeToString = GetTypeNameUseCase(
                         arrayDataType = arrayDataType

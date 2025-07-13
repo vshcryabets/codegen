@@ -1,26 +1,16 @@
 package generators.cpp
 
-import generators.obj.input.*
-import generators.obj.out.ClassData
+import generators.obj.input.Leaf
+import generators.obj.input.Node
+import generators.obj.input.addSub
+import generators.obj.input.copyLeafExt
+import generators.obj.input.copyNodeExt
 import generators.obj.out.FileData
+import generators.obj.out.ImportsBlock
 
 class CompilerDirective(override val name: String) : Leaf {
     var parent: Node? = null
     override fun copyLeaf(parent: Node?, copySubs: Boolean): Leaf = this.copyLeafExt(parent) { CompilerDirective(name) }
-    override fun getParent2(): Node? = parent
-    override fun setParent2(parent: Node?) { this.parent = parent }
-}
-
-data class CppClassData(
-    override val name: String = "",
-    override val subs: MutableList<Leaf> = mutableListOf()
-) : ClassData {
-    override fun copyLeaf(parent: Node?, copySubs: Boolean): CppClassData =
-        this.copyNodeExt(parent, copySubs) { return@copyNodeExt CppClassData(name) }
-
-    override fun toString(): String = name
-
-    var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
@@ -33,6 +23,7 @@ data class CppHeaderFile(
 
     init {
         addSub(CompilerDirective("pragma once"))
+        addSub(ImportsBlock())
         isDirty = false
     }
 
@@ -54,7 +45,7 @@ data class CppFileData(
 ) : FileData {
 
     init {
-        addSub(CompilerDirective("pragma once"))
+        addSub(ImportsBlock())
         isDirty = false
     }
 

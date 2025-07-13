@@ -5,7 +5,7 @@ namespace("enums").apply {
 
     when (target()) {
         ce.defs.Target.Kotlin -> setOutputBasePath("../kotlin/")
-        ce.defs.Target.Cxx -> setOutputBasePath("../cxx/")
+        ce.defs.Target.Cpp -> setOutputBasePath("../cpp/")
         else -> {}
     }
 

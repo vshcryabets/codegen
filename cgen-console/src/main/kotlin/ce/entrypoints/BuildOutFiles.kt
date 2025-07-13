@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
                 - project file
             """)
     }
-
+    val reportsRepo = ce.repository.ReportsRepoImpl()
     val loadOutputTreeUseCase = LoadOutTreeUseCase()
     val getProjectUseCase: LoadProjectUseCase = LoadProjectUseCaseImpl()
     val dir = DirsConfiguration(
@@ -26,7 +26,8 @@ fun main(args: Array<String>) {
     val project = getProjectUseCase(args[1], dir)
     val codestylesRepo = CodestyleRepoImpl(project)
     val writtersFactoryImpl = WrittersRepoImpl(
-        codestylesRepo = codestylesRepo)
+        codestylesRepo = codestylesRepo,
+        reportsRepo = reportsRepo)
 
     val generatorsRepo = GeneratorsRepo(project,
         codestylesRepo = codestylesRepo)

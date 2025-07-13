@@ -30,9 +30,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         indent: Int,
         prev: Leaf?,
         inputQueue: MutableList<Leaf>
-    ): ArgumentNode = formatArgumentNode(input, outputParent,
-        indent = indent,
-        next = inputQueue.firstOrNull(), prev) as ArgumentNode
+    ) {
+        formatArgumentNode(
+            input, outputParent,
+            indent = indent,
+            next = inputQueue.firstOrNull(), prev
+        )
+    }
 
     override fun processOutBlock(
         input: OutBlock,
@@ -69,18 +73,17 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
 
     override fun processFieldNode(
         input: FieldNode,
-        parent: Node?,
+        parent: Node,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): FieldNode {
+    ) {
         addIndents(parent, indent)
-        val result = formatArgumentNode(input, parent, indent, next, prev) as FieldNode
-        parent?.addSeparatorNewLine()
-        return result
+        formatArgumentNode(input, parent, indent, next, prev)
+        parent.addSeparatorNewLine()
     }
 
-    public fun declarationPattern(input: Node): Int {
+    fun declarationPattern(input: Node): Int {
         if (input.subs.size < 4)
             return -1
         for (pos in 0..input.subs.size-4) {
@@ -109,19 +112,19 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
 
     private fun formatArgumentNode(
         input: Node,
-        outputParent: Node?,
+        outputParent: Node,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): Node {
-        return input.copyLeaf(copySubs = false).apply {
+    ) {
+        input.copyLeaf(copySubs = false).apply {
             if (next is ArgumentNode || prev is ArgumentNode) {
-                outputParent?.subs?.addAll(getIndents(indent))
+                outputParent.subs.addAll(getIndents(indent))
             }
-            outputParent?.addSub(this)
+            outputParent.addSub(this)
             if (next is ArgumentNode) {
-                outputParent?.addSub(Separator(","))
-                outputParent?.addSub(NlSeparator())
+                outputParent.addSub(Separator(","))
+                outputParent.addSub(NlSeparator())
             }
             if (declarationPattern(input) >= 0) {
                 // <val><NAME><:><int> to

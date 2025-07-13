@@ -14,12 +14,14 @@ import generators.obj.out.CommentLeaf
 import generators.obj.out.EnumNode
 import generators.obj.out.FieldNode
 import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
 import generators.obj.out.Indent
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
 import generators.obj.out.OutBlockArguments
 import generators.obj.out.Region
+import generators.obj.out.RegionImpl
 import generators.obj.out.Separator
 import generators.obj.out.Space
 import javax.inject.Inject
@@ -28,10 +30,15 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
     protected val codeStyleRepo: CodeStyleRepo,
 ) : CodeFormatterUseCase {
     override fun <T : Node> invoke(input: T): T {
-        return processNode(mutableListOf(input), null, 0, null) as T
+        val container = RegionImpl()
+        processNode(mutableListOf(input),
+            outputParent = container, 0, null)
+        return container.subs.first() as T
     }
 
-    protected open fun processLeaf(inputQueue: MutableList<Leaf>, outputParent: Node, indent: Int) {
+    protected open fun processLeaf(inputQueue: MutableList<Leaf>,
+                                   outputParent: Node,
+                                   indent: Int) {
         val nodesToAdd = mutableListOf<Leaf>()
         val input = inputQueue.first()
         when (input) {
@@ -43,6 +50,12 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             }
 
             is CompilerDirective -> {
+                val leaf = input.copyLeaf(parent = outputParent)
+                nodesToAdd.add(leaf)
+                nodesToAdd.add(getNewLine())
+            }
+
+            is ImportLeaf -> {
                 val leaf = input.copyLeaf(parent = outputParent)
                 nodesToAdd.add(leaf)
                 nodesToAdd.add(getNewLine())
@@ -67,7 +80,7 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
         indent: Int,
         prev: Leaf?,
         inputQueue: MutableList<Leaf>
-    ): ArgumentNode = defaultProcessNode(input, outputParent, indent) as ArgumentNode
+    ) { defaultProcessNode(input, outputParent, indent) }
 
     protected open fun processOutBlock(
         input: OutBlock,
@@ -104,11 +117,10 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             outputParent.addSeparatorNewLine()
         }
 
-    protected open fun defaultProcessNode(input: Leaf, outputParent: Node?, indent: Int): Node {
+    protected open fun defaultProcessNode(input: Leaf, outputParent: Node, indent: Int) {
         val node = input.copyLeaf(copySubs = false) as Node
-        outputParent?.addSub(node)
+        outputParent.addSub(node)
         processSubs(input as Node, node, indent)
-        return node
     }
 
     protected open fun processSeparatorAfterOutBlock(
@@ -155,43 +167,46 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
     open fun processArguments(
         input: Node,
-        parent: Node?,
+        parent: Node,
         indent: Int
-    ): Node {
-        parent?.addKeyword("(")
+    ) {
+        parent.addKeyword("(")
         val multiline = input.subs.size > 1
 
-        val result = input.copyLeaf(copySubs = false).apply {
-            if (multiline) parent?.addSub(NlSeparator())
-            parent?.addSub(this)
-            if (multiline) parent?.addSub(NlSeparator())
+        input.copyLeaf(copySubs = false).apply {
+            if (multiline) parent.addSub(NlSeparator())
+            parent.addSub(this)
+            if (multiline) parent.addSub(NlSeparator())
             processSubs(input, this, indent + 1)
         }
-        parent?.addKeyword(")")
-        return result
+        parent.addKeyword(")")
     }
 
     protected open fun processNode(
         inputQueue: MutableList<Leaf>,
-        outputParent: Node?,
+        outputParent: Node,
         indent: Int,
         prev: Leaf?
-    ): Node? {
+    ) {
         val input = inputQueue.first()
         inputQueue.removeFirst()
         val next = inputQueue.firstOrNull()
         if (input is FileData) {
             if (!input.isDirty) {
-                return null
+                return
             }
+        }
+        if (input is Region && input.subs.isEmpty()) {
+            // skip empty regions
+            return
         }
         if ((input is Region) or (input is NamespaceBlock)) {
             if (codeStyleRepo.addSpaceBeforeRegion()) {
-                outputParent?.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
+                outputParent.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
             }
         }
 
-        return when (input) {
+        when (input) {
             is EnumNode -> processEnumNode(
                 input = input,
                 parent = outputParent,
@@ -202,28 +217,28 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
             is FieldNode -> processFieldNode(input, outputParent, indent, next, prev)
 
-            is OutBlock -> processOutBlock(input, outputParent!!, indent, prev, inputQueue)
+            is OutBlock -> processOutBlock(input, outputParent, indent, prev, inputQueue)
 
             is NamespaceBlock -> {
                 input.copyLeaf(copySubs = false).apply {
-                    outputParent?.addSub(this)
+                    outputParent.addSub(this)
                     addSub(Space())
                     addKeyword("{")
                     addSeparatorNewLine()
                     processSubs(input, this, indent + 1)
                     addKeyword("}")
-                    outputParent?.addSeparatorNewLine()
+                    outputParent.addSeparatorNewLine()
                 }
             }
 
             is Region -> {
                 (input.copyLeaf(copySubs = false) as Region).apply {
-                    outputParent?.addSub(this)
+                    outputParent.addSub(this)
                     processSubs(input, this, indent)
                 }
             }
             is RValue -> processRValue(input, outputParent, indent)
-            is ArgumentNode -> processArgumentNode(input, outputParent!!, indent, prev, inputQueue)
+            is ArgumentNode -> processArgumentNode(input, outputParent, indent, prev, inputQueue)
             is Arguments,
             is OutBlockArguments -> processArguments(
                 input = input,
@@ -251,14 +266,14 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
 
     open fun processFieldNode(
         input: FieldNode,
-        parent: Node?,
+        parent: Node,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): FieldNode {
+    ) {
         addIndents(parent, indent)
-        val res = input.copyLeaf(copySubs = false).apply {
-            parent?.addSub(this)
+        input.copyLeaf(copySubs = false).apply {
+            parent.addSub(this)
             val queue = input.subs.toMutableList()
             while (queue.isNotEmpty()) {
                 val first = queue.first()
@@ -268,9 +283,8 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 }
             }
         }
-        parent?.addSeparator(";")
-        parent?.addSeparatorNewLine()
-        return res
+        parent.addSeparator(";")
+        parent.addSeparatorNewLine()
     }
 
     protected open fun addIndents(parent: Node?, indent: Int) {

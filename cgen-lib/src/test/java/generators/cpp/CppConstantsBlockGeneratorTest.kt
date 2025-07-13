@@ -17,6 +17,7 @@ import generators.obj.input.findOrNull
 import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CommentsBlock
 import generators.obj.out.FieldNode
+import generators.obj.out.ImportsBlock
 import generators.obj.out.Keyword
 import generators.obj.out.NamespaceBlock
 import generators.obj.out.OutputTree
@@ -29,24 +30,22 @@ class CppConstantsBlockGeneratorTest {
     private val arrayDataType = GetArrayDataTypeUseCase()
     private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
     val prepareRightValueUseCase = PrepareRightValueUseCase(getTypeNameUseCase)
+    val codeStyle = CodeStyle(
+        newLinesBeforeClass = 1,
+        tabSize = 2,
+        preventEmptyBlocks = true,
+    )
+    val repo = CLikeCodestyleRepo(codeStyle)
+    val item = CppConstantsBlockGenerator(
+        addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
+        prepareRightValueUseCase = prepareRightValueUseCase
+    )
+    val fileGenerator = CppFileGenerator()
 
     @Test
     fun testConstantsBlock() {
-        val codeStyle = CodeStyle(
-            newLinesBeforeClass = 1,
-            tabSize = 2,
-            preventEmptyBlocks = true,
-        )
-        val repo = CLikeCodestyleRepo(codeStyle)
+        val projectOutput = OutputTree(Target.Cpp)
 
-        val project = OutputTree(Target.Cxx)
-        val item = CppConstantsBlockGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
-            prepareRightValueUseCase = prepareRightValueUseCase
-        )
-        val headerFile = CppHeaderFile("a").apply { setParent2(project) }
-        val cxxFile = CppFileData("b").apply { setParent2(project) }
-        val files = listOf(headerFile, cxxFile)
         val namespace = NamespaceImpl("a").apply { setParent2(TreeRoot) }
         val block = namespace.addSub(ConstantsBlock("c")).apply {
             addBlockComment("182TEST_COMMENT")
@@ -55,12 +54,18 @@ class CppConstantsBlockGeneratorTest {
             add("B")
             add("C")
         }
+
+        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val headerFile = files.first { it is CppHeaderFile } as CppHeaderFile
+        val cxxFile = files.first { it is CppFileData } as CppFileData
+
         Assert.assertFalse("Dirty flag should be false in .h before changes", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false in .cpp before changes", cxxFile.isDirty)
         item(files, block)
         // expected result
         // <CppHeaderFile name="a">
         //     <CompileDirective pragma once/>
+        //     <ImportsBlock />
         //     <NamespaceBlock name="a">
         //         <region>
         //             <CommentsBlock>
@@ -79,7 +84,13 @@ class CppConstantsBlockGeneratorTest {
         // </CppHeaderFile>
         Assert.assertTrue("Dirty flag should be true", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
-        val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
+
+        Assert.assertEquals(3, headerFile.subs.size)
+        Assert.assertEquals(CompilerDirective::class, headerFile.subs[0]::class)
+        Assert.assertEquals(ImportsBlock::class, headerFile.subs[1]::class)
+        Assert.assertEquals(NamespaceBlock::class, headerFile.subs[2]::class)
+
+        val outNamespace = headerFile.subs[2] as NamespaceBlock
         Assert.assertEquals(1, outNamespace.subs.size)
         val constantsBlock = outNamespace.findOrNull(RegionImpl::class.java)!!
         Assert.assertEquals(4, constantsBlock.subs.size)

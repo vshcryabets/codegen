@@ -6,7 +6,7 @@ enum class Target(val rawValue: String) {
     Other("other"),
     Kotlin("kotlin"),
     C("c"),
-    Cxx("cxx"),
+    Cpp("cpp"),
     Swift("swift"),
     Java("java"),
     Rust("rust"),
