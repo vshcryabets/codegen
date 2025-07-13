@@ -37,7 +37,7 @@ class CodeFormatterUseCaseImplTest {
         val output = formatter(input)
         // expected result
         // <CppHeaderFile>
-        //    <pragama once> <nl>
+        //    <pragma once> <nl>
         //    <nl>
         //    <NamespaceBlock>
         //       <SPACE> <{><nl>
