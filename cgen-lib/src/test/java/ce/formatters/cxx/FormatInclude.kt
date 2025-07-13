@@ -1,4 +1,4 @@
-package ce.formatters.cxx
+package ce.formatters.cpp
 
 import ce.defs.DataType
 import ce.defs.Target
