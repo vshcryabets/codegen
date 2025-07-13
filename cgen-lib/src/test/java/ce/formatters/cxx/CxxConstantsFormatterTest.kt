@@ -92,7 +92,7 @@ class CxxConstantsFormatterTest {
             addRValue("0")
         }
 
-        val output = formatter(input) as FieldNode
+        val output = formatter(input)
         // expected result
         // <ConstantLeaf>
         //     <const> <SPACE>

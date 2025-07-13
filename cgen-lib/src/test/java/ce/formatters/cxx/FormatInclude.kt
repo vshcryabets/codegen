@@ -8,7 +8,6 @@ import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
 import generators.cpp.CompilerDirective
 import generators.cpp.CppConstantsBlockGenerator
-import generators.cpp.CppFileData
 import generators.cpp.CppFileGenerator
 import generators.cpp.CppHeaderFile
 import generators.kotlin.GetArrayDataTypeUseCase
@@ -77,7 +76,6 @@ class FormatInclude {
 
         val files = fileGenerator.createFile(projectOutput, "a", block)
         val headerFile = files.first { it is CppHeaderFile } as CppHeaderFile
-        val cxxFile = files.first { it is CppFileData } as CppFileData
 
         cppConstantsBlockGenerator(files, block)
 
