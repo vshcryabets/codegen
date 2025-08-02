@@ -29,7 +29,13 @@ class PrepareRightValueUseCase(
             DataType.float32 -> RValue(name = value.simple.toString() + "f")
             DataType.float64 -> RValue(name = value.simple.toString())
             DataType.bool -> RValue(name = value.simple.toString())
-            is DataType.string -> RValue(name = value.simple.toString())
+            is DataType.string -> {
+                if (value.simple is String) {
+                    RValue(name = "\"${value.simple}\"")
+                } else {
+                    RValue(name = "QQVAL_string???")
+                }
+            }
             is DataType.custom -> {
                 if (!value.isComplex) {
                     RValue(name = value.simple.toString())
