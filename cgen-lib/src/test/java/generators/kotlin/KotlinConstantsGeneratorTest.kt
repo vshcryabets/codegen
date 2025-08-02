@@ -20,23 +20,22 @@ class KotlinConstantsGeneratorTest {
     private val reader = XmlTreeReader()
     private val arrayDataType = GetArrayDataTypeUseCase()
     private val getTypeNameUseCase = GetTypeNameUseCase(arrayDataType)
+    private val codeStyle = CodeStyle(
+        newLinesBeforeClass = 1,
+        tabSize = 2,
+        preventEmptyBlocks = true,
+    )
+    private val repo = CLikeCodestyleRepo(codeStyle)
+    private val fileGenerator = KotlinFileGenerator()
+    private val prepareRightValueUseCase = PrepareRightValueUseCase(getTypeNameUseCase)
+    private val item = KtConstantsGenerator(
+        addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
+        dataTypeToString = getTypeNameUseCase,
+        prepareRightValueUseCase = prepareRightValueUseCase
+    )
 
     @Test
     fun testConstantsClass() {
-        val codeStyle = CodeStyle(
-            newLinesBeforeClass = 1,
-            tabSize = 2,
-            preventEmptyBlocks = true,
-        )
-        val repo = CLikeCodestyleRepo(codeStyle)
-        val fileGenerator = KotlinFileGenerator()
-        val prepareRightValueUseCase = PrepareRightValueUseCase(getTypeNameUseCase)
-        val item = KtConstantsGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
-            dataTypeToString = getTypeNameUseCase,
-            prepareRightValueUseCase = prepareRightValueUseCase
-        )
-
         val tree = reader.loadFromString("""
             <Namespace name="com.goldman.xml">
                     <ConstantsBlock defaultType="int32" name="Constants">
@@ -97,5 +96,25 @@ class KotlinConstantsGeneratorTest {
         // check OWRITE node
         val node2 = outBlock.subs[1] as FieldNode
         Assert.assertEquals(7, node2.subs.size)
+    }
+
+    @Test
+    fun testStringConstants() {
+        val tree = reader.loadFromString("""
+            <Namespace name="com.goldman.xml">
+                <ConstantsBlock defaultType="string" name="Constants">
+                    <ConstantDesc name="Const1" value="ABC"/>
+                    <ConstantDesc name="Const2" value="DEF"/>
+                </ConstantsBlock>
+            </Namespace>
+        """.trimIndent())
+        val lastNs = (tree as NamespaceImpl).getNamespace("goldman.xml")
+        val block = lastNs.subs.first() as ConstantsBlock
+
+        val projectOutput = OutputTree(Target.Kotlin)
+        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val mainFile = files.first()
+        item(files, block)
+        Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
     }
 }
