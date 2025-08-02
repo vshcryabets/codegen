@@ -54,7 +54,7 @@ class PrepareRightValueUseCaseTest {
     @Test
     fun toRightValueReturnsSimpleValueForStringType() {
         val result = prepareRightValueUseCase.toRightValue(DataType.string(), DataValueImpl(simple = "hello"), fileData)
-        assertEquals("hello", result.name)
+        assertEquals("\"hello\"", result.name)
     }
 
     @Test

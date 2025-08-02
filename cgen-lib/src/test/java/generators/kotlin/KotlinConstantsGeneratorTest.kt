@@ -58,7 +58,7 @@ class KotlinConstantsGeneratorTest {
         //     <ImportsBlock />
         //     <region>
         //        <OutBlock>
-        //          <ConstantNode>
+        //          <FieldNode>
         //              <Keyword const />
         //              <Keyword val />
         //              <VariableName OREAD />
@@ -66,8 +66,8 @@ class KotlinConstantsGeneratorTest {
         //              <AstTypeLeaf Int />
         //              <Keyword = />
         //              <RValue 0 />
-        //          </ConstantNode>
-        //          <ConstantNode ... />
+        //          </FieldNode>
+        //          <FieldNode ... />
         //        </OutBlock>
         //     </region>
         // </FileData>
@@ -115,6 +115,43 @@ class KotlinConstantsGeneratorTest {
         val files = fileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
         item(files, block)
+        // expected result
+        // <FileData>
+        //     <NamespaceDeclaration />
+        //     <ImportsBlock />
+        //     <region>
+        //        <OutBlock>
+        //          <FieldNode>
+        //              <Keyword const />
+        //              <Keyword val />
+        //              <VariableName Const1 />
+        //              <Keyword : />
+        //              <AstTypeLeaf String />
+        //              <Keyword = />
+        //              <RValue "ABC" />
+        //          </FieldNode>
+        //          <FieldNode ... />
+        //        </OutBlock>
+        //     </region>
+        // </FileData>
+
         Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
+        Assert.assertEquals(3, mainFile.subs.size)
+        Assert.assertTrue(mainFile.subs[2] is RegionImpl)
+        val region = mainFile.subs[2] as Region
+        Assert.assertEquals(1, region.subs.size)
+        Assert.assertTrue(region.subs[0] is OutBlock)
+        val outBlock = region.subs[0] as OutBlock
+        Assert.assertEquals(2, outBlock.subs.size)
+        // check Const1 node
+        val node1 = outBlock.subs[0] as FieldNode
+        Assert.assertEquals(7, node1.subs.size)
+        Assert.assertEquals("const", node1.subs[0].name)
+        Assert.assertEquals("val", node1.subs[1].name)
+        Assert.assertEquals("Const1", node1.subs[2].name)
+        Assert.assertEquals(":", node1.subs[3].name)
+        Assert.assertEquals("String", node1.subs[4].name)
+        Assert.assertEquals("=", node1.subs[5].name)
+        Assert.assertEquals("\"ABC\"", node1.subs[6].name)
     }
 }
