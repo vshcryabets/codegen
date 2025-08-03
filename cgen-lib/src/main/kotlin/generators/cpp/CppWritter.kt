@@ -1,7 +1,7 @@
 package generators.cpp
 
 import ce.formatters.CodeStyleRepo
-import ce.io.CodeWritter
+import ce.io.CodeWriter
 import ce.io.FileCodeWritter
 import ce.repository.ReportsRepo
 import generators.obj.Writter
@@ -21,7 +21,7 @@ class CppWritter(
     private val reportsRepo: ReportsRepo
 ) : Writter(codeStyleRepo, outputFolder) {
 
-    override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
+    override fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
             is CompilerDirective -> out.write("#${leaf.name}")
             is ImportLeaf -> {
@@ -37,7 +37,7 @@ class CppWritter(
         }
     }
 
-    override fun writeNode(node: Node, out: CodeWritter, indent: String) {
+    override fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
             is NamespaceBlock -> {
                 out.write("namespace ${node.name.replace(".", "::")}")

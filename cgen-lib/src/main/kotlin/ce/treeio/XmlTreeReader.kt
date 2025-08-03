@@ -21,7 +21,6 @@ class XmlTreeReaderError(message: String, inner: Exception) : Exception(message,
 
 class XmlTreeReader : TreeReader {
     val dataTypeSerializer = DataTypeSerializer()
-    val dataValueSerializer = DataValueSerializer()
 
     val map = mutableMapOf<String, NodeDeserializer>()
 
@@ -63,7 +62,9 @@ class XmlTreeReader : TreeReader {
             OutTreeDeserizalier(),
             AstTreeDeserializer(),
             CodeStyleOututTreeDeserializer(),
-            ConstantDescDeserializer()
+            ConstantDescDeserializer(),
+            ArgumentsDeserializer(),
+            RValueDeserializer()
         ).forEach {
             it.getTags().forEach { tag ->
                 map[tag] = it
@@ -109,7 +110,7 @@ class XmlTreeReader : TreeReader {
                     )
                 )
             } else {
-                throw IllegalStateException("Unknown $tagName")
+                throw IllegalStateException("Unknown tag \"$tagName\" in XML tree. ")
             }
             result.setParent2(parent)
             if (result is Block) {
@@ -130,7 +131,7 @@ class XmlTreeReader : TreeReader {
                 // <com>
                 //   |-<goldman>
                 //         |-<xml/>
-                val nextRoot = getLast(result as Node)
+                val nextRoot = getLast(result)
                 for (i in 0..childNodesCount - 1) {
                     val childNode = node.childNodes.item(i)
                     if (childNode != null && childNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {

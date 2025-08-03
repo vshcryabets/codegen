@@ -1,7 +1,7 @@
-package ce.writters
+package ce.writers
 
 import ce.formatters.CLikeCodestyleRepo
-import ce.io.CodeWritter
+import ce.io.CodeWriter
 import ce.repository.ReportsRepoImpl
 import ce.settings.CodeStyle
 import generators.java.JavaWritter
@@ -39,19 +39,19 @@ class JavaWritterTest {
             }
         }
         val buffer = StringBuffer()
-        writter.writeNode(input, object : CodeWritter {
-            override fun write(str: String): CodeWritter {
+        writter.writeNode(input, object : CodeWriter {
+            override fun write(str: String): CodeWriter {
                 buffer.append(str)
                 return this
             }
 
-            override fun writeNl(): CodeWritter {
+            override fun writeNl(): CodeWriter {
                 buffer.append("\n")
                 return this
             }
 
-            override fun writeNlIfNotEmpty(): CodeWritter = this
-            override fun setIndent(str: String): CodeWritter = this
+            override fun writeNlIfNotEmpty(): CodeWriter = this
+            override fun setIndent(str: String): CodeWriter = this
             override fun setNewLine(str: String) {}
         }, "")
         Assert.assertEquals("public class TEST {}\n", buffer.toString())

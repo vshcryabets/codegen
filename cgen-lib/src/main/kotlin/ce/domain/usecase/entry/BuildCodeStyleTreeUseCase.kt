@@ -5,6 +5,7 @@ import ce.domain.usecase.load.LoadOutTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreCodeStyleTreeUseCase
 import ce.domain.usecase.transform.TransformOutTreeToCodeStyleTreeUseCase
+import ce.formatters.PrepareCodeStyleTreeUseCaseImpl
 import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
 
@@ -22,7 +23,8 @@ class BuildCodeStyleTreeUseCase(
         val codeStyleRepo = CodestyleRepoImpl(project)
         val generatorsRepo = GeneratorsRepo(project, codeStyleRepo)
         val outTree = loadOutTreeUseCase(outTreeFile)
-        val codeStyleTree = transformOutTreeToCodeStyleTreeUseCase(outTree, generatorsRepo.get(outTree.target))
+        val codeStyleTree = transformOutTreeToCodeStyleTreeUseCase(outTree,
+            PrepareCodeStyleTreeUseCaseImpl(generatorsRepo.getFormatter(outTree.target)))
         storeCodeStyleTreeUseCase(codeStyleTreeFile, codeStyleTree)
     }
 }

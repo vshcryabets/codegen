@@ -13,6 +13,7 @@ import generators.obj.out.AstTypeLeaf
 import generators.obj.out.EnumNode
 import generators.obj.out.FieldNode
 import generators.obj.out.Keyword
+import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
 import generators.obj.out.OutBlockArguments
@@ -163,4 +164,29 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             indent = indent
         )
     }
+
+    override fun processNamespaceDeclaration(
+        input: NamespaceDeclaration,
+        outputParent: Node,
+        indent: Int
+    ) {
+        val node = input.copyLeaf(copySubs = false) as Node
+        outputParent.addSub(node)
+        processSubs(input as Node, node, indent)
+        // add spaces
+        val newSubs = node.subs.toList()
+        node.subs.clear()
+
+        newSubs.forEachIndexed { index, leaf ->
+            if (index > 0) {
+                // add space before every leaf except first
+                node.addSub(Space())
+            }
+            node.addSub(leaf)
+        }
+        // after kotlin package declaration we should add two newline
+        node.addSub(NlSeparator())
+        node.addSub(NlSeparator())
+    }
+
 }

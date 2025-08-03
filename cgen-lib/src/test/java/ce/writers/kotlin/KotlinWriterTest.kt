@@ -1,18 +1,13 @@
-package ce.writters
+package ce.writers.kotlin
 
+import ce.basetest.KotlinBaseTest
 import ce.defs.DataType
 import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
-import ce.formatters.CLikeCodestyleRepo
-import ce.formatters.CodeFormatterKotlinUseCaseImpl
-import ce.io.CodeWritter
-import ce.settings.CodeStyle
-import generators.kotlin.GetArrayDataTypeUseCase
+import ce.io.CodeWriter
 import generators.kotlin.GetTypeNameUseCase
 import generators.kotlin.KotlinEnumGenerator
-import generators.kotlin.KotlinFileGenerator
-import generators.kotlin.KotlinWritter
-import generators.kotlin.PrepareRightValueUseCase
+import generators.kotlin.KotlinWriter
 import generators.obj.input.ConstantsEnum
 import generators.obj.input.NamespaceImpl
 import generators.obj.input.addKeyword
@@ -31,19 +26,9 @@ import generators.obj.out.Region
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
-class KotlinWritterTest {
-    private val codeStyleNoSpace = CodeStyle(
-        newLinesBeforeClass = 0,
-        tabSize = 2,
-        preventEmptyBlocks = true,
-    )
-    private val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    private val fileGenerator = KotlinFileGenerator()
-    private val writter = KotlinWritter(repoNoSpace, "")
-    private val arrayDataType = GetArrayDataTypeUseCase()
+class KotlinWriterTest: KotlinBaseTest() {
+    private val writer = KotlinWriter(repo, "")
     private val dataTypeToString = GetTypeNameUseCase(arrayDataType)
-    private val prepareRightValueUseCase = PrepareRightValueUseCase(dataTypeToString)
-    private val formatter = CodeFormatterKotlinUseCaseImpl(repoNoSpace)
 
     @Test
     fun testConstantNodeWithSimpleRvalue() {
@@ -62,19 +47,19 @@ class KotlinWritterTest {
             addSeparator(" ")
             addRValue("0")
         }
-        writter.writeNode(input, object : CodeWritter {
-            override fun write(str: String): CodeWritter {
+        writer.writeNode(input, object : CodeWriter {
+            override fun write(str: String): CodeWriter {
                 buffer.append(str)
                 return this
             }
 
-            override fun writeNl(): CodeWritter {
+            override fun writeNl(): CodeWriter {
                 buffer.append("\n")
                 return this
             }
 
-            override fun writeNlIfNotEmpty(): CodeWritter = this
-            override fun setIndent(str: String): CodeWritter = this
+            override fun writeNlIfNotEmpty(): CodeWriter = this
+            override fun setIndent(str: String): CodeWriter = this
             override fun setNewLine(str: String) {}
         }, "")
         Assert.assertEquals("const val OREAD: Int = 0", buffer.toString())
@@ -93,7 +78,7 @@ class KotlinWritterTest {
         val files = fileGenerator.createFile(projectOutput, "a", block)
         val mainFile = files.first()
         val process = KotlinEnumGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repoNoSpace),
+            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
             dataTypeToString = dataTypeToString,
             prepareRightValueUseCase = prepareRightValueUseCase
         )
@@ -102,19 +87,19 @@ class KotlinWritterTest {
         val formatedNode = formatter(inputEnumNode)
         val buffer = StringBuffer()
 
-        writter.writeNode(formatedNode, object : CodeWritter {
-            override fun write(str: String): CodeWritter {
+        writer.writeNode(formatedNode, object : CodeWriter {
+            override fun write(str: String): CodeWriter {
                 buffer.append(str)
                 return this
             }
 
-            override fun writeNl(): CodeWritter {
+            override fun writeNl(): CodeWriter {
                 buffer.append("\n")
                 return this
             }
 
-            override fun writeNlIfNotEmpty(): CodeWritter = this
-            override fun setIndent(str: String): CodeWritter = this
+            override fun writeNlIfNotEmpty(): CodeWriter = this
+            override fun setIndent(str: String): CodeWriter = this
             override fun setNewLine(str: String) {}
         }, "")
         Assert.assertEquals("OK(0)", buffer.toString())
@@ -141,19 +126,19 @@ class KotlinWritterTest {
             )
         }
         val buffer = StringBuffer()
-        writter.writeNode(input, object : CodeWritter {
-            override fun write(str: String): CodeWritter {
+        writer.writeNode(input, object : CodeWriter {
+            override fun write(str: String): CodeWriter {
                 buffer.append(str)
                 return this
             }
 
-            override fun writeNl(): CodeWritter {
+            override fun writeNl(): CodeWriter {
                 buffer.append("\n")
                 return this
             }
 
-            override fun writeNlIfNotEmpty(): CodeWritter = this
-            override fun setIndent(str: String): CodeWritter = this
+            override fun writeNlIfNotEmpty(): CodeWriter = this
+            override fun setIndent(str: String): CodeWriter = this
             override fun setNewLine(str: String) {}
         }, "")
         Assert.assertEquals("val testField: TestClass = TestClass()", buffer.toString())

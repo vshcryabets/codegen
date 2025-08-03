@@ -3,7 +3,7 @@ package generators.obj
 import ce.defs.DataValue
 import ce.defs.RValue
 import ce.formatters.CodeStyleRepo
-import ce.io.CodeWritter
+import ce.io.CodeWriter
 import generators.obj.input.DataField
 import generators.obj.input.Leaf
 import generators.obj.input.Node
@@ -41,7 +41,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     abstract fun writeFile(fileData: FileData)
 
-    open fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
+    open fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
             is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
@@ -71,7 +71,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
         }
     }
 
-    open fun writeSubNodes(node: Node, out: CodeWritter, indent: String) {
+    open fun writeSubNodes(node: Node, out: CodeWriter, indent: String) {
         node.subs.forEach {
             if (it is Node) {
                 writeNode(it, out, indent)
@@ -81,7 +81,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
         }
     }
 
-    open fun writeNode(node: Node, out: CodeWritter, indent: String) {
+    open fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
             is EnumNode, is RValue, is Constructor -> {
                 out.write(node.name)

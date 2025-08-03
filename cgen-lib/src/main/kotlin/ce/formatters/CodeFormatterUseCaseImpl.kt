@@ -17,6 +17,7 @@ import generators.obj.out.FileData
 import generators.obj.out.ImportLeaf
 import generators.obj.out.Indent
 import generators.obj.out.NamespaceBlock
+import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
 import generators.obj.out.OutBlockArguments
@@ -200,7 +201,10 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             // skip empty regions
             return
         }
-        if ((input is Region) or (input is NamespaceBlock)) {
+        if (((input is Region)
+                    // we shouldn't add space before namespace declaration (at least in kotlin)
+                    and !(input is NamespaceDeclaration))
+            or (input is NamespaceBlock)) {
             if (codeStyleRepo.addSpaceBeforeRegion()) {
                 outputParent.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
             }
@@ -214,7 +218,11 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 next = next,
                 prev = prev
             )
-
+            is NamespaceDeclaration -> processNamespaceDeclaration(
+                input = input,
+                outputParent = outputParent,
+                indent = indent
+            )
             is FieldNode -> processFieldNode(input, outputParent, indent, next, prev)
 
             is OutBlock -> processOutBlock(input, outputParent, indent, prev, inputQueue)
@@ -250,6 +258,14 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 defaultProcessNode(input, outputParent, indent)
             }
         }
+    }
+
+    protected open fun processNamespaceDeclaration(
+        input: NamespaceDeclaration,
+        outputParent: Node,
+        indent: Int
+    ) {
+        defaultProcessNode(input, outputParent, indent)
     }
 
     protected fun processRValue(

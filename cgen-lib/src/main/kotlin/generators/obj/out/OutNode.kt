@@ -5,6 +5,16 @@ import generators.obj.input.Node
 import generators.obj.input.addSub
 import generators.obj.input.copyNodeExt
 
+abstract class Region2Impl(
+    override val name: String = "",
+): Region {
+    override val subs: MutableList<Leaf> = mutableListOf()
+    override fun toString() = name
+    var parent: Node? = null
+    override fun getParent2(): Node? = parent
+    override fun setParent2(parent: Node?) { this.parent = parent }
+}
+
 data class CommentsBlock(
     override val name: String = "",
     override val subs: MutableList<Leaf> = mutableListOf()
@@ -16,6 +26,13 @@ data class CommentsBlock(
     var parent: Node? = null
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
+}
+
+open class NamespaceDeclaration(
+    name: String
+) : Region2Impl(name) {
+    override fun copyLeaf(parent: Node?, copySubs: Boolean): NamespaceDeclaration =
+        this.copyNodeExt(parent, copySubs) { NamespaceDeclaration(name) }
 }
 
 // #include <iostream>

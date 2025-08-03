@@ -3,6 +3,7 @@ package ce.treeio
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.DataValueImpl
+import ce.defs.RValue
 import ce.defs.TargetExt
 import generators.kotlin.KotlinClassData
 import generators.obj.input.ConstantDesc
@@ -23,6 +24,7 @@ import generators.obj.input.OutputReusable
 import generators.obj.input.TypeLeaf
 import generators.obj.input.buildNamespaceTree
 import generators.obj.out.ArgumentNode
+import generators.obj.out.Arguments
 import generators.obj.out.AstTree
 import generators.obj.out.AstTypeLeaf
 import generators.obj.out.CodeStyleOutputTree
@@ -82,7 +84,7 @@ class NamespaceDeclarationDeserializer : NodeDeserializer {
 
 class KotlinClassDataDeserializer : NodeDeserializer {
     override operator fun invoke(args: DeserializeArguments) = KotlinClassData(args.name)
-    override fun getTags() = listOf(NamespaceDeclaration::class.java.simpleName)
+    override fun getTags() = listOf(KotlinClassData::class.java.simpleName)
 }
 
 class IndentDeserializer : NodeDeserializer {
@@ -277,6 +279,16 @@ class OutTreeDeserizalier: NodeDeserializer {
     override operator fun invoke(args: DeserializeArguments) =
         OutputTree(TargetExt.findByName(args.element.getAttribute(XmlInTreeWritterImpl.KEY_TARGET)))
     override fun getTags() = listOf(OutputTree::class.java.simpleName)
+}
+
+class ArgumentsDeserializer: NodeDeserializer {
+    override operator fun invoke(args: DeserializeArguments) = Arguments(args.name)
+    override fun getTags() = listOf(Arguments::class.java.simpleName)
+}
+
+class RValueDeserializer: NodeDeserializer {
+    override operator fun invoke(args: DeserializeArguments) = RValue(args.name)
+    override fun getTags() = listOf(RValue::class.java.simpleName)
 }
 
 class AstTreeDeserializer: NodeDeserializer {

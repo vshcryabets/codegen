@@ -1,22 +1,29 @@
 package generators.kotlin
 
 import ce.formatters.CodeStyleRepo
-import ce.io.CodeWritter
+import ce.io.CodeWriter
 import ce.io.FileCodeWritter
-import ce.settings.CodeStyle
 import generators.obj.Writter
-import generators.obj.input.*
-import generators.obj.out.*
-import java.io.BufferedWriter
+import generators.obj.input.InputList
+import generators.obj.input.Leaf
+import generators.obj.input.Method
+import generators.obj.input.Node
+import generators.obj.input.findOrNull
+import generators.obj.input.removeSub
+import generators.obj.out.FileData
+import generators.obj.out.ImportLeaf
+import generators.obj.out.NamespaceDeclaration
+import generators.obj.out.OutBlock
+import generators.obj.out.ResultLeaf
 import java.io.File
 
-class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
+class KotlinWriter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
     : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
         val outputFile = File(fileData.name + ".kt")
         outputFile.parentFile.mkdirs()
-        println("KotlinWritter writing ${outputFile.absolutePath}")
+        println("KotlinWriter writing ${outputFile.absolutePath}")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
             codeWritter.setNewLine(codeStyleRepo.newLine())
@@ -24,7 +31,7 @@ class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
         }
     }
 
-    override fun writeNode(node: Node, out: CodeWritter, indent: String) {
+    override fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
             is Method -> {
                 out.write(node.name).write("(").setIndent(indent + codeStyleRepo.tab)
@@ -47,7 +54,7 @@ class KotlinWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
         }
     }
 
-    override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
+    override fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
             is ImportLeaf -> out.write("import ${leaf.name}")
             is NamespaceDeclaration -> out.write("package ${leaf.name}")

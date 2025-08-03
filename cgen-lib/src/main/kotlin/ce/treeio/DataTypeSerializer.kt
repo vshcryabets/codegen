@@ -10,6 +10,8 @@ import generators.obj.input.getPath
 class DataTypeSerializer : JsonSerializer<DataType>() {
 
     companion object {
+        val STRING_NULLABLE = "stringNullable"
+        val STRING = "string"
         val PREFIX_ARRAY_OF = "arrayOf_"
         val PREFIX_POINTER_TO = "pointerTo_"
         val PREFIX_FLOW_OF = "flowOf_"
@@ -28,7 +30,7 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             DataType.uint16 to "uint16",
             DataType.uint32 to "uint32",
             DataType.uint64 to "uint64",
-            DataType.uint8 to "uint8",
+            DataType.uint8 to "uint8"
         )
         val DATATYPES_REVERSE_MAP = mutableMapOf<String, DataType>()
     }
@@ -65,7 +67,10 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             is DataType.promise -> PREFIX_FLOW_OF + stringValue(value.elementDataType)
             is DataType.userClass -> PREFIX_CLASS + value.path
             is DataType.userClassTest2 -> PREFIX_CLASS + value.node.getPath()
-            is DataType.string -> "string"
+            is DataType.string -> if (value.canBeNull)
+                STRING_NULLABLE
+            else
+                STRING
             else -> "UNK" + value.toString()
         }
         return typeStr
@@ -76,6 +81,12 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             return DATATYPES_REVERSE_MAP[value]!!
         if (value.startsWith(PREFIX_ARRAY_OF)) {
             return DataType.array(fromStringValue(value.substring(PREFIX_ARRAY_OF.length)))
+        }
+        if (value == STRING) {
+            return DataType.string()
+        }
+        if (value == STRING_NULLABLE) {
+            return DataType.string(canBeNull = true)
         }
         throw IllegalStateException("Not supported data type=\"$value\"")
     }
