@@ -13,8 +13,11 @@ import generators.kotlin.KtConstantsGenerator
 import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.input.ConstantsBlock
 import generators.obj.input.NamespaceImpl
+import generators.obj.out.Keyword
 import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.OutputTree
+import generators.obj.out.Space
+import generators.obj.out.VariableName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -64,12 +67,22 @@ class KotlinPackageAndImportsTest {
         val formatted = formatter(input = mainFile)
         // expected result
         // <FileData>
-        //     <NamespaceDeclaration />
+        //     <NamespaceDeclaration>
+        //         <Keyword name="package"/>
+        //         <Space>
+        //         <VariableName name="com.goldman.xml"/>
+        //         <NewLine/>
+        //         <NewLine/>
+        //     </NamespaceDeclaration>
         //     <region>
         // ...
         Assertions.assertEquals(2, formatted.subs.size)
         Assertions.assertEquals(NamespaceDeclaration::class.java, formatted.subs[0]::class.java)
-
-
+        val namespaceDeclaration = formatted.subs[0] as NamespaceDeclaration
+        Assertions.assertEquals(5, namespaceDeclaration.subs.size)
+        Assertions.assertEquals(Keyword::class.java, namespaceDeclaration.subs[0]::class.java)
+        Assertions.assertEquals("package", (namespaceDeclaration.subs[0] as Keyword).name)
+        Assertions.assertEquals(Space::class.java, namespaceDeclaration.subs[1]::class.java)
+        Assertions.assertEquals(VariableName::class.java, namespaceDeclaration.subs[2]::class.java)
     }
 }

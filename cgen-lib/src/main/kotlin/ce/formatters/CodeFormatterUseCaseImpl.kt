@@ -17,6 +17,7 @@ import generators.obj.out.FileData
 import generators.obj.out.ImportLeaf
 import generators.obj.out.Indent
 import generators.obj.out.NamespaceBlock
+import generators.obj.out.NamespaceDeclaration
 import generators.obj.out.NlSeparator
 import generators.obj.out.OutBlock
 import generators.obj.out.OutBlockArguments
@@ -214,7 +215,11 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 next = next,
                 prev = prev
             )
-
+            is NamespaceDeclaration -> processNamespaceDeclaration(
+                input = input,
+                outputParent = outputParent,
+                indent = indent
+            )
             is FieldNode -> processFieldNode(input, outputParent, indent, next, prev)
 
             is OutBlock -> processOutBlock(input, outputParent, indent, prev, inputQueue)
@@ -250,6 +255,14 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
                 defaultProcessNode(input, outputParent, indent)
             }
         }
+    }
+
+    protected open fun processNamespaceDeclaration(
+        input: NamespaceDeclaration,
+        outputParent: Node,
+        indent: Int
+    ) {
+        defaultProcessNode(input, outputParent, indent)
     }
 
     protected fun processRValue(
