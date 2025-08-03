@@ -1,7 +1,6 @@
 package generators.obj
 
 import ce.defs.Target
-import ce.formatters.CodeFormatterUseCase
 import generators.obj.input.Block
 import generators.obj.input.Node
 import generators.obj.out.FileData

@@ -1,8 +1,6 @@
 package ce.formatters.kotlin
 
 import ce.basetest.KotlinBaseTest
-import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
-import generators.kotlin.KtConstantsGenerator
 import generators.obj.out.FileDataImpl
 import generators.obj.out.Keyword
 import generators.obj.out.NamespaceDeclaration
@@ -13,11 +11,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class KotlinPackageAndImportsTest: KotlinBaseTest() {
-    private val ktConstantsGenerator = KtConstantsGenerator(
-        addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
-        dataTypeToString = getTypeNameUseCase,
-        prepareRightValueUseCase = prepareRightValueUseCase
-    )
 
     @Test
     fun testKotlinNamespaceDeclarationPattern() {

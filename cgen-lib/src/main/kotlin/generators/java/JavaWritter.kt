@@ -20,7 +20,7 @@ class JavaWritter(
     : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
-        var outputFile = File(fileData.name + ".java")
+        val outputFile = File(fileData.name + ".java")
         outputFile.parentFile.mkdirs()
         reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
