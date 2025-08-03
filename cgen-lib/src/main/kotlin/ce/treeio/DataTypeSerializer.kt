@@ -82,10 +82,10 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
         if (value.startsWith(PREFIX_ARRAY_OF)) {
             return DataType.array(fromStringValue(value.substring(PREFIX_ARRAY_OF.length)))
         }
-        if (value.equals(STRING)) {
+        if (value == STRING) {
             return DataType.string()
         }
-        if (value.equals(STRING_NULLABLE)) {
+        if (value == STRING_NULLABLE) {
             return DataType.string(canBeNull = true)
         }
         throw IllegalStateException("Not supported data type=\"$value\"")

@@ -33,9 +33,13 @@ class PrepareRightValueUseCase(
                 if (value.simple is String) {
                     RValue(name = "\"${value.simple}\"")
                 } else {
-                    RValue(name = "QQVAL_string???")
+                    throw IllegalArgumentException(
+                        "Expected a String value for DataType.string, " +
+                                "but got: ${value.simple}"
+                    )
                 }
             }
+
             is DataType.custom -> {
                 if (!value.isComplex) {
                     RValue(name = value.simple.toString())
