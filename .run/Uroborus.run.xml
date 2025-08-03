@@ -3,7 +3,7 @@
     <option name="ALTERNATIVE_JRE_PATH" value="17" />
     <option name="MAIN_CLASS_NAME" value="ce.entrypoints.BuildProjectKt" />
     <module name="codegen.cgen-console.main" />
-    <option name="PROGRAM_PARAMETERS" value="--project ./project.json" />
+    <option name="PROGRAM_PARAMETERS" value="--project ./project.json --storeOutTree --storeInTree" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/cgen-lib/cgen/" />
     <method v="2">
       <option name="Make" enabled="true" />

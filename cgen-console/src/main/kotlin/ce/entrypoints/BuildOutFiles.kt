@@ -4,6 +4,7 @@ import ce.defs.domain.DirsConfiguration
 import ce.domain.usecase.load.LoadOutTreeUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.load.LoadProjectUseCaseImpl
+import ce.formatters.PrepareCodeStyleTreeUseCaseImpl
 import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
 import ce.repository.WrittersRepoImpl
@@ -32,7 +33,7 @@ fun main(args: Array<String>) {
     val generatorsRepo = GeneratorsRepo(project,
         codestylesRepo = codestylesRepo)
     val tree = loadOutputTreeUseCase(args[0])
-    val codeStyleTree = generatorsRepo.get(tree.target).prepareCodeStyleTree(tree)
+    val codeStyleTree = PrepareCodeStyleTreeUseCaseImpl(generatorsRepo.getFormatter(tree.target)).prepareCodeStyleTree(tree)
     val targetConfiguration = project.targets.firstOrNull { it.type == tree.target } ?:
         throw IllegalStateException("Can't find configuration for ${tree.target} in the project file ${args[1]}")
     writtersFactoryImpl.getWritter(targetConfiguration).write(codeStyleTree)

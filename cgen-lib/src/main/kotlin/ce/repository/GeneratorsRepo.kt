@@ -5,6 +5,7 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CodeFormatterCxxUseCaseImpl
 import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
+import ce.formatters.CodeFormatterUseCase
 import ce.settings.Project
 import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppDataClassGenerator
@@ -41,6 +42,7 @@ class GeneratorsRepo(
     private val codestylesRepo: CodestylesRepo
 ) {
     val supportedMeta: Map<Target, MetaGenerator>
+    val codeFormatters: Map<Target, CodeFormatterUseCase>
 
     init {
 
@@ -59,7 +61,7 @@ class GeneratorsRepo(
         )
 
 
-        val codeFormatters = mapOf(
+        codeFormatters = mapOf(
             Target.Kotlin to CodeFormatterKotlinUseCaseImpl(codestylesRepo.get(Target.Kotlin)),
             Target.Cpp to CodeFormatterCxxUseCaseImpl(codestylesRepo.get(Target.Cpp)),
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),
@@ -160,11 +162,13 @@ class GeneratorsRepo(
                 fileGenerator = fileGenerator,
                 generatorsMap = generators,
                 prepareFilesListUseCase = prepareFilesListUseCases[it]
-                    ?: throw IllegalStateException("Can't find prepareFilesListUseCases for $it"),
-                codeFormatter = codeFormatters[it] ?: throw IllegalStateException("Can't find code formatter for $it"),
+                    ?: throw IllegalStateException("Can't find prepareFilesListUseCases for $it")
             )
         }
     }
+
+    fun getFormatter(target: Target) = codeFormatters[target]
+        ?: throw IllegalStateException("Can't find code formatter for $target")
 
     fun get(target: Target): MetaGenerator {
         if (supportedMeta.containsKey(target))

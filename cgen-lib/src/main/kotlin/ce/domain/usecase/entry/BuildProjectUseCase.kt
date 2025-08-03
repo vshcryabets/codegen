@@ -6,6 +6,7 @@ import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
+import ce.formatters.PrepareCodeStyleTreeUseCaseImpl
 import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
 import ce.repository.ReportsRepoImpl
@@ -43,7 +44,10 @@ class BuildProjectUseCase(
             if (writeOutTree) {
                 storeOutTreeUseCase(target.outputFolder + "output_tree_${target.type.name}.xml", outTree)
             }
-            val codeStyleTree = generatorsRepo.get(outTree.target).prepareCodeStyleTree(outTree)
+            val prepareCodeStyleTreeUseCase = PrepareCodeStyleTreeUseCaseImpl(
+                codeFormatter = generatorsRepo.getFormatter(target.type)
+            )
+            val codeStyleTree = prepareCodeStyleTreeUseCase.prepareCodeStyleTree(outTree)
             writtersRepo.getWritter(target).write(codeStyleTree)
         }
     }

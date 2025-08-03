@@ -1,7 +1,7 @@
 package generators.java
 
 import ce.formatters.CodeStyleRepo
-import ce.io.CodeWritter
+import ce.io.CodeWriter
 import ce.io.FileCodeWritter
 import ce.repository.ReportsRepo
 import generators.obj.Writter
@@ -30,7 +30,7 @@ class JavaWritter(
         }
     }
 
-    override fun writeNode(node: Node, out: CodeWritter, indent: String) {
+    override fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
             is OutBlock -> {
                 out.write(node.name)
@@ -40,7 +40,7 @@ class JavaWritter(
         }
     }
 
-    override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
+    override fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
             is ImportLeaf -> out.write("import ${leaf.name}").writeNl()
             is NamespaceDeclaration -> out.write("package ${leaf.name};").writeNl()

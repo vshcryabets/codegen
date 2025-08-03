@@ -201,7 +201,10 @@ open class CodeFormatterUseCaseImpl @Inject constructor(
             // skip empty regions
             return
         }
-        if ((input is Region) or (input is NamespaceBlock)) {
+        if (((input is Region)
+                    // we shouldn't add space before namespace declaration (at least in kotlin)
+                    and !(input is NamespaceDeclaration))
+            or (input is NamespaceBlock)) {
             if (codeStyleRepo.addSpaceBeforeRegion()) {
                 outputParent.addSeparatorNewLine(codeStyleRepo.spaceBeforeClass())
             }

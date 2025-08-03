@@ -4,7 +4,7 @@ import ce.defs.Target
 import ce.defs.TargetConfiguration
 import generators.cpp.CppWritter
 import generators.java.JavaWritter
-import generators.kotlin.KotlinWritter
+import generators.kotlin.KotlinWriter
 import generators.obj.Writter
 
 interface WrittersRepo {
@@ -17,7 +17,7 @@ class WrittersRepoImpl(
 ) : WrittersRepo {
     override fun getWritter(targetConfiguration: TargetConfiguration): Writter {
         return when(targetConfiguration.type) {
-            Target.Kotlin -> KotlinWritter(codestylesRepo.get(Target.Kotlin), targetConfiguration.outputFolder)
+            Target.Kotlin -> KotlinWriter(codestylesRepo.get(Target.Kotlin), targetConfiguration.outputFolder)
             Target.Cpp -> CppWritter(codestylesRepo.get(Target.Cpp), targetConfiguration.outputFolder,
                 reportsRepo = reportsRepo)
 //            Target.Swift to SwiftWritter(codestylesMap[Target.Swift]!!, project.outputFolder),

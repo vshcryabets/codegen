@@ -63,7 +63,9 @@ class XmlTreeReader : TreeReader {
             OutTreeDeserizalier(),
             AstTreeDeserializer(),
             CodeStyleOututTreeDeserializer(),
-            ConstantDescDeserializer()
+            ConstantDescDeserializer(),
+            ArgumentsDeserializer(),
+            RValueDeserializer()
         ).forEach {
             it.getTags().forEach { tag ->
                 map[tag] = it
@@ -109,7 +111,7 @@ class XmlTreeReader : TreeReader {
                     )
                 )
             } else {
-                throw IllegalStateException("Unknown $tagName")
+                throw IllegalStateException("Unknown tag \"$tagName\" in XML tree. ")
             }
             result.setParent2(parent)
             if (result is Block) {
