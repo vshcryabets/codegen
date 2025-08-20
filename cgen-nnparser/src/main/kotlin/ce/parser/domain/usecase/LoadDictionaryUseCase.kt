@@ -2,7 +2,7 @@ package ce.parser.domain.usecase
 
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
-import ce.parser.domain.dictionaries.StaticDictionary
+import ce.parser.domain.dictionaries.natural.StaticDictionary
 import com.opencsv.CSVReader
 import org.jetbrains.kotlin.javax.inject.Inject
 import java.io.File

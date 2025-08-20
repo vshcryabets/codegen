@@ -1,4 +1,4 @@
-package ce.parser.domain.dictionaries
+package ce.parser.domain.dictionaries.natural
 
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word

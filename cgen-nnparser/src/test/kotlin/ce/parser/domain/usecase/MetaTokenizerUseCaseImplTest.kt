@@ -1,7 +1,7 @@
 package ce.parser.domain.usecase
 
 import ce.parser.domain.TestDictionary
-import ce.parser.domain.dictionaries.DynamicDictionaries
+import ce.parser.domain.dictionaries.natural.DynamicDictionaries
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.Type
 import org.junit.jupiter.api.Assertions.*

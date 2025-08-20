@@ -1,6 +1,5 @@
-package ce.parser.domain.dictionaries
+package ce.parser.domain.dictionaries.natural
 
-import ce.parser.nnparser.Word
 import ce.parser.nnparser.WordItem
 
 class StaticDictionary(

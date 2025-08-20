@@ -1,7 +1,7 @@
 package ce.parser.domain.usecase
 
 import ce.parser.domain.TestDictionary
-import ce.parser.domain.dictionaries.StaticDictionary
+import ce.parser.domain.dictionaries.natural.StaticDictionary
 import ce.parser.nnparser.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
