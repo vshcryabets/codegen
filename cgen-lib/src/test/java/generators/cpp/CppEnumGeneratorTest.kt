@@ -5,8 +5,8 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.*
+import generators.obj.syntaxParseTree.*
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

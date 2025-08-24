@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 
@@ -17,7 +17,7 @@ data class NewInstance(
     }
 
     fun argument(name: String, type: DataType, value: Any?): NewInstance {
-        addSub(DataField(name).apply {
+        addSub(Input(name).apply {
             setType(type)
             setValue(value)
         })

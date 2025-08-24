@@ -1,7 +1,7 @@
 package ce.domain.usecase.store
 
 import ce.treeio.XmlInTreeWritterImpl
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.Node
 import java.io.File
 
 class StoreCodeStyleTreeUseCase {

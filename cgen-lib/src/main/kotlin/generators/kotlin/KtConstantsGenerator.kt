@@ -3,16 +3,16 @@ package generators.kotlin
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.ConstantDesc
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.addDatatype
-import generators.obj.input.addKeyword
-import generators.obj.input.addSub
-import generators.obj.input.addVarName
-import generators.obj.out.FieldNode
-import generators.obj.out.FileData
-import generators.obj.out.OutBlock
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.ConstantDesc
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.RegionImpl
 
 class KtConstantsGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,

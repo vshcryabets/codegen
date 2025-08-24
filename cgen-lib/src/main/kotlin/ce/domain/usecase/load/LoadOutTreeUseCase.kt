@@ -1,7 +1,7 @@
 package ce.domain.usecase.load
 
 import ce.treeio.XmlTreeReader
-import generators.obj.out.OutputTree
+import generators.obj.syntaxParseTree.OutputTree
 
 class LoadOutTreeUseCase {
     operator fun invoke(inputFile : String) : OutputTree {

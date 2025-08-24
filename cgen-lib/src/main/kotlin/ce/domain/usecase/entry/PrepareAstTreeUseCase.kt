@@ -5,7 +5,7 @@ import ce.domain.usecase.load.LoadMetaFilesForTargetUseCase
 import ce.domain.usecase.load.LoadProjectUseCase
 import ce.domain.usecase.store.StoreAstTreeUseCase
 import ce.settings.Project
-import generators.obj.out.AstTree
+import generators.obj.syntaxParseTree.AstTree
 
 class PrepareAstTreeUseCase(
     private val getProjectUseCase : LoadProjectUseCase,

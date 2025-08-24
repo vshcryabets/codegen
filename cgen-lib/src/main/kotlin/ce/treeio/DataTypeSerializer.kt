@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer
-import generators.obj.input.getPath
+import generators.obj.abstractSyntaxTree.getPath
 
 class DataTypeSerializer : JsonSerializer<DataType>() {
 

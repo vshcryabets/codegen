@@ -3,8 +3,8 @@ package ce.parser.domain
 import ce.defs.DataType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import generators.obj.input.DataClass
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.Node
 import javax.inject.Inject
 
 interface JsonToDataClassUseCase {

@@ -1,8 +1,8 @@
-package generators.obj.out
+package generators.obj.syntaxParseTree
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.copyLeafExt
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.copyLeafExt
 
 interface FileData: Node {
     var isDirty: Boolean

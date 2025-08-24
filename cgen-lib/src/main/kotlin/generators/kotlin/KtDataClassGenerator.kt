@@ -2,18 +2,18 @@ package generators.kotlin
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.DataClass
-import generators.obj.input.DataField
-import generators.obj.input.addDatatype
-import generators.obj.input.addKeyword
-import generators.obj.input.addOutBlock
-import generators.obj.input.addOutBlockArguments
-import generators.obj.input.addSub
-import generators.obj.input.addVarName
-import generators.obj.out.ArgumentNode
-import generators.obj.out.FieldNode
-import generators.obj.out.FileData
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addOutBlockArguments
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.RegionImpl
 
 class KtDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,

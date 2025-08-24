@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 object TreeRoot : Node {
 

@@ -5,10 +5,10 @@ import ce.io.CodeWriter
 import ce.repository.ReportsRepoImpl
 import ce.settings.CodeStyle
 import generators.cpp.CppWritter
-import generators.obj.input.addSubs
-import generators.obj.out.ImportLeaf
-import generators.obj.out.ImportsBlock
-import generators.obj.out.NlSeparator
+import generators.obj.abstractSyntaxTree.addSubs
+import generators.obj.syntaxParseTree.ImportLeaf
+import generators.obj.syntaxParseTree.ImportsBlock
+import generators.obj.syntaxParseTree.NlSeparator
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

@@ -1,10 +1,10 @@
-package generators.kotlin
+package generators.java
 
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.RValue
+import generators.kotlin.GetTypeNameUseCase
 import generators.obj.abstractSyntaxTree.DataField
-import generators.obj.abstractSyntaxTree.Input
 import generators.obj.abstractSyntaxTree.NewInstance
 import generators.obj.abstractSyntaxTree.addSub
 import generators.obj.syntaxParseTree.Arguments
@@ -67,20 +67,7 @@ class PrepareRightValueUseCase(
                     type = item.getType()
                 )
             ).apply {
-                val arguments = Arguments()
-                addSub(arguments)
-                item.subs
-                    .filter { it is Input }
-                    .forEach {
-                        val input = it as Input
-                        arguments.addSub(
-                            toRightValue(
-                                type = input.getType(),
-                                value = input.getValue(),
-                                fileData = fileData
-                            )
-                        )
-                    }
+                addSub(Arguments())
             }
         )
         return result

@@ -2,7 +2,7 @@ package generators.obj
 
 import ce.defs.DataValue
 import ce.defs.DataValueImpl
-import generators.obj.input.Field
+import generators.obj.abstractSyntaxTree.Field
 
 class AutoincrementField {
     var previous: DataValue? = null

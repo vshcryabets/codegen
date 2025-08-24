@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.DataValueImpl
@@ -14,7 +14,7 @@ class NewInstanceTest {
         val dc1instance = NewInstance("newInstance").setType(type = DataType.custom(dc1))
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
         instance.argument("arg1", DataType.custom(dc1), dc1instance)
-        val sub = instance.subs.firstOrNull { it is DataField } as DataField?
+        val sub = instance.subs.firstOrNull { it is Input } as Input?
         assertEquals("arg1", sub!!.name)
         assertEquals(dc1instance, sub.getValue().subs.first())
     }
@@ -27,7 +27,7 @@ class NewInstanceTest {
         dc1dataValue.addSub(dc1instance)
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
         instance.argument("arg1", DataType.custom(dc1), dc1dataValue)
-        val sub = instance.subs.firstOrNull { it is DataField } as DataField?
+        val sub = instance.subs.firstOrNull { it is Input } as Input?
         assertEquals("arg1", sub!!.name)
         assertEquals(dc1instance, sub.getValue().subs.first())
     }
@@ -36,7 +36,7 @@ class NewInstanceTest {
     fun argumentAddsSubWithCorrectValues() {
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
         instance.argument("arg1", DataType.string(false), "value1")
-        val sub = instance.subs.firstOrNull { it is DataField } as DataField?
+        val sub = instance.subs.firstOrNull { it is Input } as Input?
         assertEquals("arg1", sub!!.name)
         assertEquals("value1", sub.getValue().simple)
     }
@@ -45,7 +45,7 @@ class NewInstanceTest {
     fun argumentAddsSubWithNullValue() {
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
         instance.argument("arg2", DataType.string(), "STR")
-        val sub = instance.subs.firstOrNull { it is DataField } as DataField?
+        val sub = instance.subs.firstOrNull { it is Input } as Input?
         assertNotNull(sub)
         assertEquals("arg2", sub!!.name)
         assertEquals("STR", sub.getValue().simple)
@@ -58,8 +58,8 @@ class NewInstanceTest {
         instance.argument("arg2", DataType.int32, 42)
         // NewInstance should have 3 subs: "TypeLeaf", "arg1", "arg2"
         assertEquals(3, instance.subs.size)
-        val sub1 = instance.subs[1] as DataField
-        val sub2 = instance.subs[2] as DataField
+        val sub1 = instance.subs[1] as Input
+        val sub2 = instance.subs[2] as Input
         assertEquals("arg1", sub1.name)
         assertEquals("value1", sub1.getValue().simple)
         assertEquals("arg2", sub2.name)

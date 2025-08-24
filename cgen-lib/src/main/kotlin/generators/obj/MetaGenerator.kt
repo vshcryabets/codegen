@@ -1,10 +1,10 @@
 package generators.obj
 
 import ce.defs.Target
-import generators.obj.input.Block
-import generators.obj.input.Node
-import generators.obj.out.FileData
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.Block
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.OutputTree
 
 open class MetaGenerator(
     private val target: Target,

@@ -1,10 +1,10 @@
 package generators.obj
 
 import ce.settings.Project
-import generators.obj.input.*
-import generators.obj.out.CommentsBlock
-import generators.obj.out.FileData
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.*
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.OutputTree
 import java.io.File
 import java.nio.file.Paths
 import javax.inject.Inject

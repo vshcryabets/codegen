@@ -5,12 +5,12 @@ import ce.io.CodeWriter
 import ce.io.FileCodeWritter
 import ce.repository.ReportsRepo
 import generators.obj.Writter
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.out.FileData
-import generators.obj.out.ImportLeaf
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.OutBlock
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportLeaf
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutBlock
 import java.io.File
 
 class JavaWritter(

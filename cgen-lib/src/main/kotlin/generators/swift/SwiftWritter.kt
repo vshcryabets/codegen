@@ -4,7 +4,7 @@ import ce.formatters.CodeStyleRepo
 import ce.io.FileCodeWritter
 import ce.repository.ReportsRepo
 import generators.obj.Writter
-import generators.obj.out.FileData
+import generators.obj.syntaxParseTree.FileData
 import java.io.File
 
 class SwiftWritter(

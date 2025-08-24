@@ -1,8 +1,8 @@
 package ce.defs
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.copyLeafExt
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.copyLeafExt
 
 data class RValue(
     override val name: String = "",

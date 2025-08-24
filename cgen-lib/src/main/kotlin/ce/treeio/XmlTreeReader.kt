@@ -1,14 +1,14 @@
 package ce.treeio
 
 import ce.defs.DataType
-import generators.obj.input.Block
-import generators.obj.input.ConstantDesc
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.TreeRoot
-import generators.obj.input.addSub
-import generators.obj.input.getPath
+import generators.obj.abstractSyntaxTree.Block
+import generators.obj.abstractSyntaxTree.ConstantDesc
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.TreeRoot
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.getPath
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.xml.sax.InputSource

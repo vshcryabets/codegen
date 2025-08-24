@@ -1,12 +1,12 @@
 package generators.cpp
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.addSub
-import generators.obj.input.copyLeafExt
-import generators.obj.input.copyNodeExt
-import generators.obj.out.FileData
-import generators.obj.out.ImportsBlock
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.copyLeafExt
+import generators.obj.abstractSyntaxTree.copyNodeExt
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportsBlock
 
 class CompilerDirective(override val name: String) : Leaf {
     var parent: Node? = null

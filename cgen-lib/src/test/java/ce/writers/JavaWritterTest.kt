@@ -5,12 +5,12 @@ import ce.io.CodeWriter
 import ce.repository.ReportsRepoImpl
 import ce.settings.CodeStyle
 import generators.java.JavaWritter
-import generators.obj.input.addOutBlock
-import generators.obj.input.addSubs
-import generators.obj.out.Keyword
-import generators.obj.out.NlSeparator
-import generators.obj.out.RegionImpl
-import generators.obj.out.Space
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addSubs
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.syntaxParseTree.Space
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

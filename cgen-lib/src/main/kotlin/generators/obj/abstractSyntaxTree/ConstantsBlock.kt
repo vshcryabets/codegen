@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.DataValue

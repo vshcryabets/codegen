@@ -2,16 +2,16 @@ package ce.treeio
 
 import ce.defs.DataType
 import ce.defs.NotDefined
-import generators.obj.input.ConstantDesc
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.DataField
-import generators.obj.input.NamespaceImpl
-import generators.obj.out.CommentsBlock
-import generators.obj.out.FileDataImpl
-import generators.obj.out.ImportsBlock
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.OutputTree
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.ConstantDesc
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.ImportsBlock
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.RegionImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse

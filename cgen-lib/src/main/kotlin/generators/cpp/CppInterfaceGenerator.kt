@@ -2,10 +2,10 @@ package generators.cpp
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.InterfaceDescription
-import generators.obj.input.addSub
-import generators.obj.out.FileData
-import generators.obj.out.OutBlock
+import generators.obj.abstractSyntaxTree.InterfaceDescription
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.OutBlock
 
 class CppInterfaceGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,

@@ -1,7 +1,6 @@
 package ce.treeio
 
-import generators.obj.input.Leaf
-import generators.obj.input.Namespace
+import generators.obj.abstractSyntaxTree.Leaf
 
 interface TreeWritter {
     fun storeTree(filePath: String, tree: Leaf)

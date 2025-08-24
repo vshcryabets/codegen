@@ -1,10 +1,9 @@
 package generators.java
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.copyLeafExt
-import generators.obj.input.copyNodeExt
-import generators.obj.out.ClassData
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.copyNodeExt
+import generators.obj.syntaxParseTree.ClassData
 
 data class JavaClassData(
     override val name: String = "",

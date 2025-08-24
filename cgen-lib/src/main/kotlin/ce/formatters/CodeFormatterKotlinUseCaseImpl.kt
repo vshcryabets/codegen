@@ -2,24 +2,24 @@ package ce.formatters
 
 import ce.defs.DataValue
 import ce.defs.RValue
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.addKeyword
-import generators.obj.input.addSeparatorNewLine
-import generators.obj.input.addSub
-import generators.obj.out.ArgumentNode
-import generators.obj.out.Arguments
-import generators.obj.out.AstTypeLeaf
-import generators.obj.out.EnumNode
-import generators.obj.out.FieldNode
-import generators.obj.out.Keyword
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.NlSeparator
-import generators.obj.out.OutBlock
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.Separator
-import generators.obj.out.Space
-import generators.obj.out.VariableName
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addSeparatorNewLine
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.Arguments
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.EnumNode
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.Separator
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :

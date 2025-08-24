@@ -1,11 +1,11 @@
 package generators.kotlin
 
 import ce.defs.DataType
-import generators.obj.input.findOrCreateSub
-import generators.obj.input.getParentPath
-import generators.obj.input.getPath
-import generators.obj.out.FileData
-import generators.obj.out.ImportsBlock
+import generators.obj.abstractSyntaxTree.findOrCreateSub
+import generators.obj.abstractSyntaxTree.getParentPath
+import generators.obj.abstractSyntaxTree.getPath
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportsBlock
 
 class GetTypeNameUseCase(
     private val arrayDataType: GetArrayDataTypeUseCase

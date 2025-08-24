@@ -4,17 +4,17 @@ import ce.formatters.CodeStyleRepo
 import ce.io.CodeWriter
 import ce.io.FileCodeWritter
 import generators.obj.Writter
-import generators.obj.input.InputList
-import generators.obj.input.Leaf
-import generators.obj.input.Method
-import generators.obj.input.Node
-import generators.obj.input.findOrNull
-import generators.obj.input.removeSub
-import generators.obj.out.FileData
-import generators.obj.out.ImportLeaf
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.OutBlock
-import generators.obj.out.ResultLeaf
+import generators.obj.abstractSyntaxTree.InputList
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Method
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.abstractSyntaxTree.removeSub
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportLeaf
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.ResultLeaf
 import java.io.File
 
 class KotlinWriter(codeStyleRepo: CodeStyleRepo, outputFolder: String)

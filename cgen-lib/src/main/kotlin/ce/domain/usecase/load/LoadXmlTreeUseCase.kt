@@ -1,8 +1,7 @@
 package ce.domain.usecase.load
 
 import ce.treeio.XmlTreeReader
-import generators.obj.input.Leaf
-import generators.obj.out.AstTree
+import generators.obj.abstractSyntaxTree.Leaf
 
 class LoadXmlTreeUseCase {
     private val reader = XmlTreeReader()

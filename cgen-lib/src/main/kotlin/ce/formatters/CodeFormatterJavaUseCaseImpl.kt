@@ -1,14 +1,14 @@
 package ce.formatters
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.addSub
-import generators.obj.out.ArgumentNode
-import generators.obj.out.AstTypeLeaf
-import generators.obj.out.NlSeparator
-import generators.obj.out.Separator
-import generators.obj.out.Space
-import generators.obj.out.VariableName
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.Separator
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import javax.inject.Inject
 
 class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :

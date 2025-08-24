@@ -1,7 +1,7 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
-import generators.obj.out.CommentLeaf
-import generators.obj.out.CommentsBlock
+import generators.obj.syntaxParseTree.CommentLeaf
+import generators.obj.syntaxParseTree.CommentsBlock
 
 fun <T: Block> T.addBlockCommentExt(value : String) {
     findOrCreateSub(CommentsBlock::class.java).apply {

@@ -1,13 +1,13 @@
 package generators.kotlin
 
 import ce.defs.Target
-import generators.obj.input.DataClass
-import generators.obj.input.NamespaceImpl
-import generators.obj.input.addSub
-import generators.obj.out.FileData
-import generators.obj.out.Keyword
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutputTree
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
