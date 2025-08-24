@@ -42,7 +42,7 @@ class CppDataClassGeneratorTest {
             addBlockComment("182TEST_COMMENT")
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
-            field("C", DataType.string(true))
+            field("C", DataType.stringNullable)
         }
         Assert.assertFalse("Dirty flag should be false in .h before changes", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false in .cpp before changes", cxxFile.isDirty)

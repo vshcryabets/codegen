@@ -27,7 +27,7 @@ class JsonToDataClassUseCaseImpl @Inject constructor(): JsonToDataClassUseCase {
                 child.isBoolean -> dataClass.field(childName, DataType.bool)
                 child.isDouble -> dataClass.field(childName, DataType.float64)
                 child.isFloat -> dataClass.field(childName, DataType.float32)
-                child.isTextual -> dataClass.field(childName, DataType.string(true))
+                child.isTextual -> dataClass.field(childName, DataType.stringNullable)
                 child.isLong -> dataClass.field(childName, DataType.int64)
                 child.isNumber -> dataClass.field(childName, DataType.int32)
 //                child.isArray

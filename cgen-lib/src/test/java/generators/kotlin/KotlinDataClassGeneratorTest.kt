@@ -52,7 +52,7 @@ class KotlinDataClassGeneratorTest {
             addBlockComment("182TEST_COMMENT")
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
-            field("C", DataType.string(true))
+            field("C", DataType.stringNullable)
         }
 
         val projectOutput = OutputTree(Target.Kotlin)

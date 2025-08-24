@@ -67,10 +67,8 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             is DataType.promise -> PREFIX_FLOW_OF + stringValue(value.elementDataType)
             is DataType.userClass -> PREFIX_CLASS + value.path
             is DataType.userClassTest2 -> PREFIX_CLASS + value.node.getPath()
-            is DataType.string -> if (value.canBeNull)
-                STRING_NULLABLE
-            else
-                STRING
+            is DataType.string -> STRING
+            is DataType.stringNullable -> STRING_NULLABLE
             else -> "UNK" + value.toString()
         }
         return typeStr
@@ -83,10 +81,10 @@ class DataTypeSerializer : JsonSerializer<DataType>() {
             return DataType.array(fromStringValue(value.substring(PREFIX_ARRAY_OF.length)))
         }
         if (value == STRING) {
-            return DataType.string()
+            return DataType.string
         }
         if (value == STRING_NULLABLE) {
-            return DataType.string(canBeNull = true)
+            return DataType.stringNullable
         }
         throw IllegalStateException("Not supported data type=\"$value\"")
     }

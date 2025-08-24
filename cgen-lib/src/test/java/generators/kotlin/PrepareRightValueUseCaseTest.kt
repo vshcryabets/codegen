@@ -58,7 +58,7 @@ class PrepareRightValueUseCaseTest {
 
     @Test
     fun toRightValueReturnsSimpleValueForStringType() {
-        val result = prepareRightValueUseCase.toRightValue(DataType.string(),
+        val result = prepareRightValueUseCase.toRightValue(DataType.string,
             DataValueImpl(simple = "hello"), fileData)
         assertEquals("\"hello\"", result.name)
     }
@@ -86,12 +86,12 @@ class PrepareRightValueUseCaseTest {
     fun testConstructorToAst() {
         val className = "className"
         val dataClassDescriptor = DataClass(className).apply {
-            field("a", DataType.string(),  "")
+            field("a", DataType.string,  "")
             field("b", DataType.int32,  0)
         }
         val dataType = DataType.custom(dataClassDescriptor)
         val instance = dataClassDescriptor.instance(
-            mapOf("a" to "defined", "B" to 123)
+            mapOf("a" to "defined", "b" to 123)
         )
 
         val result = prepareRightValueUseCase.prepareConstructor(instance, fileData)

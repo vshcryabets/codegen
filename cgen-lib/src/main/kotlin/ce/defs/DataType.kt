@@ -64,7 +64,8 @@ sealed class DataType(
     object float64Nullable : DataType(canBeNull = true)
     object float128Nullable : DataType(canBeNull = true)
 
-    class string(canBeNull: Boolean = false) : DataType(canBeNull)
+    object string : DataType(false)
+    object stringNullable : DataType(true)
     object bool : DataType()
     object boolNullable : DataType(canBeNull = true)
     class pointer(val subType: DataType) : DataType(canBeNull = true)

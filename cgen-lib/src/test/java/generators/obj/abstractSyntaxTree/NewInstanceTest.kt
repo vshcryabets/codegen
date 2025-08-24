@@ -35,7 +35,7 @@ class NewInstanceTest {
     @Test
     fun argumentAddsSubWithCorrectValues() {
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
-        instance.argument("arg1", DataType.string(false), "value1")
+        instance.argument("arg1", DataType.string, "value1")
         val sub = instance.subs.firstOrNull { it is Input } as Input?
         assertEquals("arg1", sub!!.name)
         assertEquals("value1", sub.getValue().simple)
@@ -44,7 +44,7 @@ class NewInstanceTest {
     @Test
     fun argumentAddsSubWithNullValue() {
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
-        instance.argument("arg2", DataType.string(), "STR")
+        instance.argument("arg2", DataType.string, "STR")
         val sub = instance.subs.firstOrNull { it is Input } as Input?
         assertNotNull(sub)
         assertEquals("arg2", sub!!.name)
@@ -54,7 +54,7 @@ class NewInstanceTest {
     @Test
     fun argumentAddsMultipleSubs() {
         val instance = NewInstance(name = "test").setType(type = DataType.custom(DataClass("test")))
-        instance.argument("arg1", DataType.string(false), "value1")
+        instance.argument("arg1", DataType.string, "value1")
         instance.argument("arg2", DataType.int32, 42)
         // NewInstance should have 3 subs: "TypeLeaf", "arg1", "arg2"
         assertEquals(3, instance.subs.size)

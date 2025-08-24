@@ -12,7 +12,7 @@ namespace("com.goldman").apply {
         val money = dataClass("Money").apply {
             field("sum", DataType.int32)
             field("currency", DataType.custom(currency))
-            field("name", DataType.string(canBeNull = true))
+            field("name", DataType.stringNullable)
             field("attached", DataType.bool, false)
         }
         money.addstaticfield("EMPTY", DataType.custom(money), money.instance())
