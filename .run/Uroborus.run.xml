@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Uroborus" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="ce.entrypoints.BuildProjectKt" />
     <module name="codegen.cgen-console.main" />
     <option name="PROGRAM_PARAMETERS" value="--project ./project.json --storeOutTree --storeInTree" />
