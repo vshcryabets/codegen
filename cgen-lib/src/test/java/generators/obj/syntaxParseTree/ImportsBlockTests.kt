@@ -1,4 +1,4 @@
-package generators.obj.out
+package generators.obj.syntaxParseTree
 
 import org.junit.jupiter.api.Test
 

@@ -8,7 +8,7 @@ import ce.domain.usecase.store.StoreOutTreeUseCase
 import ce.domain.usecase.transform.TransformInTreeToOutTreeUseCase
 import ce.repository.CodestyleRepoImpl
 import ce.repository.GeneratorsRepo
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.Node
 import javax.inject.Inject
 
 interface BuildOutTreeUseCase {

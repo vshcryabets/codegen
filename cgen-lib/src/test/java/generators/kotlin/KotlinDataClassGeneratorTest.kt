@@ -6,23 +6,23 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.obj.input.DataClass
-import generators.obj.input.NamespaceImpl
-import generators.obj.input.TreeRoot
-import generators.obj.input.addSub
-import generators.obj.input.findOrNull
-import generators.obj.out.ArgumentNode
-import generators.obj.out.AstTypeLeaf
-import generators.obj.out.CommentsBlock
-import generators.obj.out.Constructor
-import generators.obj.out.FieldNode
-import generators.obj.out.Keyword
-import generators.obj.out.OutBlock
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.OutputTree
-import generators.obj.out.Region
-import generators.obj.out.RegionImpl
-import generators.obj.out.VariableName
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.abstractSyntaxTree.TreeRoot
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.Constructor
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.Region
+import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.syntaxParseTree.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -52,7 +52,7 @@ class KotlinDataClassGeneratorTest {
             addBlockComment("182TEST_COMMENT")
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
-            field("C", DataType.string(true))
+            field("C", DataType.stringNullable)
         }
 
         val projectOutput = OutputTree(Target.Kotlin)
@@ -113,8 +113,9 @@ class KotlinDataClassGeneratorTest {
         val dataClassDescriptor = DataClass("MyDataClass").apply {
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
-            addstaticfield("SELF", DataType.custom(this), instance())
-            //                 mapOf("A" to 10, "B" to 10.5f)
+            addstaticfield("SELF", DataType.custom(this), instance(
+                mapOf("A" to 10, "B" to 10.5f)
+            ))
         }
         val block = namespace.addSub(dataClassDescriptor)
 
@@ -136,7 +137,12 @@ class KotlinDataClassGeneratorTest {
         //           <OutBlock companion object>
         //              <FieldNode><val><SELF><:><c><=>
         //                  <DataValue>
-        //                      <Constructor c><Arguments /></Constructor>
+        //                      <Constructor c>
+        //                          <Arguments>
+        //                              <ArgumentNode><A><=><RValue 10></<ArgumentNode>
+        //                              <ArgumentNode><B><=><RValue 10.5f></<ArgumentNode>
+        //                          </Arguments>
+        //                      </Constructor>
         //                  </Datavalue>
         //              </FieldNode>
         //           </OutBlock companion object>

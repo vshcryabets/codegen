@@ -6,9 +6,9 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.io.CodeWriter
 import generators.kotlin.KotlinWriter
 import generators.kotlin.KtConstantsGenerator
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.NamespaceImpl
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.syntaxParseTree.OutputTree
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

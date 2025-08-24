@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.DataValueImpl
@@ -40,7 +40,7 @@ class ConstantsBlockTests {
     @Test
     fun addConstantWithNullValue() {
         val block = ConstantsBlock(name = "TestBlock")
-        val constant = block.add("CONST4", DataType.string(), null)
+        val constant = block.add("CONST4", DataType.string, null)
         Assertions.assertEquals("CONST4", constant.name)
         Assertions.assertTrue(constant.getType() is DataType.string)
         Assertions.assertNull(constant.getValue().simple)
@@ -56,7 +56,7 @@ class ConstantsBlockTests {
     @Test
     fun updateDefaultTypeChangesType() {
         val block = ConstantsBlock(name = "TestBlock", defaultDataType = DataType.VOID)
-        block.defaultType(DataType.string())
+        block.defaultType(DataType.string)
         Assertions.assertTrue(block.defaultDataType is DataType.string)
     }
 }

@@ -1,8 +1,8 @@
 package ce.formatters
 
-import generators.obj.input.addSub
-import generators.obj.out.CodeStyleOutputTree
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.CodeStyleOutputTree
+import generators.obj.syntaxParseTree.OutputTree
 
 interface PrepareCodeStyleTreeUseCase {
     fun prepareCodeStyleTree(projectOutput: OutputTree): CodeStyleOutputTree

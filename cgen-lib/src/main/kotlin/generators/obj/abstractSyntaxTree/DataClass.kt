@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.NotDefined
@@ -16,7 +16,14 @@ data class DataClass(
     fun instance(map: Map<Any, Any?>): NewInstance {
         return NewInstance("newInstance").setType(type = DataType.custom(this@DataClass)).apply {
             map.forEach { t, u ->
-                argument(t.toString(), DataType.Unknown, u)
+                val dataField = this@DataClass.subs
+                    .filter { it is DataField }
+                    .find { it.name == t.toString() } ?: throw Exception("Field ${t} not found in class ${this@DataClass.name}")
+                val dataType = (dataField as DataField).getType()
+                argument(
+                    name = t.toString(),
+                    type = dataType,
+                    value = u)
             }
         }
     }

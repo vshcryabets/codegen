@@ -4,21 +4,21 @@ import ce.defs.DataType
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.DataField
-import generators.obj.input.addCommentLine
-import generators.obj.input.addEnumLeaf
-import generators.obj.input.addKeyword
-import generators.obj.input.addOutBlock
-import generators.obj.input.addSeparator
-import generators.obj.input.addSub
-import generators.obj.input.addVarName
-import generators.obj.input.findOrNull
-import generators.obj.input.getParentPath
-import generators.obj.out.CommentsBlock
-import generators.obj.out.FileData
-import generators.obj.out.NamespaceBlock
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.ConstantsEnum
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.addCommentLine
+import generators.obj.abstractSyntaxTree.addEnumLeaf
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addSeparator
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.abstractSyntaxTree.getParentPath
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.NamespaceBlock
+import generators.obj.syntaxParseTree.RegionImpl
 
 class CppEnumGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,

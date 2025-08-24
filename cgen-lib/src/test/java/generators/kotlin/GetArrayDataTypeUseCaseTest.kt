@@ -62,7 +62,7 @@ class GetArrayDataTypeUseCaseTest {
 
     @Test
     fun getArrayTypeReturnsStringArrayForStringType() {
-        val result = useCase.getArrayType(DataType.string())
+        val result = useCase.getArrayType(DataType.string)
         assertEquals("String[]", result)
     }
 

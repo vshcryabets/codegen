@@ -5,14 +5,14 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.NamespaceImpl
-import generators.obj.input.findOrNull
-import generators.obj.out.FieldNode
-import generators.obj.out.OutBlock
-import generators.obj.out.OutputTree
-import generators.obj.out.Region
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.Region
+import generators.obj.syntaxParseTree.RegionImpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

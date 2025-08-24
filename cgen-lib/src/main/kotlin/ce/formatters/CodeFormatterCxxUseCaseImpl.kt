@@ -1,11 +1,11 @@
 package ce.formatters
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.addSeparator
-import generators.obj.input.addSub
-import generators.obj.out.EnumNode
-import generators.obj.out.Separator
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addSeparator
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.EnumNode
+import generators.obj.syntaxParseTree.Separator
 import javax.inject.Inject
 
 class CodeFormatterCxxUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :

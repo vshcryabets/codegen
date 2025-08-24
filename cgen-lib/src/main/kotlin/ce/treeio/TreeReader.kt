@@ -1,6 +1,6 @@
 package ce.treeio
 
-import generators.obj.input.Leaf
+import generators.obj.abstractSyntaxTree.Leaf
 
 interface TreeReader {
     fun load(filePath: String): Leaf

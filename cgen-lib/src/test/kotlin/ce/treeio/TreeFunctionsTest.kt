@@ -1,7 +1,7 @@
 package ce.treeio
 
-import generators.obj.input.NamespaceImpl
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.abstractSyntaxTree.Node
 import org.junit.jupiter.api.Assertions.*
 
 class TreeFunctionsTest {

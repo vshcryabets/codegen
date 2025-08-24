@@ -27,10 +27,10 @@ import generators.kotlin.KtDataClassGenerator
 import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.MetaGenerator
 import generators.obj.PrepareFilesListUseCaseImpl
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.DataClass
-import generators.obj.input.InterfaceDescription
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.ConstantsEnum
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.InterfaceDescription
 import generators.rust.RustFileGenerator
 import generators.swift.SwiftConstantsBlockGenerator
 import generators.swift.SwiftDataClassGenerator

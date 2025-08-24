@@ -9,9 +9,9 @@ import ce.defs.outputFile
 import ce.defs.sourceFile
 import ce.settings.Project
 import ce.treeio.TreeFunctions
-import generators.obj.input.Namespace
-import generators.obj.input.Node
-import generators.obj.input.clearSubs
+import generators.obj.abstractSyntaxTree.Namespace
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.clearSubs
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader

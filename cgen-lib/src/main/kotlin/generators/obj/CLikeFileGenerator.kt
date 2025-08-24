@@ -1,7 +1,6 @@
 package generators.obj
 
-import ce.settings.CodeStyle
-import generators.obj.input.Block
+import generators.obj.abstractSyntaxTree.Block
 import java.io.File
 
 abstract class CLikeFileGenerator() : FileGenerator() {

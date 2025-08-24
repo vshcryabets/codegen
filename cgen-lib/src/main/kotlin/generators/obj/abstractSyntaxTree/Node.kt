@@ -1,21 +1,20 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.DataValueImpl
 import ce.defs.NotDefined
 import ce.defs.RValue
-import generators.obj.out.AstTypeLeaf
-import generators.obj.out.CommentLeaf
-import generators.obj.out.EnumNode
-import generators.obj.out.FileData
-import generators.obj.out.Keyword
-import generators.obj.out.NlSeparator
-import generators.obj.out.OutBlock
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.Separator
-import generators.obj.out.VariableName
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.CommentLeaf
+import generators.obj.syntaxParseTree.EnumNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.Separator
+import generators.obj.syntaxParseTree.VariableName
 import kotlin.reflect.KClass
-
 
 fun <R : Leaf, T : Node> T.findOrNull(clazz: Class<R>): R? {
     subs.forEach {
@@ -25,7 +24,6 @@ fun <R : Leaf, T : Node> T.findOrNull(clazz: Class<R>): R? {
     }
     return null
 }
-
 
 fun <R : Leaf, T : Node> T.findOrCreateSub(clazz: Class<R>): R {
     subs.forEach {

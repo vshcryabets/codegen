@@ -1,12 +1,12 @@
 package ce.formatters.kotlin
 
 import ce.basetest.KotlinBaseTest
-import generators.obj.out.FileDataImpl
-import generators.obj.out.Keyword
-import generators.obj.out.NamespaceDeclaration
-import generators.obj.out.OutputTree
-import generators.obj.out.Space
-import generators.obj.out.VariableName
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

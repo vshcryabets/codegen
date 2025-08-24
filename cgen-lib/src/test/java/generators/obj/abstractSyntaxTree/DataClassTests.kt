@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.NotDefined
@@ -21,7 +21,7 @@ class DataClassTests {
     @Test
     fun fieldAddsFieldWithDefaultValue() {
         val dataClass = DataClass(name = "TestClass")
-        dataClass.field("Field1", DataType.string())
+        dataClass.field("Field1", DataType.string)
         val field = dataClass.subs.first() as DataField
         Assertions.assertEquals("Field1", field.name)
         Assertions.assertTrue(field.getType() is DataType.string)
@@ -33,10 +33,28 @@ class DataClassTests {
     @Test
     fun fieldAddsFieldWithSpecifiedValue() {
         val dataClass = DataClass(name = "TestClass")
-        dataClass.field("Field2", DataType.string(), "value")
+        dataClass.field("Field2", DataType.string, "value")
         val field = dataClass.subs.first() as DataField
         Assertions.assertEquals("Field2", field.name)
         Assertions.assertTrue(field.getType() is DataType.string)
         Assertions.assertEquals("value", field.getValue().simple)
+    }
+
+    @Test
+    fun testNewInstanceWithArgs() {
+        val dataClass = DataClass(name = "TestClass")
+        dataClass.field("strField", DataType.string)
+        val instance = dataClass.instance(
+            mapOf(
+                "strField" to "test"
+            )
+        )
+        Assertions.assertEquals(DataType.custom::class.java, instance.getType().javaClass)
+        Assertions.assertEquals(2, instance.subs.size)
+        Assertions.assertEquals(Input::class.java, instance.subs[1].javaClass)
+        val argField = instance.subs[1] as Input
+        Assertions.assertEquals("strField", argField.name)
+        Assertions.assertEquals("test", argField.getValue().simple)
+        Assertions.assertEquals(DataType.string, argField.getType())
     }
 }

@@ -1,4 +1,4 @@
-package generators.obj.input
+package generators.obj.abstractSyntaxTree
 
 import ce.defs.DataType
 import ce.defs.DataValue
@@ -53,8 +53,6 @@ data class TypeLeaf(
     override fun getParent2(): Node? = parent
     override fun setParent2(parent: Node?) { this.parent = parent }
 }
-
-class ModifiersList: Container()
 
 open class DataField(
     name: String,

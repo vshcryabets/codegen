@@ -1,8 +1,8 @@
 package ce.domain.usecase.transform
 
 import ce.formatters.PrepareCodeStyleTreeUseCase
-import generators.obj.out.CodeStyleOutputTree
-import generators.obj.out.OutputTree
+import generators.obj.syntaxParseTree.CodeStyleOutputTree
+import generators.obj.syntaxParseTree.OutputTree
 
 @Deprecated("Please use PrepareCodeStyleTreeUseCase")
 class TransformOutTreeToCodeStyleTreeUseCase {

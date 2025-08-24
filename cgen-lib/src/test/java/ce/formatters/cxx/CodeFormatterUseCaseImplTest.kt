@@ -5,9 +5,9 @@ import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
 import generators.cpp.CppHeaderFile
-import generators.obj.input.addSub
-import generators.obj.out.NamespaceBlock
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.NamespaceBlock
+import generators.obj.syntaxParseTree.OutputTree
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 

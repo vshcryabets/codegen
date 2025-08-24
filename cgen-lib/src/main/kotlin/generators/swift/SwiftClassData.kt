@@ -1,13 +1,13 @@
 package generators.swift
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.copyLeafExt
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.copyLeafExt
 
 data class SwiftClassData(
     override val name: String,
     override val subs: MutableList<Leaf> = mutableListOf()
-) : generators.obj.out.ClassData {
+) : generators.obj.syntaxParseTree.ClassData {
     override fun copyLeaf(parent: Node?, copySubs: Boolean): SwiftClassData =
         this.copyLeafExt(parent, { this.copy(subs = mutableListOf()) })
     var parent: Node? = null

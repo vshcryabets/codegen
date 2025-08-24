@@ -4,9 +4,9 @@ import ce.defs.DataType
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.addSub
-import generators.obj.out.FileData
+import generators.obj.abstractSyntaxTree.ConstantsEnum
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileData
 
 class SwiftEnumGenerator(
     fileGenerator: FileGenerator,

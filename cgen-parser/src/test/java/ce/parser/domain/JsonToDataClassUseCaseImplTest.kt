@@ -1,6 +1,6 @@
 package ce.parser.domain
 
-import generators.obj.input.DataClass
+import generators.obj.abstractSyntaxTree.DataClass
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

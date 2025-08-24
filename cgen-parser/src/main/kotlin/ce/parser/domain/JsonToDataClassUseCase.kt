@@ -3,8 +3,8 @@ package ce.parser.domain
 import ce.defs.DataType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import generators.obj.input.DataClass
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.Node
 import javax.inject.Inject
 
 interface JsonToDataClassUseCase {
@@ -27,7 +27,7 @@ class JsonToDataClassUseCaseImpl @Inject constructor(): JsonToDataClassUseCase {
                 child.isBoolean -> dataClass.field(childName, DataType.bool)
                 child.isDouble -> dataClass.field(childName, DataType.float64)
                 child.isFloat -> dataClass.field(childName, DataType.float32)
-                child.isTextual -> dataClass.field(childName, DataType.string(true))
+                child.isTextual -> dataClass.field(childName, DataType.stringNullable)
                 child.isLong -> dataClass.field(childName, DataType.int64)
                 child.isNumber -> dataClass.field(childName, DataType.int32)
 //                child.isArray

@@ -4,8 +4,8 @@ import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.DataValueImpl
 import ce.defs.IntValue
-import generators.obj.input.getPath
-import generators.obj.out.FileData
+import generators.obj.abstractSyntaxTree.getPath
+import generators.obj.syntaxParseTree.FileData
 
 object Types {
     fun getArrayType(type: DataType): String =

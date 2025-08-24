@@ -40,9 +40,9 @@ class DataTypeSerializerTest {
     fun getStringDataType() {
         val serializer = DataTypeSerializer()
         Assertions.assertEquals("string",
-            serializer.stringValue(DataType.string(canBeNull = false)))
+            serializer.stringValue(DataType.string))
         Assertions.assertEquals("stringNullable",
-            serializer.stringValue(DataType.string(canBeNull = true)))
+            serializer.stringValue(DataType.stringNullable))
 
         val stringNotNull = serializer.fromStringValue("string")
         val stringNullable = serializer.fromStringValue("stringNullable")
@@ -50,7 +50,7 @@ class DataTypeSerializerTest {
         Assertions.assertTrue(stringNotNull is DataType.string)
         Assertions.assertFalse(stringNotNull.canBeNull)
 
-        Assertions.assertTrue(stringNullable is DataType.string)
+        Assertions.assertTrue(stringNullable is DataType.stringNullable)
         Assertions.assertTrue(stringNullable.canBeNull)
     }
 }

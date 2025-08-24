@@ -1,6 +1,6 @@
 package ce.treeio
 
-import generators.obj.out.CommentsBlock
+import generators.obj.syntaxParseTree.CommentsBlock
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Element

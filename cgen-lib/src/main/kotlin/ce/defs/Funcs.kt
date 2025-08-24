@@ -1,6 +1,6 @@
 package ce.defs
 
-import generators.obj.input.*
+import generators.obj.abstractSyntaxTree.*
 
 val globRootNamespace = NamespaceImpl("").apply { setParent2(TreeRoot) }
 var currentTarget: Target = Target.Other

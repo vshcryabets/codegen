@@ -14,8 +14,8 @@ modeType.add("OEXEC", 3)
 modeType.add("OTRUNC", 0x10)
 
 ns.dataClass("GroovyData").tap {
-    field("firstname", new DataType.string(true), NotDefined.INSTANCE)
-    field("secondname", new DataType.string())
+    field("firstname", DataType.stringNullable.INSTANCE, NotDefined.INSTANCE)
+    field("secondname", DataType.string.INSTANCE)
     field("age", DataType.int32.INSTANCE, 35)
 }
 

@@ -8,7 +8,7 @@ namespace("ce.defs").apply {
     }
 
     val targetEnum = enum("Target").apply {
-        defaultType(DataType.string())
+        defaultType(DataType.string)
         add("Other", "other")
         add("Kotlin", "kotlin")
         add("C", "c")
@@ -22,7 +22,7 @@ namespace("ce.defs").apply {
     }
 
     dataClass("TargetConfiguration").apply {
-        field("outputFolder", DataType.string(), "")
+        field("outputFolder", DataType.string, "")
         field("type", DataType.userClassTest2(targetEnum))
     }
 }

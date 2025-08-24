@@ -13,15 +13,15 @@ import generators.cpp.CppHeaderFile
 import generators.kotlin.GetArrayDataTypeUseCase
 import generators.kotlin.GetTypeNameUseCase
 import generators.kotlin.PrepareRightValueUseCase
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.NamespaceImpl
-import generators.obj.input.TreeRoot
-import generators.obj.input.addSub
-import generators.obj.out.FileDataImpl
-import generators.obj.out.ImportsBlock
-import generators.obj.out.NamespaceBlock
-import generators.obj.out.NlSeparator
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.abstractSyntaxTree.TreeRoot
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.ImportsBlock
+import generators.obj.syntaxParseTree.NamespaceBlock
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.OutputTree
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

@@ -1,6 +1,6 @@
 package ce.defs
 
-import generators.obj.input.Block
+import generators.obj.abstractSyntaxTree.Block
 
 sealed class DataType(
     val canBeNull: Boolean = false
@@ -64,7 +64,8 @@ sealed class DataType(
     object float64Nullable : DataType(canBeNull = true)
     object float128Nullable : DataType(canBeNull = true)
 
-    class string(canBeNull: Boolean = false) : DataType(canBeNull)
+    object string : DataType(false)
+    object stringNullable : DataType(true)
     object bool : DataType()
     object boolNullable : DataType(canBeNull = true)
     class pointer(val subType: DataType) : DataType(canBeNull = true)
@@ -72,7 +73,7 @@ sealed class DataType(
     class promise(val elementDataType: DataType) : DataType()
     class custom(val block: Block, nullable : Boolean = false) : DataType(nullable)
     class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
-    class userClassTest2(val node: generators.obj.input.Node, nullable : Boolean = false) : DataType(nullable)
+    class userClassTest2(val node: generators.obj.abstractSyntaxTree.Node, nullable : Boolean = false) : DataType(nullable)
 //    class nullable(val inner: DataType) : DataType(true)
 }
 
