@@ -113,8 +113,9 @@ class KotlinDataClassGeneratorTest {
         val dataClassDescriptor = DataClass("MyDataClass").apply {
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
-            addstaticfield("SELF", DataType.custom(this), instance())
-            //                 mapOf("A" to 10, "B" to 10.5f)
+            addstaticfield("SELF", DataType.custom(this), instance(
+                mapOf("A" to 10, "B" to 10.5f)
+            ))
         }
         val block = namespace.addSub(dataClassDescriptor)
 
@@ -136,7 +137,12 @@ class KotlinDataClassGeneratorTest {
         //           <OutBlock companion object>
         //              <FieldNode><val><SELF><:><c><=>
         //                  <DataValue>
-        //                      <Constructor c><Arguments /></Constructor>
+        //                      <Constructor c>
+        //                          <Arguments>
+        //                              <ArgumentNode><A><=><RValue 10></<ArgumentNode>
+        //                              <ArgumentNode><B><=><RValue 10.5f></<ArgumentNode>
+        //                          </Arguments>
+        //                      </Constructor>
         //                  </Datavalue>
         //              </FieldNode>
         //           </OutBlock companion object>

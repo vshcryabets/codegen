@@ -90,10 +90,9 @@ class PrepareRightValueUseCaseTest {
             field("b", DataType.int32,  0)
         }
         val dataType = DataType.custom(dataClassDescriptor)
-        val instance = NewInstance("newInstance")
-            .setType(dataType)
-            .argument("a", DataType.int32, "defined")
-            .argument("b", DataType.int32, 1)
+        val instance = dataClassDescriptor.instance(
+            mapOf("a" to "defined", "B" to 123)
+        )
 
         val result = prepareRightValueUseCase.prepareConstructor(instance, fileData)
         // expected result
@@ -101,11 +100,10 @@ class PrepareRightValueUseCaseTest {
         //   <Constructor>
         //     <Arguments>
         //       <ArgumentNode>
-        //          <VarName a><=><"Defined">
+        //          <VarName a><=> <RValue "defined">
         //       </ArgumentNode>
-        //       <,>
         //       <ArgumentNode>
-        //          <VarName b><=><1>
+        //          <VarName b><=> <RValue 123>
         //       </ArgumentNode>
         //     </Arguments>
         //   </Constructor>
@@ -117,7 +115,16 @@ class PrepareRightValueUseCaseTest {
         Assertions.assertEquals(1, constructor.subs.size)
         assertTrue(constructor.subs[0] is Arguments)
         val arguments = constructor.subs[0] as Arguments
-        assertEquals(3, arguments.subs.size)
+        assertEquals(2, arguments.subs.size)
+        val arg1 = arguments.subs[0] as generators.obj.syntaxParseTree.ArgumentNode
+        val arg2 = arguments.subs[1] as generators.obj.syntaxParseTree.ArgumentNode
+        assertEquals(3, arg1.subs.size)
+        assertEquals(3, arg2.subs.size)
+        assertEquals("a", arg1.subs[0].name)
+        assertEquals(RValue::class.java, arg1.subs[2].javaClass)
+        val rvalue1 = arg1.subs[2] as RValue
+        assertEquals("\"defined\"", rvalue1.name)
+        assertEquals("b", arg2.subs[0].name)
+        assertEquals("123", arg2.subs[2].name)
     }
-
 }

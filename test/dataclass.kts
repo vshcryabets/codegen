@@ -1,5 +1,5 @@
 import ce.defs.*
-import generators.obj.input.DataField
+import generators.obj.abstractSyntaxTree.DataField
 
 namespace("com.goldman").apply {
     getNamespace("data").apply {

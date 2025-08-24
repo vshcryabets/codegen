@@ -1,5 +1,5 @@
 import ce.defs.*
-import generators.obj.input.*
+import generators.obj.abstractSyntaxTree.*
 
 namespace("com.goldman.data").apply {
     declareInterface("DataReader").apply {
