@@ -16,6 +16,7 @@ import kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory
 fun main(args: Array<String>) {
     var needToStoreInTree = false
     var needToStoreOutTree = false
+    var needToStoreOutTreeFormatted = false
     var projectFile = ""
 
     val it = args.iterator()
@@ -23,6 +24,7 @@ fun main(args: Array<String>) {
         when (it.next()) {
             "--project" -> projectFile = it.next()
             "--storeOutTree" -> needToStoreOutTree = true
+            "--storeOutTreeFormatted" -> needToStoreOutTreeFormatted = true
             "--storeInTree" -> needToStoreInTree = true
         }
     }
@@ -54,6 +56,10 @@ fun main(args: Array<String>) {
     val dir = DirsConfiguration(
         workingDir = File(".").absolutePath
     )
-    buildProjectUseCase(projectFile, needToStoreInTree, needToStoreOutTree,
-        dir)
+    buildProjectUseCase(
+        projectFile = projectFile,
+        writeInTree = needToStoreInTree,
+        writeOutTree = needToStoreOutTree,
+        writeOutTreeFormated = needToStoreOutTreeFormatted,
+        dirsConfiguration = dir)
 }

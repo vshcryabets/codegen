@@ -44,12 +44,16 @@ class JavaDataClassGeneratorTest {
         }
 
         val projectOutput = OutputTree(Target.Kotlin)
-        val files = ktFileGenerator.createFile(projectOutput, "a", block)
+        val files = ktFileGenerator.createFile(projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val mainFile = files.first()
         item(files, block)
 
         // expected result
         // <FileData>
+        //     <FileMetaInformation />
         //     <NamespaceDeclaration />
         //     <ImportsBlock />
         //     <region>
@@ -66,9 +70,9 @@ class JavaDataClassGeneratorTest {
 
 
         Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
-        Assert.assertEquals(3, mainFile.subs.size)
-        Assert.assertTrue(mainFile.subs[2] is RegionImpl)
-        val region = mainFile.subs[2] as Region
+        Assert.assertEquals(4, mainFile.subs.size)
+        Assert.assertTrue(mainFile.subs[3] is RegionImpl)
+        val region = mainFile.subs[3] as Region
         Assert.assertEquals(2, region.subs.size)
         Assert.assertTrue(region.subs[0] is CommentsBlock)
         Assert.assertTrue(region.subs[1] is OutBlock)

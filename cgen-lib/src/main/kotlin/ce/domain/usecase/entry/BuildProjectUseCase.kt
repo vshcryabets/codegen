@@ -23,7 +23,8 @@ class BuildProjectUseCase(
     operator fun invoke(projectFile: String,
                         writeInTree: Boolean = false,
                         writeOutTree : Boolean = false,
-                        dirsConfiguration: DirsConfiguration) {
+                        dirsConfiguration: DirsConfiguration,
+                        writeOutTreeFormated: Boolean = false) {
         val project : Project = getProjectUseCase(projectFile, dirsConfiguration)
         val codeStyleRepo = CodestyleRepoImpl(project)
         val reportsRepo = ReportsRepoImpl()
@@ -31,7 +32,8 @@ class BuildProjectUseCase(
         val generatorsRepo = GeneratorsRepo(
             project = project,
             codestylesRepo = codeStyleRepo)
-        val writtersRepo = WrittersRepoImpl(codestylesRepo = codeStyleRepo,
+        val writersRepo = WrittersRepoImpl(
+            codestylesRepo = codeStyleRepo,
             reportsRepo = reportsRepo
         )
 
@@ -48,7 +50,10 @@ class BuildProjectUseCase(
                 codeFormatter = generatorsRepo.getFormatter(target.type)
             )
             val codeStyleTree = prepareCodeStyleTreeUseCase.prepareCodeStyleTree(outTree)
-            writtersRepo.getWritter(target).write(codeStyleTree)
+            if (writeOutTreeFormated) {
+                storeOutTreeUseCase(target.outputFolder + "output_tree_formatted_${target.type.name}.xml", codeStyleTree)
+            }
+            writersRepo.getWritter(target).write(codeStyleTree)
         }
     }
 }

@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="ce.entrypoints.BuildProjectKt" />
     <module name="codegen.cgen-console.main" />
-    <option name="PROGRAM_PARAMETERS" value="--project ./test/project.json" />
+    <option name="PROGRAM_PARAMETERS" value="--project ./test/project.json --storeInTree --storeOutTree --storeOutTreeFormatted" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

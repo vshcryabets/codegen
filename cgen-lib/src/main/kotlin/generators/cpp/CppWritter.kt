@@ -14,6 +14,7 @@ import generators.obj.syntaxParseTree.ImportLeaf
 import generators.obj.syntaxParseTree.NamespaceBlock
 import generators.obj.syntaxParseTree.OutBlock
 import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.FileMetaInformation
 import java.io.File
 
 class CppWritter(
@@ -33,6 +34,7 @@ class CppWritter(
                     out.write("#include \"${leaf.name}\"")
                 }
             }
+
             else -> super.writeLeaf(leaf, out, indent)
         }
     }
@@ -62,7 +64,9 @@ class CppWritter(
             reportsRepo.loge("No data to write ${fileData.name}")
             return
         }
-        val outputFile = File(fileData.name)
+        val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java)?.name
+            ?: throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        val outputFile = File(fileMetaInformation + "/" + fileData.name)
         outputFile.parentFile.mkdirs()
         reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->

@@ -198,10 +198,13 @@ class KotlinDataClassFormattingTests {
         val block = namespace.addSub(dataClassDescriptor)
 
         val projectOutput = OutputTree(Target.Kotlin)
-        val files = ktFileGenerator.createFile(projectOutput, "a", block)
+        val files = ktFileGenerator.createFile(projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val mainFile = files.first()
         ktDataClassGenerator(files, block)
-        val region = mainFile.subs[2] as Region
+        val region = mainFile.subs[3] as Region
         val output = formatter(region)
 
         // expected result

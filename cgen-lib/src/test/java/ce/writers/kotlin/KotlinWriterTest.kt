@@ -75,7 +75,10 @@ class KotlinWriterTest: KotlinBaseTest() {
         }
         val block = tree.subs.first() as ConstantsEnum
         val projectOutput = OutputTree(Target.Kotlin)
-        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val files = fileGenerator.createFile(projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val mainFile = files.first()
         val process = KotlinEnumGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
@@ -83,7 +86,7 @@ class KotlinWriterTest: KotlinBaseTest() {
             prepareRightValueUseCase = prepareRightValueUseCase
         )
         process(files, block)
-        val inputEnumNode = ((mainFile.subs[2] as Region).subs[0] as OutBlock).subs[1] as EnumNode
+        val inputEnumNode = ((mainFile.subs[3] as Region).subs[0] as OutBlock).subs[1] as EnumNode
         val formatedNode = formatter(inputEnumNode)
         val buffer = StringBuffer()
 
