@@ -1,8 +1,7 @@
 package ce.treeio
 
-import generators.obj.input.Node
-import generators.obj.input.addSub
-import generators.obj.input.findOrNull
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addSub
 
 
 class TreeMergeWrongRoot: Exception("Tree roots must have same class")

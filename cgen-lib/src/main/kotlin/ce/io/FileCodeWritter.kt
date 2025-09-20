@@ -4,7 +4,7 @@ import java.io.BufferedWriter
 
 class FileCodeWritter(
     private val out: BufferedWriter
-) : CodeWritter {
+) : CodeWriter {
     var indentStr = ""
     var newLineStr = "\n"
 
@@ -19,7 +19,7 @@ class FileCodeWritter(
         return this
     }
 
-    override fun writeNl(): CodeWritter {
+    override fun writeNl(): CodeWriter {
         out.write(newLineStr)
         isNewEmptyLine = true
         return this

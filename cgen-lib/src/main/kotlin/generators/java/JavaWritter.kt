@@ -1,23 +1,28 @@
 package generators.java
 
 import ce.formatters.CodeStyleRepo
-import ce.io.CodeWritter
+import ce.io.CodeWriter
 import ce.io.FileCodeWritter
-import ce.settings.CodeStyle
+import ce.repository.ReportsRepo
 import generators.obj.Writter
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.out.*
-import java.io.BufferedWriter
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportLeaf
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutBlock
 import java.io.File
 
-class JavaWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
+class JavaWritter(
+    codeStyleRepo: CodeStyleRepo,
+    outputFolder: String,
+    private val reportsRepo: ReportsRepo)
     : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
-        var outputFile = File(fileData.name + ".java")
+        val outputFile = File(fileData.name + ".java")
         outputFile.parentFile.mkdirs()
-        println("Writing $outputFile")
+        reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)
             codeWritter.setNewLine(codeStyleRepo.newLine())
@@ -25,7 +30,7 @@ class JavaWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
         }
     }
 
-    override fun writeNode(node: Node, out: CodeWritter, indent: String) {
+    override fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
             is OutBlock -> {
                 out.write(node.name)
@@ -35,7 +40,7 @@ class JavaWritter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
         }
     }
 
-    override fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
+    override fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
             is ImportLeaf -> out.write("import ${leaf.name}").writeNl()
             is NamespaceDeclaration -> out.write("package ${leaf.name};").writeNl()

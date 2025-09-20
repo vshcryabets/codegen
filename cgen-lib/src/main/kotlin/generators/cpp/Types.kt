@@ -2,16 +2,22 @@ package generators.cpp
 
 import ce.defs.DataType
 import ce.defs.DataValue
-import generators.obj.input.findOrCreateSub
-import generators.obj.out.ClassData
-import generators.obj.out.FileData
-import generators.obj.out.ImportsBlock
+import ce.defs.DataValueImpl
+import generators.obj.abstractSyntaxTree.findOrCreateSub
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportsBlock
 
 object Types {
     fun typeTo(file: FileData,
                type: DataType
-    ) : String =
-        when (type) {
+    ) : String {
+        if (type is DataType.string) {
+            file.findOrCreateSub(ImportsBlock::class.java).addInclude("<string>")
+        }
+        if (type.isInteger()) {
+            file.findOrCreateSub(ImportsBlock::class.java).addInclude("<cstdint>")
+        }
+        return when (type) {
             DataType.VOID -> "void"
             DataType.int8 -> "int8_t"
             DataType.int16 -> "int16_t"
@@ -21,25 +27,25 @@ object Types {
             DataType.uint16 -> "uint16_t"
             DataType.uint32 -> "uint32_t"
             DataType.uint64 -> "uint64_t"
-            is DataType.string -> {
-                file.findOrCreateSub(ImportsBlock::class.java).addInclude("<string>")
-                "std::string"
-            }
+            is DataType.string -> "std::string"
+
             DataType.float32 -> "float"
             DataType.float64 -> "double"
             else -> "cxxQQTP_$type"
         }
-    fun toValue(type: DataType, value: DataValue) : String =
+    }
+
+    fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
-            DataType.VOID -> "void"
+            DataType.VOID -> DataValueImpl(name = "void")
             DataType.int8, DataType.int16, DataType.int32, DataType.int64,
-            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> value.value.toString()
-            DataType.float32 -> value.value.toString() + "f"
-            DataType.float64 -> value.value.toString()
+            DataType.uint8, DataType.uint16, DataType.uint32, DataType.uint64 -> DataValueImpl(name = value.simple.toString())
+            DataType.float32 -> DataValueImpl(name = value.simple.toString() + "f")
+            DataType.float64 -> DataValueImpl(name = value.simple.toString())
             is DataType.string -> {
-                "\"${value}\""
+                DataValueImpl(name = value.simple.toString())
             }
-            else -> "QQVL_$type"
+            else -> DataValueImpl(name = "QQVL_$type")
         }
 
 }

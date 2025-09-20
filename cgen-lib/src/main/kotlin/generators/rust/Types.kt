@@ -1,8 +1,7 @@
 package generators.rust
 
 import ce.defs.DataType
-import generators.obj.out.FileData
-import generators.rust.RustClassData
+import generators.obj.syntaxParseTree.FileData
 
 object Types {
     fun typeTo(file: FileData,

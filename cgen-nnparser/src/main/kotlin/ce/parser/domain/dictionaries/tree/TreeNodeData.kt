@@ -1,8 +1,8 @@
 package ce.parser.domain.dictionaries.tree
 
-import generators.obj.input.Leaf
-import generators.obj.out.Keyword
-import generators.obj.out.VariableName
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.VariableName
 
 /**
  * Data class representing the data of a tree node.

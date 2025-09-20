@@ -1,10 +1,10 @@
 package generators.swift
 
 import generators.obj.CLikeFileGenerator
-import generators.obj.input.Block
-import generators.obj.out.FileData
-import generators.obj.out.FileDataImpl
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.Block
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.OutputTree
 
 class SwiftFileGenerator() : CLikeFileGenerator() {
     override fun createFile(project: OutputTree, outputFile: String, block: Block): List<FileData> {

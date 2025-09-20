@@ -1,11 +1,11 @@
 package generators.rust
 
 import generators.obj.CLikeFileGenerator
-import generators.obj.input.Block
-import generators.obj.input.getParentPath
-import generators.obj.out.FileData
-import generators.obj.out.FileDataImpl
-import generators.obj.out.OutputTree
+import generators.obj.abstractSyntaxTree.Block
+import generators.obj.abstractSyntaxTree.getParentPath
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.OutputTree
 import java.io.File
 
 class RustFileGenerator() : CLikeFileGenerator() {

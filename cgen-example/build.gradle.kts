@@ -32,8 +32,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-scripting-jsr223:${Versions.kotlin}")
-        classpath("org.codehaus.groovy:groovy-jsr223:3.0.17")
+        implementation(libs.kotlinScriptingJsr223)
+        implementation(libs.kotlinCompilerEmbedable)
+        implementation(libs.groovyJsr223)
 //        classpath("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven:${Versions.kotlin}")
 //        classpath("org.jetbrains.kotlin:kotlin-maven-plugin:${Versions.kotlin}")
         classpath("com.github.vshcryabets:codegen:4895044cf9")

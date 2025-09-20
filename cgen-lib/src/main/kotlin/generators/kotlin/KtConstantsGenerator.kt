@@ -3,11 +3,21 @@ package generators.kotlin
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.ConstantDesc
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.RegionImpl
 
 class KtConstantsGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val dataTypeToString: GetTypeNameUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -21,14 +31,15 @@ class KtConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantNode().apply {
+                        addSub(FieldNode().apply {
                             addKeyword("const")
                             addKeyword("val")
                             addVarName(it.name)
                             addKeyword(":")
-                            addDatatype(Types.typeTo(file, it.type))
+                            addDatatype(dataTypeToString.typeTo(file, it.getType()))
                             addKeyword("=")
-                            addRValue(Types.toValue(it.type, it.value))
+                            val rValue = prepareRightValueUseCase.toRightValue(it.getType(), it.getValue(), file)
+                            addSub(rValue)
                         })
                     }
                 }

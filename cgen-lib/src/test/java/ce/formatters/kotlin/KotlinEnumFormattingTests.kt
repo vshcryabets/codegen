@@ -1,19 +1,22 @@
 package ce.formatters.kotlin
 
+import ce.defs.RValue
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.settings.CodeStyle
-import generators.obj.input.addDatatype
-import generators.obj.input.addEnumLeaf
-import generators.obj.input.addKeyword
-import generators.obj.input.addOutBlock
-import generators.obj.input.addSub
-import generators.obj.input.addVarName
-import generators.obj.out.ArgumentNode
-import generators.obj.out.Keyword
-import generators.obj.out.OutBlock
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addEnumLeaf
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.Arguments
+import generators.obj.syntaxParseTree.EnumNode
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.RegionImpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -30,7 +33,6 @@ class KotlinEnumFormattingTests {
         preventEmptyBlocks = true,
     )
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val repo1NL = CLikeCodestyleRepo(codeStyle1NlBeforeRegion)
     val formatter = CodeFormatterKotlinUseCaseImpl(repoNoSpace)
 
     @Test
@@ -73,10 +75,12 @@ class KotlinEnumFormattingTests {
                         addDatatype("int")
                     })
                 }
-                addEnumLeaf("A(0)")
-                addEnumLeaf("B(1)")
-                addEnumLeaf("C(2)")
-                addEnumLeaf("D(3)")
+                listOf("A","B","C","D").forEachIndexed { idx,name ->
+                    addEnumLeaf(name).apply {
+                        addSub(Arguments())
+                            .addSub(RValue(idx.toString()))
+                    }
+                }
             }
         }
         val output = formatter(input)
@@ -91,10 +95,13 @@ class KotlinEnumFormattingTests {
         //        </OutBLockArguments>
         //        <)>
         //        <SPACE> <{> <nl>
-        //        <Indent> <EnumLeaf A> <,> <nl>
-        //        <Indent> <EnumLeaf B> <,> <nl>
-        //        <Indent> <EnumLeaf C> <,> <nl>
-        //        <Indent> <EnumLeaf D> <nl>
+        //        <Indent>
+        //        <EnumNode A>
+        //            <(><RValue 0><)>
+        //        </EnumNode> <,> <nl>
+        //        <Indent> <EnumNode B>... <,> <nl>
+        //        <Indent> <EnumNode C>... <,> <nl>
+        //        <Indent> <EnumNode D>... <nl>
         //        <}>
         //     </OutBlock>
         //     <NL>
@@ -113,5 +120,15 @@ class KotlinEnumFormattingTests {
         val argumentNode = outBlockArguments.subs[0] as ArgumentNode
         Assert.assertTrue(argumentNode.subs[0] is Keyword)
         Assert.assertEquals(6, argumentNode.subs.size)
+
+        Assert.assertTrue(outBlock.subs[7] is EnumNode)
+        val firstEnumNode = outBlock.subs[7] as EnumNode
+        Assert.assertEquals(3 , firstEnumNode.subs.size)
+        Assert.assertTrue(firstEnumNode.subs[0] is Keyword)
+        Assert.assertTrue(firstEnumNode.subs[1] is Arguments)
+        Assert.assertTrue(firstEnumNode.subs[2] is Keyword)
+        val firstNodeArguments = firstEnumNode.subs[1] as Arguments
+        Assert.assertEquals(1 , firstNodeArguments.subs.size)
+        Assert.assertTrue(firstNodeArguments.subs[0] is RValue)
     }
 }

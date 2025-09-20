@@ -1,29 +1,30 @@
 package ce.formatters.cxx
 
-import ce.defs.Target
 import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
-import generators.cpp.CppHeaderFile
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addRValue
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.CommentLeaf
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NamespaceBlock
+import generators.obj.syntaxParseTree.Region
+import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.syntaxParseTree.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class CxxConstantsFormatterTest {
-    val codeStyle1NlBeforeRegion = CodeStyle(
-        newLinesBeforeClass = 1,
-        tabSize = 4,
-        preventEmptyBlocks = true,
-    )
-
     val codeStyleNoSpace = CodeStyle(
         newLinesBeforeClass = 0,
         tabSize = 2,
         preventEmptyBlocks = true,
     )
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val repo1NL = CLikeCodestyleRepo(codeStyle1NlBeforeRegion)
     val formatter = CodeFormatterUseCaseImpl(repoNoSpace)
 
     @Test
@@ -34,24 +35,24 @@ class CxxConstantsFormatterTest {
                     addSub(CommentLeaf("Line 1"))
                     addSub(CommentLeaf("Line 2"))
                 }
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addSub(Keyword("const"))
-                    addSub(Datatype("int32_t"))
+                    addSub(AstTypeLeaf("int32_t"))
                     addSub(VariableName("OREAD"))
                     addSub(Keyword("="))
-                    addSub(RValue("0"))
+                    addRValue("0")
                 })
-                addSub(ConstantNode().apply {
+                addSub(FieldNode().apply {
                     addKeyword("const")
-                    addSub(Datatype("int32_t"))
+                    addSub(AstTypeLeaf("int32_t"))
                     addSub(VariableName("OWRITE"))
                     addKeyword("=")
-                    addSub(RValue("1"))
+                    addRValue("1")
                 })
             }
         }
 
-        val output = formatter(input) as NamespaceBlock
+        val output = formatter(input)
         // expected result
         // <NamespaceBlock>
         //     <SPACE> <{> <nl>
@@ -77,21 +78,21 @@ class CxxConstantsFormatterTest {
         Assert.assertEquals(9, region.subs.size)
         val commentBlock = region.subs[0] as CommentsBlock
         Assert.assertEquals(6, commentBlock.subs.size)
-        val constantNode1 = region.subs[2] as ConstantNode
+        val constantNode1 = region.subs[2] as FieldNode
         Assert.assertEquals(9, constantNode1.subs.size)
     }
 
     @Test
     fun testConstantsLeaf() {
-        val input = ConstantNode().apply {
+        val input = FieldNode().apply {
             addSub(Keyword("const"))
-            addSub(Datatype("int32_t"))
+            addSub(AstTypeLeaf("int32_t"))
             addSub(VariableName("OREAD"))
             addSub(Keyword("="))
-            addSub(RValue("0"))
+            addRValue("0")
         }
 
-        val output = formatter(input) as ConstantNode
+        val output = formatter(input)
         // expected result
         // <ConstantLeaf>
         //     <const> <SPACE>

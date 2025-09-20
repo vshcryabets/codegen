@@ -1,10 +1,10 @@
 package ce.parser.domain.usecase.neuralnetworks
 
 import ce.parser.domain.FormatProject
-import generators.obj.input.Leaf
+import generators.obj.abstractSyntaxTree.Leaf
 
 interface TreeToFormatProject {
     fun addTree(tree: Leaf,
-              project: FormatProject) : FormatProject
+                project: FormatProject) : FormatProject
 
 }

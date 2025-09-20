@@ -1,23 +1,23 @@
 package generators.java
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
+import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.ConstantDesc
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.addDatatype
-import generators.obj.input.addKeyword
-import generators.obj.input.addRValue
-import generators.obj.input.addSeparator
-import generators.obj.input.addSub
-import generators.obj.input.addVarName
-import generators.obj.out.ConstantNode
-import generators.obj.out.FileData
-import generators.obj.out.OutBlock
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.ConstantDesc
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.RegionImpl
 
 class JavaConstantsGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -31,14 +31,15 @@ class JavaConstantsGenerator(
                 desc.subs.forEach {
                     if (it is ConstantDesc) {
                         autoIncrement.invoke(it)
-                        addSub(ConstantNode().apply {
+                        addSub(FieldNode().apply {
                             addKeyword("public")
                             addKeyword("static")
                             addKeyword("final")
-                            addDatatype(Types.typeTo(file, it.type))
+                            addDatatype(Types.typeTo(file, it.getType()))
                             addVarName(it.name)
                             addKeyword("=")
-                            addRValue(Types.toValue(it.type, it.value))
+                            val rValue = prepareRightValueUseCase.toRightValue(it.getType(), it.getValue(), file)
+                            addSub(rValue)
                         })
                     }
                 }

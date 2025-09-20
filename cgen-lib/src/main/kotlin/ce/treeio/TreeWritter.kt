@@ -1,6 +1,6 @@
 package ce.treeio
 
-import generators.obj.input.Leaf
+import generators.obj.abstractSyntaxTree.Leaf
 
 /**
  * Interface for writing a tree structure to a file.

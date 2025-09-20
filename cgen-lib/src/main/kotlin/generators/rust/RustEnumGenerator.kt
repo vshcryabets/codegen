@@ -1,12 +1,13 @@
 package generators.rust
 
 import ce.defs.DataType
+import ce.defs.DataValueImpl
 import ce.settings.Project
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.DataField
-import generators.obj.input.ConstantsEnum
-import generators.obj.input.addSub
-import generators.obj.out.FileData
+import generators.obj.abstractSyntaxTree.ConstantsEnum
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileData
 
 class RustEnumGenerator(
     fileGenerator: RustFileGenerator,
@@ -35,8 +36,8 @@ class RustEnumGenerator(
 //                    it.value = previous!! as Int + 1;
 //                }
 
-                if (it.value != null) {
-                    previous = it.value
+                if (it.getValue() != DataValueImpl.NotDefinedValue) {
+                    previous = it.getValue()
                 }
 
 //                if (withRawValues) {

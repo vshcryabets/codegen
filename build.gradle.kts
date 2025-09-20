@@ -1,5 +1,5 @@
 allprojects {
-    version = "0.1.3-SNAPSHOT"
+    version = "0.1.4-SNAPSHOT"
     group = "com.github.vshcryabets.codegen"
 
     repositories {
@@ -11,6 +11,6 @@ allprojects {
 }
 
 plugins {
-    kotlin("jvm") version Versions.kotlin apply false
+    kotlin("jvm") version libs.versions.kotlin apply false
 //    id("org.jetbrains.compose") version Versions.compose apply false
 }

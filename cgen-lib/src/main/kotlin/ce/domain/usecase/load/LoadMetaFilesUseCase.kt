@@ -1,12 +1,17 @@
 package ce.domain.usecase.load
 
-import ce.defs.*
-import ce.defs.Target
+import ce.defs.MetaEngine
+import ce.defs.TargetConfiguration
+import ce.defs.currentTarget
+import ce.defs.customBaseFolderPath
+import ce.defs.globRootNamespace
+import ce.defs.outputFile
+import ce.defs.sourceFile
 import ce.settings.Project
 import ce.treeio.TreeFunctions
-import generators.obj.input.Namespace
-import generators.obj.input.Node
-import generators.obj.input.clearSubs
+import generators.obj.abstractSyntaxTree.Namespace
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.clearSubs
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -26,7 +31,7 @@ class LoadMetaFilesForTargetUseCase @Inject constructor(
 
         project.files.forEach { fileName ->
             val fileObject = File(project.dirsConfiguration.workingDir + File.separator + fileName)
-            println("Processing ${fileObject.absolutePath}")
+            println("Processing ${fileObject.absolutePath} out folder ${target.outputFolder}")
             val reader = InputStreamReader(FileInputStream(fileObject))
             // clean global defines for each file
             customBaseFolderPath = target.outputFolder

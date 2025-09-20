@@ -1,13 +1,27 @@
 package generators.cpp
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
+import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.ConstantDesc
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.addCommentLine
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.abstractSyntaxTree.getParentPath
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.NamespaceBlock
+import generators.obj.syntaxParseTree.RegionImpl
 
 class CppConstantsBlockGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsBlock> {
 
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
@@ -30,13 +44,13 @@ class CppConstantsBlockGenerator(
             if (it is ConstantDesc) {
                 autoIncrement.invoke(it)
                 outBlock.addSub(
-                    ConstantNode().apply {
+                    FieldNode().apply {
                         addKeyword("const")
-                        addDatatype(Types.typeTo(headerFile, it.type))
+                        addDatatype(Types.typeTo(headerFile, it.getType()))
                         addVarName(it.name)
                         addKeyword("=")
-                        addRValue(Types.toValue(it.type, it.value))
-                        addKeyword(";")
+                        val rValue = prepareRightValueUseCase.toRightValue(it.getType(), it.getValue(), headerFile)
+                        addSub(rValue)
                     }
                 )
             }

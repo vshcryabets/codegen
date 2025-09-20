@@ -1,17 +1,26 @@
 package generators.kotlin
 
 import generators.obj.CLikeFileGenerator
-import generators.obj.input.Block
-import generators.obj.input.addSub
-import generators.obj.input.getParentPath
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.Block
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.getParentPath
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.ImportsBlock
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.VariableName
 import java.io.File
 
 class KotlinFileGenerator() : CLikeFileGenerator() {
     override fun createFile(project: OutputTree, outputFile: String, block: Block): List<FileData> {
         return listOf(FileDataImpl(outputFile).apply {
             setParent2(project)
-            addSub(NamespaceDeclaration(block.getParentPath()))
+            addSub(NamespaceDeclaration("").apply {
+                addSub(Keyword("package"))
+                addSub(VariableName(block.getParentPath()))
+            })
             addSub(ImportsBlock())
         })
     }

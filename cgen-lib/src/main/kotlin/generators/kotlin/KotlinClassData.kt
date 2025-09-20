@@ -1,14 +1,13 @@
 package generators.kotlin
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.copyLeafExt
-import generators.obj.input.copyNodeExt
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.copyNodeExt
 
 data class KotlinClassData(
     override val name: String,
     override val subs: MutableList<Leaf> = mutableListOf()
-) : generators.obj.out.ClassData {
+) : generators.obj.syntaxParseTree.ClassData {
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
         this.copyNodeExt(parent, copySubs) {
             this.copy(subs = mutableListOf())

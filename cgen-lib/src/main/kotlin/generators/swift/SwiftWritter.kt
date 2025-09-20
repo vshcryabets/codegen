@@ -2,13 +2,16 @@ package generators.swift
 
 import ce.formatters.CodeStyleRepo
 import ce.io.FileCodeWritter
-import ce.settings.CodeStyle
+import ce.repository.ReportsRepo
 import generators.obj.Writter
-import generators.obj.out.FileData
+import generators.obj.syntaxParseTree.FileData
 import java.io.File
 
-class SwiftWritter(fileGenerator: SwiftFileGenerator, codeStyleRepo: CodeStyleRepo, outputFolder: String)
-    : Writter(codeStyleRepo, outputFolder) {
+class SwiftWritter(
+    fileGenerator: SwiftFileGenerator, codeStyleRepo: CodeStyleRepo,
+    outputFolder: String,
+    private val reportsRepo: ReportsRepo
+) : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {
@@ -16,7 +19,7 @@ class SwiftWritter(fileGenerator: SwiftFileGenerator, codeStyleRepo: CodeStyleRe
 //        }
         var outputFile = File(fileData.name + ".swift")
         outputFile.parentFile.mkdirs()
-        println("Writing $outputFile")
+        reportsRepo.logi("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value
         outputFile.bufferedWriter().use { out ->
             val codeWritter = FileCodeWritter(out)

@@ -4,8 +4,18 @@ import ce.formatters.CLikeCodestyleRepo
 import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.syntaxParseTree.Space
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -23,43 +33,43 @@ class JavaDataClassFormattingTests {
     @Test
     fun testKotlinDeclarationPattern() {
         Assert.assertEquals(1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="static"/>
-                    <Datatype name="int"/>
+                    <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
                     <Keyword name="="/>
-                    <RValue name="0"/>
-                </ConstantNode>
+                    <DataValue name="0"/>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(0, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
-                    <Datatype name="int"/>
+                <FieldNode>
+                    <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(2, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="public"/>
                     <Keyword name="static"/>
-                    <Datatype name="int"/>
+                    <AstTypeLeaf name="int"/>
                     <VariableName name="ModeStateOn"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <Keyword name="static"/>
                     <VariableName name="ModeStateOn"/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
 
         Assert.assertEquals(-1, formatter.declarationPattern(xmlReader.loadFromString("""
-                <ConstantNode>
+                <FieldNode>
                     <VariableName name="ModeStateOn"/>
                     <Separator name=","/>
-                </ConstantNode>
+                </FieldNode>
                 """.trimIndent()) as Node))
     }
 

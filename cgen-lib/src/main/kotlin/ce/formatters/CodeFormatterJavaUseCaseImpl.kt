@@ -1,16 +1,14 @@
 package ce.formatters
 
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.input.addSub
-import generators.obj.out.ArgumentNode
-import generators.obj.out.Datatype
-import generators.obj.out.Keyword
-import generators.obj.out.NlSeparator
-import generators.obj.out.RValue
-import generators.obj.out.Separator
-import generators.obj.out.Space
-import generators.obj.out.VariableName
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.Separator
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import javax.inject.Inject
 
 class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
@@ -22,14 +20,14 @@ class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleR
         indent: Int,
         prev: Leaf?,
         inputQueue: MutableList<Leaf>
-    ): ArgumentNode = formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) as ArgumentNode
+    ) { formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) }
 
-    public fun declarationPattern(input: Node): Int {
+    fun declarationPattern(input: Node): Int {
         if (input.subs.size < 2)
             return -1
         for (pos in 0..input.subs.size-2) {
             val w1 = input.subs[pos] // int
-            if (w1 !is Datatype)
+            if (w1 !is AstTypeLeaf)
                 continue
             val w2 = input.subs[pos + 1] // NAME
             if (w2 !is VariableName)
@@ -45,8 +43,8 @@ class CodeFormatterJavaUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleR
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): Node {
-        return input.copyLeaf(copySubs = false).apply {
+    ) {
+        input.copyLeaf(copySubs = false).apply {
             if (next is ArgumentNode || prev is ArgumentNode) {
                 outputParent?.subs?.addAll(getIndents(indent))
             }

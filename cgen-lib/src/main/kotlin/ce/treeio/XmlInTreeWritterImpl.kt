@@ -1,9 +1,18 @@
 package ce.treeio
 
-import generators.obj.input.*
-import generators.obj.out.OutputTree
-import generators.obj.out.Region
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.Block
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.ConstantsEnum
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.FieldImpl
+import generators.obj.abstractSyntaxTree.Input
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.Output
+import generators.obj.abstractSyntaxTree.OutputReusable
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.Region
+import generators.obj.syntaxParseTree.RegionImpl
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -26,6 +35,7 @@ class XmlInTreeWritterImpl : TreeWritter {
         const val KEY_OUTPUT_FILE = "outFile"
         const val KEY_BASE_FOLDER = "baseFolder"
         const val KEY_TARGET = "target"
+        const val KEY_STATIC = "static"
     }
 
     val dataTypeSerializer = DataTypeSerializer()
@@ -63,17 +73,10 @@ class XmlInTreeWritterImpl : TreeWritter {
             element.setAttribute(KEY_BASE_FOLDER, node.objectBaseFolder)
         }
         when (node) {
-            is Input -> {
-                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
-                dataValueSerializer.stringValue(node.value)?.also {
-                    element.setAttribute(KEY_VALUE, it)
-                }
-            }
-            is Output -> {
-                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
-            }
+            is Input,
+            is Output,
             is OutputReusable -> {
-                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
+                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue((node as FieldImpl).getType()))
             }
             is ConstantsEnum -> {
                 element.setAttribute(KEY_DEFAULT_TYPE, dataTypeSerializer.stringValue(node.defaultDataType))
@@ -82,10 +85,8 @@ class XmlInTreeWritterImpl : TreeWritter {
                 element.setAttribute(KEY_DEFAULT_TYPE, dataTypeSerializer.stringValue(node.defaultDataType))
             }
             is DataField -> {
-                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.type))
-                dataValueSerializer.stringValue(node.value)?.also {
-                    element.setAttribute(KEY_VALUE, it)
-                }
+                element.setAttribute(KEY_TYPE, dataTypeSerializer.stringValue(node.getType()))
+                element.setAttribute(KEY_STATIC, node.static.toString())
             }
             is OutputTree -> element.setAttribute(KEY_TARGET, node.target.rawValue)
             else -> {}

@@ -123,10 +123,10 @@ def samples = [
 //        "CrazySun"
 ] as LinkedList
 
-def baseFolder = "cxx"
+def baseFolder = "cpp"
 
 ce.parser.ExpParseKt.globalOutputDirectory = "./out_constants/"
 ce.parser.ExpParseKt.dictinariesDirectory = "./dictionaries/"
 samples.each { samplename ->
-    addSource(samplename, "$baseFolder/${samplename}.h", ce.defs.Target.Cxx, "cgen/constants/${samplename}.kts")
+    addSource(samplename, "$baseFolder/${samplename}.h", ce.defs.Target.Cpp, "cgen/constants/${samplename}.kts")
 }

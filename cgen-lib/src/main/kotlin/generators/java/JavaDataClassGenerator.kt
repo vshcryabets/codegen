@@ -1,14 +1,17 @@
 package generators.java
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
-import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.DataClass
-import generators.obj.input.addSub
-import generators.obj.out.FileData
-import generators.obj.out.RegionImpl
-import generators.obj.input.*
-import generators.obj.out.ArgumentNode
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addOutBlockArguments
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.RegionImpl
 
 class JavaDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
@@ -25,7 +28,7 @@ class JavaDataClassGenerator(
                     desc.subs.forEach { leaf ->
                         if (leaf is DataField) {
                             addSub(ArgumentNode().apply {
-                                addDatatype(Types.typeTo(file, leaf.type))
+                                addDatatype(Types.typeTo(file, leaf.getType()))
                                 addVarName(leaf.name)
                             })
                         }

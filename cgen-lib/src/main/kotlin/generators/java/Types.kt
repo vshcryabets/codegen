@@ -2,8 +2,10 @@ package generators.java
 
 import ce.defs.DataType
 import ce.defs.DataValue
-import generators.obj.input.getPath
-import generators.obj.out.FileData
+import ce.defs.DataValueImpl
+import ce.defs.IntValue
+import generators.obj.abstractSyntaxTree.getPath
+import generators.obj.syntaxParseTree.FileData
 
 object Types {
     fun getArrayType(type: DataType): String =
@@ -45,16 +47,27 @@ object Types {
             else -> "javaQQTP_$type"
         }
 
-    fun toValue(type: DataType, value: DataValue) : String =
+    fun toValue(type: DataType, value: DataValue) : DataValue =
         when (type) {
-            DataType.VOID -> "void"
+            DataType.VOID -> DataValueImpl(name = "void")
             DataType.int8, DataType.int16, DataType.int32,
-            DataType.uint16, DataType.uint32 -> value.value.toString()
-            DataType.float32 -> value.value.toString() + "f"
-            DataType.float64 -> value.value.toString()
+            DataType.uint16, DataType.uint32 -> DataValueImpl(name = value.simple.toString())
+            DataType.float32 -> DataValueImpl(name = value.simple.toString() + "f")
+            DataType.float64 -> DataValueImpl(name = value.simple.toString())
             is DataType.string -> {
-                "\"${value.value}\""
+                DataValueImpl(name = value.simple.toString())
             }
-            else -> "QQVAL_$type"
+            DataType.int64 -> {
+                if (value is IntValue) {
+                    if (value.preferredRadix == 16) {
+                        DataValueImpl(name = "0x${value.simple.toString(radix = value.preferredRadix)}L")
+                    } else {
+                        DataValueImpl(name = "${value.simple.toString()}L")
+                    }
+                } else {
+                    DataValueImpl(name = "${value.simple.toString()}L")
+                }
+            }
+            else -> DataValueImpl(name = "QQVAL_$type")
         }
 }

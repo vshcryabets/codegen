@@ -1,8 +1,8 @@
 package ce.defs
 
-import generators.obj.input.Block
+import generators.obj.abstractSyntaxTree.Block
 
-open class DataType(
+sealed class DataType(
     val canBeNull: Boolean = false
 ) {
     companion object {
@@ -12,9 +12,14 @@ open class DataType(
         const val WEIGHT_PROMISE = 3
         const val WEIGHT_CLASS = 4
     }
+
+    fun isInteger(): Boolean {
+        return (this in setOf(int8, int16, int32, int64, uint8, uint16, uint32, uint64))
+    }
+
     fun getWeight(): Int =
         when (this) {
-            VOID -> WEIGHT_NONE
+            VOID, Unknown -> WEIGHT_NONE
             int8, int16, int32, int64 -> WEIGHT_PRIMITIVE
             uint8, uint16, uint32, uint64 -> WEIGHT_PRIMITIVE
             float32, float64, float128 -> WEIGHT_PRIMITIVE
@@ -28,6 +33,7 @@ open class DataType(
             else -> WEIGHT_CLASS
         }
 
+    object Unknown : DataType()
     object VOID : DataType()
 
     object int8 : DataType()
@@ -58,7 +64,8 @@ open class DataType(
     object float64Nullable : DataType(canBeNull = true)
     object float128Nullable : DataType(canBeNull = true)
 
-    class string(canBeNull: Boolean = false) : DataType(canBeNull)
+    object string : DataType(false)
+    object stringNullable : DataType(true)
     object bool : DataType()
     object boolNullable : DataType(canBeNull = true)
     class pointer(val subType: DataType) : DataType(canBeNull = true)
@@ -66,7 +73,7 @@ open class DataType(
     class promise(val elementDataType: DataType) : DataType()
     class custom(val block: Block, nullable : Boolean = false) : DataType(nullable)
     class userClass(val path: String, nullable : Boolean = false) : DataType(nullable)
-    class userClassTest2(val node: generators.obj.input.Node, nullable : Boolean = false) : DataType(nullable)
+    class userClassTest2(val node: generators.obj.abstractSyntaxTree.Node, nullable : Boolean = false) : DataType(nullable)
 //    class nullable(val inner: DataType) : DataType(true)
 }
 

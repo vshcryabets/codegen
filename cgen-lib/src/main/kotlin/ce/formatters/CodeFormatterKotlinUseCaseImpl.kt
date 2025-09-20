@@ -1,7 +1,25 @@
 package ce.formatters
 
-import generators.obj.input.*
-import generators.obj.out.*
+import ce.defs.DataValue
+import ce.defs.RValue
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addKeyword
+import generators.obj.abstractSyntaxTree.addSeparatorNewLine
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.Arguments
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.EnumNode
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NamespaceDeclaration
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.Separator
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import javax.inject.Inject
 
 class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyleRepo) :
@@ -13,7 +31,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         indent: Int,
         prev: Leaf?,
         inputQueue: MutableList<Leaf>
-    ): ArgumentNode = formatArgumentNode(input, outputParent, indent, inputQueue.firstOrNull(), prev) as ArgumentNode
+    ) {
+        formatArgumentNode(
+            input, outputParent,
+            indent = indent,
+            next = inputQueue.firstOrNull(), prev
+        )
+    }
 
     override fun processOutBlock(
         input: OutBlock,
@@ -23,6 +47,7 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         inputQueue: MutableList<Leaf>
     ): OutBlock {
         return input.copyLeaf(copySubs = false).apply {
+            addIndents(outputParent, indent)
             outputParent.addSub(this)
             // find out block args
             val outBlockArgs = input.subs.findLast {
@@ -30,9 +55,11 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             } as OutBlockArguments?
             if (outBlockArgs != null) {
                 input.subs.remove(outBlockArgs)
-                addKeyword("(")
-                processNode(mutableListOf(outBlockArgs), this, indent, null)
-                addKeyword(")")
+                processArguments(
+                    input = outBlockArgs,
+                    parent = this,
+                    indent = indent
+                )
             }
             if (!codeStyleRepo.preventEmptyBlocks || input.subs.isNotEmpty()) {
                 addSub(Space())
@@ -45,20 +72,19 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
         }
     }
 
-    override fun processConstantNode(
-        input: ConstantNode,
-        parent: Node?,
+    override fun processFieldNode(
+        input: FieldNode,
+        parent: Node,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): ConstantNode {
+    ) {
         addIndents(parent, indent)
-        val result = formatArgumentNode(input, parent, indent, next, prev) as ConstantNode
-        parent?.addSeparatorNewLine()
-        return result
+        formatArgumentNode(input, parent, indent, next, prev)
+        parent.addSeparatorNewLine()
     }
 
-    public fun declarationPattern(input: Node): Int {
+    fun declarationPattern(input: Node): Int {
         if (input.subs.size < 4)
             return -1
         for (pos in 0..input.subs.size-4) {
@@ -72,13 +98,13 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
             val w4 = input.subs[pos + 3] // Int or 10
             if (w3 is Keyword) {
                 if (w3.name == ":") {
-                    if (w4 !is Datatype)
+                    if (w4 !is AstTypeLeaf)
                         continue
                     return pos
                 } else if (w3.name == "=") {
-                    if (w4 !is RValue)
-                        continue
-                    return pos
+                    if (w4 is DataValue)
+                        return pos
+                    continue
                 }
             }
         }
@@ -87,19 +113,19 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
 
     private fun formatArgumentNode(
         input: Node,
-        outputParent: Node?,
+        outputParent: Node,
         indent: Int,
         next: Leaf?,
         prev: Leaf?
-    ): Node {
-        return input.copyLeaf(copySubs = false).apply {
+    ) {
+        input.copyLeaf(copySubs = false).apply {
             if (next is ArgumentNode || prev is ArgumentNode) {
-                outputParent?.subs?.addAll(getIndents(indent))
+                outputParent.subs.addAll(getIndents(indent))
             }
-            outputParent?.addSub(this)
+            outputParent.addSub(this)
             if (next is ArgumentNode) {
-                outputParent?.addSub(Separator(","))
-                outputParent?.addSub(NlSeparator())
+                outputParent.addSub(Separator(","))
+                outputParent.addSub(NlSeparator())
             }
             if (declarationPattern(input) >= 0) {
                 // <val><NAME><:><int> to
@@ -110,14 +136,57 @@ class CodeFormatterKotlinUseCaseImpl @Inject constructor(codeStyleRepo: CodeStyl
                     val current = input.subs[i]
                     if (i > 0) {
                         if (input.subs[i-1] !is VariableName || !current.name.equals(":"))
-                            // no SP between <ANME> and <:>
+                            // no SP between <NAME> and <:>
                             addSub(Space())
                     }
-                    addSub(current.copyLeaf(this, true))
+                    if (current is RValue) {
+                        processNode(inputQueue = mutableListOf(current), this, indent, null)
+                    } else {
+                        addSub(current.copyLeaf(this, true))
+                    }
                 }
             } else {
                 processSubs(input, this, indent)
             }
         }
     }
+
+    override fun processEnumNodeArguments(
+        input: EnumNode,
+        arguments: Arguments,
+        output: EnumNode,
+        indent: Int,
+    ) {
+        input.subs.remove(arguments)
+        processArguments(
+            input = arguments,
+            parent = output,
+            indent = indent
+        )
+    }
+
+    override fun processNamespaceDeclaration(
+        input: NamespaceDeclaration,
+        outputParent: Node,
+        indent: Int
+    ) {
+        val node = input.copyLeaf(copySubs = false) as Node
+        outputParent.addSub(node)
+        processSubs(input as Node, node, indent)
+        // add spaces
+        val newSubs = node.subs.toList()
+        node.subs.clear()
+
+        newSubs.forEachIndexed { index, leaf ->
+            if (index > 0) {
+                // add space before every leaf except first
+                node.addSub(Space())
+            }
+            node.addSub(leaf)
+        }
+        // after kotlin package declaration we should add two newline
+        node.addSub(NlSeparator())
+        node.addSub(NlSeparator())
+    }
+
 }

@@ -3,9 +3,10 @@ package generators.cpp
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.InterfaceDescription
-import generators.obj.input.addSub
-import generators.obj.out.FileData
+import generators.obj.abstractSyntaxTree.InterfaceDescription
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.RegionImpl
 
 class InterfaceGeneratorCpp(
     fileGenerator: FileGenerator,
@@ -43,7 +44,7 @@ class InterfaceGeneratorCpp(
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
 
         //        val definition = CppClassData(desc.name, header)
-        header.addSub(CppClassData(desc.name)).apply {
+        header.addSub(RegionImpl(desc.name)).apply {
             addBlockDefaultsUseCase(desc, this)
         }
     }

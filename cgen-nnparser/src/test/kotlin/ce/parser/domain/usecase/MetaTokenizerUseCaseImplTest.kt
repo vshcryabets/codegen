@@ -33,7 +33,7 @@ class MetaTokenizerUseCaseImplTest {
         val src = SourceBuffer("namespace(\"a.b.c\")")
         val result = env.tokenizer(buffer = src,
             dynamicDictionaries = env.dynamicDictionaries,
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             debugFindings = true
             )
         assertEquals(10, result.words.size)
@@ -48,7 +48,7 @@ class MetaTokenizerUseCaseImplTest {
         val src = SourceBuffer("add(\"varName\")")
         val result = env.tokenizer(buffer = src,
             dynamicDictionaries = env.dynamicDictionaries,
-            dictionaries = TestDictionary.dictionaries,
+            staticDictionaries = TestDictionary.dictionaries,
             debugFindings = true
         )
         assertEquals(6, result.words.size)

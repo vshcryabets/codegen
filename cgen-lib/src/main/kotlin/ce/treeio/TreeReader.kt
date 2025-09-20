@@ -1,6 +1,6 @@
 package ce.treeio
 
-import generators.obj.input.Leaf
+import generators.obj.abstractSyntaxTree.Leaf
 
 /**
  * Interface for reading a tree structure from a file or a string.

@@ -1,9 +1,9 @@
 package ce.domain.usecase.store
 
-import generators.obj.input.DataField
-import generators.obj.input.Leaf
-import generators.obj.input.Namespace
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Namespace
+import generators.obj.abstractSyntaxTree.Node
 import org.abego.treelayout.Configuration
 import org.abego.treelayout.NodeExtentProvider
 import org.abego.treelayout.TreeLayout
@@ -155,7 +155,7 @@ class StoreTreeToSvgUseCaseImpl : StoreTreeToSvgUseCase {
     fun Leaf.toDisplayString() : String =
         when  {
             this is Namespace && name.isEmpty() -> "/"
-            this is DataField && this.value.isDefined() -> "${this.name} = ${this.value.value}"
+            this is DataField && this.getValue().isDefined() -> "${this.name} = ${this.getValue().simple}"
             else -> this.name
         }
 

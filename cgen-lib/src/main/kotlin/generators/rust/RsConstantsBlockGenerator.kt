@@ -3,10 +3,10 @@ package generators.rust
 import ce.settings.Project
 import generators.obj.FileGenerator
 import generators.obj.TransformBlockUseCase
-import generators.obj.input.DataField
-import generators.obj.input.ConstantsBlock
-import generators.obj.input.addSub
-import generators.obj.out.FileData
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.ConstantsBlock
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.FileData
 
 class RsConstantsBlockGenerator(
     fileGenerator : FileGenerator,

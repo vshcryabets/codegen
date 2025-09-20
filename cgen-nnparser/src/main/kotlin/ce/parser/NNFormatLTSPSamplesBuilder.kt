@@ -10,14 +10,14 @@ import ce.parser.domain.usecase.save.StoreFormatProjectToJsonImpl
 import ce.settings.CodeStyle
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import generators.obj.input.Node
-import generators.obj.input.addDatatype
-import generators.obj.input.addOutBlock
-import generators.obj.input.addSub
-import generators.obj.input.addVarName
-import generators.obj.out.ArgumentNode
-import generators.obj.out.OutBlockArguments
-import generators.obj.out.RegionImpl
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.abstractSyntaxTree.addDatatype
+import generators.obj.abstractSyntaxTree.addOutBlock
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.syntaxParseTree.ArgumentNode
+import generators.obj.syntaxParseTree.OutBlockArguments
+import generators.obj.syntaxParseTree.RegionImpl
 import java.io.File
 import kotlin.random.Random
 

@@ -3,8 +3,8 @@ package ce.parser.domain.usecase.neuralnetworks
 import ce.parser.domain.FormatProject
 import ce.parser.domain.dictionaries.tree.Dictionary
 import ce.parser.domain.dictionaries.tree.TreeNodeData
-import generators.obj.input.Leaf
-import generators.obj.input.Node
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
 
 class TreeToFormatProjectImpl: TreeToFormatProject {
 

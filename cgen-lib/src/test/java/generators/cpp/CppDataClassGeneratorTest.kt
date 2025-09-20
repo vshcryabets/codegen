@@ -5,8 +5,17 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.obj.input.*
-import generators.obj.out.*
+import generators.obj.abstractSyntaxTree.DataClass
+import generators.obj.abstractSyntaxTree.NamespaceImpl
+import generators.obj.abstractSyntaxTree.TreeRoot
+import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.syntaxParseTree.CommentsBlock
+import generators.obj.syntaxParseTree.FieldNode
+import generators.obj.syntaxParseTree.NamespaceBlock
+import generators.obj.syntaxParseTree.OutBlock
+import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.Region
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -21,7 +30,7 @@ class CppDataClassGeneratorTest {
         )
         val repo = CLikeCodestyleRepo(codeStyle)
 
-        val project = OutputTree(Target.Cxx)
+        val project = OutputTree(Target.Cpp)
         val item = CppDataClassGenerator(
             addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
         )
@@ -33,7 +42,7 @@ class CppDataClassGeneratorTest {
             addBlockComment("182TEST_COMMENT")
             field("A", DataType.int32,  1)
             field("B", DataType.float64,  0.5f)
-            field("C", DataType.string(true))
+            field("C", DataType.stringNullable)
         }
         Assert.assertFalse("Dirty flag should be false in .h before changes", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false in .cpp before changes", cxxFile.isDirty)
@@ -54,12 +63,12 @@ class CppDataClassGeneratorTest {
         //     </namespace>
         // </CppHeaderFile>
 
-
         Assert.assertTrue("Dirty flag should be true", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
         val outNamespace = headerFile.findOrNull(NamespaceBlock::class.java)!!
         Assert.assertEquals(1, outNamespace.subs.size)
-        val region = outNamespace.findOrNull(CppClassData::class.java)!!
+        Assert.assertTrue(outNamespace.subs[0] is Region)
+        val region = outNamespace.subs[0] as Region
         Assert.assertEquals(2, region.subs.size)
         Assert.assertEquals(CommentsBlock::class.java, region.subs[0]::class.java)
         Assert.assertEquals("182TEST_COMMENT", (region.subs[0] as CommentsBlock).subs[0].name)

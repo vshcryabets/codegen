@@ -1,11 +1,25 @@
 package generators.obj
 
+import ce.defs.DataValue
+import ce.defs.RValue
 import ce.formatters.CodeStyleRepo
-import ce.io.CodeWritter
-import generators.obj.input.DataField
-import generators.obj.input.Leaf
-import generators.obj.input.Node
-import generators.obj.out.*
+import ce.io.CodeWriter
+import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.Leaf
+import generators.obj.abstractSyntaxTree.Node
+import generators.obj.syntaxParseTree.AstTypeLeaf
+import generators.obj.syntaxParseTree.CodeStyleOutputTree
+import generators.obj.syntaxParseTree.CommentLeaf
+import generators.obj.syntaxParseTree.Constructor
+import generators.obj.syntaxParseTree.EnumNode
+import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.Indent
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.ResultLeaf
+import generators.obj.syntaxParseTree.Separator
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import java.io.File
 
 abstract class Writter(val codeStyleRepo: CodeStyleRepo,
@@ -27,15 +41,15 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     abstract fun writeFile(fileData: FileData)
 
-    open fun writeLeaf(leaf: Leaf, out: CodeWritter, indent: String) {
+    open fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
             is ResultLeaf, is Separator -> {
                 out.write(leaf.name)
             }
-            is RValue -> out.write(leaf.name)
+            is DataValue -> out.write(leaf.name)
             is DataField -> out.write(leaf.name)
             is Keyword -> out.write(leaf.name)
-            is Datatype -> out.write(leaf.name)
+            is AstTypeLeaf -> out.write(leaf.name)
             is VariableName -> out.write(leaf.name)
             is CommentLeaf -> {
                 out.write(leaf.name)
@@ -57,7 +71,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
         }
     }
 
-    open fun writeSubNodes(node: Node, out: CodeWritter, indent: String) {
+    open fun writeSubNodes(node: Node, out: CodeWriter, indent: String) {
         node.subs.forEach {
             if (it is Node) {
                 writeNode(it, out, indent)
@@ -67,13 +81,11 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
         }
     }
 
-    open fun writeNode(node: Node, out: CodeWritter, indent: String) {
+    open fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
-            is EnumNode -> {
-                if (node.subs.size == 0)
-                    out.write(node.name)
-                else
-                    writeSubNodes(node, out, indent)
+            is EnumNode, is RValue, is Constructor -> {
+                out.write(node.name)
+                writeSubNodes(node, out, indent)
             }
             else -> writeSubNodes(node, out, indent)
         }
