@@ -1,0 +1,210 @@
+{
+    "name": "Kotlin AST Dictionary",
+    "type": "LSTMVocabulary",
+    "author": "mrco",
+    "version": "1.0",
+    "process": "PrepareTrainDataFromASTXml",
+    "updateDate": "2025-09-20T18:40:58.186300",
+    "dictionary": {
+        "NamespaceDeclaration_open": {
+            "id": 1,
+            "priority": 0
+        },
+        "NamespaceDeclaration_close": {
+            "id": 2,
+            "priority": 0
+        },
+        "Keyword_package": {
+            "id": 3,
+            "priority": 0
+        },
+        "Space": {
+            "id": 4,
+            "priority": 0
+        },
+        "VariableName": {
+            "id": 5,
+            "priority": 0
+        },
+        "NlSeparator": {
+            "id": 6,
+            "priority": 0
+        },
+        "CommentsBlock_open": {
+            "id": 7,
+            "priority": 0
+        },
+        "CommentsBlock_close": {
+            "id": 8,
+            "priority": 0
+        },
+        "CommentLeaf": {
+            "id": 9,
+            "priority": 0
+        },
+        "Region_open": {
+            "id": 10,
+            "priority": 0
+        },
+        "Region_close": {
+            "id": 11,
+            "priority": 0
+        },
+        "OutBlock_open": {
+            "id": 12,
+            "priority": 0
+        },
+        "OutBlock_close": {
+            "id": 13,
+            "priority": 0
+        },
+        "Keyword_(": {
+            "id": 14,
+            "priority": 0
+        },
+        "OutBlockArguments_open": {
+            "id": 15,
+            "priority": 0
+        },
+        "OutBlockArguments_close": {
+            "id": 16,
+            "priority": 0
+        },
+        "ArgumentNode_open": {
+            "id": 17,
+            "priority": 0
+        },
+        "ArgumentNode_close": {
+            "id": 18,
+            "priority": 0
+        },
+        "Keyword_val": {
+            "id": 19,
+            "priority": 0
+        },
+        "Keyword_:": {
+            "id": 20,
+            "priority": 0
+        },
+        "AstTypeLeaf": {
+            "id": 21,
+            "priority": 0
+        },
+        "Keyword_)": {
+            "id": 22,
+            "priority": 0
+        },
+        "Keyword_{": {
+            "id": 23,
+            "priority": 0
+        },
+        "Indent": {
+            "id": 24,
+            "priority": 0
+        },
+        "EnumNode_open": {
+            "id": 25,
+            "priority": 0
+        },
+        "EnumNode_close": {
+            "id": 26,
+            "priority": 0
+        },
+        "Arguments_open": {
+            "id": 27,
+            "priority": 0
+        },
+        "Arguments_close": {
+            "id": 28,
+            "priority": 0
+        },
+        "RValue_open": {
+            "id": 29,
+            "priority": 0
+        },
+        "RValue_close": {
+            "id": 30,
+            "priority": 0
+        },
+        "Separator_open": {
+            "id": 31,
+            "priority": 0
+        },
+        "Separator_close": {
+            "id": 32,
+            "priority": 0
+        },
+        "Keyword_}": {
+            "id": 33,
+            "priority": 0
+        },
+        "FieldNode_open": {
+            "id": 34,
+            "priority": 0
+        },
+        "FieldNode_close": {
+            "id": 35,
+            "priority": 0
+        },
+        "Keyword_const": {
+            "id": 36,
+            "priority": 0
+        },
+        "Keyword_=": {
+            "id": 37,
+            "priority": 0
+        },
+        "ImportsBlock_open": {
+            "id": 38,
+            "priority": 0
+        },
+        "ImportsBlock_close": {
+            "id": 39,
+            "priority": 0
+        },
+        "ImportLeaf": {
+            "id": 40,
+            "priority": 0
+        },
+        "Constructor_open": {
+            "id": 41,
+            "priority": 0
+        },
+        "Constructor_close": {
+            "id": 42,
+            "priority": 0
+        },
+        "KotlinClassData_open": {
+            "id": 43,
+            "priority": 0
+        },
+        "KotlinClassData_close": {
+            "id": 44,
+            "priority": 0
+        },
+        "Method_open": {
+            "id": 45,
+            "priority": 0
+        },
+        "Method_close": {
+            "id": 46,
+            "priority": 0
+        },
+        "ResultLeaf_open": {
+            "id": 47,
+            "priority": 0
+        },
+        "ResultLeaf_close": {
+            "id": 48,
+            "priority": 0
+        },
+        "Container_open": {
+            "id": 49,
+            "priority": 0
+        },
+        "Container_close": {
+            "id": 50,
+            "priority": 0
+        }
+    }
+}
