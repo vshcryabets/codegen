@@ -21,12 +21,6 @@ data class CppHeaderFile(
     override var isDirty: Boolean = false
 ) : FileData {
 
-    init {
-        addSub(CompilerDirective("pragma once"))
-        addSub(ImportsBlock())
-        isDirty = false
-    }
-
     override fun copyLeaf(parent: Node?, copySubs: Boolean) =
         this.copyNodeExt(parent, copySubs) { this.copy(subs = mutableListOf()).apply { subs.clear() }}
 
@@ -43,11 +37,6 @@ data class CppFileData(
     override val subs: MutableList<Leaf> = mutableListOf(),
     override var isDirty: Boolean = false
 ) : FileData {
-
-    init {
-        addSub(ImportsBlock())
-        isDirty = false
-    }
 
     override fun toString(): String = name
 

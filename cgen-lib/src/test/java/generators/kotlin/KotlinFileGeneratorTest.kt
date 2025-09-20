@@ -8,6 +8,7 @@ import generators.obj.syntaxParseTree.FileData
 import generators.obj.syntaxParseTree.Keyword
 import generators.obj.syntaxParseTree.NamespaceDeclaration
 import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.FileMetaInformation
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -28,10 +29,14 @@ class KotlinFileGeneratorTest {
             name = "TestBlock",
             outputFile = "testOutputFile")
         workNs.addSub(block)
-        val result = generator.createFile(project, "testOutputFile", block)
+        val result = generator.createFile(project,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "testOutputFile", block)
 
         // expected result
         // <FileData>
+        //      <FileMetaInformation>
         //      <NamespaceDeclaration>
         //          <keyword>package</keyword>
         //          <VariableName>com.example.test</VariableName>
@@ -39,8 +44,9 @@ class KotlinFileGeneratorTest {
         assertEquals(1, result.size)
         assertTrue(result[0] is FileData)
         val fileData = result[0] as FileData
-        assertEquals(NamespaceDeclaration::class.java, fileData.subs[0].javaClass)
-        val nsDeclaration = fileData.subs[0] as NamespaceDeclaration
+        assertEquals(FileMetaInformation::class.java, fileData.subs[0].javaClass)
+        assertEquals(NamespaceDeclaration::class.java, fileData.subs[1].javaClass)
+        val nsDeclaration = fileData.subs[1] as NamespaceDeclaration
         assertEquals(2, nsDeclaration.subs.size)
         assertEquals(Keyword::class.java, nsDeclaration.subs[0].javaClass)
         assertEquals("package", (nsDeclaration.subs[0] as Keyword).name)

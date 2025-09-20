@@ -1,6 +1,7 @@
-package ce.parser.domain.usecase
+package ce.parser.domain.usecase.save
 
 import ce.defs.Target
+import ce.parser.domain.usecase.TokenizerUseCase
 import ce.parser.nnparser.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
@@ -12,7 +13,8 @@ interface WriteResultsUseCase {
     operator suspend fun invoke(outBasePath: String,
                                 sampleName: String,
                                 sampleTraget: Target,
-                                results: TokenizerUseCase.Result)
+                                results: TokenizerUseCase.Result
+    )
 }
 
 class WriteResultsUseCaseImpl(

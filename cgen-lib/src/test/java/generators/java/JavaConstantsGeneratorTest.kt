@@ -55,12 +55,16 @@ class JavaConstantsGeneratorTest {
         val block = lastNs.subs.first() as ConstantsBlock
 
         val projectOutput = OutputTree(Target.Java)
-        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val files = fileGenerator.createFile(projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val mainFile = files.first()
         item(files, block)
 
         // expected result
         // <FileData>
+        //     <FileMetaInformation />
         //     <NamespaceDeclaration />
         //     <ImportsBlock />
         //     <region>
@@ -80,9 +84,9 @@ class JavaConstantsGeneratorTest {
         // </FileData>
 
         Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
-        Assert.assertEquals(3, mainFile.subs.size)
-        Assert.assertTrue(mainFile.subs[2] is RegionImpl)
-        val region = mainFile.subs[2] as Region
+        Assert.assertEquals(4, mainFile.subs.size)
+        Assert.assertTrue(mainFile.subs[3] is RegionImpl)
+        val region = mainFile.subs[3] as Region
         Assert.assertEquals(1, region.subs.size)
         Assert.assertTrue(region.subs[0] is OutBlock)
         val outBlock = region.findOrNull(OutBlock::class.java)!!

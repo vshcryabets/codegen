@@ -1,6 +1,6 @@
 package ce.parser.domain.usecase
 
-import ce.parser.domain.dictionaries.StaticDictionaries
+import ce.parser.domain.dictionaries.natural.StaticDictionaries
 import ce.parser.nnparser.SourceBuffer
 import ce.parser.nnparser.WordItem
 import org.jetbrains.kotlin.javax.inject.Inject

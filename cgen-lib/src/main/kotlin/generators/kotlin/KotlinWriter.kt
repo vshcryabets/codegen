@@ -9,19 +9,31 @@ import generators.obj.abstractSyntaxTree.Leaf
 import generators.obj.abstractSyntaxTree.Method
 import generators.obj.abstractSyntaxTree.Node
 import generators.obj.abstractSyntaxTree.findOrNull
+import generators.obj.abstractSyntaxTree.findParent
 import generators.obj.abstractSyntaxTree.removeSub
 import generators.obj.syntaxParseTree.FileData
 import generators.obj.syntaxParseTree.ImportLeaf
 import generators.obj.syntaxParseTree.NamespaceDeclaration
 import generators.obj.syntaxParseTree.OutBlock
 import generators.obj.syntaxParseTree.ResultLeaf
+import generators.obj.syntaxParseTree.FileMetaInformation
+import generators.obj.syntaxParseTree.PackageDirectory
+import generators.obj.syntaxParseTree.WorkingDirectory
 import java.io.File
 
 class KotlinWriter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
     : Writter(codeStyleRepo, outputFolder) {
 
     override fun writeFile(fileData: FileData) {
-        val outputFile = File(fileData.name + ".kt")
+        val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java) ?:
+            throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        val workingDirectory = fileMetaInformation.findOrNull(WorkingDirectory::class.java)?.name ?:
+            throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        val packageDirectory = fileMetaInformation.findOrNull(PackageDirectory::class.java)?.name ?:
+          throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        val outputFile = File(workingDirectory + File.separator +
+                packageDirectory + File.separator +
+                fileData.name + ".kt")
         outputFile.parentFile.mkdirs()
         println("KotlinWriter writing ${outputFile.absolutePath}")
         outputFile.bufferedWriter().use { out ->

@@ -14,7 +14,7 @@ open class MetaGenerator(
 
 ) {
 
-    private fun translateTree(root: Node, files: Map<String, List<FileData>>) {
+    private fun translateTree(root: Node, files: Map<FileGenerator.BlockPath, List<FileData>>) {
         root.subs.forEach {
             if (it is Block) {
                 val outputFile = fileGenerator.getBlockFilePath(it)

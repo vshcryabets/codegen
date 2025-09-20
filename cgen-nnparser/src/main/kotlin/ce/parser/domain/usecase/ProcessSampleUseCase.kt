@@ -2,8 +2,9 @@ package ce.parser.domain.usecase
 
 import ce.defs.Target
 import ce.parser.SampleData
-import ce.parser.domain.dictionaries.DynamicDictionaries
-import ce.parser.domain.dictionaries.StaticDictionaries
+import ce.parser.domain.dictionaries.natural.DynamicDictionaries
+import ce.parser.domain.dictionaries.natural.StaticDictionaries
+import ce.parser.domain.usecase.save.WriteResultsUseCase
 import ce.parser.nnparser.SourceBuffer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext

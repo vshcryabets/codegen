@@ -2,10 +2,11 @@ package ce.parser
 
 import ce.defs.Target
 import ce.domain.usecase.execute.ExecuteScriptByExtUseCaseImpl
-import ce.parser.domain.dictionaries.NamesDictionary
+import ce.parser.domain.dictionaries.natural.NamesDictionary
 import ce.parser.domain.usecase.*
-import ce.parser.domain.dictionaries.DynamicDictionariesImpl
-import ce.parser.domain.dictionaries.StaticDictionaries
+import ce.parser.domain.dictionaries.natural.DynamicDictionariesImpl
+import ce.parser.domain.dictionaries.natural.StaticDictionaries
+import ce.parser.domain.usecase.save.WriteResultsUseCaseImpl
 import ce.parser.nnparser.Type
 import ce.parser.nnparser.Word
 import kotlinx.coroutines.CoroutineScope

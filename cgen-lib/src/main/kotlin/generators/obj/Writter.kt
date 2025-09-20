@@ -20,6 +20,7 @@ import generators.obj.syntaxParseTree.ResultLeaf
 import generators.obj.syntaxParseTree.Separator
 import generators.obj.syntaxParseTree.Space
 import generators.obj.syntaxParseTree.VariableName
+import generators.obj.syntaxParseTree.FileMetaInformation
 import java.io.File
 
 abstract class Writter(val codeStyleRepo: CodeStyleRepo,
@@ -83,6 +84,9 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
 
     open fun writeNode(node: Node, out: CodeWriter, indent: String) {
         when (node) {
+            is FileMetaInformation -> {
+                // do nothing, this is just meta info
+            }
             is EnumNode, is RValue, is Constructor -> {
                 out.write(node.name)
                 writeSubNodes(node, out, indent)

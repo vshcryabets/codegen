@@ -34,7 +34,10 @@ class WritePackageAndImportsTests: KotlinBaseTest() {
         val block = lastNs.subs.first() as ConstantsBlock
 
         val projectOutput = OutputTree(Target.Kotlin)
-        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val files = fileGenerator.createFile(projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val mainFile = files.first()
         ktConstantsGenerator(files, block)
         val formatted = formatter(input = mainFile)

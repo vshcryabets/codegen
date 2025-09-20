@@ -22,6 +22,7 @@ import generators.obj.syntaxParseTree.ImportsBlock
 import generators.obj.syntaxParseTree.NamespaceBlock
 import generators.obj.syntaxParseTree.NlSeparator
 import generators.obj.syntaxParseTree.OutputTree
+import generators.obj.syntaxParseTree.FileMetaInformation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -74,7 +75,11 @@ class FormatInclude {
             add("C")
         }
 
-        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val files = fileGenerator.createFile(
+            projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val headerFile = files.first { it is CppHeaderFile } as CppHeaderFile
 
         cppConstantsBlockGenerator(files, block)
@@ -82,6 +87,7 @@ class FormatInclude {
         val output = formatter(headerFile)
         // expected output
         // <CppHeaderFile>
+        //     <FileMetaInformation ./>
         //     <pragma once>
         //     <nl>
         //     <ImportsBlock> <"<cstdint>"> <nl> </ImportsBlock>
@@ -89,14 +95,15 @@ class FormatInclude {
         //     <nl>
         // </CppHeaderFile>
         Assertions.assertEquals(CppHeaderFile::class.java, output.javaClass)
-        Assertions.assertEquals(5, output.subs.size)
-        Assertions.assertEquals(CompilerDirective::class.java, output.subs[0]::class.java)
-        Assertions.assertEquals(NlSeparator::class.java, output.subs[1]::class.java)
-        Assertions.assertEquals(ImportsBlock::class.java, output.subs[2]::class.java)
-        Assertions.assertEquals(NamespaceBlock::class.java, output.subs[3]::class.java)
-        Assertions.assertEquals(NlSeparator::class.java, output.subs[4]::class.java)
+        Assertions.assertEquals(6, output.subs.size)
+        Assertions.assertEquals(FileMetaInformation::class.java, output.subs[0]::class.java)
+        Assertions.assertEquals(CompilerDirective::class.java, output.subs[1]::class.java)
+        Assertions.assertEquals(NlSeparator::class.java, output.subs[2]::class.java)
+        Assertions.assertEquals(ImportsBlock::class.java, output.subs[3]::class.java)
+        Assertions.assertEquals(NamespaceBlock::class.java, output.subs[4]::class.java)
+        Assertions.assertEquals(NlSeparator::class.java, output.subs[5]::class.java)
 
-        val importsBlock = output.subs[2] as ImportsBlock
+        val importsBlock = output.subs[3] as ImportsBlock
         Assertions.assertEquals(2, importsBlock.subs.size)
 
     }

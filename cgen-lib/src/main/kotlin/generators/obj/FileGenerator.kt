@@ -5,7 +5,19 @@ import generators.obj.syntaxParseTree.FileData
 import generators.obj.syntaxParseTree.OutputTree
 
 abstract class FileGenerator() {
-    abstract fun createFile(project: OutputTree, outputFile: String, block: Block): List<FileData>
+    data class BlockPath(
+        val baseObjectDirecotry: String = "",
+        val namespacePath: String = "",
+        val fileName: String =""
+    )
 
-    abstract fun getBlockFilePath(block: Block): String
+    abstract fun createFile(
+        project: OutputTree,
+        workingDirectory: String,
+        packageDirectory: String,
+        outputFile: String,
+        block: Block
+    ): List<FileData>
+
+    abstract fun getBlockFilePath(block: Block): BlockPath
 }

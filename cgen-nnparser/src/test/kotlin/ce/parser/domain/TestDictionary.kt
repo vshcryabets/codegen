@@ -1,6 +1,10 @@
 package ce.parser.domain
 
-import ce.parser.domain.dictionaries.*
+import ce.parser.domain.dictionaries.natural.DynamicDictionaries
+import ce.parser.domain.dictionaries.natural.DynamicDictionariesImpl
+import ce.parser.domain.dictionaries.natural.NamesDictionary
+import ce.parser.domain.dictionaries.natural.StaticDictionariesImpl
+import ce.parser.domain.dictionaries.natural.StaticDictionary
 import ce.parser.nnparser.*
 
 object TestDictionary {

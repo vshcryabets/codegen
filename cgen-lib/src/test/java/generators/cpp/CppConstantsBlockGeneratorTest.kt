@@ -55,7 +55,10 @@ class CppConstantsBlockGeneratorTest {
             add("C")
         }
 
-        val files = fileGenerator.createFile(projectOutput, "a", block)
+        val files = fileGenerator.createFile(projectOutput,
+            workingDirectory = "./",
+            packageDirectory = "",
+            "a", block)
         val headerFile = files.first { it is CppHeaderFile } as CppHeaderFile
         val cxxFile = files.first { it is CppFileData } as CppFileData
 
@@ -64,6 +67,7 @@ class CppConstantsBlockGeneratorTest {
         item(files, block)
         // expected result
         // <CppHeaderFile name="a">
+        //     <FileMetaInformation />
         //     <CompileDirective pragma once/>
         //     <ImportsBlock />
         //     <NamespaceBlock name="a">
@@ -85,12 +89,12 @@ class CppConstantsBlockGeneratorTest {
         Assert.assertTrue("Dirty flag should be true", headerFile.isDirty)
         Assert.assertFalse("Dirty flag should be false", cxxFile.isDirty)
 
-        Assert.assertEquals(3, headerFile.subs.size)
-        Assert.assertEquals(CompilerDirective::class, headerFile.subs[0]::class)
-        Assert.assertEquals(ImportsBlock::class, headerFile.subs[1]::class)
-        Assert.assertEquals(NamespaceBlock::class, headerFile.subs[2]::class)
+        Assert.assertEquals(4, headerFile.subs.size)
+        Assert.assertEquals(CompilerDirective::class, headerFile.subs[1]::class)
+        Assert.assertEquals(ImportsBlock::class, headerFile.subs[2]::class)
+        Assert.assertEquals(NamespaceBlock::class, headerFile.subs[3]::class)
 
-        val outNamespace = headerFile.subs[2] as NamespaceBlock
+        val outNamespace = headerFile.subs[3] as NamespaceBlock
         Assert.assertEquals(1, outNamespace.subs.size)
         val constantsBlock = outNamespace.findOrNull(RegionImpl::class.java)!!
         Assert.assertEquals(4, constantsBlock.subs.size)
