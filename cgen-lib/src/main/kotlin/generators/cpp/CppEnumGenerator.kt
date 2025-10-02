@@ -51,7 +51,7 @@ class CppEnumGenerator(
                             dataField = it,
                             fileData = headerFile
                         )
-                        addEnumLeaf(it.name).apply {
+                        addEnumLeaf("").apply {
                             addVarName(it.name)
                             addKeyword("=")
                             addSub(rValue)
