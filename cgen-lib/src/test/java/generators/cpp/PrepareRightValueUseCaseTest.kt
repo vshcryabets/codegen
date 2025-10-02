@@ -101,10 +101,10 @@ class PrepareRightValueUseCaseTest {
         //   <Constructor>
         //     <Arguments>
         //       <ArgumentNode>
-        //          <VarName a><=> <RValue "defined">
+        //          <RValue "defined">
         //       </ArgumentNode>
         //       <ArgumentNode>
-        //          <VarName b><=> <RValue 123>
+        //          <RValue 123>
         //       </ArgumentNode>
         //     </Arguments>
         //   </Constructor>
@@ -119,13 +119,10 @@ class PrepareRightValueUseCaseTest {
         assertEquals(2, arguments.subs.size)
         val arg1 = arguments.subs[0] as ArgumentNode
         val arg2 = arguments.subs[1] as ArgumentNode
-        assertEquals(3, arg1.subs.size)
-        assertEquals(3, arg2.subs.size)
-        assertEquals("a", arg1.subs[0].name)
-        assertEquals(RValue::class.java, arg1.subs[2].javaClass)
-        val rvalue1 = arg1.subs[2] as RValue
+        assertEquals(1, arg1.subs.size)
+        assertEquals(RValue::class.java, arg1.subs[0].javaClass)
+        val rvalue1 = arg1.subs[0] as RValue
         assertEquals("\"defined\"", rvalue1.name)
-        assertEquals("b", arg2.subs[0].name)
-        assertEquals("123", arg2.subs[2].name)
+        assertEquals("123", arg2.subs[0].name)
     }
 }

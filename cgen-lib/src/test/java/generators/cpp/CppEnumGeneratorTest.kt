@@ -81,7 +81,6 @@ class CppEnumGeneratorTest {
 
     }
 
-
     @Test
     fun testSimpleEnumClass() {
         val tree = reader.loadFromString("""
@@ -111,14 +110,14 @@ class CppEnumGeneratorTest {
         //     <FileMetaInformation>./</WorkingDirectory>
         //     <NamespaceDeclaration />
         //     <ImportsBlock />
-        //        <region>
-        //          <CommentsBlock>...</CommentsBlock>
-        //          <OutBlock>
-        //              <EnumLeaf><BTC></<EnumLeaf>
-        //              <EnumLeaf><ETH></<EnumLeaf>
-        //              <EnumLeaf><BCH></<EnumLeaf>
-        //          </OutBlock>
-        //        </region>
+        //     <region>
+        //       <CommentsBlock>...</CommentsBlock>
+        //       <OutBlock>
+        //           <EnumLeaf><BTC></<EnumLeaf>
+        //           <EnumLeaf><ETH></<EnumLeaf>
+        //           <EnumLeaf><BCH></<EnumLeaf>
+        //       </OutBlock>
+        //     </region>
         // </FileData>
 
         Assert.assertTrue("Dirty flag should be true", mainFile.isDirty)
