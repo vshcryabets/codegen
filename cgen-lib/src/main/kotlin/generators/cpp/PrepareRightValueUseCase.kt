@@ -3,7 +3,6 @@ package generators.cpp
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.RValue
-import generators.kotlin.GetTypeNameUseCase
 import generators.obj.abstractSyntaxTree.DataField
 import generators.obj.abstractSyntaxTree.NewInstance
 import generators.obj.abstractSyntaxTree.addSub
