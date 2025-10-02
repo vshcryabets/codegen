@@ -10,7 +10,6 @@ import generators.obj.abstractSyntaxTree.addCommentLine
 import generators.obj.abstractSyntaxTree.addEnumLeaf
 import generators.obj.abstractSyntaxTree.addKeyword
 import generators.obj.abstractSyntaxTree.addOutBlock
-import generators.obj.abstractSyntaxTree.addSeparator
 import generators.obj.abstractSyntaxTree.addSub
 import generators.obj.abstractSyntaxTree.addVarName
 import generators.obj.abstractSyntaxTree.findOrNull
@@ -22,6 +21,7 @@ import generators.obj.syntaxParseTree.RegionImpl
 
 class CppEnumGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
 ) : TransformBlockUseCase<ConstantsEnum> {
 
     override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
@@ -45,13 +45,16 @@ class CppEnumGenerator(
             desc.subs.forEach { leaf ->
                 if (leaf is DataField) {
                     val it = leaf
-
                     if (withRawValues) {
+                        autoIncrement(it)
+                        val rValue = prepareRightValueUseCase.toRightValue(
+                            dataField = it,
+                            fileData = headerFile
+                        )
                         addEnumLeaf(it.name).apply {
-                            autoIncrement(it)
                             addVarName(it.name)
                             addKeyword("=")
-                            addSub(Types.toValue(it.getType(), it.getValue()))
+                            addSub(rValue)
                         }
                     } else {
                         addEnumLeaf(it.name)
@@ -59,44 +62,5 @@ class CppEnumGenerator(
                 }
             }
         }
-        region.addSeparator(";")
-
-
-//
-//        desc.subs.forEach {
-//            if (it is ConstantDesc) {
-//                autoIncrement.invoke(it)
-//                region.addSub(
-//                    ConstantLeaf().apply {
-//                        addKeyword("const")
-//                        addDatatype(Types.typeTo(headerFile, it.type))
-//                        addVarName(it.name)
-//                        addKeyword("=")
-//                        addRValue(Types.toValue(it.type, it.value))
-//                        addKeyword(";")
-//                    }
-//                )
-//            }
-//        }
-
-
-//            classDefinition.append("enum ${desc.name} {").append(fileGenerator.newLine())
-//            val autoIncrement = AutoincrementField()
-//            desc.subs.forEach { leaf ->
-//                val it = leaf as DataField
-//                putTabs(classDefinition, 1)
-//
-//                if (withRawValues) {
-//                    autoIncrement.invoke(it)
-//                    classDefinition.append(it.name);
-//                    classDefinition.append(" = ${Types.toValue(this, it.type, it.value)},")
-//                    classDefinition.append(fileGenerator.newLine())
-//                } else {
-//                    classDefinition.append("${it.name},${fileGenerator.newLine()}");
-//                }
-//            }
-//            appendClassDefinition(this, "};");
-
     }
-
 }

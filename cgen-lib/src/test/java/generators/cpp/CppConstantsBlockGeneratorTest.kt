@@ -6,9 +6,6 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.kotlin.GetArrayDataTypeUseCase
-import generators.kotlin.GetTypeNameUseCase
-import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.abstractSyntaxTree.ConstantsBlock
 import generators.obj.abstractSyntaxTree.NamespaceImpl
 import generators.obj.abstractSyntaxTree.TreeRoot

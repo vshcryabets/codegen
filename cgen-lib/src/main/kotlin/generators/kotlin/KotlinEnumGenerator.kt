@@ -40,16 +40,12 @@ class KotlinEnumGenerator(
                             addVarName("rawValue")
                             addKeyword(":")
                             addDatatype(dataTypeToString.typeTo(file, desc.defaultDataType))
-//                            addKeyword("=")
-//                            addRValue(Types.toValue(desc.type, desc.value))
                         })
-//                        addDataField("val rawValue : ${Types.typeTo(file, desc.defaultDataType)}", desc.defaultDataType)
                     }
                 }
                 desc.subs.forEach { leaf ->
                     if (leaf is DataField) {
                         val it = leaf
-
                         if (withRawValues) {
                             autoIncrement(it)
                             val rValue = prepareRightValueUseCase.toRightValue(

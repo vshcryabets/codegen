@@ -132,15 +132,18 @@ class GeneratorsRepo(
                 }
 
                 Target.Cpp -> {
-                    val arrayDataType = GetArrayDataTypeUseCase()
-                    val dataTypeToString = GetTypeNameUseCase(
+                    val arrayDataType = generators.cpp.GetArrayDataTypeUseCase()
+                    val dataTypeToString = generators.cpp.GetTypeNameUseCase(
                         arrayDataType = arrayDataType
                     )
-                    val prepareRightValueUseCase = PrepareRightValueUseCase(
+                    val prepareRightValueUseCase = generators.cpp.PrepareRightValueUseCase(
                         getTypeNameUseCase = dataTypeToString
                     )
                     mapOf(
-                        ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
+                        ConstantsEnum::class.java to CppEnumGenerator(
+                            addBlockDefaultsUseCase = addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        ),
                         ConstantsBlock::class.java to CppConstantsBlockGenerator(
                             addBlockDefaultsUseCase = addBlockUseCase,
                             prepareRightValueUseCase = prepareRightValueUseCase),
