@@ -10,19 +10,19 @@ import generators.cpp.CompilerDirective
 import generators.cpp.CppConstantsBlockGenerator
 import generators.cpp.CppFileGenerator
 import generators.cpp.CppHeaderFile
-import generators.kotlin.GetArrayDataTypeUseCase
-import generators.kotlin.GetTypeNameUseCase
-import generators.kotlin.PrepareRightValueUseCase
+import generators.cpp.GetArrayDataTypeUseCase
+import generators.cpp.GetTypeNameUseCase
+import generators.cpp.PrepareRightValueUseCase
 import generators.obj.abstractSyntaxTree.ConstantsBlock
 import generators.obj.abstractSyntaxTree.NamespaceImpl
 import generators.obj.abstractSyntaxTree.TreeRoot
 import generators.obj.abstractSyntaxTree.addSub
 import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.FileMetaInformation
 import generators.obj.syntaxParseTree.ImportsBlock
 import generators.obj.syntaxParseTree.NamespaceBlock
 import generators.obj.syntaxParseTree.NlSeparator
 import generators.obj.syntaxParseTree.OutputTree
-import generators.obj.syntaxParseTree.FileMetaInformation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

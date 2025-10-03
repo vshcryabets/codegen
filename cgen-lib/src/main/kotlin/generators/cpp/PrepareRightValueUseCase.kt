@@ -3,13 +3,16 @@ package generators.cpp
 import ce.defs.DataType
 import ce.defs.DataValue
 import ce.defs.RValue
-import generators.kotlin.GetTypeNameUseCase
 import generators.obj.abstractSyntaxTree.DataField
+import generators.obj.abstractSyntaxTree.Input
 import generators.obj.abstractSyntaxTree.NewInstance
 import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.syntaxParseTree.ArgumentNode
 import generators.obj.syntaxParseTree.Arguments
 import generators.obj.syntaxParseTree.Constructor
 import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.VariableName
 
 class PrepareRightValueUseCase(
     private val getTypeNameUseCase: GetTypeNameUseCase
@@ -67,7 +70,24 @@ class PrepareRightValueUseCase(
                     type = item.getType()
                 )
             ).apply {
-                addSub(Arguments())
+                val arguments = Arguments()
+                addSub(arguments)
+                item.subs
+                    .filter { it is Input }
+                    .forEach {
+                        val input = it as Input
+                        val argumentNode = ArgumentNode()
+                        arguments.addSub(
+                            argumentNode
+                        )
+                        argumentNode.addSub(
+                            toRightValue(
+                                type = input.getType(),
+                                value = input.getValue(),
+                                fileData = fileData
+                            )
+                        )
+                    }
             }
         )
         return result

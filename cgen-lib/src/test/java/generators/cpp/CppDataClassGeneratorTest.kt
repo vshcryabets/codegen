@@ -5,21 +5,15 @@ import ce.defs.Target
 import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
-import generators.obj.abstractSyntaxTree.DataClass
-import generators.obj.abstractSyntaxTree.NamespaceImpl
-import generators.obj.abstractSyntaxTree.TreeRoot
-import generators.obj.abstractSyntaxTree.addSub
-import generators.obj.abstractSyntaxTree.findOrNull
-import generators.obj.syntaxParseTree.CommentsBlock
-import generators.obj.syntaxParseTree.FieldNode
-import generators.obj.syntaxParseTree.NamespaceBlock
-import generators.obj.syntaxParseTree.OutBlock
-import generators.obj.syntaxParseTree.OutputTree
-import generators.obj.syntaxParseTree.Region
+import generators.obj.abstractSyntaxTree.*
+import generators.obj.syntaxParseTree.*
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class CppDataClassGeneratorTest {
+    private val arrayDataType = GetArrayDataTypeUseCase()
+    private val dataTypeToString = GetTypeNameUseCase(arrayDataType)
+    private val prepareRightValueUseCase = PrepareRightValueUseCase(dataTypeToString)
 
     @Test
     fun testSimpleStructure() {
@@ -32,7 +26,9 @@ class CppDataClassGeneratorTest {
 
         val project = OutputTree(Target.Cpp)
         val item = CppDataClassGenerator(
-            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo)
+            addBlockDefaultsUseCase = AddRegionDefaultsUseCaseImpl(repo),
+            prepareRightValueUseCase = prepareRightValueUseCase,
+            dataTypeToString = dataTypeToString
         )
         val headerFile = CppHeaderFile("a").apply { setParent2(project) }
         val cxxFile = CppFileData("b").apply { setParent2(project) }

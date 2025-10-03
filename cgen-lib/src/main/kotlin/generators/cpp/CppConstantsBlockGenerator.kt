@@ -1,7 +1,6 @@
 package generators.cpp
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
-import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.AutoincrementField
 import generators.obj.TransformBlockUseCase
 import generators.obj.abstractSyntaxTree.ConstantDesc

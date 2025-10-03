@@ -67,6 +67,13 @@ fun <R : Leaf, T : Node> T.addSub(leaf: R): R {
     return leaf
 }
 
+fun <R : Leaf, T : Node> T.insertSub(idx: Int, leaf: R): R {
+    subs.add(idx, leaf)
+    leaf.setParent2(this)
+    (findParent(FileData::class) as FileData?)?.isDirty = true
+    return leaf
+}
+
 fun <R : Leaf, T : Node> T.addSubs(vararg leafs: R) {
     leafs.forEach {
         subs.add(it)

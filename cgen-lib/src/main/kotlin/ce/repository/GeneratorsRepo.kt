@@ -7,23 +7,11 @@ import ce.formatters.CodeFormatterJavaUseCaseImpl
 import ce.formatters.CodeFormatterKotlinUseCaseImpl
 import ce.formatters.CodeFormatterUseCase
 import ce.settings.Project
-import generators.cpp.CppConstantsBlockGenerator
-import generators.cpp.CppDataClassGenerator
-import generators.cpp.CppEnumGenerator
-import generators.cpp.CppFileGenerator
-import generators.cpp.CppInterfaceGenerator
-import generators.java.JavaConstantsGenerator
-import generators.java.JavaDataClassGenerator
-import generators.java.JavaEnumGenerator
-import generators.java.JavaFileGenerator
-import generators.java.JavaInterfaceGenerator
+import generators.cpp.*
+import generators.java.*
+import generators.kotlin.*
 import generators.kotlin.GetArrayDataTypeUseCase
 import generators.kotlin.GetTypeNameUseCase
-import generators.kotlin.KotlinEnumGenerator
-import generators.kotlin.KotlinFileGenerator
-import generators.kotlin.KotlinInterfaceGenerator
-import generators.kotlin.KtConstantsGenerator
-import generators.kotlin.KtDataClassGenerator
 import generators.kotlin.PrepareRightValueUseCase
 import generators.obj.MetaGenerator
 import generators.obj.PrepareFilesListUseCaseImpl
@@ -132,19 +120,25 @@ class GeneratorsRepo(
                 }
 
                 Target.Cpp -> {
-                    val arrayDataType = GetArrayDataTypeUseCase()
-                    val dataTypeToString = GetTypeNameUseCase(
+                    val arrayDataType = generators.cpp.GetArrayDataTypeUseCase()
+                    val dataTypeToString = generators.cpp.GetTypeNameUseCase(
                         arrayDataType = arrayDataType
                     )
-                    val prepareRightValueUseCase = PrepareRightValueUseCase(
+                    val prepareRightValueUseCase = generators.cpp.PrepareRightValueUseCase(
                         getTypeNameUseCase = dataTypeToString
                     )
                     mapOf(
-                        ConstantsEnum::class.java to CppEnumGenerator(addBlockUseCase),
+                        ConstantsEnum::class.java to CppEnumGenerator(
+                            addBlockDefaultsUseCase = addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase
+                        ),
                         ConstantsBlock::class.java to CppConstantsBlockGenerator(
                             addBlockDefaultsUseCase = addBlockUseCase,
                             prepareRightValueUseCase = prepareRightValueUseCase),
-                        DataClass::class.java to CppDataClassGenerator(addBlockUseCase),
+                        DataClass::class.java to CppDataClassGenerator(
+                            addBlockDefaultsUseCase = addBlockUseCase,
+                            prepareRightValueUseCase = prepareRightValueUseCase,
+                            dataTypeToString = dataTypeToString),
                         InterfaceDescription::class.java to CppInterfaceGenerator(addBlockUseCase)
                     )
                 }
