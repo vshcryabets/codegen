@@ -6,18 +6,8 @@ import ce.domain.usecase.add.AddRegionDefaultsUseCaseImpl
 import ce.formatters.CLikeCodestyleRepo
 import ce.settings.CodeStyle
 import ce.treeio.XmlTreeReader
-import generators.obj.abstractSyntaxTree.ConstantsEnum
-import generators.obj.abstractSyntaxTree.Namespace
-import generators.obj.abstractSyntaxTree.NamespaceImpl
-import generators.obj.abstractSyntaxTree.TreeRoot
-import generators.obj.abstractSyntaxTree.addSub
-import generators.obj.abstractSyntaxTree.findOrNull
-import generators.obj.syntaxParseTree.CommentsBlock
-import generators.obj.syntaxParseTree.NamespaceBlock
-import generators.obj.syntaxParseTree.OutBlock
-import generators.obj.syntaxParseTree.OutputTree
-import generators.obj.syntaxParseTree.Region
-import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.abstractSyntaxTree.*
+import generators.obj.syntaxParseTree.*
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -101,7 +91,7 @@ class CppEnumGeneratorTest {
         """.trimIndent()) as Namespace
         val block = tree.subs.first() as ConstantsEnum
 
-        val projectOutput = OutputTree(Target.Kotlin)
+        val projectOutput = OutputTree(Target.Cpp)
         val files = fileGenerator.createFile(projectOutput,
             workingDirectory = "./",
             packageDirectory = "",
