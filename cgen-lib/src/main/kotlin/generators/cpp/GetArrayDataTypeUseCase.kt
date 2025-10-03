@@ -15,7 +15,7 @@ class GetArrayDataTypeUseCase {
             DataType.uint64 -> "std::vector<uint64_t>"
             DataType.float32 -> "std::vector<float>"
             DataType.float64 -> "std::vector<double>"
-            is DataType.string -> "std::vector<std::string>"
+            DataType.string -> "std::vector<std::string>"
             is DataType.userClass -> "std::vector<${type.path}>"
             is DataType.custom -> "std::vector<${type.block.name}>"
             else -> "ktQQTP_array_$type"
