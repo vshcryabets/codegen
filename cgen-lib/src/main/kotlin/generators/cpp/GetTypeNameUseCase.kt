@@ -19,7 +19,7 @@ class GetTypeNameUseCase(
                     .addInclude("${type.block.getParentPath()}.${type.block.name}");
             else -> {}
         }
-        return when (type) {
+        val baseType = when (type) {
             DataType.VOID -> "void"
             DataType.int8, DataType.int8Nullable -> "int8_t"
             DataType.int16, DataType.int16Nullable -> "int16_t"
@@ -32,12 +32,15 @@ class GetTypeNameUseCase(
             DataType.float32, DataType.float32Nullable -> "float"
             DataType.float64, DataType.float64Nullable -> "double"
             DataType.bool, DataType.boolNullable -> "bool"
-            is DataType.string -> "std::string"
+
+            DataType.string, DataType.stringNullable -> "std::string"
             is DataType.array -> arrayDataType.getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name
             is DataType.userClassTest2 -> type.node.getPath()
             else -> "ktQQTP_$type"
-        } + (if (type.canBeNull) "?" else "")
+        }
+        val result = if (type.canBeNull) "std::optional<$baseType>" else baseType
+        return result
     }
 }

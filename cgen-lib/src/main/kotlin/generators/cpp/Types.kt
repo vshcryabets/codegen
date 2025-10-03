@@ -7,6 +7,7 @@ import generators.obj.abstractSyntaxTree.findOrCreateSub
 import generators.obj.syntaxParseTree.FileData
 import generators.obj.syntaxParseTree.ImportsBlock
 
+@Deprecated("Use GetTypeNameUseCase")
 object Types {
     fun typeTo(file: FileData,
                type: DataType

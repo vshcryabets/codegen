@@ -2,11 +2,14 @@ package ce.formatters.cxx
 
 import ce.defs.RValue
 import ce.formatters.CLikeCodestyleRepo
+import ce.formatters.CodeFormatterCxxUseCaseImpl
 import ce.formatters.CodeFormatterUseCaseImpl
 import ce.settings.CodeStyle
 import generators.obj.abstractSyntaxTree.addEnumLeaf
+import generators.obj.abstractSyntaxTree.addKeyword
 import generators.obj.abstractSyntaxTree.addOutBlock
 import generators.obj.abstractSyntaxTree.addSub
+import generators.obj.abstractSyntaxTree.addVarName
 import generators.obj.syntaxParseTree.ArgumentNode
 import generators.obj.syntaxParseTree.Arguments
 import generators.obj.syntaxParseTree.EnumNode
@@ -15,6 +18,8 @@ import generators.obj.syntaxParseTree.NlSeparator
 import generators.obj.syntaxParseTree.OutBlock
 import generators.obj.syntaxParseTree.OutBlockArguments
 import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.VariableName
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
 
@@ -31,16 +36,17 @@ class CxxEnumFormattingTests {
         preventEmptyBlocks = true,
     )
     val repoNoSpace = CLikeCodestyleRepo(codeStyleNoSpace)
-    val formatter = CodeFormatterUseCaseImpl(repoNoSpace)
+    val formatter = CodeFormatterCxxUseCaseImpl(repoNoSpace)
 
     @Test
     fun testSimpleEnumCxx() {
         val input = RegionImpl().apply {
             addOutBlock("enum ENUM") {
-                addEnumLeaf("A")
-                addEnumLeaf("B")
-                addEnumLeaf("C")
-                addEnumLeaf("D")
+                listOf("A","B","C","D").forEachIndexed { idx,name ->
+                    addEnumLeaf("").apply {
+                        addVarName(name)
+                    }
+                }
             }
         }
         val output = formatter(input)
@@ -48,7 +54,11 @@ class CxxEnumFormattingTests {
         // <Region>
         //     <OutBlock>
         //        <SPACE> <{> <nl>
-        //        <Indent> <EnumNode A> <,> <nl>
+        //        <Indent>
+        //        <EnumNode>
+        //          <VarName A>
+        //        </EnumNode>
+        //        <,> <nl>
         //        <Indent> <EnumNode B> <,> <nl>
         //        <Indent> <EnumNode C> <,> <nl>
         //        <Indent> <EnumNode D> <nl>
@@ -59,17 +69,21 @@ class CxxEnumFormattingTests {
         Assert.assertEquals(2, output.subs.size)
         val outBlock = output.subs[0] as OutBlock
         Assert.assertEquals(19, outBlock.subs.size)
+        Assert.assertTrue(outBlock.subs[4] is EnumNode)
+        val firstEnumNode = outBlock.subs[4] as EnumNode
+        Assert.assertEquals(1 , firstEnumNode.subs.size)
+        Assert.assertTrue(firstEnumNode.subs[0] is VariableName)
     }
 
     @Test
     fun testEnumRawValueCxx() {
         val input = RegionImpl().apply {
             addOutBlock("enum ENUM") {
-                addSub(OutBlockArguments())
                 listOf("A","B","C","D").forEachIndexed { idx,name ->
-                    addEnumLeaf(name).apply {
-                        addSub(Arguments())
-                            .addSub(RValue(idx.toString()))
+                    addEnumLeaf("").apply {
+                        addVarName(name)
+                        addKeyword("=")
+                        addSub(RValue(idx.toString()))
                     }
                 }
             }
@@ -99,27 +113,18 @@ class CxxEnumFormattingTests {
         // </Region>
         Assert.assertEquals(2, output.subs.size)
         val outBlock = output.subs[0] as OutBlock
-        Assert.assertTrue(outBlock.subs[0] is Keyword)
+        Assert.assertTrue(outBlock.subs[0] is Space)
         Assert.assertTrue(outBlock.subs[1] is Keyword)
         Assert.assertTrue(outBlock.subs[2] is NlSeparator)
         Assert.assertEquals(19, outBlock.subs.size)
 
-        val outBlockArguments = outBlock.subs[1] as OutBlockArguments
-        Assert.assertEquals(1, outBlockArguments.subs.size)
-
-        Assert.assertTrue(outBlockArguments.subs[0] is ArgumentNode)
-        val argumentNode = outBlockArguments.subs[0] as ArgumentNode
-        Assert.assertTrue(argumentNode.subs[0] is Keyword)
-        Assert.assertEquals(6, argumentNode.subs.size)
-
-        Assert.assertTrue(outBlock.subs[7] is EnumNode)
-        val firstEnumNode = outBlock.subs[7] as EnumNode
-        Assert.assertEquals(3 , firstEnumNode.subs.size)
-        Assert.assertTrue(firstEnumNode.subs[0] is Keyword)
-        Assert.assertTrue(firstEnumNode.subs[1] is Arguments)
+        Assert.assertTrue(outBlock.subs[4] is EnumNode)
+        val firstEnumNode = outBlock.subs[4] as EnumNode
+        Assert.assertEquals(5 , firstEnumNode.subs.size)
+        Assert.assertTrue(firstEnumNode.subs[0] is VariableName)
+        Assert.assertTrue(firstEnumNode.subs[1] is Space)
         Assert.assertTrue(firstEnumNode.subs[2] is Keyword)
-        val firstNodeArguments = firstEnumNode.subs[1] as Arguments
-        Assert.assertEquals(1 , firstNodeArguments.subs.size)
-        Assert.assertTrue(firstNodeArguments.subs[0] is RValue)
+        Assert.assertTrue(firstEnumNode.subs[3] is Space)
+        Assert.assertTrue(firstEnumNode.subs[4] is RValue)
     }
 }

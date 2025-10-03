@@ -2,26 +2,13 @@ package generators.cpp
 
 import ce.domain.usecase.add.AddRegionDefaultsUseCase
 import generators.obj.TransformBlockUseCase
-import generators.obj.abstractSyntaxTree.DataClass
-import generators.obj.abstractSyntaxTree.DataField
-import generators.obj.abstractSyntaxTree.addCommentLine
-import generators.obj.abstractSyntaxTree.addDatatype
-import generators.obj.abstractSyntaxTree.addKeyword
-import generators.obj.abstractSyntaxTree.addOutBlock
-import generators.obj.abstractSyntaxTree.addSub
-import generators.obj.abstractSyntaxTree.addVarName
-import generators.obj.abstractSyntaxTree.findOrCreateSub
-import generators.obj.abstractSyntaxTree.findOrNull
-import generators.obj.abstractSyntaxTree.getParentPath
-import generators.obj.syntaxParseTree.CommentsBlock
-import generators.obj.syntaxParseTree.FieldNode
-import generators.obj.syntaxParseTree.FileData
-import generators.obj.syntaxParseTree.ImportsBlock
-import generators.obj.syntaxParseTree.NamespaceBlock
-import generators.obj.syntaxParseTree.RegionImpl
+import generators.obj.abstractSyntaxTree.*
+import generators.obj.syntaxParseTree.*
 
 class CppDataClassGenerator(
     private val addBlockDefaultsUseCase: AddRegionDefaultsUseCase,
+    private val prepareRightValueUseCase: PrepareRightValueUseCase,
+    private val dataTypeToString: GetTypeNameUseCase,
 ) : TransformBlockUseCase<DataClass> {
 
     override fun invoke(blockFiles: List<FileData>, desc: DataClass) {
@@ -43,11 +30,15 @@ class CppDataClassGenerator(
                 desc.subs.forEach { leaf ->
                     if (leaf is DataField) {
                         addSub(FieldNode().apply {
-                            addDatatype(Types.typeTo(header, leaf.getType()))
+                            addDatatype(dataTypeToString.typeTo(header, leaf.getType()))
                             addVarName(leaf.name)
                             if (leaf.getValue().isDefined()) {
                                 addKeyword("=")
-                                addSub(Types.toValue(leaf.getType(), leaf.getValue()))
+                                val rValue = prepareRightValueUseCase.toRightValue(
+                                    dataField = leaf,
+                                    fileData = header
+                                )
+                                addSub(rValue)
                             }
                         })
                     }
