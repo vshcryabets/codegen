@@ -1,20 +1,9 @@
 import getpass
 
-
 from sequences import Dictionary, DictionaryOperations
 from sequences import Sequence, SequenceOperations
 from lstm_formatter import XmlOperations
-
-def read_and_split_out_tree(directory, filename):
-    tree = etree.parse(directory + "/" + filename)
-    root = tree.getroot()
-    
-    for child in root:
-        output_filename = f"{directory}/{child.attrib['name']}.xml"
-        # print(output_filename)
-        with open(output_filename, "wb") as f:
-            f.write(etree.tostring(child, pretty_print=True, xml_declaration=True, encoding="UTF-8"))    
-
+from lstm_formatter import LSTMFormatter
 
 if __name__ == "__main__":
     KOTLIN_VOCAB_FILE = "./data/kotlin_vocab.json"
@@ -49,3 +38,13 @@ if __name__ == "__main__":
         sequences = sequences
     )
     sequence_operations.store(sequences, sequence_file)
+
+    formatter = LSTMFormatter(inp_words=4)
+    formatter.defineModel(
+        units=64,
+        dictionary=dictionary,
+        filename="./data/lstm-kotlin-n4.h1.keras"
+    )
+    formatter.trainModel(sequences)
+    formatter.model.save("./data/lstm-kotlin-n4.h1.keras")
+

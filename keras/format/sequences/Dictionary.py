@@ -12,6 +12,9 @@ class Dictionary:
         self.process = process
         self.updateDate = datetime.now().isoformat()
 
+    def size(self):
+        return len(self.entries)
+
     def nextId(self):
         if not self.entries:
             return 1
