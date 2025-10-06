@@ -4,7 +4,7 @@
     "author": "mrco",
     "version": "1.0",
     "process": "PrepareTrainDataFromASTXml",
-    "updateDate": "2025-10-06T19:46:15.552886",
+    "updateDate": "2025-10-06T21:24:34.338694",
     "dictionary": {
         "NamespaceDeclaration_open": {
             "id": 1,
