@@ -1,4 +1,4 @@
-# styxlib/__init__.py
+# sequences/__init__.py
 
 from .Dictionary import Dictionary, DictionaryOperations
 from .Sequence import Sequence, SequenceOperations

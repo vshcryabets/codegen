@@ -12,6 +12,11 @@ class Dictionary:
         self.process = process
         self.updateDate = datetime.now().isoformat()
 
+    def nextId(self):
+        if not self.entries:
+            return 1
+        return max(entry["id"] for entry in self.entries.values()) + 1
+
 class DictionaryOperations:
     def __init__(self):
         self.data = {}
