@@ -9,6 +9,8 @@ if __name__ == "__main__":
     KOTLIN_VOCAB_FILE = "./data/kotlin_vocab.json"
     sequence_file = "./data/kotlin_sequence.json"
     process = "PrepareTrainDataFromASTXml"
+    inp_words = 4
+    units = 96
     sequence_operations = SequenceOperations()
     dictionary_operations = DictionaryOperations()
     xml_operations = XmlOperations()
@@ -30,6 +32,7 @@ if __name__ == "__main__":
         username = getpass.getuser(), 
         process = process
     )
+    model_filename = f"./data/lstm-kotlin-n{inp_words}_v{dictionary.size()}_u{units}.h1.keras"
 
     xml_operations.prepareTrainingSequenceUseCase(
         directory="../../generated/kotlin/",
@@ -39,12 +42,12 @@ if __name__ == "__main__":
     )
     sequence_operations.store(sequences, sequence_file)
 
-    formatter = LSTMFormatter(inp_words=4)
+    formatter = LSTMFormatter(inp_words=inp_words)
     formatter.defineModel(
-        units=64,
+        units=units,
         dictionary=dictionary,
-        filename="./data/lstm-kotlin-n4.h1.keras"
+        filename=model_filename
     )
     formatter.trainModel(sequences)
-    formatter.model.save("./data/lstm-kotlin-n4.h1.keras")
+    # formatter.model.save("./data/lstm-kotlin-n4.h1.keras")
 
