@@ -7,7 +7,6 @@ from lstm_formatter import LSTMFormatter
 
 if __name__ == "__main__":
     KOTLIN_VOCAB_FILE = "./data/kotlin_vocab.json"
-    sequence_file = "./data/kotlin_sequence.json"
     process = "PrepareTrainDataFromASTXml"
     inp_words = 4
     units = 96
@@ -21,29 +20,24 @@ if __name__ == "__main__":
         process = process
         )
 
-    dictionary = xml_operations.refreshDictionaryUseCase(
-        directory="../../generated/kotlin/",
-        filename="output_tree_formatted_Kotlin.xml",
-        dictionary = dictionary
-    )
-    dictionary_operations.store(dictionary, KOTLIN_VOCAB_FILE)
-
     model_filename = f"./data/lstm-kotlin-n{inp_words}_v{dictionary.size()}_u{units}.h1.keras"
-    sequences = xml_operations.prepareTrainingSequencesUseCase(
+    sequences = xml_operations.loadSequencesUseCase(
         directory="../../generated/kotlin/",
-        filename="output_tree_formatted_Kotlin.xml",
+        filename="output_tree_Kotlin.xml",
         dictionary= dictionary
     )
+    if sequences.is_err():
+        print(f"Error loading sequences: {sequences.unwrap_err()}")
+        exit(1)
+    sequences = sequences.unwrap()
     sequences.author = getpass.getuser()
     sequences.process = process
-    sequence_operations.store(sequences, sequence_file)
 
     formatter = LSTMFormatter(inp_words=inp_words)
-    formatter.defineModel(
-        units=units,
-        dictionary=dictionary,
-        filename=model_filename
-    )
-    formatter.trainModel(sequences)
+    if (not formatter.loadModel(model_filename)):
+        print(f"Error loading model")
+        exit(1)
+
+    # formatter.trainModel(sequences)
     # formatter.model.save("./data/lstm-kotlin-n4.h1.keras")
 
