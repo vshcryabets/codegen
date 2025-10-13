@@ -3,6 +3,7 @@ from sequences import Sequence
 from sequences import Dictionary
 import copy
 from datetime import datetime
+from result import Result, Err, Ok
 
 class XmlOperations:
     OPEN_ONLY_TAGS = [
@@ -62,9 +63,10 @@ class XmlOperations:
         newDictionary.updateDate = datetime.now().isoformat()
         return newDictionary
 
-    def prepareTrainingSequenceUseCase(self, directory, filename, dictionary: Dictionary, sequences: Sequence):
+    def prepareTrainingSequencesUseCase(self, directory, filename, dictionary: Dictionary) -> Sequence:
         tree = etree.parse(directory + "/" + filename)
         root = tree.getroot()
+        sequences = Sequence(username="", process="")
         
         for child in root:
             blockName = child.attrib['name']
@@ -99,3 +101,20 @@ class XmlOperations:
                 else:
                     raise Exception(f"'{closeTag}' not found in vocabulary")    
         return sequence
+    
+    def loadSequencesUseCase(self, directory, filename, dictionary: Dictionary) -> Result[Sequence, str]:
+        tree = etree.parse(directory + "/" + filename)
+        root = tree.getroot()
+        sequences = Sequence(username="", process="")
+
+        for child in root:
+            blockName = child.attrib['name']
+            sequence = []
+            try:
+                self.process_childs_for_sequence(child, dictionary, sequence)
+            except Exception as e:
+                return Err(f"Error processing block '{blockName}': {str(e)}")
+            sequences.entries[blockName] = {"sequence": sequence}
+
+        print(f"Sequences count: {len(sequences.entries)}")
+        return Ok(sequences)

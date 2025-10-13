@@ -17,12 +17,21 @@ class LSTMFormatter:
         self.model = None
         self.rms = None
 
-    def defineModel(self, units: int, dictionary: Dictionary, filename: str):
+    def loadModel(self, filename: str) -> bool:
         self.filename = filename
         self.rms = optimizers.RMSprop(learning_rate=0.0005)
         if os.path.exists(filename):
             self.model = load_model(filename)
-            self.model.compile(optimizer=self.rms, loss='sparse_categorical_crossentropy')        
+            self.model.compile(optimizer=self.rms, loss='sparse_categorical_crossentropy')
+            return True
+        return False
+
+
+    def defineModel(self, units: int, dictionary: Dictionary, filename: str):
+        self.filename = filename
+        self.rms = optimizers.RMSprop(learning_rate=0.0005)
+        if os.path.exists(filename):
+            self.loadModel(filename)
             return
         self.model = Sequential()
         dictionary_size = dictionary.size() + 1 # +1 for padding token
