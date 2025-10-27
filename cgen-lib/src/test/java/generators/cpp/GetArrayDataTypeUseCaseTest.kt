@@ -84,7 +84,7 @@ class GetArrayDataTypeUseCaseTest {
     }
 
     @Test
-    fun getArrayTypeAddvectorToImports() {
+    fun getArrayTypeAddsVectorToImports() {
         val result = useCase.getArrayType(DataType.float64, importsBlock)
         Assertions.assertEquals(1, importsBlock.subs.size)
         assertEquals("<vector>", importsBlock.subs[0].name)

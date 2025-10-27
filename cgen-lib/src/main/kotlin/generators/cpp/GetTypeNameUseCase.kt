@@ -32,7 +32,7 @@ class GetTypeNameUseCase(
             DataType.uint8Nullable,
             DataType.uint16Nullable,
             DataType.uint32Nullable,
-            DataType.uint64Nullable-> {
+            DataType.uint64Nullable -> {
                 importsBlock.addInclude("<cstdint>")
             }
             DataType.string, DataType.stringNullable -> {
@@ -41,9 +41,7 @@ class GetTypeNameUseCase(
             is DataType.array -> {
                 importsBlock.addInclude("<vector>")
             }
-            else -> {
-
-            }
+            else -> {}
         }
         if (type.canBeNull) {
             importsBlock.addInclude("<optional>")
