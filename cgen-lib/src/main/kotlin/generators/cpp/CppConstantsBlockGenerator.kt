@@ -10,11 +10,13 @@ import generators.obj.abstractSyntaxTree.addDatatype
 import generators.obj.abstractSyntaxTree.addKeyword
 import generators.obj.abstractSyntaxTree.addSub
 import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.abstractSyntaxTree.findOrCreateSub
 import generators.obj.abstractSyntaxTree.findOrNull
 import generators.obj.abstractSyntaxTree.getParentPath
 import generators.obj.syntaxParseTree.CommentsBlock
 import generators.obj.syntaxParseTree.FieldNode
 import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportsBlock
 import generators.obj.syntaxParseTree.NamespaceBlock
 import generators.obj.syntaxParseTree.RegionImpl
 
@@ -26,6 +28,7 @@ class CppConstantsBlockGenerator(
     override fun invoke(blockFiles: List<FileData>, desc: ConstantsBlock) {
         val headerFile = blockFiles.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
+        val imports = headerFile.findOrCreateSub(ImportsBlock::class.java)
 
         val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
         val outBlock = namespace.addSub(RegionImpl(desc.name))
@@ -48,7 +51,11 @@ class CppConstantsBlockGenerator(
                         addDatatype(Types.typeTo(headerFile, it.getType()))
                         addVarName(it.name)
                         addKeyword("=")
-                        val rValue = prepareRightValueUseCase.toRightValue(it.getType(), it.getValue(), headerFile)
+                        val rValue = prepareRightValueUseCase.toRightValue(
+                            type = it.getType(),
+                            value = it.getValue(),
+                            importsBlock = imports
+                        )
                         addSub(rValue)
                     }
                 )

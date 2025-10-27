@@ -19,6 +19,11 @@ ns.dataClass("GroovyData").tap {
     field("age", DataType.int32.INSTANCE, 35)
 }
 
+ns.dataClass("GroovyData2").tap {
+    field("age", DataType.int32.INSTANCE, 35)
+    field("names", new DataType.array(DataType.string.INSTANCE, false))
+}
+
 def styxQid = ns.dataClass("Qid")
 styxQid.with {
     addBlockComment("QID structure")

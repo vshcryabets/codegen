@@ -1,23 +1,52 @@
 package generators.cpp
 
 import ce.defs.DataType
-import generators.obj.abstractSyntaxTree.findOrCreateSub
 import generators.obj.abstractSyntaxTree.getParentPath
 import generators.obj.abstractSyntaxTree.getPath
-import generators.obj.syntaxParseTree.FileData
 import generators.obj.syntaxParseTree.ImportsBlock
 
 class GetTypeNameUseCase(
     private val arrayDataType: GetArrayDataTypeUseCase
 ) {
-    fun typeTo(file: FileData,
+    fun typeTo(importsBlock: ImportsBlock,
                type: DataType
     ) : String {
         when (type) {
             is DataType.custom ->
-                file.findOrCreateSub(ImportsBlock::class.java)
-                    .addInclude("${type.block.getParentPath()}.${type.block.name}");
+                importsBlock.addInclude("${type.block.getParentPath()}.${type.block.name}");
             else -> {}
+        }
+        when (type) {
+            DataType.int8,
+            DataType.int16,
+            DataType.int32,
+            DataType.int64,
+            DataType.uint8,
+            DataType.uint16,
+            DataType.uint32,
+            DataType.uint64,
+            DataType.int8Nullable,
+            DataType.int16Nullable,
+            DataType.int32Nullable,
+            DataType.int64Nullable,
+            DataType.uint8Nullable,
+            DataType.uint16Nullable,
+            DataType.uint32Nullable,
+            DataType.uint64Nullable-> {
+                importsBlock.addInclude("<cstdint>")
+            }
+            DataType.string, DataType.stringNullable -> {
+                importsBlock.addInclude("<string>")
+            }
+            is DataType.array -> {
+                importsBlock.addInclude("<vector>")
+            }
+            else -> {
+
+            }
+        }
+        if (type.canBeNull) {
+            importsBlock.addInclude("<optional>")
         }
         val baseType = when (type) {
             DataType.VOID -> "void"
@@ -34,7 +63,7 @@ class GetTypeNameUseCase(
             DataType.bool, DataType.boolNullable -> "bool"
 
             DataType.string, DataType.stringNullable -> "std::string"
-            is DataType.array -> arrayDataType.getArrayType(type.elementDataType)
+            is DataType.array -> arrayDataType.getArrayType(type.elementDataType, importsBlock)
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name
             is DataType.userClassTest2 -> type.node.getPath()

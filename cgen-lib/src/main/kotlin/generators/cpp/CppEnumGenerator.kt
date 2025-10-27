@@ -12,10 +12,12 @@ import generators.obj.abstractSyntaxTree.addKeyword
 import generators.obj.abstractSyntaxTree.addOutBlock
 import generators.obj.abstractSyntaxTree.addSub
 import generators.obj.abstractSyntaxTree.addVarName
+import generators.obj.abstractSyntaxTree.findOrCreateSub
 import generators.obj.abstractSyntaxTree.findOrNull
 import generators.obj.abstractSyntaxTree.getParentPath
 import generators.obj.syntaxParseTree.CommentsBlock
 import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.ImportsBlock
 import generators.obj.syntaxParseTree.NamespaceBlock
 import generators.obj.syntaxParseTree.RegionImpl
 
@@ -27,6 +29,7 @@ class CppEnumGenerator(
     override fun invoke(files: List<FileData>, desc: ConstantsEnum) {
         val headerFile = files.find { it is CppHeaderFile }
             ?: throw java.lang.IllegalStateException("Can't find Header file for C++")
+        val imports = headerFile.findOrCreateSub(ImportsBlock::class.java)
 
         val namespace = headerFile.addSub(NamespaceBlock(desc.getParentPath()))
         val region = namespace.addSub(RegionImpl(desc.name))
@@ -49,7 +52,7 @@ class CppEnumGenerator(
                         autoIncrement(it)
                         val rValue = prepareRightValueUseCase.toRightValue(
                             dataField = it,
-                            fileData = headerFile
+                            importsBlock = imports
                         )
                         addEnumLeaf("").apply {
                             addVarName(it.name)
