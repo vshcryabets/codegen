@@ -1,10 +1,12 @@
 package generators.cpp
 
 import ce.defs.DataType
+import generators.obj.syntaxParseTree.ImportsBlock
 
 class GetArrayDataTypeUseCase {
-    fun getArrayType(type: DataType): String =
-        when (type) {
+    fun getArrayType(type: DataType, importsBlock: ImportsBlock): String {
+        importsBlock.addInclude("<vector>")
+        return when (type) {
             DataType.int8 -> "std::vector<int8_t>"
             DataType.uint8 -> "std::vector<uint8_t>"
             DataType.int16 -> "std::vector<int16_t>"
@@ -20,4 +22,5 @@ class GetArrayDataTypeUseCase {
             is DataType.custom -> "std::vector<${type.block.name}>"
             else -> "ktQQTP_array_$type"
         }
+    }
 }

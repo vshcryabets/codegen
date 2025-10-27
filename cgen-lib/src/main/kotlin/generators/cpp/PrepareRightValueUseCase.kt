@@ -10,21 +10,19 @@ import generators.obj.abstractSyntaxTree.addSub
 import generators.obj.syntaxParseTree.ArgumentNode
 import generators.obj.syntaxParseTree.Arguments
 import generators.obj.syntaxParseTree.Constructor
-import generators.obj.syntaxParseTree.FileData
-import generators.obj.syntaxParseTree.Keyword
-import generators.obj.syntaxParseTree.VariableName
+import generators.obj.syntaxParseTree.ImportsBlock
 
 class PrepareRightValueUseCase(
     private val getTypeNameUseCase: GetTypeNameUseCase
 ) {
-    fun toRightValue(dataField: DataField, fileData: FileData): RValue =
+    fun toRightValue(dataField: DataField, importsBlock: ImportsBlock): RValue =
         toRightValue(
             type = dataField.getType(),
             value = dataField.getValue(),
-            fileData = fileData
+            importsBlock = importsBlock,
         )
 
-    fun toRightValue(type: DataType, value: DataValue, fileData: FileData): RValue =
+    fun toRightValue(type: DataType, value: DataValue, importsBlock: ImportsBlock): RValue =
         when (type) {
             DataType.VOID -> RValue(name = "void")
             DataType.int8, DataType.int16, DataType.int32, DataType.int64,
@@ -50,7 +48,7 @@ class PrepareRightValueUseCase(
                 } else {
                     val valueComplexItem = value.subs.first()
                     if (valueComplexItem is NewInstance) {
-                        prepareConstructor(valueComplexItem, fileData)
+                        prepareConstructor(valueComplexItem, importsBlock)
                     } else {
                         RValue(name = "QQVAL_complex???")
                     }
@@ -61,12 +59,12 @@ class PrepareRightValueUseCase(
             else -> RValue(name = "QQVAL_$type")
         }
 
-    fun prepareConstructor(item: NewInstance, fileData: FileData): RValue {
+    fun prepareConstructor(item: NewInstance, importsBlock: ImportsBlock): RValue {
         val result = RValue()
         result.addSub(
             Constructor(
                 name = getTypeNameUseCase.typeTo(
-                    file = fileData,
+                    importsBlock = importsBlock,
                     type = item.getType()
                 )
             ).apply {
@@ -84,7 +82,7 @@ class PrepareRightValueUseCase(
                             toRightValue(
                                 type = input.getType(),
                                 value = input.getValue(),
-                                fileData = fileData
+                                importsBlock = importsBlock
                             )
                         )
                     }
