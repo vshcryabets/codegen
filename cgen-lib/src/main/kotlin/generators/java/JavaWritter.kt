@@ -25,11 +25,11 @@ class JavaWritter(
 
     override fun getFilePath(fileData: FileData): String {
         val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java) ?:
-        throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+            throw IllegalStateException("No working directory found in fileData ${fileData.name}")
         val workingDirectory = fileMetaInformation.findOrNull(WorkingDirectory::class.java)?.name ?:
-        throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+            throw IllegalStateException("No working directory found in fileData ${fileData.name}")
         val packageDirectory = fileMetaInformation.findOrNull(PackageDirectory::class.java)?.name ?:
-        throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+            throw IllegalStateException("No package directory found in fileData ${fileData.name}")
         return workingDirectory + File.separator +
                 packageDirectory + File.separator +
                 fileData.name + ".java"
