@@ -25,10 +25,9 @@ import java.io.File
 
 abstract class Writter(val codeStyleRepo: CodeStyleRepo,
                        outputFolderPath: String) {
-    val outFolder : File
+    val outFolder : File = File(outputFolderPath)
 
     init {
-        outFolder = File(outputFolderPath)
         outFolder.mkdirs()
     }
 
@@ -40,6 +39,7 @@ abstract class Writter(val codeStyleRepo: CodeStyleRepo,
         }
     }
 
+    abstract fun getFilePath(fileData: FileData): String
     abstract fun writeFile(fileData: FileData)
 
     open fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {

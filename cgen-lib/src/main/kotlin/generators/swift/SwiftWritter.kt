@@ -12,12 +12,13 @@ class SwiftWritter(
     outputFolder: String,
     private val reportsRepo: ReportsRepo
 ) : Writter(codeStyleRepo, outputFolder) {
+    override fun getFilePath(fileData: FileData): String = fileData.name + ".swift"
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {
 //            throw IllegalStateException("Swift file can contain only one namespace")
 //        }
-        var outputFile = File(fileData.name + ".swift")
+        var outputFile = File(getFilePath(fileData))
         outputFile.parentFile.mkdirs()
         reportsRepo.logi("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value

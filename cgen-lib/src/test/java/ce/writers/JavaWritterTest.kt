@@ -7,12 +7,17 @@ import ce.settings.CodeStyle
 import generators.java.JavaWritter
 import generators.obj.abstractSyntaxTree.addOutBlock
 import generators.obj.abstractSyntaxTree.addSubs
+import generators.obj.syntaxParseTree.FileDataImpl
+import generators.obj.syntaxParseTree.FileMetaInformation
 import generators.obj.syntaxParseTree.Keyword
 import generators.obj.syntaxParseTree.NlSeparator
+import generators.obj.syntaxParseTree.PackageDirectory
 import generators.obj.syntaxParseTree.RegionImpl
 import generators.obj.syntaxParseTree.Space
+import generators.obj.syntaxParseTree.WorkingDirectory
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class JavaWritterTest {
     val codeStyleNoSpace = CodeStyle(
@@ -55,5 +60,27 @@ class JavaWritterTest {
             override fun setNewLine(str: String) {}
         }, "")
         Assert.assertEquals("public class TEST {}\n", buffer.toString())
+    }
+
+    @Test
+    fun testGetFilePathWithValidFileMetaInformation() {
+        val fileMetaInfo = FileMetaInformation("").apply {
+            subs.add(WorkingDirectory("src/main/java"))
+            subs.add(PackageDirectory("com/example"))
+        }
+        val fileData = FileDataImpl("MyClass").apply {
+            subs.add(fileMetaInfo)
+        }
+        val result = writter.getFilePath(fileData)
+        Assert.assertEquals("src/main/java/com/example/MyClass.java", result)
+    }
+
+    @Test
+    fun testGetFilePathWithoutFileMetaInformationThrowsException() {
+        val fileData = FileDataImpl("")
+        val exception = assertThrows<IllegalStateException> {
+            writter.getFilePath(fileData)
+        }
+        Assert.assertTrue(exception.message?.contains("No working directory found in fileData") ?: false)
     }
 }

@@ -11,12 +11,13 @@ class RustWritter(
     fileGenerator: RustFileGenerator, codeStyleRepo: CodeStyleRepo, outputFolder: String,
     private val reportsRepo: ReportsRepo
 ) : Writter(codeStyleRepo, outputFolder) {
+    override fun getFilePath(fileData: FileData): String = fileData.name + ".rs"
 
     override fun writeFile(fileData: FileData) {
 //        if (fileData.namespaces.size != 1) {
 //            throw IllegalStateException("Rust file can contain only one namespace")
 //        }
-        var outputFile = File(fileData.name + ".rs")
+        var outputFile = File(getFilePath(fileData))
         outputFile.parentFile.mkdirs()
         reportsRepo.logi("Writing $outputFile")
 //        val namespace = fileData.namespaces.entries.first().value

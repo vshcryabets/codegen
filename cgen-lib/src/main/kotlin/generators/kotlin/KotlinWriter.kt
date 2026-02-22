@@ -23,17 +23,20 @@ import java.io.File
 
 class KotlinWriter(codeStyleRepo: CodeStyleRepo, outputFolder: String)
     : Writter(codeStyleRepo, outputFolder) {
-
-    override fun writeFile(fileData: FileData) {
+    override fun getFilePath(fileData: FileData): String {
         val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java) ?:
             throw IllegalStateException("No working directory found in fileData ${fileData.name}")
         val workingDirectory = fileMetaInformation.findOrNull(WorkingDirectory::class.java)?.name ?:
             throw IllegalStateException("No working directory found in fileData ${fileData.name}")
         val packageDirectory = fileMetaInformation.findOrNull(PackageDirectory::class.java)?.name ?:
-          throw IllegalStateException("No working directory found in fileData ${fileData.name}")
-        val outputFile = File(workingDirectory + File.separator +
+            throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        return workingDirectory + File.separator +
                 packageDirectory + File.separator +
-                fileData.name + ".kt")
+                fileData.name + ".kt"
+    }
+
+    override fun writeFile(fileData: FileData) {
+        val outputFile = File(getFilePath(fileData))
         outputFile.parentFile.mkdirs()
         println("KotlinWriter writing ${outputFile.absolutePath}")
         outputFile.bufferedWriter().use { out ->

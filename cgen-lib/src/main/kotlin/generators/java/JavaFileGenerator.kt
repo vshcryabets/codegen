@@ -10,6 +10,10 @@ import generators.obj.syntaxParseTree.ImportsBlock
 import generators.obj.syntaxParseTree.NamespaceDeclaration
 import generators.obj.syntaxParseTree.OutputTree
 import generators.obj.syntaxParseTree.FileMetaInformation
+import generators.obj.syntaxParseTree.Keyword
+import generators.obj.syntaxParseTree.PackageDirectory
+import generators.obj.syntaxParseTree.VariableName
+import generators.obj.syntaxParseTree.WorkingDirectory
 import java.io.File
 
 class JavaFileGenerator() : CLikeFileGenerator() {
@@ -22,8 +26,14 @@ class JavaFileGenerator() : CLikeFileGenerator() {
     ): List<FileData> {
         return listOf(FileDataImpl(outputFile).apply {
             setParent2(project)
-            addSub(FileMetaInformation(workingDirectory))
-            addSub(NamespaceDeclaration(block.getParentPath()))
+            addSub(FileMetaInformation("").apply {
+                addSub(WorkingDirectory(workingDirectory))
+                addSub(PackageDirectory(packageDirectory))
+            })
+            addSub(NamespaceDeclaration("").apply {
+                addSub(Keyword("package"))
+                addSub(VariableName(block.getParentPath()))
+            })
             addSub(ImportsBlock())
         })
     }
