@@ -13,6 +13,8 @@ import generators.obj.syntaxParseTree.ImportLeaf
 import generators.obj.syntaxParseTree.NamespaceDeclaration
 import generators.obj.syntaxParseTree.OutBlock
 import generators.obj.syntaxParseTree.FileMetaInformation
+import generators.obj.syntaxParseTree.PackageDirectory
+import generators.obj.syntaxParseTree.WorkingDirectory
 import java.io.File
 
 class JavaWritter(
@@ -21,10 +23,20 @@ class JavaWritter(
     private val reportsRepo: ReportsRepo)
     : Writter(codeStyleRepo, outputFolder) {
 
-    override fun writeFile(fileData: FileData) {
-        val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java)?.name ?:
+    override fun getFilePath(fileData: FileData): String {
+        val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java) ?:
             throw IllegalStateException("No working directory found in fileData ${fileData.name}")
-        val outputFile = File(fileMetaInformation + "/" + fileData.name + ".java")
+        val workingDirectory = fileMetaInformation.findOrNull(WorkingDirectory::class.java)?.name ?:
+            throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        val packageDirectory = fileMetaInformation.findOrNull(PackageDirectory::class.java)?.name ?:
+            throw IllegalStateException("No package directory found in fileData ${fileData.name}")
+        return workingDirectory + File.separator +
+                packageDirectory + File.separator +
+                fileData.name + ".java"
+    }
+
+    override fun writeFile(fileData: FileData) {
+        val outputFile = File(getFilePath(fileData))
         outputFile.parentFile.mkdirs()
         reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->

@@ -10,17 +10,23 @@ import generators.obj.abstractSyntaxTree.Node
 import generators.obj.abstractSyntaxTree.findOrNull
 import generators.obj.abstractSyntaxTree.removeSub
 import generators.obj.syntaxParseTree.FileData
+import generators.obj.syntaxParseTree.FileMetaInformation
 import generators.obj.syntaxParseTree.ImportLeaf
 import generators.obj.syntaxParseTree.NamespaceBlock
 import generators.obj.syntaxParseTree.OutBlock
 import generators.obj.syntaxParseTree.OutBlockArguments
-import generators.obj.syntaxParseTree.FileMetaInformation
 import java.io.File
 
 class CppWritter(
     codeStyleRepo: CodeStyleRepo, outputFolder: String,
     private val reportsRepo: ReportsRepo
 ) : Writter(codeStyleRepo, outputFolder) {
+
+    override fun getFilePath(fileData: FileData): String {
+        val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java)?.name
+            ?: throw IllegalStateException("No working directory found in fileData ${fileData.name}")
+        return fileMetaInformation + "/" + fileData.name
+    }
 
     override fun writeLeaf(leaf: Leaf, out: CodeWriter, indent: String) {
         when (leaf) {
@@ -64,9 +70,7 @@ class CppWritter(
             reportsRepo.loge("No data to write ${fileData.name}")
             return
         }
-        val fileMetaInformation = fileData.findOrNull(FileMetaInformation::class.java)?.name
-            ?: throw IllegalStateException("No working directory found in fileData ${fileData.name}")
-        val outputFile = File(fileMetaInformation + "/" + fileData.name)
+        val outputFile = File(getFilePath(fileData))
         outputFile.parentFile.mkdirs()
         reportsRepo.logi("Writing $outputFile")
         outputFile.bufferedWriter().use { out ->
