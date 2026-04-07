@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class GetTypeNameUseCaseTest {
-    val getArrayDataTypeUseCase = GetArrayDataTypeUseCase()
-    val useCase = GetTypeNameUseCase(getArrayDataTypeUseCase)
+    private val getArrayDataTypeUseCase = GetArrayDataTypeUseCase()
+    private val useCase = GetTypeNameUseCase(getArrayDataTypeUseCase)
 
     @Test
     fun testStringNullable() {
