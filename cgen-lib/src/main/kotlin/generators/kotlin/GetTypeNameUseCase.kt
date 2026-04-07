@@ -32,7 +32,7 @@ class GetTypeNameUseCase(
             DataType.float32, DataType.float32Nullable -> "Float"
             DataType.float64, DataType.float64Nullable -> "Double"
             DataType.bool, DataType.boolNullable -> "Boolean"
-            is DataType.string -> "String"
+            is DataType.string, DataType.stringNullable -> "String"
             is DataType.array -> arrayDataType.getArrayType(type.elementDataType)
             is DataType.userClass -> type.path
             is DataType.custom -> type.block.name
